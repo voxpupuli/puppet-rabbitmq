@@ -1,11 +1,11 @@
 name    'puppetlabs-rabbitmq'
-version '0.0.1'
-source 'UNKNOWN'
+version '1.0.0'
+source 'git://github.com/puppetlabs/puppetlabs-rabbitmq.git'
 author 'puppetlabs'
-license 'UNKNOWN'
-summary 'UNKNOWN'
-description 'UNKNOWN'
-project_page 'UNKNOWN'
+license 'Apache'
+summary 'RabbitMQ Puppet Module'
+description 'This module manages RabbitMQ for use with MCollective.  Tested on Enterprise Linux 5'
+project_page 'http://github.com/puppetlabs/puppetlabs-rabbitmq'
 
 ## Add dependencies, if any:
 # dependency 'username/name', '>= 1.2.0'
