@@ -17,8 +17,8 @@ class rabbitmq::service($ensure='UNSET') inherits rabbitmq::params {
 
   if $ensure in [ 'UNSET', 'running' ] {
     $ensure_real = 'running'
-		$enable_real = true
-	} elsif $ensure == 'stopped' {
+    $enable_real = true
+  } elsif $ensure == 'stopped' {
     $ensure_real = 'stopped'
     $enable_real = false
   } else {
