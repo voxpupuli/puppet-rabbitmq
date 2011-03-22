@@ -1,2 +1,5 @@
-2011-03-22
+2011-03-22 1.0.1
+- Whitespace only fix.
+
+2011-03-22 1.0.0
 - Initial Release.  Manage the package, file and service.
