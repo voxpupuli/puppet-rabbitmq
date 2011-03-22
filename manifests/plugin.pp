@@ -41,8 +41,8 @@ define rabbitmq::plugin(
     owner   => '0',
     group   => '0',
     mode    => '0644',
-    require => Package[$packages],
-    notify  => Service[$service],
+    require => Class['rabbitmq'],
+    notify  => Class['rabbitmq::service'],
   }
 
 }
