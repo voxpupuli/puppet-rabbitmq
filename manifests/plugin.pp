@@ -2,6 +2,10 @@
 #
 #   This defined resource type manages plugins for RabbitMQ
 #
+#    NOTE: It is reommended to use packages to manage plugins if at all
+#    possible.  There are packages for stomp and amqp available in the prosvc
+#    repository at http://yum.puppetlabs.com/prosvc/
+#
 # Parameters:
 #
 # Actions:
@@ -10,10 +14,7 @@
 #
 # Sample Usage:
 #
-define rabbitmq::plugin(
-  $ensure='UNSET',
-  $source='UNSET'
-) {
+define rabbitmq::plugin( $ensure='UNSET', $source='UNSET') {
 
   $plugin_dir = $::rabbitmq::params::plugin_dir
   $service    = $::rabbitmq::params::service

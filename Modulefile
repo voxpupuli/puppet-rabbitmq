@@ -1,5 +1,5 @@
 name    'puppetlabs-rabbitmq'
-version '1.0.3'
+version '1.0.4'
 source 'git://github.com/puppetlabs/puppetlabs-rabbitmq.git'
 author 'puppetlabs'
 license 'Apache'
@@ -8,4 +8,4 @@ description 'This module manages RabbitMQ for use with MCollective.  Tested on E
 project_page 'http://github.com/puppetlabs/puppetlabs-rabbitmq'
 
 ## Add dependencies, if any:
-# dependency 'username/name', '>= 1.2.0'
+dependency 'puppetlabs/prosvc_repo', '>= 1.0.0'
