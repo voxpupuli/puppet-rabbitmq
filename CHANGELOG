@@ -1,3 +1,6 @@
+* 2011-04-08 Jeff McCune <jeff@puppetlabs.com> 1.0.4
+- Update module for RabbitMQ 2.4.1 and rabbitmq-plugin-stomp package.
+
 2011-03-24 1.0.3
 - Initial release to the forge.  Reviewed by Cody.  Whitespace is good.
 

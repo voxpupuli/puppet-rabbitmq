@@ -14,7 +14,7 @@
 class rabbitmq($config='UNSET') inherits rabbitmq::params {
 
   if $config == 'UNSET' {
-    $config_real = template("${module_name}/rabbitmq.conf")
+    $config_real = template("${module_name}/rabbitmq.config")
   } else {
     $config_real = $config
   }
@@ -22,7 +22,7 @@ class rabbitmq($config='UNSET') inherits rabbitmq::params {
   package { $packages:
     ensure => $pkg_ensure,
     notify => Class['rabbitmq::service'],
-    before => File['rabbitmq.conf'],
+    before => File['rabbitmq.config'],
   }
 
   file { '/etc/rabbitmq':
@@ -33,9 +33,9 @@ class rabbitmq($config='UNSET') inherits rabbitmq::params {
     require => Package[$packages],
   }
 
-  file { 'rabbitmq.conf':
+  file { 'rabbitmq.config':
     ensure  => file,
-    path    => '/etc/rabbitmq/rabbitmq.conf',
+    path    => '/etc/rabbitmq/rabbitmq.config',
     content => $config_real,
     owner   => '0',
     group   => '0',
