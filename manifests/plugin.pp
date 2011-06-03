@@ -16,9 +16,7 @@
 #
 define rabbitmq::plugin( $ensure='UNSET', $source='UNSET') {
 
-  $plugin_dir = $::rabbitmq::params::plugin_dir
-  $service    = $::rabbitmq::params::service
-  $packages   = $::rabbitmq::params::packages
+  $plugin_dir = $::rabbitmq::plugin_dir_real
 
   if $source == 'UNSET' {
     $source_real = "puppet:///modules/rabbitmq/plugins/${name}"

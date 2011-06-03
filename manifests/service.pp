@@ -13,7 +13,12 @@
 #
 # Sample Usage:
 #
-class rabbitmq::service($ensure='UNSET') inherits rabbitmq::params {
+class rabbitmq::service(
+  $service_name = 'rabbitmq',
+  $ensure='UNSET'
+) {
+
+  $service_name_real = $service_name 
 
   if $ensure in [ 'UNSET', 'running' ] {
     $ensure_real = 'running'
@@ -25,12 +30,11 @@ class rabbitmq::service($ensure='UNSET') inherits rabbitmq::params {
     fail("ensure parameter must be running or stopped, got: $ensure")
   }
 
-  service { $service:
+  service { $service_name_real:
     ensure     => $ensure_real,
     enable     => $enable_real,
     hasstatus  => true,
     hasrestart => true,
-    require    => Class['rabbitmq'],
   }
 
 }
