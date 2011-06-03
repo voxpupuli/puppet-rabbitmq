@@ -14,7 +14,7 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
  
   def exists?
     out = rabbitmqctl('list_users').split(/\n/)[1..-2].detect do |x|
-      x.match(/^#{resource[:name]}/)
+      x.match(/^#{resource[:name]}(\s+\S+|)$/)
     end
   end
 

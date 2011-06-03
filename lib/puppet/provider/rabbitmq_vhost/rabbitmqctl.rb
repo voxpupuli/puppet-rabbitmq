@@ -12,7 +12,7 @@ Puppet::Type.type(:rabbitmq_vhost).provide(:rabbitmqctl) do
  
   def exists?
     out = rabbitmqctl('list_vhosts').split(/\n/)[1..-2].detect do |x|
-      x.match(/^#{resource[:name]}(\s*|\s+\S+)$/)
+      x.match(/^#{resource[:name]}$/)
     end
   end
 

@@ -32,6 +32,12 @@ class rabbitmq(
   $service_ensure_real = $service_ensure
   $stomp_package_real = $stomp_package
 
+  if $stomp_port =~ /\d+/ {
+    $stomp_port_real = $stomp_port
+  } else {
+    fail("Stomp Port must be a number!  Got: $stomp_port")
+  }
+
   if $config == 'UNSET' {
     $config_real = template("${module_name}/rabbitmq.config")
   } else {
@@ -51,12 +57,6 @@ class rabbitmq(
   }
 
   $plugin_dir_real = "/usr/lib/rabbitmq/lib/rabbitmq_server-${version_real}/plugins"
-
-  if $stomp_port =~ /\d+/ {
-    $stomp_port_real = $stomp_port
-  } else {
-    fail("Stomp Port must be a number!  Got: $stomp_port")
-  }
 
   package { $package_name_real:
     ensure => $pkg_ensure_real,

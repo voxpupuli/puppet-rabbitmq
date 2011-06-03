@@ -1,0 +1,13 @@
+I should probably install add their apt repo to the source...
+
+- add ability to add their source for apt
+
+deb http://www.rabbitmq.com/debian/ testing main
+
+provider TODO -
+  - password should be a property and not a param
+  - permission types should be properties and not params
+  - user_permissions should auto-require users/vhost
+  - implement self.instances
+  - implement admin param (or property on user)
+  - can permissions from list_user_permissions contain whitespace?
