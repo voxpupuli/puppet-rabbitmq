@@ -11,7 +11,7 @@ Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl) do
   end
  
   def exists?
-    @should_user, @should_vhost = resource[:name].split('/')
+    @should_user, @should_vhost = resource[:name].split('@')
     out = rabbitmqctl('list_user_permissions', @should_user).split(/\n/)[1..-2].detect do |x|
       x.match(/^#{@should_vhost}\s+\S+\s+\S+\s+\S+$/)
     end

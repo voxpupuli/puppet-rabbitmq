@@ -14,7 +14,7 @@
 # [Remember: No empty lines between comments and class definition]
 class rabbitmq(
   $port = '5672',
-  $delete_guest_user = 'false',
+  $delete_guest_user = false,
   $package_name = 'rabbitmq-server',
   $version = 'UNSET',
   $service_name = 'rabbitmq-server',
@@ -31,6 +31,16 @@ class rabbitmq(
   $service_name_real = $service_name
   $service_ensure_real = $service_ensure
   $stomp_package_real = $stomp_package
+  if ! ($install_stomp in [true, false]) {
+    $install_stomp_real = $install_stomp
+  } else {
+    fail("Invalid value for install_stomp ${install_stomp}, must be (true|false)")
+  }
+  if ! ($install_stomp in [true, false]) {
+    $install_stomp_real = $install_stomp
+  } else {
+    fail("Invalid value for install_stomp ${install_stomp}, must be (true|false)")
+  }
 
   if $stomp_port =~ /\d+/ {
     $stomp_port_real = $stomp_port
@@ -63,7 +73,7 @@ class rabbitmq(
     notify => Class['rabbitmq::service'],
   }
 
-  if $install_stomp {
+  if $install_stomp_real {
     package { $stomp_package_real:
       ensure => installed,
       notify => Class['rabbitmq::service'],

@@ -7,7 +7,7 @@ provider_class = Puppet::Type.type(:rabbitmq_user_permissions).provider(:rabbitm
 describe provider_class do
   before :each do
     @resource = Puppet::Type::Rabbitmq_user_permissions.new(
-      {:name => 'foo/bar'}
+      {:name => 'foo@bar'}
     )
     @provider = provider_class.new(@resource)
   end

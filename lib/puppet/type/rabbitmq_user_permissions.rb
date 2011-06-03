@@ -5,7 +5,7 @@ Puppet::Type.newtype(:rabbitmq_user_permissions) do
 
   newparam(:name, :namevar => true) do
     'combination of user@vhost to grant privileges to'
-    newvalues(/^\S+\/\S+$/)
+    newvalues(/^\S+@\S+$/)
   end
 
   newparam(:configure_permission) do
