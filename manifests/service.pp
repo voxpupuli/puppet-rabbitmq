@@ -14,7 +14,7 @@
 # Sample Usage:
 #
 class rabbitmq::service(
-  $service_name = 'rabbitmq',
+  $service_name = 'rabbitmq-server',
   $ensure='running'
 ) {
 
