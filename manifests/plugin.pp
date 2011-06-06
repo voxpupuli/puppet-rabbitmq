@@ -14,27 +14,19 @@
 #
 # Sample Usage:
 #
-define rabbitmq::plugin( $ensure='UNSET', $source='UNSET') {
+define rabbitmq::plugin( $ensure=present, $source='UNSET') {
 
-  $plugin_dir = $::rabbitmq::params::plugin_dir
-  $service    = $::rabbitmq::params::service
-  $packages   = $::rabbitmq::params::packages
+  $plugin_dir = $::rabbitmq::plugin_dir_real
 
   if $source == 'UNSET' {
     $source_real = "puppet:///modules/rabbitmq/plugins/${name}"
   } else {
+    validate_re($source, '^(/|puppet://)')
     $source_real = $source
   }
 
-  if $ensure == 'UNSET' {
-    $ensure_real = 'present'
-  } else {
-    if $ensure in [ 'present', 'absent' ] {
-      $ensure_real = $ensure
-    } else {
-      fail("ensure must be present or absent.  Received: ${ensure}")
-    }
-  }
+  validate_re($ensure, '^(present|absent)$')
+  $ensure_real = $ensure
 
   file { "${plugin_dir}/${name}":
     ensure  => $ensure_real,
