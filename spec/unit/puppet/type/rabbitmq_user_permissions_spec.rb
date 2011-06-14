@@ -15,8 +15,8 @@ describe Puppet::Type.type(:rabbitmq_user_permissions) do
     expect {  @perms[:name] = 'bar' }.should raise_error(Puppet::Error, /Valid values match/)
   end
   [:configure_permission, :read_permission, :write_permission].each do |param|
-    it 'should default to ""' do
-       @perms[param].should == '""'
+    it 'should not default to anything' do
+       @perms[param].should == nil
     end
     it "should accept a valid regex for #{param}" do
       @perms[param] = '.*?'

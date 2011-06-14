@@ -8,24 +8,21 @@ Puppet::Type.newtype(:rabbitmq_user_permissions) do
     newvalues(/^\S+@\S+$/)
   end
 
-  newparam(:configure_permission) do
-    defaultto '""'
+  newproperty(:configure_permission) do
     desc 'regexp representing configuration permissions'
     validate do |value|
       resource.validate_permissions(value)
     end
   end
 
-  newparam(:read_permission) do
-    defaultto '""'
+  newproperty(:read_permission) do
     desc 'regexp representing read permissions'
     validate do |value|
       resource.validate_permissions(value)
     end
   end
 
-  newparam(:write_permission) do
-    defaultto '""'
+  newproperty(:write_permission) do
     desc 'regexp representing write permissions'
     validate do |value|
       resource.validate_permissions(value)
