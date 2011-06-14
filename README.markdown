@@ -4,12 +4,13 @@ Jeff McCune <jeff@puppetlabs.com>
 
 This module manages the RabbitMQ Middleware service.
 
-It is designed to work with MCollective.
-
 This module is available on the [Forge](http://forge.puppetlabs.com/)
 
 RabbitMQ Packages are published in the Puppet Labs ProSvc repository at:
 [yum.puppetlabs.com](http://yum.puppetlabs.com/prosvc/)
+
+This module has been tested against 2.4.1 and is known to work with
+features known not to exist in earlier version.
 
 # Quick Start
 
@@ -34,7 +35,7 @@ RabbitMQ Packages are published in the Puppet Labs ProSvc repository at:
 
 # TODO
 
-* Delete the default guest user account
 * Manage a mcollective user account in RabbitMQ.
-* Model user accounts as a defined resource type.
 
+TODO - 
+  need to understand what valid input for rabbitmq_user_list i

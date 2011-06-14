@@ -61,8 +61,46 @@ EOT
     @provider.expects(:rabbitmqctl).with('add_user', 'foo', 'bar')
     @provider.create
   end
-  it 'should call rabbitmqctl to create' do
+  it 'shoud create user, set password and set to admin' do
+    @resource[:password] = 'bar'
+    @resource[:admin] = 'true'
+    @provider.expects(:rabbitmqctl).with('add_user', 'foo', 'bar')
+    @provider.expects(:rabbitmqctl).with('set_admin', 'foo')
+    @provider.create
+  end
+  it 'should call rabbitmqctl to delete' do
     @provider.expects(:rabbitmqctl).with('delete_user', 'foo')
     @provider.destroy
+  end
+  it 'should be able to retrieve admin value' do
+    @provider.expects(:rabbitmqctl).with('list_users').returns <<-EOT
+Listing users ...
+foo true
+...done.
+EOT
+    @provider.admin.should == :true
+    @provider.expects(:rabbitmqctl).with('list_users').returns <<-EOT
+Listing users ...
+one true
+foo false
+...done.
+EOT
+    @provider.admin.should == :false
+  end
+  it 'should fail if admin value is invalid' do
+    @provider.expects(:rabbitmqctl).with('list_users').returns <<-EOT
+Listing users ...
+foo fail
+...done.
+EOT
+    expect { @provider.admin }.should raise_error(Puppet::Error, /Could not match line/)
+  end
+  it 'should be able to set admin value' do
+    @provider.expects(:rabbitmqctl).with('set_admin', 'foo')
+    @provider.admin=:true
+  end
+  it 'should be able to unset admin value' do
+    @provider.expects(:rabbitmqctl).with('clear_admin', 'foo')
+    @provider.admin=:false
   end
 end

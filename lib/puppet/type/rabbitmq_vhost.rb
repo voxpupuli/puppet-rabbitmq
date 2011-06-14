@@ -1,7 +1,9 @@
 Puppet::Type.newtype(:rabbitmq_vhost) do
   desc 'manages rabbitmq vhosts'
 
-  ensurable
+  ensurable do
+    defaultto(:present)
+  end
 
   newparam(:name, :namevar => true) do
     'name of the vhost to add'
