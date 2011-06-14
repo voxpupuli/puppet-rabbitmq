@@ -1,5 +1,8 @@
 Puppet::Type.type(:rabbitmq_user_permissions).provide(:default) do
 
+  #def self.instance 
+  #  []
+  #end
 
   def create 
     default_fail

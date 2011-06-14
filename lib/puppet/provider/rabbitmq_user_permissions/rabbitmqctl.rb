@@ -3,23 +3,25 @@ Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl) do
   commands :rabbitmqctl => 'rabbitmqctl'
   defaultfor :kernel => 'Linux'
 
-  class << self
-    # cache users permissions
-    def users(name, vhost)
-      @users = {} unless @users
-      unless @users[name]
-        @users[name] = {}
-        out = rabbitmqctl('list_user_permissions', name).split(/\n/)[1..-2].each do |line|
-          if line =~ /^(\S+)\s+(\S+)\s+(\S+)\s+(\S+)$/
-            @users[name][$1] =
-              {:configure => $2, :read => $3, :write => $4}
-          else
-            raise Puppet::Error, "cannot parse line from list_user_permissions:#{line}"
-          end
+  #def self.instances
+  #
+  #end
+
+  # cache users permissions
+  def self.users(name, vhost)
+    @users = {} unless @users
+    unless @users[name]
+      @users[name] = {}
+      out = rabbitmqctl('list_user_permissions', name).split(/\n/)[1..-2].each do |line|
+        if line =~ /^(\S+)\s+(\S+)\s+(\S+)\s+(\S+)$/
+          @users[name][$1] =
+            {:configure => $2, :read => $3, :write => $4}
+        else
+          raise Puppet::Error, "cannot parse line from list_user_permissions:#{line}"
         end
       end
-    @users[name][vhost]
     end
+    @users[name][vhost]
   end
 
   def users(name, vhost)
@@ -42,7 +44,7 @@ Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl) do
     end
   end
 
-  def create 
+  def create
     resource[:configure_permission] ||= "''"
     resource[:read_permission]      ||= "''"
     resource[:write_permission]     ||= "''"

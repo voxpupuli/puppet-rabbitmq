@@ -25,4 +25,10 @@ Puppet::Type.newtype(:rabbitmq_user) do
     defaultto :false
   end
 
+  validate do
+    if resource[:ensure] == :present and ! resource[:password]
+      raise ArgumentError, 'must set password when creating user' unless resource[:password]
+    end
+  end
+
 end

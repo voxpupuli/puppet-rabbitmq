@@ -15,7 +15,6 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
   end
 
   def create
-    raise ArgumentError, 'must set password when creating user' unless resource[:password]
     rabbitmqctl('add_user', resource[:name], resource[:password]) 
     if resource[:admin] == :true
       rabbitmqctl('set_admin', resource[:name])
@@ -41,7 +40,7 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
     if match
       match[1].to_sym
     else
-      raise Puppet::Error, "Could not match line '#{resource[:name]} true|false' from list_users}"
+      raise Puppet::Error, "Could not match line '#{resource[:name]} true|false' from list_users"
     end
   end
 
