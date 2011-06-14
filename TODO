@@ -4,7 +4,6 @@ provider TODO -
   - permission types should be properties and not params
   - user_permissions should auto-require users/vhost
   - implement self.instances
-  - implement admin param (or property on user)
   - can permissions from list_user_permissions contain whitespace?
   - what about defaultfor :true?
   - prefetching for performance

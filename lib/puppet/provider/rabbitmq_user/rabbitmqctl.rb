@@ -17,6 +17,9 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
   def create
     raise ArgumentError, 'must set password when creating user' unless resource[:password]
     rabbitmqctl('add_user', resource[:name], resource[:password]) 
+    if resource[:admin] == :true
+      rabbitmqctl('set_admin', resource[:name])
+    end
   end
 
   def destroy
@@ -31,5 +34,23 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
 
   # def password
   # def password=()
+  def admin
+    match = rabbitmqctl('list_users').split(/\n/)[1..-2].collect do |line|
+      line.match(/^#{resource[:name]}\s+(true|false)$/)
+    end.compact.first
+    if match
+      match[1].to_sym
+    else
+      raise Puppet::Error, "Could not match line '#{resource[:name]} true|false' from list_users}"
+    end
+  end
+
+  def admin=(state)
+    if state == :true
+      rabbitmqctl('set_admin', resource[:name])
+    else
+      rabbitmqctl('clear_admin', resource[:name])
+    end
+  end
 
 end
