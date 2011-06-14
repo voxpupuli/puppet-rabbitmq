@@ -26,4 +26,16 @@ describe Puppet::Type.type(:rabbitmq_user_permissions) do
       expect { @perms[param] = '*' }.should raise_error(Puppet::Error, /Invalid regexp/)
     end
   end
+  {:rabbitmq_vhost => 'dan@test', :rabbitmq_user => 'test@dan'}.each do |k,v|
+    it "should autorequire #{k}" do
+      vhost = Puppet::Type.type(k).new(:name => "test")
+      perm  = Puppet::Type.type(:rabbitmq_user_permissions).new(:name => v)
+      config = Puppet::Resource::Catalog.new :testing do |conf|
+        [vhost, perm].each { |resource| conf.add_resource resource }
+      end
+      rel = perm.autorequire[0]
+      rel.source.ref.should == vhost.ref
+      rel.target.ref.should == perm.ref
+    end
+  end
 end

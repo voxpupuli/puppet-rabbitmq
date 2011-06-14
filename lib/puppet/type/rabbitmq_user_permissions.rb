@@ -32,6 +32,14 @@ Puppet::Type.newtype(:rabbitmq_user_permissions) do
     end
   end
 
+  autorequire(:rabbitmq_vhost) do
+    [self[:name].split('@')[1]]
+  end
+
+  autorequire(:rabbitmq_user) do
+    [self[:name].split('@')[0]]
+  end
+
   # I may want to dissalow whitespace
   def validate_permissions(value)
     begin
