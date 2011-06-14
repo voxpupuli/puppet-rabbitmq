@@ -1,35 +1,42 @@
 Puppet::Type.newtype(:rabbitmq_user_permissions) do
   desc 'Type for managing rabbitmq user permissions'
 
-  ensurable
+  ensurable do
+    defaultto(:present)
+  end
 
   newparam(:name, :namevar => true) do
     'combination of user@vhost to grant privileges to'
     newvalues(/^\S+@\S+$/)
   end
 
-  newparam(:configure_permission) do
-    defaultto '""'
+  newproperty(:configure_permission) do
     desc 'regexp representing configuration permissions'
     validate do |value|
       resource.validate_permissions(value)
     end
   end
 
-  newparam(:read_permission) do
-    defaultto '""'
+  newproperty(:read_permission) do
     desc 'regexp representing read permissions'
     validate do |value|
       resource.validate_permissions(value)
     end
   end
 
-  newparam(:write_permission) do
-    defaultto '""'
+  newproperty(:write_permission) do
     desc 'regexp representing write permissions'
     validate do |value|
       resource.validate_permissions(value)
     end
+  end
+
+  autorequire(:rabbitmq_vhost) do
+    [self[:name].split('@')[1]]
+  end
+
+  autorequire(:rabbitmq_user) do
+    [self[:name].split('@')[0]]
   end
 
   # I may want to dissalow whitespace
