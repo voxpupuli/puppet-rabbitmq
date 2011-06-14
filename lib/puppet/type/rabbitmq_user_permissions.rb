@@ -1,7 +1,9 @@
 Puppet::Type.newtype(:rabbitmq_user_permissions) do
   desc 'Type for managing rabbitmq user permissions'
 
-  ensurable
+  ensurable do
+    defaultto(:present)
+  end
 
   newparam(:name, :namevar => true) do
     'combination of user@vhost to grant privileges to'

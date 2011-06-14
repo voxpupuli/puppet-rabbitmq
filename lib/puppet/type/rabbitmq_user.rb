@@ -1,7 +1,9 @@
 Puppet::Type.newtype(:rabbitmq_user) do
   desc 'Native type for managing rabbitmq users'
 
-  ensurable
+  ensurable do
+    defaultto(:present)
+  end
 
   newparam(:name, :namevar => true) do
     desc 'Name of user'
