@@ -1,2 +1,2 @@
-# requires apt
+# requires pupetlabs-apt
 include rabbitmq::repo::apt
