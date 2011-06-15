@@ -3,6 +3,12 @@ Puppet::Type.newtype(:rabbitmq_user) do
 
   ensurable do
     defaultto(:present)
+    newvalue(:present) do
+      provider.create 
+    end
+    newvalue(:absent) do
+      provider.destroy
+    end
   end
 
   newparam(:name, :namevar => true) do
@@ -26,8 +32,8 @@ Puppet::Type.newtype(:rabbitmq_user) do
   end
 
   validate do
-    if resource[:ensure] == :present and ! resource[:password]
-      raise ArgumentError, 'must set password when creating user' unless resource[:password]
+    if self[:ensure] == :present and ! self[:password]
+      raise ArgumentError, 'must set password when creating user' unless self[:password]
     end
   end
 

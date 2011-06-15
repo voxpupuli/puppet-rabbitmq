@@ -1,3 +1,1 @@
-rabbitmq_vhost { ['fooey', 'blah']:
-  ensure => present
-}
+rabbitmq_vhost { ['fooey', 'blah']: }

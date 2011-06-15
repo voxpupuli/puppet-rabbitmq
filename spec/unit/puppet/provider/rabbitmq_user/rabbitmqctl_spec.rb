@@ -7,7 +7,7 @@ provider_class = Puppet::Type.type(:rabbitmq_user).provider(:rabbitmqctl)
 describe provider_class do
   before :each do
     @resource = Puppet::Type::Rabbitmq_user.new(
-      {:name => 'foo'}
+      {:name => 'foo', :password => 'bar'}
     )
     @provider = provider_class.new(@resource)
   end
@@ -52,9 +52,6 @@ bar
 ...done.
 EOT
     @provider.exists?.should == 'foo'
-  end
-  it 'should fail if no password is set on user create' do
-    expect { @provider.create }.should raise_error(ArgumentError, 'must set password when creating user')
   end
   it 'should create user and set password' do
     @resource[:password] = 'bar'

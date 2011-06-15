@@ -1,41 +1,67 @@
 # RabbitMQ Puppet Module
 
 Jeff McCune <jeff@puppetlabs.com>
+Dan Bode <dan@puppetlabs.com>
 
 This module manages the RabbitMQ Middleware service.
 
-This module is available on the [Forge](http://forge.puppetlabs.com/)
+This module will be updated and released to the forge shortly:
+(http://forge.puppetlabs.com/)
 
 RabbitMQ Packages are published in the Puppet Labs ProSvc repository at:
 [yum.puppetlabs.com](http://yum.puppetlabs.com/prosvc/)
 
-This module has been tested against 2.4.1 and is known to work with
-features known not to exist in earlier version.
+This module has been tested against 2.4.1 and is known to not support
+all features against earlier versions.
 
-# Quick Start
+classes:
 
-    class site::mcollective::middleware {
+This module provides its core functionality through two main classes:
 
-      $rabbitmq_plugins = [ 'amqp_client-2.3.1.ez', 'rabbit_stomp-2.3.1.ez' ]
+rabbitmq::repo::apt - sets up an apt repo source for the vendor rabbitmq packages
 
-      class { 'rabbitmq':
-        config => template('rabbitmq/rabbitmq.conf'),
-      }
+class { 'rabbitmq::repo::apt': 
+  pin    => 900,
+  before => Class['rabbitmq::server'] 
+}
 
-      class { 'rabbitmq::service':
-        ensure => running,
-      }
+rabbitmq::server - class for installing rabbitmq-server:
 
-      # Required for MCollective
-      rabbitmq::plugin { $rabbitmq_plugins:
-        ensure => present,
-      }
+class { 'rabbitmq::server':
+  port              => '5673',
+  delete_guest_user => true,
+}
 
-    }
+This module also contains 3 native types:
+(unfortunately, you must specify the provider explicitly for these types)
 
-# TODO
+rabbitmq_user
 
-* Manage a mcollective user account in RabbitMQ.
+- query all current users:
+#>puppet resource rabbitmq_user 
 
-TODO - 
-  need to understand what valid input for rabbitmq_user_list i
+- manage rabbitmq_user
+rabbitmq_user { 'dan':
+  admin    => true,
+  password => 'bar',
+  provider => 'rabbitmqctl',
+}
+
+rabbitmq_vhost
+
+- query all current vhosts
+#>puppet resource rabbitmq_vhost
+
+rabbitmq_vhost { 'myhost':
+  ensure => present,
+  provider => 'rabbitmqctl',
+}
+
+rabbit_user_permissions:
+
+rabbitmq_user_permissions { 'dan@myhost':
+  configure_permission => '.*',
+  read_permission      => '.*',
+  write_permission     => '.*',
+  provider => 'rabbitmqctl',
+}
