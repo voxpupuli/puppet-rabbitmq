@@ -1,19 +1,28 @@
-# Class: rabbitmq
+# Class: rabbitmq::server
 #
-# This module manages rabbitmq
-#   it is known to work on certain versions of redhat-ish and debian-ish systems
+# This module manages the installation and config of the rabbitmq server
+#   it has only been tested on certain version of debian-ish systems
 # Parameters:
-#  [*port*]
-#  [*delete_guest_user*] - rather or not to remove the default user
+#  [*port*] - port where rabbitmq server is hosted
+#  [*delete_guest_user*] - rather or not to delete the default user
+#  [*version*] - version of rabbitmq-server to install
+#  [*package_name*] - name of rabbitmq package
+#  [*service_name*] - name of rabbitmq service
+#  [*service_ensure*] - desired ensure state for service
 #  [*install_stomp*] - whether to install stomp (required for mcollective)
-# Actions:
-#
+#  [*stomp_port*] - port stomp should be listening on
+#  [*stomp_package*] - package name to install stomp
+#  [*config*] - contents of config file
+#  [*env_config*] - contents of env-config file
 # Requires:
-#
+#  stdlib
 # Sample Usage:
 #
+#  
+#
+#
 # [Remember: No empty lines between comments and class definition]
-class rabbitmq(
+class rabbitmq::server(
   $port = '5672',
   $delete_guest_user = false,
   $package_name = 'rabbitmq-server',
