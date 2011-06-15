@@ -1,3 +1,9 @@
+* 2011-06-14 Dan Bode <dan@Puppetlabs.com> 2.0.0
+- Massive refactor:
+- added native types for user/vhost/user_permissions
+- added apt support for vendor packages
+- added smoke tests
+
 * 2011-04-08 Jeff McCune <jeff@puppetlabs.com> 1.0.4
 - Update module for RabbitMQ 2.4.1 and rabbitmq-plugin-stomp package.
 
