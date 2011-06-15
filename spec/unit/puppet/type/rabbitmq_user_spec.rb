@@ -2,7 +2,7 @@ require 'puppet'
 require 'puppet/type/rabbitmq_user'
 describe Puppet::Type.type(:rabbitmq_user) do
   before :each do
-    @user = Puppet::Type.type(:rabbitmq_user).new(:name => 'foo')
+    @user = Puppet::Type.type(:rabbitmq_user).new(:name => 'foo', :password => 'pass')
   end
   it 'should accept a user name' do
     @user[:name] = 'dan'
@@ -12,6 +12,9 @@ describe Puppet::Type.type(:rabbitmq_user) do
   it 'should accept a password' do
     @user[:password] = 'foo'
     @user[:password].should == 'foo'
+  end
+  it 'should require a password' do
+    expect {Puppet::Type.type(:rabbitmq_user).new(:name => 'foo') }.should raise_error(ArgumentError, /must set password/)
   end
   it 'should require a name' do
     expect { Puppet::Type.type(:rabbitmq_user).new({}) }.should raise_error(Puppet::Error, 'Title or name must be provided')

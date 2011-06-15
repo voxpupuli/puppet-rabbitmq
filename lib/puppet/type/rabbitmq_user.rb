@@ -32,8 +32,8 @@ Puppet::Type.newtype(:rabbitmq_user) do
   end
 
   validate do
-    if resource[:ensure] == :present and ! resource[:password]
-      raise ArgumentError, 'must set password when creating user' unless resource[:password]
+    if self[:ensure] == :present and ! self[:password]
+      raise ArgumentError, 'must set password when creating user' unless self[:password]
     end
   end
 

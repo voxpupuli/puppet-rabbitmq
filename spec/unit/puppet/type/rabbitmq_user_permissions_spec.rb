@@ -28,7 +28,11 @@ describe Puppet::Type.type(:rabbitmq_user_permissions) do
   end
   {:rabbitmq_vhost => 'dan@test', :rabbitmq_user => 'test@dan'}.each do |k,v|
     it "should autorequire #{k}" do
-      vhost = Puppet::Type.type(k).new(:name => "test")
+      if k == :rabbitmq_vhost
+        vhost = Puppet::Type.type(k).new(:name => "test")
+      else
+        vhost = Puppet::Type.type(k).new(:name => "test", :password => 'pass')
+      end
       perm  = Puppet::Type.type(:rabbitmq_user_permissions).new(:name => v)
       config = Puppet::Resource::Catalog.new :testing do |conf|
         [vhost, perm].each { |resource| conf.add_resource resource }
