@@ -18,10 +18,13 @@ class rabbitmq::service(
   $ensure='running'
 ) {
 
-  $service_name_real = $service_name 
+  $service_name_real = $service_name
 
   validate_re($ensure, '^(running|stopped)$')
   if $ensure == 'running' {
+    Class['rabbitmq::service'] -> Rabbitmq_user<| |>
+    Class['rabbitmq::service'] -> Rabbitmq_vhost<| |>
+    Class['rabbitmq::service']  -> Rabbitmq_user_permissions<| |>
     $ensure_real = 'running'
     $enable_real = true
   } else {
