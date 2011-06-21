@@ -40,7 +40,7 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
     if match
       match[1].to_sym
     else
-      raise Puppet::Error, "Could not match line '#{resource[:name]} true|false' from list_users"
+      raise Puppet::Error, "Could not match line '#{resource[:name]} (true|false)' from list_users (perhaps you are running on an older version of rabbitmq that does not support admin users?)"
     end
   end
 
