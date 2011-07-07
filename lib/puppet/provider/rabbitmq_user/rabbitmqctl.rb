@@ -2,7 +2,7 @@ require 'puppet'
 Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
 
   commands :rabbitmqctl => 'rabbitmqctl'
-  defaultfor :kernel => :Linux
+  defaultfor :feature => :posix
 
   def self.instances
     rabbitmqctl('list_users').split(/\n/)[1..-2].collect do |line|
@@ -15,16 +15,16 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
   end
 
   def create
-    rabbitmqctl('add_user', resource[:name], resource[:password]) 
+    rabbitmqctl('add_user', resource[:name], resource[:password])
     if resource[:admin] == :true
       rabbitmqctl('set_admin', resource[:name])
     end
   end
 
   def destroy
-    rabbitmqctl('delete_user', resource[:name]) 
+    rabbitmqctl('delete_user', resource[:name])
   end
- 
+
   def exists?
     out = rabbitmqctl('list_users').split(/\n/)[1..-2].detect do |line|
       line.match(/^#{resource[:name]}(\s+\S+|)$/)
