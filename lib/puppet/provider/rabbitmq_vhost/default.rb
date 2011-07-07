@@ -4,20 +4,19 @@ Puppet::Type.type(:rabbitmq_vhost).provide(:default) do
     []
   end
 
-  def create 
+  def create
     default_fail
   end
 
   def destroy
     default_fail
   end
- 
+
   def exists?
     default_fail
   end
 
-
-  def default_fail 
+  def default_fail
     fail('This is just the default provider for rabbitmq_user, all it does is fail') 
   end
 end

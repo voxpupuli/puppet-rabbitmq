@@ -4,7 +4,7 @@ Puppet::Type.newtype(:rabbitmq_user) do
   ensurable do
     defaultto(:present)
     newvalue(:present) do
-      provider.create 
+      provider.create
     end
     newvalue(:absent) do
       provider.destroy
