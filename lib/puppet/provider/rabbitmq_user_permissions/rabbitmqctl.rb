@@ -52,9 +52,9 @@ Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl) do
   end
 
   def destroy
-    rabbitmqctl('clear_permissions', '-p', should_vhost, should_user) 
+    rabbitmqctl('clear_permissions', '-p', should_vhost, should_user)
   end
- 
+
   # I am implementing prefetching in exists b/c I need to be sure
   # that the rabbitmq package is installed before I make this call.
   def exists?
