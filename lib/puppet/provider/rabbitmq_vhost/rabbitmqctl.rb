@@ -1,7 +1,7 @@
 Puppet::Type.type(:rabbitmq_vhost).provide(:rabbitmqctl) do
 
   commands :rabbitmqctl => 'rabbitmqctl'
-  defaultfor :kernel => 'Linux'
+  defaultfor :feature => :posix
 
   def self.instances
     rabbitmqctl('list_vhosts').split(/\n/)[1..-2].map do |line|

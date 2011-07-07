@@ -2,7 +2,7 @@ require 'puppet'
 Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
 
   commands :rabbitmqctl => 'rabbitmqctl'
-  defaultfor :kernel => :Linux
+  defaultfor :feature => :posix
 
   def self.instances
     rabbitmqctl('list_users').split(/\n/)[1..-2].collect do |line|

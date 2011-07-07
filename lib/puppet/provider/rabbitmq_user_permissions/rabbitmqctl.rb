@@ -1,7 +1,7 @@
 Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl) do
 
   commands :rabbitmqctl => 'rabbitmqctl'
-  defaultfor :kernel => 'Linux'
+  defaultfor :feature=> :posix
 
   #def self.instances
   #
