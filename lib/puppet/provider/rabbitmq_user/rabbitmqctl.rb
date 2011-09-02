@@ -17,7 +17,7 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
   def create
     rabbitmqctl('add_user', resource[:name], resource[:password])
     if resource[:admin] == :true
-      rabbitmqctl('set_admin', resource[:name])
+      rabbitmqctl('set_user_tags', resource[:name], 'administrator')
     end
   end
 
@@ -46,9 +46,9 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
 
   def admin=(state)
     if state == :true
-      rabbitmqctl('set_admin', resource[:name])
+      rabbitmqctl('set_user_tags', resource[:name], 'administrator')
     else
-      rabbitmqctl('clear_admin', resource[:name])
+      rabbitmqctl('set_user_tags', resource[:name])
     end
   end
 
