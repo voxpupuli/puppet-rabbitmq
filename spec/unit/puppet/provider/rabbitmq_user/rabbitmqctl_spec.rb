@@ -72,14 +72,14 @@ EOT
   it 'should be able to retrieve admin value' do
     @provider.expects(:rabbitmqctl).with('list_users').returns <<-EOT
 Listing users ...
-foo true
+foo [administrator]
 ...done.
 EOT
     @provider.admin.should == :true
     @provider.expects(:rabbitmqctl).with('list_users').returns <<-EOT
 Listing users ...
-one true
-foo false
+one [administrator]
+foo []
 ...done.
 EOT
     @provider.admin.should == :false
