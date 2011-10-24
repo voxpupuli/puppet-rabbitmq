@@ -40,15 +40,6 @@ class rabbitmq::server(
   validate_re($port, '\d+')
   validate_re($stomp_port, '\d+')
 
-  $port_real           = $port
-  $package_name_real   = $package_name
-  $service_name_real   = $service_name
-  $service_ensure_real = $service_ensure
-  $stomp_package_real  = $stomp_package
-  $install_stomp_real  = $install_stomp
-  $delete_guest_user_real = $delete_guest_user
-  $stomp_port_real     = $stomp_port
-
   if $version == 'UNSET' {
     $version_real = '2.4.1'
     $pkg_ensure_real   = 'present'
@@ -67,15 +58,15 @@ class rabbitmq::server(
     $env_config_real = $env_config
   }
 
-  $plugin_dir_real = "/usr/lib/rabbitmq/lib/rabbitmq_server-${version_real}/plugins"
+  $plugin_dir = "/usr/lib/rabbitmq/lib/rabbitmq_server-${version_real}/plugins"
 
-  package { $package_name_real:
+  package { $package_name:
     ensure => $pkg_ensure_real,
     notify => Class['rabbitmq::service'],
   }
 
-  if $install_stomp_real {
-    package { $stomp_package_real:
+  if $install_stomp {
+    package { $stomp_package:
       ensure => installed,
       notify => Class['rabbitmq::service'],
       before => File['rabbitmq.config'],
@@ -87,7 +78,7 @@ class rabbitmq::server(
     owner   => '0',
     group   => '0',
     mode    => '0644',
-    require => Package[$package_name_real],
+    require => Package[$package_name],
   }
 
   file { 'rabbitmq.config':
@@ -98,7 +89,7 @@ class rabbitmq::server(
     group   => '0',
     mode    => '0644',
     notify  => Class['rabbitmq::service'],
-    require => Package[$package_name_real]
+    require => Package[$package_name]
   }
 
   file { 'rabbitmq-env.config':
@@ -112,11 +103,11 @@ class rabbitmq::server(
   }
 
   class { 'rabbitmq::service':
-    service_name => $service_name_real,
-    ensure => $service_ensure_real,
+    service_name => $service_name,
+    ensure => $service_ensure,
   }
 
-  if $delete_guest_user_real {
+  if $delete_guest_user {
     # delete the default guest user
     rabbitmq_user{ 'guest':
       ensure   => absent,
