@@ -35,7 +35,7 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
   # def password=()
   def admin
     match = rabbitmqctl('list_users').split(/\n/)[1..-2].collect do |line|
-      line.match(/^#{resource[:name]}\s+[(administrator|)]$/)
+      line.match(/^#{resource[:name]}\s+\[(administrator|)\]$/)
     end.compact.first
     if match
       match[1] == 'administrator'
