@@ -18,8 +18,6 @@ class rabbitmq::service(
   $ensure='running'
 ) {
 
-  $service_name_real = $service_name
-
   validate_re($ensure, '^(running|stopped)$')
   if $ensure == 'running' {
     Class['rabbitmq::service'] -> Rabbitmq_user<| |>
@@ -32,7 +30,7 @@ class rabbitmq::service(
     $enable_real = false
   }
 
-  service { $service_name_real:
+  service { $service_name:
     ensure     => $ensure_real,
     enable     => $enable_real,
     hasstatus  => true,
