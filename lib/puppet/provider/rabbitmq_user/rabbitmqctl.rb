@@ -40,7 +40,7 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
     if match
       (:true if match[1].to_s == 'administrator') || :false
     else
-      raise Puppet::Error, "Could not match line '#{resource[:name]} (true|false)' from list_users (perhaps you are running on an older version of rabbitmq that does not support admin users?)"
+      raise Puppet::Error, "Could not match line '#{resource[:name]} [(administrator)?]' from list_users. This could indicate that you are using a version of rabbitmq older than 2.6.1 or that you have set tags for this user other than administrator."
     end
   end
 

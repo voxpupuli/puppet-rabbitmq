@@ -5,13 +5,7 @@ Dan Bode <dan@puppetlabs.com>
 
 This module manages the RabbitMQ Middleware service.
 
-This module will be updated and released to the forge shortly:
-(http://forge.puppetlabs.com/)
-
-RabbitMQ Packages are published in the Puppet Labs ProSvc repository at:
-[yum.puppetlabs.com](http://yum.puppetlabs.com/prosvc/)
-
-This module has been tested against 2.4.1 and is known to not support
+This module has been tested against 2.6.1 and is known to not support
 all features against earlier versions.
 
 classes:
@@ -20,9 +14,9 @@ This module provides its core functionality through two main classes:
 
 rabbitmq::repo::apt - sets up an apt repo source for the vendor rabbitmq packages
 
-class { 'rabbitmq::repo::apt': 
+class { 'rabbitmq::repo::apt':
   pin    => 900,
-  before => Class['rabbitmq::server'] 
+  before => Class['rabbitmq::server']
 }
 
 rabbitmq::server - class for installing rabbitmq-server:
@@ -38,7 +32,7 @@ This module also contains 3 native types:
 rabbitmq_user
 
 - query all current users:
-#>puppet resource rabbitmq_user 
+#>puppet resource rabbitmq_user
 
 - manage rabbitmq_user
 rabbitmq_user { 'dan':
