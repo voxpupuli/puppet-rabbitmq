@@ -30,13 +30,14 @@ class rabbitmq::server(
   $service_name = 'rabbitmq-server',
   $service_ensure = 'running',
   $install_stomp = false,
+  $config_stomp = false,
   $stomp_port = '6163',
   $stomp_package = 'rabbitmq-plugin-stomp',
   $config='UNSET',
   $env_config='UNSET'
 ) {
 
-  validate_bool($delete_guest_user, $install_stomp)
+  validate_bool($delete_guest_user, $install_stomp, $config_stomp)
   validate_re($port, '\d+')
   validate_re($stomp_port, '\d+')
 
@@ -71,6 +72,7 @@ class rabbitmq::server(
       notify => Class['rabbitmq::service'],
       before => File['rabbitmq.config'],
     }
+    $config_stomp = true
   }
 
   file { '/etc/rabbitmq':
