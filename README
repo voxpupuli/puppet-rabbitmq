@@ -65,3 +65,13 @@ rabbitmq_user_permissions { 'dan@myhost':
   write_permission     => '.*',
   provider => 'rabbitmqctl',
 }
+
+rabbitmq_plugin
+
+- query all currently enabled plugins
+#>puppet resource rabbitmq_plugin
+
+rabbitmq_plugin {'rabbitmq_stomp':
+  ensure => present,
+  provider => 'rabbitmqplugins',
+}
