@@ -4,7 +4,7 @@ Puppet::Type.type(:rabbitmq_plugin).provide(:rabbitmqplugins) do
   defaultfor :feature => :posix
 
   def self.instances
-    rabbitmqplugins('list', '-e').split(/\n/).map do |line|
+    rabbitmqplugins('list', '-E').split(/\n/).map do |line|
       if line.split(/\s+/)[1] =~ /^(\S+)$/
         new(:name => $1)
       else
@@ -22,7 +22,7 @@ Puppet::Type.type(:rabbitmq_plugin).provide(:rabbitmqplugins) do
   end
 
   def exists?
-    out = rabbitmqplugins('list', '-e').split(/\n/).detect do |line|
+    out = rabbitmqplugins('list', '-E').split(/\n/).detect do |line|
       line.split(/\s+/)[1].match(/^#{resource[:name]}$/)
     end
   end
