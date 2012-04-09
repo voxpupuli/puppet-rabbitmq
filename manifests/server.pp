@@ -9,9 +9,7 @@
 #  [*package_name*] - name of rabbitmq package
 #  [*service_name*] - name of rabbitmq service
 #  [*service_ensure*] - desired ensure state for service
-#  [*install_stomp*] - whether to install stomp (required for mcollective)
 #  [*stomp_port*] - port stomp should be listening on
-#  [*stomp_package*] - package name to install stomp
 #  [*config*] - contents of config file
 #  [*env_config*] - contents of env-config file
 # Requires:
@@ -29,14 +27,13 @@ class rabbitmq::server(
   $version = 'UNSET',
   $service_name = 'rabbitmq-server',
   $service_ensure = 'running',
-  $install_stomp = false,
+  $config_stomp = false,
   $stomp_port = '6163',
-  $stomp_package = 'rabbitmq-plugin-stomp',
   $config='UNSET',
   $env_config='UNSET'
 ) {
 
-  validate_bool($delete_guest_user, $install_stomp)
+  validate_bool($delete_guest_user, $config_stomp)
   validate_re($port, '\d+')
   validate_re($stomp_port, '\d+')
 
@@ -63,14 +60,6 @@ class rabbitmq::server(
   package { $package_name:
     ensure => $pkg_ensure_real,
     notify => Class['rabbitmq::service'],
-  }
-
-  if $install_stomp {
-    package { $stomp_package:
-      ensure => installed,
-      notify => Class['rabbitmq::service'],
-      before => File['rabbitmq.config'],
-    }
   }
 
   file { '/etc/rabbitmq':
