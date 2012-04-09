@@ -1,9 +1,11 @@
-$rabbitmq_plugins = [ 'amqp_client-2.3.1.ez', 'rabbit_stomp-2.3.1.ez' ] 
 class { 'rabbitmq::server':
-  install_stomp => true,
+    config_stomp => true,
 }
 
-rabbitmq::plugin { $rabbitmq_plugins:
-  ensure => present,
-  require => Class['rabbitmq']
+$rabbitmq_plugins = [ 'amqp_client', 'rabbitmq_stomp' ] 
+
+rabbitmq_plugin { $rabbitmq_plugins:
+  ensure   => present,
+  require  => Class['rabbitmq::server'],
+  provider => 'rabbitmqplugins',
 }
