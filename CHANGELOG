@@ -1,4 +1,8 @@
-* 2011-06-14 Dan Bode <dan@Puppetlabs.com> 2.0.0
+* 2012-05-03 2.0.0
+- added support for new-style admin users
+- added support for rabbitmq 2.7.1
+
+* 2011-06-14 Dan Bode <dan@Puppetlabs.com> 2.0.0rc1
 - Massive refactor:
 - added native types for user/vhost/user_permissions
 - added apt support for vendor packages
