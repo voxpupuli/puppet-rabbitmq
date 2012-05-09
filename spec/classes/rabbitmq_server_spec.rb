@@ -26,6 +26,16 @@ describe 'rabbitmq::server' do
   	it { should_not contain_rabbitmq_user('guest') }
   end
 
+  describe 'deleting guest user' do
+  	let :params do 
+  	  { :delete_guest_user => true }
+  	end
+  	it { should contain_rabbitmq_user('guest').with(
+  	  'ensure'   => 'absent',
+  	  'provider' => 'rabbitmqctl'
+  	) }
+  end
+
   describe 'default service include' do
   	it { should contain_class('rabbitmq::service').with(
   	  'service_name' => 'rabbitmq-server',
@@ -42,16 +52,6 @@ describe 'rabbitmq::server' do
   	it { should contain_class('rabbitmq::service').with(
   	  'service_name' => 'custom-rabbitmq-server',
   	  'ensure'       => 'stopped'
-  	) }
-  end
-
-  describe 'deleting guest user' do
-  	let :params do 
-  	  { :delete_guest_user => true }
-  	end
-  	it { should contain_rabbitmq_user('guest').with(
-  	  'ensure'   => 'absent',
-  	  'provider' => 'rabbitmqctl'
   	) }
   end
 
