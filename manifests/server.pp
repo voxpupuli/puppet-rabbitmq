@@ -10,6 +10,7 @@
 #  [*service_name*] - name of rabbitmq service
 #  [*service_ensure*] - desired ensure state for service
 #  [*stomp_port*] - port stomp should be listening on
+#  [*node_ip_address*] - ip address for rabbitmq to bind to
 #  [*config*] - contents of config file
 #  [*env_config*] - contents of env-config file
 # Requires:
@@ -29,6 +30,7 @@ class rabbitmq::server(
   $service_ensure = 'running',
   $config_stomp = false,
   $stomp_port = '6163',
+  $node_ip_address = 'UNSET',
   $config='UNSET',
   $env_config='UNSET'
 ) {
