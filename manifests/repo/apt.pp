@@ -1,6 +1,7 @@
 # sets up the vmware hosted apt repo
 # requires
 #   puppetlabs-apt
+#   puppetlabs-stdlib
 class rabbitmq::repo::apt(
   $pin = undef
 ) {
