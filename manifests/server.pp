@@ -93,7 +93,7 @@ class rabbitmq::server(
 
   class { 'rabbitmq::service':
     service_name => $service_name,
-    ensure => $service_ensure,
+    ensure       => $service_ensure,
   }
 
   if $delete_guest_user {
