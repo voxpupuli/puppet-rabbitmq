@@ -28,7 +28,7 @@ Listing users ...
 bar 1 2 3 4
 ...done.
 EOT
-    expect { @provider.exists? }.should raise_error(Puppet::Error, /cannot parse line from list_user_permissions/)
+    expect { @provider.exists? }.to raise_error(Puppet::Error, /cannot parse line from list_user_permissions/)
   end
   it 'should not match an empty list' do
     @provider.class.expects(:rabbitmqctl).with('list_user_permissions', 'foo').returns <<-EOT
