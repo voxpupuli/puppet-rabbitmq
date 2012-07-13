@@ -90,7 +90,7 @@ Listing users ...
 foo fail
 ...done.
 EOT
-    expect { @provider.admin }.should raise_error(Puppet::Error, /Could not match line/)
+    expect { @provider.admin }.to raise_error(Puppet::Error, /Could not match line/)
   end
   it 'should be able to set admin value' do
     @provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', 'administrator')
