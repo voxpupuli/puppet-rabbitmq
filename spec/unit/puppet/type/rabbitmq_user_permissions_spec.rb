@@ -9,10 +9,14 @@ describe Puppet::Type.type(:rabbitmq_user_permissions) do
     @perms[:name].should == 'dan@bar'
   end
   it 'should require a name' do
-    expect { Puppet::Type.type(:rabbitmq_user_permissions).new({}) }.should raise_error(Puppet::Error, 'Title or name must be provided')
+    expect {
+      Puppet::Type.type(:rabbitmq_user_permissions).new({})
+    }.to raise_error(Puppet::Error, 'Title or name must be provided')
   end
   it 'should fail when names dont have a @' do
-    expect {  @perms[:name] = 'bar' }.should raise_error(Puppet::Error, /Valid values match/)
+    expect {
+      @perms[:name] = 'bar'
+    }.to raise_error(Puppet::Error, /Valid values match/)
   end
   [:configure_permission, :read_permission, :write_permission].each do |param|
     it 'should not default to anything' do
@@ -23,7 +27,9 @@ describe Puppet::Type.type(:rabbitmq_user_permissions) do
       @perms[param].should == '.*?'  
     end
     it "should not accept invalid regex for #{param}" do
-      expect { @perms[param] = '*' }.should raise_error(Puppet::Error, /Invalid regexp/)
+      expect {
+        @perms[param] = '*'
+      }.to raise_error(Puppet::Error, /Invalid regexp/)
     end
   end
   {:rabbitmq_vhost => 'dan@test', :rabbitmq_user => 'test@dan'}.each do |k,v|
