@@ -1,3 +1,6 @@
+* 2012-07-31 Jeff McCune <jeff@puppetlabs.com> 2.0.2
+- Re-release 2.0.1 with $EDITOR droppings cleaned up
+
 * 2012-05-03 2.0.0
 - added support for new-style admin users
 - added support for rabbitmq 2.7.1
