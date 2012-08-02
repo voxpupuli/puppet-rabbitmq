@@ -7,10 +7,19 @@ all features against earlier versions.
 ### Authors
 * Jeff McCune <jeff@puppetlabs.com>
 * Dan Bode <dan@puppetlabs.com>
+* RPM/RHEL packages by Vincent Janelle <randomfrequency@gmail.com>
 
 ## Classes
 
 This module provides its core functionality through two main classes:
+
+### rabbitmq::repo::rhel
+Installs the RPM from rabbitmq upstream, and imports their signing key
+
+    class { 'rabbitmq::repo::rhel':
+        $version    => "2.8.4",
+        $relversion => "1",
+    }
 
 ### rabbitmq::repo::apt
 Sets up an apt repo source for the vendor rabbitmq packages
