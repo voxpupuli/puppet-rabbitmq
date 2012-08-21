@@ -13,6 +13,14 @@
 #  [*node_ip_address*] - ip address for rabbitmq to bind to
 #  [*config*] - contents of config file
 #  [*env_config*] - contents of env-config file
+#  [*config_cluster*] - whether to configure a RabbitMQ cluster
+#  [*cluster_disk_nodes*] - which nodes to cluster with (including the current one)
+#  [*erlang_cookie*] - erlang cookie, must be the same for all nodes in a cluster
+#  [*wipe_db_on_cookie_change*] - whether to wipe the RabbitMQ data if the specified
+#    erlang_cookie differs from the current one. This is a sad parameter: actually, 
+#    if the cookie indeed differs, then wiping the database is the *only* thing you
+#    can do. You're only required to set this parameter to true as a sign that you
+#    realise this.
 # Requires:
 #  stdlib
 # Sample Usage:
@@ -30,9 +38,13 @@ class rabbitmq::server(
   $service_ensure = 'running',
   $config_stomp = false,
   $stomp_port = '6163',
+  $config_cluster = false,
+  $cluster_disk_nodes = [],
   $node_ip_address = 'UNSET',
   $config='UNSET',
-  $env_config='UNSET'
+  $env_config='UNSET',
+  $erlang_cookie='EOKOWXQREETZSHFNTPEY',
+  $wipe_db_on_cookie_change=false
 ) {
 
   validate_bool($delete_guest_user, $config_stomp)
@@ -79,8 +91,36 @@ class rabbitmq::server(
     owner   => '0',
     group   => '0',
     mode    => '0644',
+    require => Package[$package_name],
     notify  => Class['rabbitmq::service'],
-    require => Package[$package_name]
+  }
+
+  if $config_cluster {
+    file { 'erlang_cookie':
+      path =>"/var/lib/rabbitmq/.erlang.cookie",
+      owner   => rabbitmq,
+      group   => rabbitmq,
+      mode    => '0400',
+      content => $erlang_cookie,
+      replace => true,
+      before  => File['rabbitmq.config'],
+      require => Exec['wipe_db'],
+    }
+    # require authorize_cookie_change
+
+    if $wipe_db_on_cookie_change {
+      exec { 'wipe_db':
+        command => '/etc/init.d/rabbitmq-server stop; /bin/rm -rf /var/lib/rabbitmq/mnesia',
+        require => Package[$package_name],
+        unless  => "/bin/grep -qx ${erlang_cookie} /var/lib/rabbitmq/.erlang.cookie"
+      }
+    } else {
+      exec { 'wipe_db':
+        command => '/bin/false "Cookie must be changed but wipe_db is false"', # If the cookie doesn't match, just fail.
+        require => Package[$package_name],
+        unless  => "/bin/grep -qx ${erlang_cookie} /var/lib/rabbitmq/.erlang.cookie"
+      }
+    }
   }
 
   file { 'rabbitmq-env.config':
