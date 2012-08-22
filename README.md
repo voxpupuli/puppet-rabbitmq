@@ -21,6 +21,14 @@ Installs the RPM from rabbitmq upstream, and imports their signing key
         $relversion => "1",
     }
 
+### rabbitmq::repo::suse
+Installs the RPM from rabbitmq upstream, and imports their signing key
+
+    class { 'rabbitmq::repo::suse':
+        $version    => "2.8.4",
+        $relversion => "1",
+    }
+
 ### rabbitmq::repo::apt
 Sets up an apt repo source for the vendor rabbitmq packages
 
