@@ -23,7 +23,7 @@ Puppet::Type.type(:rabbitmq_vhost).provide(:rabbitmqctl) do
 
   def exists?
     out = rabbitmqctl('list_vhosts').split(/\n/)[1..-2].detect do |line|
-      line.match(/^#{resource[:name]}$/)
+      line.match(/^#{Regexp.escape(resource[:name])}$/)
     end
   end
 
