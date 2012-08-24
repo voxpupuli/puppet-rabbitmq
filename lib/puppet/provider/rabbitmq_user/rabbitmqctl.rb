@@ -27,7 +27,7 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
 
   def exists?
     out = rabbitmqctl('list_users').split(/\n/)[1..-2].detect do |line|
-      line.match(/^#{resource[:name]}(\s+\S+|)$/)
+      line.match(/^#{Regexp.escape(resource[:name])}(\s+\S+|)$/)
     end
   end
 
@@ -35,7 +35,7 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
   # def password=()
   def admin
     match = rabbitmqctl('list_users').split(/\n/)[1..-2].collect do |line|
-      line.match(/^#{resource[:name]}\s+\[(administrator)?\]/)
+      line.match(/^#{Regexp.escape(resource[:name])}\s+\[(administrator)?\]/)
     end.compact.first
     if match
       (:true if match[1].to_s == 'administrator') || :false
