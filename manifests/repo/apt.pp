@@ -17,12 +17,4 @@ class rabbitmq::repo::apt(
     key_content => template('rabbitmq/rabbit.pub.key'),
     pin         => $pin,
   }
-
-  if ! ($pin == undef) {
-    validate_re($pin, '\d\d\d')
-    apt::pin { 'rabbitmq':
-      packages => 'rabbitmq-server',
-      priority => $pin,
-    }
-  }
 }
