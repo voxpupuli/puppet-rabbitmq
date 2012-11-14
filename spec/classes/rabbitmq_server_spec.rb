@@ -68,7 +68,7 @@ describe 'rabbitmq::server' do
   describe 'not configuring stomp by default' do
   	it 'should not specify stomp parameters in rabbitmq.config' do
       verify_contents(subject, 'rabbitmq.config',
-        ['[].'])  	
+        ['[','].'])  	
   	end
   end
 
@@ -80,9 +80,37 @@ describe 'rabbitmq::server' do
   	end
   	it 'should specify stomp port in rabbitmq.config' do
       verify_contents(subject, 'rabbitmq.config',
-        ['[ {rabbitmq_stomp, [{tcp_listeners, [5679]} ]} ].'])  	
+        ['[','{rabbitmq_stomp, [{tcp_listeners, [5679]} ]}','].'])  	
   	end
 
+  end
+
+  describe 'configuring cluster' do
+  	let :params do
+  	  { :config_cluster => true,
+  	  	:cluster_disk_nodes => ['hare-1', 'hare-2']
+  	  }
+  	end
+  	it 'should specify cluster nodes in rabbitmq.config' do
+      verify_contents(subject, 'rabbitmq.config',
+        ['[',"{rabbit, [{cluster_nodes, ['rabbit@hare-1', 'rabbit@hare-2']}]}", '].'])  	
+  	end
+  	it 'should have the default erlang cookie' do
+      verify_contents(subject, 'erlang_cookie',
+        ['EOKOWXQREETZSHFNTPEY'])
+  	end
+
+  end
+
+  describe 'specifying custom erlang cookie in cluster mode' do
+  	let :params do
+  	  { :config_cluster => true,
+        :erlang_cookie => 'YOKOWXQREETZSHFNTPEY' }
+  	end
+    it 'should set .erlang.cookie to the specified value' do
+      verify_contents(subject, 'erlang_cookie',
+        ['YOKOWXQREETZSHFNTPEY'])
+    end
   end
 
 end
