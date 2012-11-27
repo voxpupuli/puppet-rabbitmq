@@ -14,15 +14,7 @@ class rabbitmq::repo::apt(
     repos       => 'main',
     include_src => false,
     key         => 'RabbitMQ Release Signing Key <info@rabbitmq.com>',
-    key_content => template('rabbitmq/rabbit.pub.key'),
+    key_source  => 'http://www.rabbitmq.com/rabbitmq-signing-key-public.asc',
     pin         => $pin,
-  }
-
-  if ! ($pin == undef) {
-    validate_re($pin, '\d\d\d')
-    apt::pin { 'rabbitmq':
-      packages => 'rabbitmq-server',
-      priority => $pin,
-    }
   }
 }

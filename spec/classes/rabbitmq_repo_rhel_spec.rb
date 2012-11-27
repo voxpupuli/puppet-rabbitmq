@@ -6,7 +6,7 @@ describe 'rabbitmq::repo::rhel' do
       {
         :key        => "http://www.rabbitmq.com/rabbitmq-signing-key-public.asc",
         :version    => "2.8.4",
-        :relversion => "1", 
+        :relversion => "1",
       }
     end
     it { should contain_exec("rpm --import #{params[:key]}").with(
