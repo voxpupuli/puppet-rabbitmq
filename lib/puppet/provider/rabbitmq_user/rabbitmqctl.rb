@@ -6,7 +6,7 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
 
   def self.instances
     rabbitmqctl('list_users').split(/\n/)[1..-2].collect do |line|
-      if line =~ /^(\S+)(\s+\S+|)$/
+      if line =~ /^(\S+)(\s+\[.*\])$/
         new(:name => $1)
       else
         raise Puppet::Error, "Cannot parse invalid user line: #{line}"
@@ -16,9 +16,7 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
 
   def create
     rabbitmqctl('add_user', resource[:name], resource[:password])
-    if resource[:admin] == :true
-      make_user_admin()
-    end
+    rabbitmqctl('set_user_tags', resource[:name], resource[:tags]) unless resource[:tags].nil?
   end
 
   def destroy
@@ -26,34 +24,30 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
   end
 
   def exists?
-    out = rabbitmqctl('list_users').split(/\n/)[1..-2].detect do |line|
-      line.match(/^#{Regexp.escape(resource[:name])}(\s+\S+|)$/)
+    rabbitmqctl('list_users').split(/\n/)[1..-2].detect do |line|
+      line.match(/^#{Regexp.escape(resource[:name])}\s+\[.*\]$/)
     end
   end
 
   # def password
   # def password=()
-  def admin
-    match = rabbitmqctl('list_users').split(/\n/)[1..-2].collect do |line|
-      line.match(/^#{Regexp.escape(resource[:name])}\s+\[(administrator)?\]/)
-    end.compact.first
-    if match
-      (:true if match[1].to_s == 'administrator') || :false
-    else
-      raise Puppet::Error, "Could not match line '#{resource[:name]} (true|false)' from list_users (perhaps you are running on an older version of rabbitmq that does not support admin users?)"
-    end
+
+  def tags
+    tags = get_user_tags
+    # prevents resource from being applied on every run if clearing tags with ''
+    tags = [''] if tags == []
   end
 
-  def admin=(state)
-    if state == :true
-      make_user_admin()
-    else
-      rabbitmqctl('set_user_tags', resource[:name])
-    end
+  def tags=(state)
+    rabbitmqctl('set_user_tags', resource[:name], state)
   end
 
-  def make_user_admin
-    rabbitmqctl('set_user_tags', resource[:name], 'administrator')
+  def get_user_tags
+    rabbitmqctl('list_users').split(/\n/)[1..-2].each do |line|
+      if line.match(/^#{Regexp.escape(resource[:name])}\s+\[.*\]$/)
+        return line.split(/\t/).last[1..-2].gsub(/,\s+/, ',').split(',')
+      end
+    end
   end
 
 end
