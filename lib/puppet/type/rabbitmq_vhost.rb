@@ -12,7 +12,7 @@ Puppet::Type.newtype(:rabbitmq_vhost) do
   end
 
   newparam(:name, :namevar => true) do
-    'name of the vhost to add'
+    desc 'name of the vhost to add'
     newvalues(/^\S+$/)
   end
 

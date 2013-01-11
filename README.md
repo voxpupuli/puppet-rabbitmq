@@ -61,10 +61,12 @@ merely clusters RabbitMQ instances.
 query all current users: `$ puppet resource rabbitmq_user`
 
     rabbitmq_user { 'dan':
-      admin    => true,
-      password => 'bar',
-      provider => 'rabbitmqctl',
+      password  => 'bar',
+      provider  => 'rabbitmqctl',
+      tags      => [ 'administrator', 'dantheman' ],
     }
+    
+**NOTE:** Setting tags to '' will clear any existing tags.
 
 ### rabbitmq_vhost
 

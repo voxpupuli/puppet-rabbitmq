@@ -6,9 +6,9 @@ class { 'rabbitmq::server':
 #  version           => '2.4.1',
 }->
 rabbitmq_user { 'dan':
-  admin    => true,
-  password => 'pass',
-  provider => 'rabbitmqctl',
+  password  => 'pass',
+  tags      => [ 'administrator', 'dantheman' ],
+  provider  => 'rabbitmqctl',
 }->
 rabbitmq_vhost { 'myhost': 
   provider => 'rabbitmqctl',

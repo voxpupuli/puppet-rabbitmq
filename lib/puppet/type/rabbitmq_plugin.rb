@@ -12,7 +12,7 @@ Puppet::Type.newtype(:rabbitmq_plugin) do
   end
 
   newparam(:name, :namevar => true) do
-    'name of the plugin to enable'
+    desc 'name of the plugin to enable'
     newvalues(/^\S+$/)
   end
 

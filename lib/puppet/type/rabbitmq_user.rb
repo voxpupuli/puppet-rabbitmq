@@ -21,14 +21,8 @@ Puppet::Type.newtype(:rabbitmq_user) do
     desc 'User password to be set *on creation*'
   end
 
-  newproperty(:admin) do
-    desc 'rather or not user should be an admin'
-    newvalues(/true|false/)
-    munge do |value|
-      # converting to_s incase its a boolean
-      value.to_s.to_sym
-    end
-    defaultto :false
+  newproperty(:tags, :array_matching => :all) do
+    desc 'User tags'
   end
 
   validate do
