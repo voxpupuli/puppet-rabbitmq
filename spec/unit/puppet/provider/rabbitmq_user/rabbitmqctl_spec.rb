@@ -14,18 +14,10 @@ describe provider_class do
   it 'should match user names' do
     @provider.expects(:rabbitmqctl).with('list_users').returns <<-EOT
 Listing users ...
-foo
+foo []
 ...done.
 EOT
-    @provider.exists?.should == 'foo'
-  end
-  it 'should match user names with 2.4.1 syntax' do
-    @provider.expects(:rabbitmqctl).with('list_users').returns <<-EOT
-Listing users ...
-foo bar
-...done.
-EOT
-    @provider.exists?.should == 'foo bar'
+    @provider.exists?.should == 'foo []'
   end
   it 'should not match if no users on system' do
     @provider.expects(:rabbitmqctl).with('list_users').returns <<-EOT
@@ -37,7 +29,7 @@ EOT
   it 'should not match if no matching users on system' do
     @provider.expects(:rabbitmqctl).with('list_users').returns <<-EOT
 Listing users ...
-fooey
+fooey []
 ...done.
 EOT
     @provider.exists?.should be_nil
@@ -45,13 +37,13 @@ EOT
   it 'should match user names from list' do
     @provider.expects(:rabbitmqctl).with('list_users').returns <<-EOT
 Listing users ...
-one
-two three
-foo
-bar
+one []
+two three []
+foo []
+bar []
 ...done.
 EOT
-    @provider.exists?.should == 'foo'
+    @provider.exists?.should == 'foo []'
   end
   it 'should create user and set password' do
     @resource[:password] = 'bar'
