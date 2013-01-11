@@ -23,14 +23,6 @@ Puppet::Type.newtype(:rabbitmq_user) do
 
   newproperty(:tags, :array_matching => :all) do
     desc 'User tags'
-    munge do |value|
-      case value
-      when ''
-        []
-      else
-        super
-      end
-    end
   end
 
   validate do
