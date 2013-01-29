@@ -146,4 +146,25 @@ class rabbitmq::server(
     }
   }
 
+  rabbitmq_plugin { 'rabbitmq_management':
+    ensure => present,
+  }
+
+  exec { 'Download rabbitmqadmin':
+    command => "curl http://${default_user}:${default_pass}@localhost:5${port}/cli/rabbitmqadmin -o /var/tmp/rabbitmqadmin",
+    creates => '/var/tmp/rabbitmqadmin',
+    require => [
+      Class['rabbitmq::service'],
+      Rabbitmq_plugin['rabbitmq_management']
+    ],
+  }
+
+  file { '/usr/local/bin/rabbitmqadmin':
+    owner   => 'root',
+    group   => 'root',
+    source  => '/var/tmp/rabbitmqadmin',
+    mode    => '0755',
+    require => Exec['Download rabbitmqadmin'],
+  }
+
 }
