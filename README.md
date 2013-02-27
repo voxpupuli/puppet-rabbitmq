@@ -54,8 +54,6 @@ merely clusters RabbitMQ instances.
 
 ## Native Types
 
-**NOTE:** Unfortunately, you must specify the provider explicitly for these types
-
 ### rabbitmq_user
 
 query all current users: `$ puppet resource rabbitmq_user`
@@ -63,7 +61,6 @@ query all current users: `$ puppet resource rabbitmq_user`
     rabbitmq_user { 'dan':
       admin    => true,
       password => 'bar',
-      provider => 'rabbitmqctl',
     }
 
 ### rabbitmq_vhost
@@ -72,7 +69,6 @@ query all current vhosts: `$ puppet resource rabbitmq_vhost`
 
     rabbitmq_vhost { 'myhost':
       ensure => present,
-      provider => 'rabbitmqctl',
     }
 
 ### rabbitmq\_user\_permissions
@@ -81,7 +77,6 @@ query all current vhosts: `$ puppet resource rabbitmq_vhost`
       configure_permission => '.*',
       read_permission      => '.*',
       write_permission     => '.*',
-      provider => 'rabbitmqctl',
     }
 
 ### rabbitmq_plugin
@@ -90,5 +85,4 @@ query all currently enabled plugins `$ puppet resource rabbitmq_plugin`
 
     rabbitmq_plugin {'rabbitmq_stomp':
       ensure => present,
-      provider => 'rabbitmqplugins',
     }
