@@ -1,3 +1,8 @@
+* 2013-04-11 2.1.0
+- remove puppetversion from rabbitmq.config template
+- add cluster support
+- escape resource names in regexp
+
 * 2012-07-31 Jeff McCune <jeff@puppetlabs.com> 2.0.2
 - Re-release 2.0.1 with $EDITOR droppings cleaned up
 
