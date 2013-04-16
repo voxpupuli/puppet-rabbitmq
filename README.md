@@ -33,7 +33,7 @@ Sets up an apt repo source for the vendor rabbitmq packages
 Class for installing rabbitmq-server:
 
     class { 'rabbitmq::server':
-      port              => '5673',
+      port              => '5672',
       delete_guest_user => true,
     }
 
