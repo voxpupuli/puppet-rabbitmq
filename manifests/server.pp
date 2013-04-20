@@ -21,6 +21,11 @@
 #    if the cookie indeed differs, then wiping the database is the *only* thing you
 #    can do. You're only required to set this parameter to true as a sign that you
 #    realise this.
+#  [*config_ssl*] - whether to configure SSL for RabbitMQ
+#  [*ssl_port*] -  RabbitMQ SSL port
+#  [*ssl_cert*] - SSL Server Cert
+#  [*ssl_cert_chain*] - SSL CA Root/Chain
+#  [*ssl_private_key*] - SSL Private Key
 # Requires:
 #  stdlib
 # Sample Usage:
@@ -45,7 +50,8 @@ class rabbitmq::server(
   $env_config='UNSET',
   $erlang_cookie='EOKOWXQREETZSHFNTPEY',
   $wipe_db_on_cookie_change=false,
-  configure_ssl = false,
+  $config_ssl = false,
+  $ssl_port = 5671,
   $ssl_cert             = '',
   $ssl_cert_chain       = '',
   $ssl_private_key      = '',
@@ -125,6 +131,7 @@ class rabbitmq::server(
         unless  => "/bin/grep -qx ${erlang_cookie} /var/lib/rabbitmq/.erlang.cookie"
       }
     }
+  }
     if $config_ssl {
       file { '/etc/rabbitmq/ssl':
         ensure  => directory,
@@ -157,7 +164,6 @@ class rabbitmq::server(
         mode    => '0444',
         require => File['/etc/rabbitmq/ssl'],
       }
-    }
   }
 
   file { 'rabbitmq-env.config':
