@@ -44,7 +44,11 @@ class rabbitmq::server(
   $config='UNSET',
   $env_config='UNSET',
   $erlang_cookie='EOKOWXQREETZSHFNTPEY',
-  $wipe_db_on_cookie_change=false
+  $wipe_db_on_cookie_change=false,
+  configure_ssl = false,
+  $ssl_cert             = '',
+  $ssl_cert_chain       = '',
+  $ssl_private_key      = '',
 ) {
 
   validate_bool($delete_guest_user, $config_stomp)
@@ -119,6 +123,39 @@ class rabbitmq::server(
         command => '/bin/false "Cookie must be changed but wipe_db is false"', # If the cookie doesn't match, just fail.
         require => Package[$package_name],
         unless  => "/bin/grep -qx ${erlang_cookie} /var/lib/rabbitmq/.erlang.cookie"
+      }
+    }
+    if $config_ssl {
+      file { '/etc/rabbitmq/ssl':
+        ensure  => directory,
+        owner   => '0',
+        group   => '0',
+        mode    => '0755',
+        require => Package[$package_name],
+      }
+      file { '/etc/rabbitmq/ssl/cacert.pem':
+        ensure  => present,
+        source  => $ssl_cert_chain,
+        owner   => '0',
+        group   => '0',
+        mode    => '0444',
+        require => File['/etc/rabbitmq/ssl'],
+      }
+      file { '/etc/rabbitmq/ssl/server_cert.pem':
+        ensure  => present,
+        source  => $ssl_cert,
+        owner   => '0',
+        group   => '0',
+        mode    => '0444',
+        require => File['/etc/rabbitmq/ssl'],
+      }
+      file { '/etc/rabbitmq/ssl/server_key.pem':
+        ensure  => present,
+        source  => $ssl_private_key,
+        owner   => '0',
+        group   => '0',
+        mode    => '0444',
+        require => File['/etc/rabbitmq/ssl'],
       }
     }
   }
