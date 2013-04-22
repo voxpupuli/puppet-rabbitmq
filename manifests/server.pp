@@ -132,38 +132,39 @@ class rabbitmq::server(
       }
     }
   }
-    if $config_ssl {
-      file { '/etc/rabbitmq/ssl':
-        ensure  => directory,
-        owner   => '0',
-        group   => '0',
-        mode    => '0755',
-        require => Package[$package_name],
-      }
-      file { '/etc/rabbitmq/ssl/cacert.pem':
-        ensure  => present,
-        source  => $ssl_cert_chain,
-        owner   => '0',
-        group   => '0',
-        mode    => '0444',
-        require => File['/etc/rabbitmq/ssl'],
-      }
-      file { '/etc/rabbitmq/ssl/server_cert.pem':
-        ensure  => present,
-        source  => $ssl_cert,
-        owner   => '0',
-        group   => '0',
-        mode    => '0444',
-        require => File['/etc/rabbitmq/ssl'],
-      }
-      file { '/etc/rabbitmq/ssl/server_key.pem':
-        ensure  => present,
-        source  => $ssl_private_key,
-        owner   => '0',
-        group   => '0',
-        mode    => '0444',
-        require => File['/etc/rabbitmq/ssl'],
-      }
+
+  if $config_ssl {
+    file { '/etc/rabbitmq/ssl':
+      ensure  => directory,
+      owner   => '0',
+      group   => '0',
+      mode    => '0755',
+      require => Package[$package_name],
+    }
+    file { '/etc/rabbitmq/ssl/cacert.pem':
+      ensure  => present,
+      source  => $ssl_cert_chain,
+      owner   => '0',
+      group   => '0',
+      mode    => '0444',
+      require => File['/etc/rabbitmq/ssl'],
+    }
+    file { '/etc/rabbitmq/ssl/server_cert.pem':
+      ensure  => present,
+      source  => $ssl_cert,
+      owner   => '0',
+      group   => '0',
+      mode    => '0444',
+      require => File['/etc/rabbitmq/ssl'],
+    }
+    file { '/etc/rabbitmq/ssl/server_key.pem':
+      ensure  => present,
+      source  => $ssl_private_key,
+      owner   => '0',
+      group   => '0',
+      mode    => '0444',
+      require => File['/etc/rabbitmq/ssl'],
+    }
   }
 
   file { 'rabbitmq-env.config':
