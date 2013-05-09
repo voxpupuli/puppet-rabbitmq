@@ -4,6 +4,11 @@
 #   it has only been tested on certain version of debian-ish systems
 # Parameters:
 #  [*port*] - port where rabbitmq server is hosted
+#  [*ssl*] - whether SSL should be configured
+#  [*ssl_port*] - port where rabbitmq SSL server is hosted
+#  [*ssl_cacert*] - CA certificate for SSL connections (string)
+#  [*ssl_key*] - private key for SSL connections (string)
+#  [*ssl_cert*] - certificate for SSL connections (string)
 #  [*delete_guest_user*] - rather or not to delete the default user
 #  [*version*] - version of rabbitmq-server to install
 #  [*package_name*] - name of rabbitmq package
@@ -31,6 +36,11 @@
 # [Remember: No empty lines between comments and class definition]
 class rabbitmq::server(
   $port = '5672',
+  $ssl = false,
+  $ssl_port = '5671',
+  $ssl_cacert = undef,
+  $ssl_key = undef,
+  $ssl_cert = undef,
   $delete_guest_user = false,
   $package_name = 'rabbitmq-server',
   $version = 'UNSET',
@@ -38,6 +48,7 @@ class rabbitmq::server(
   $service_ensure = 'running',
   $config_stomp = false,
   $stomp_port = '6163',
+  $stomp_ssl_port = '6164',
   $config_cluster = false,
   $cluster_disk_nodes = [],
   $node_ip_address = 'UNSET',
@@ -93,6 +104,40 @@ class rabbitmq::server(
     mode    => '0644',
     require => Package[$package_name],
     notify  => Class['rabbitmq::service'],
+  }
+
+  if $ssl {
+    # Ideally this dir should be only readable by rabbitmq
+    # Unfortunately the package creates the rabbitmq user
+    file { '/etc/rabbitmq/ssl':
+      ensure  => directory,
+      owner   => '0',
+      group   => '0',
+      mode    => '0644',
+      require => package[$package_name],
+    }
+
+    file { '/etc/rabbitmq/ssl/cacert.pem':
+      ensure  => file,
+      content => $ssl_cacert,
+      owner   => '0',
+      group   => '0',
+      mode    => '0644',
+    }
+    file { '/etc/rabbitmq/ssl/server_key.pem':
+      ensure  => file,
+      content => $ssl_key,
+      owner   => '0',
+      group   => '0',
+      mode    => '0644',
+    }
+    file { '/etc/rabbitmq/ssl/server_cert.pem':
+      ensure  => file,
+      content => $ssl_cert,
+      owner   => '0',
+      group   => '0',
+      mode    => '0644',
+    }
   }
 
   if $config_cluster {

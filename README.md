@@ -37,6 +37,20 @@ Class for installing rabbitmq-server:
       delete_guest_user => true,
     }
 
+#### rabbitmq::server with SSL
+
+To use SSL, generate certificates as per RabbitMQ docs, and include them
+as strings in Puppet manifest/hiera as appropriate
+
+    class { 'rabbitmq::server':
+      delete_guest_user => true,
+      ssl               => true,
+      ssl_cacert        => '-----BEGIN CERTIFICATE----- ...'
+      ssl_key           => '-----BEGIN RSA PRIVATE KEY----- ...'
+      ssl_cert          => '-----BEGIN CERTIFICATE----- ...'
+    }
+ 
+
 ### Clustering
 To use RabbitMQ clustering and H/A facilities, use the rabbitmq::server
 parameters `config_cluster` and `cluster_disk_nodes`, e.g.:
