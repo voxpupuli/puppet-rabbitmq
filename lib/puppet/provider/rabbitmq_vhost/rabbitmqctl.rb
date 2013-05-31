@@ -1,6 +1,9 @@
 Puppet::Type.type(:rabbitmq_vhost).provide(:rabbitmqctl) do
 
-  commands :rabbitmqctl => 'rabbitmqctl'
+  has_command(:rabbitmqctl, 'rabbitmqctl') do
+     is_optional
+     environment :HOME => "/tmp"
+  end
   defaultfor :feature => :posix
 
   def self.instances
