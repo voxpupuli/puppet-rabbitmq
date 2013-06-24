@@ -14,6 +14,7 @@
 #  [*config*] - contents of config file
 #  [*env_config*] - contents of env-config file
 #  [*config_cluster*] - whether to configure a RabbitMQ cluster
+#  [*config_mirrored_queues*] - whether to configure RabbitMQ mirrored queues within a Rabbit Cluster.
 #  [*cluster_disk_nodes*] - which nodes to cluster with (including the current one)
 #  [*erlang_cookie*] - erlang cookie, must be the same for all nodes in a cluster
 #  [*wipe_db_on_cookie_change*] - whether to wipe the RabbitMQ data if the specified
@@ -39,6 +40,7 @@ class rabbitmq::server(
   $config_stomp = false,
   $stomp_port = '6163',
   $config_cluster = false,
+  $config_mirrored_queues = false,
   $cluster_disk_nodes = [],
   $node_ip_address = 'UNSET',
   $config='UNSET',
@@ -70,11 +72,6 @@ class rabbitmq::server(
   }
 
   $plugin_dir = "/usr/lib/rabbitmq/lib/rabbitmq_server-${version_real}/plugins"
-
-  package { $package_name:
-    ensure => $pkg_ensure_real,
-    notify => Class['rabbitmq::service'],
-  }
 
   file { '/etc/rabbitmq':
     ensure  => directory,
@@ -120,6 +117,30 @@ class rabbitmq::server(
         require => Package[$package_name],
         unless  => "/bin/grep -qx ${erlang_cookie} /var/lib/rabbitmq/.erlang.cookie"
       }
+    }
+    if $config_mirrored_queues {
+      exec { 'download-rabbit':
+        command => "wget -O /tmp/rabbitmq-server_2.8.7-1_all.deb http://www.rabbitmq.com/releases/rabbitmq-server/v2.8.7/rabbitmq-server_2.8.7-1_all.deb --no-check-certificate",
+        path    => '/usr/bin:/usr/sbin:/bin:/sbin',
+        creates => "/tmp/rabbitmq-server_2.8.7-1_all.deb",
+      }
+
+      package { 'erlang-nox':
+        ensure   => $pkg_ensure_real,
+      }
+
+      package { $package_name:
+        ensure   => $pkg_ensure_real,
+        provider => 'dpkg',
+        require  => [Exec['download-rabbit'],Package['erlang-nox']],
+        source   => '/tmp/rabbitmq-server_2.8.7-1_all.deb',
+        notify   => Class['rabbitmq::service'],
+      }
+    } 
+  } else {
+    package { $package_name:
+      ensure => $pkg_ensure_real,
+      notify => Class['rabbitmq::service'],
     }
   }
 
