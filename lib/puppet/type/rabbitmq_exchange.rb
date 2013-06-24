@@ -35,7 +35,7 @@ Puppet::Type.newtype(:rabbitmq_exchange) do
 		defaultto 'guest'
 	end
 
-	newparam(:pass) do
+	newparam(:password) do
 		desc 'Password to use when connecting to rabbitmq server'
 		newvalues(/^\S+$/)
 		defaultto 'guest'

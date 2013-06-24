@@ -39,14 +39,14 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:amqp) do
 		exchangeName = value[0]
 		vhost = value[1]
 
-		info("Creating: #{exchangeName}")
+		info("Creating rabbitmq exchange #{exchangeName}")
 		EventMachine.run do
 			AMQP.connect(
 				:host => @resource[:host],
 				:port => @resource[:port],
 				:vhost => vhost,
 				:user => @resource[:user],
-				:pass => @resource[:pass]
+				:password => @resource[:password]
 			) do |connection|
 				AMQP::Channel.new(connection) do |channel|
 					newExhange = AMQP::Exchange.new(channel, @resource[:exchange_type], exchangeName)
@@ -61,14 +61,14 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:amqp) do
 		exchangeName = value[0]
 		vhost = value[1]
 
-		info("Destroying: #{exchangeName}")
+		info("Destroying rabbitmq exchange #{exchangeName}")
 		EventMachine.run do
 			AMQP.connect(
 				:host => @resource[:host],
 				:port => @resource[:port],
 				:vhost => vhost,
 				:user => @resource[:user],
-				:pass => @resource[:pass]
+				:password => @resource[:password]
 			) do |connection|
 				AMQP::Channel.new(connection) do |channel|
 					exchange = AMQP::Exchange.new(channel, @resource[:exchange_type], exchangeName)
@@ -94,14 +94,14 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:amqp) do
 		exchangeName = value[0]
 		vhost = value[1]
 
-		info("Changing: #{exchangeName}")
+		info("Changing rabbitmq exchange type for #{exchangeName}")
 		EventMachine.run do
 			AMQP.connect(
 				:host => @resource[:host],
 				:port => @resource[:port],
 				:vhost => vhost,
 				:user => @resource[:user],
-				:pass => @resource[:pass]
+				:password => @resource[:password]
 			) do |connection|
 				AMQP::Channel.new(connection) do |channel|
 					exchange = AMQP::Exchange.new(channel, self.exchange_type, exchangeName)
