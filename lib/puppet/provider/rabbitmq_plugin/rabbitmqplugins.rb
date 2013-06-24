@@ -1,10 +1,14 @@
 Puppet::Type.type(:rabbitmq_plugin).provide(:rabbitmqplugins) do
 
-  commands :rabbitmqplugins => 'rabbitmq-plugins'
   defaultfor :feature => :posix
 
+  def initialize(*args)
+	super
+    @@rabbitmqplugins = Puppet::Provider::Command.new('rabbitmqplugins', 'rabbitmq-plugins', Puppet::Util, Puppet::Util::Execution, { :failonfail => true, :combine => true, :custom_environment => { 'HOME' => '/root' } })
+  end
+
   def self.instances
-    rabbitmqplugins('list', '-E').split(/\n/).map do |line|
+    @@rabbitmqplugins.execute('list', '-E').split(/\n/).map do |line|
       if line.split(/\s+/)[1] =~ /^(\S+)$/
         new(:name => $1)
       else
@@ -14,15 +18,15 @@ Puppet::Type.type(:rabbitmq_plugin).provide(:rabbitmqplugins) do
   end
 
   def create
-    rabbitmqplugins('enable', resource[:name])
+    @@rabbitmqplugins.execute('enable', resource[:name])
   end
 
   def destroy
-    rabbitmqplugins('disable', resource[:name])
+    @@rabbitmqplugins.execute('disable', resource[:name])
   end
 
   def exists?
-    out = rabbitmqplugins('list', '-E').split(/\n/).detect do |line|
+    out = @@rabbitmqplugins.execute('list', '-E').split(/\n/).detect do |line|
       line.split(/\s+/)[1].match(/^#{resource[:name]}$/)
     end
   end
