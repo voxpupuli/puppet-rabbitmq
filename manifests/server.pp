@@ -40,13 +40,16 @@ class rabbitmq::server(
   $config_stomp = false,
   $stomp_port = '6163',
   $config_cluster = false,
-  $config_mirrored_queues = false,
   $cluster_disk_nodes = [],
+  $cluster_disk_nodes = false,
   $node_ip_address = 'UNSET',
-  $config='UNSET',
-  $env_config='UNSET',
-  $erlang_cookie='EOKOWXQREETZSHFNTPEY',
-  $wipe_db_on_cookie_change=false
+  $config ='UNSET',
+  $env_config ='UNSET',
+  $erlang_cookie ='EOKOWXQREETZSHFNTPEY',
+  $wipe_db_on_cookie_change = false,
+  $mirrored_queues_pkg_name = $rabbitmq::params::mirrored_queues_pkg_name,
+  $mirrored_queues_pkg_url = $rabbitmq::params::mirrored_queues_pkg_url,
+  $erlang_pkg_name = $rabbitmq::params::erlang_pkg_name
 ) {
 
   validate_bool($delete_guest_user, $config_stomp)
@@ -120,9 +123,9 @@ class rabbitmq::server(
     }
     if $config_mirrored_queues {
       exec { 'download-rabbit':
-        command => "wget -O /tmp/rabbitmq-server_2.8.7-1_all.deb http://www.rabbitmq.com/releases/rabbitmq-server/v2.8.7/rabbitmq-server_2.8.7-1_all.deb --no-check-certificate",
+        command => "wget -O /tmp/${mirrored_queues_pkg_name} ${mirrored_queues_pkg_url}${mirrored_queues_pkg_name} --no-check-certificate",
         path    => '/usr/bin:/usr/sbin:/bin:/sbin',
-        creates => "/tmp/rabbitmq-server_2.8.7-1_all.deb",
+        creates => "/tmp/${mirrored_queues_pkg_name}",
       }
 
       package { 'erlang-nox':
@@ -132,8 +135,8 @@ class rabbitmq::server(
       package { $package_name:
         ensure   => $pkg_ensure_real,
         provider => 'dpkg',
-        require  => [Exec['download-rabbit'],Package['erlang-nox']],
-        source   => '/tmp/rabbitmq-server_2.8.7-1_all.deb',
+        require  => [Exec['download-rabbit'],Package['$erlang_pkg_name']],
+        source   => '/tmp/${mirrored_queues_pkg_name}',
         notify   => Class['rabbitmq::service'],
       }
     } 
