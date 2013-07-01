@@ -50,6 +50,7 @@ class rabbitmq::server(
   $env_config='UNSET',
   $erlang_cookie='EOKOWXQREETZSHFNTPEY',
   $wipe_db_on_cookie_change=false,
+  $enable_management = false,
   $config_ssl = false,
   $ssl_port = 5671,
   $ssl_cert             = '',
@@ -83,7 +84,10 @@ class rabbitmq::server(
 
   package { $package_name:
     ensure => $pkg_ensure_real,
-    notify => Class['rabbitmq::service'],
+    notify => $enable_management ? {
+      true    => [Class['rabbitmq::service'],Exec['rabbitmq_management']],
+      default => Class['rabbitmq::service'],
+    }
   }
 
   file { '/etc/rabbitmq':
@@ -187,6 +191,16 @@ class rabbitmq::server(
     rabbitmq_user{ 'guest':
       ensure   => absent,
       provider => 'rabbitmqctl',
+    }
+  }
+
+  if $enable_management {
+    exec { 'rabbitmq_management':
+      command     => "/usr/sbin/rabbitmq-plugins enable rabbitmq_management",
+      path        => ['/bin','/sbin','/usr/bin','/usr/sbin','/usr/local/bin','/usr/local/sbin','/opt/couchbase/bin'],
+      environment => "HOME=/root",
+      refreshonly => true,
+      notify      => Class['rabbitmq::service'],
     }
   }
 
