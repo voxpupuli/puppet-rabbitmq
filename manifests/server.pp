@@ -21,6 +21,11 @@
 #    if the cookie indeed differs, then wiping the database is the *only* thing you
 #    can do. You're only required to set this parameter to true as a sign that you
 #    realise this.
+#  [*config_ssl*] - whether to configure SSL for RabbitMQ
+#  [*ssl_port*] -  RabbitMQ SSL port
+#  [*ssl_cert*] - SSL Server Cert
+#  [*ssl_cert_chain*] - SSL CA Root/Chain
+#  [*ssl_private_key*] - SSL Private Key
 # Requires:
 #  stdlib
 # Sample Usage:
@@ -44,7 +49,13 @@ class rabbitmq::server(
   $config='UNSET',
   $env_config='UNSET',
   $erlang_cookie='EOKOWXQREETZSHFNTPEY',
-  $wipe_db_on_cookie_change=false
+  $wipe_db_on_cookie_change=false,
+  $enable_management = false,
+  $config_ssl = false,
+  $ssl_port = 5671,
+  $ssl_cert             = '',
+  $ssl_cert_chain       = '',
+  $ssl_private_key      = '',
 ) {
 
   validate_bool($delete_guest_user, $config_stomp)
@@ -73,7 +84,10 @@ class rabbitmq::server(
 
   package { $package_name:
     ensure => $pkg_ensure_real,
-    notify => Class['rabbitmq::service'],
+    notify => $enable_management ? {
+      true    => [Class['rabbitmq::service'],Exec['rabbitmq_management']],
+      default => Class['rabbitmq::service'],
+    }
   }
 
   file { '/etc/rabbitmq':
@@ -123,6 +137,40 @@ class rabbitmq::server(
     }
   }
 
+  if $config_ssl {
+    file { '/etc/rabbitmq/ssl':
+      ensure  => directory,
+      owner   => '0',
+      group   => '0',
+      mode    => '0755',
+      require => Package[$package_name],
+    }
+    file { '/etc/rabbitmq/ssl/cacert.pem':
+      ensure  => present,
+      source  => $ssl_cert_chain,
+      owner   => '0',
+      group   => '0',
+      mode    => '0444',
+      require => File['/etc/rabbitmq/ssl'],
+    }
+    file { '/etc/rabbitmq/ssl/server_cert.pem':
+      ensure  => present,
+      source  => $ssl_cert,
+      owner   => '0',
+      group   => '0',
+      mode    => '0444',
+      require => File['/etc/rabbitmq/ssl'],
+    }
+    file { '/etc/rabbitmq/ssl/server_key.pem':
+      ensure  => present,
+      source  => $ssl_private_key,
+      owner   => '0',
+      group   => '0',
+      mode    => '0444',
+      require => File['/etc/rabbitmq/ssl'],
+    }
+  }
+
   file { 'rabbitmq-env.config':
     ensure  => file,
     path    => '/etc/rabbitmq/rabbitmq-env.conf',
@@ -143,6 +191,16 @@ class rabbitmq::server(
     rabbitmq_user{ 'guest':
       ensure   => absent,
       provider => 'rabbitmqctl',
+    }
+  }
+
+  if $enable_management {
+    exec { 'rabbitmq_management':
+      command     => "/usr/sbin/rabbitmq-plugins enable rabbitmq_management",
+      path        => ['/bin','/sbin','/usr/bin','/usr/sbin','/usr/local/bin','/usr/local/sbin','/opt/couchbase/bin'],
+      environment => "HOME=/root",
+      refreshonly => true,
+      notify      => Class['rabbitmq::service'],
     }
   }
 
