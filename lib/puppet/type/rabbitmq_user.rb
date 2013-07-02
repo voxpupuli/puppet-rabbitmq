@@ -21,6 +21,12 @@ Puppet::Type.newtype(:rabbitmq_user) do
     desc 'User password to be set *on creation*'
   end
 
+  newproperty(:user_tags, :array_matching => :all) do
+    desc 'Tags to be applied to the user'
+    newvalues(/^\S+$/)
+    defaultto []
+  end
+
   newproperty(:admin) do
     desc 'rather or not user should be an admin'
     newvalues(/true|false/)
