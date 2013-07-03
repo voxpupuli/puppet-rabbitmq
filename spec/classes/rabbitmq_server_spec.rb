@@ -99,7 +99,6 @@ describe 'rabbitmq::server' do
       verify_contents(subject, 'erlang_cookie',
         ['EOKOWXQREETZSHFNTPEY'])
   	end
-
   end
 
   describe 'specifying custom erlang cookie in cluster mode' do
@@ -120,6 +119,6 @@ describe 'rabbitmq::server' do
           }
         end
     it { should contain_package('rabbitmq-server').with('ensure' => 'present') }
-    end
+  end
 
 end

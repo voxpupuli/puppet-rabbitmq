@@ -42,6 +42,7 @@ class rabbitmq::server(
   $config_cluster = false,
   $config_mirrored_queues = false,
   $cluster_disk_nodes = [],
+  $cluster_disk_nodes = false,
   $node_ip_address = 'UNSET',
   $config ='UNSET',
   $env_config ='UNSET',
