@@ -99,7 +99,6 @@ describe 'rabbitmq::server' do
       verify_contents(subject, 'erlang_cookie',
         ['EOKOWXQREETZSHFNTPEY'])
   	end
-
   end
 
   describe 'specifying custom erlang cookie in cluster mode' do
@@ -111,6 +110,15 @@ describe 'rabbitmq::server' do
       verify_contents(subject, 'erlang_cookie',
         ['YOKOWXQREETZSHFNTPEY'])
     end
+  end
+
+  describe 'configure mirrored queues in cluster mode' do
+        let :params do
+          { :config_cluster => true,
+            :config_mirrored_queues => true
+          }
+        end
+    it { should contain_package('rabbitmq-server').with('ensure' => 'present') }
   end
 
 end

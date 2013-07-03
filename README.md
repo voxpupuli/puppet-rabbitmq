@@ -49,8 +49,20 @@ parameters `config_cluster` and `cluster_disk_nodes`, e.g.:
 Currently all cluster nodes are registered as disk nodes (not ram).
 
 **NOTE:** You still need to use `x-ha-policy: all` in your client 
-applications for any particular queue to take advantage of H/A, this module 
-merely clusters RabbitMQ instances.
+applications for any particular queue to take advantage of H/A.
+
+You should set the 'config_mirrored_queues' parameter if you plan 
+on using RabbitMQ Mirrored Queues within your cluster:
+
+    class { 'rabbitmq::server':
+      config_cluster => true,
+      config_mirrored_queues => true,
+      cluster_disk_nodes => ['rabbit1', 'rabbit2'],
+    }
+
+By setting mirrored queues to true, the rabbitmq-server 2.8.7-1 package
+will be used.  This package version addressed several mirrored queues 
+bugs and is the most widely tested.
 
 ## Native Types
 

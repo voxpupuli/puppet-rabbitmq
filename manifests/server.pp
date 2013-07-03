@@ -14,6 +14,7 @@
 #  [*config*] - contents of config file
 #  [*env_config*] - contents of env-config file
 #  [*config_cluster*] - whether to configure a RabbitMQ cluster
+#  [*config_mirrored_queues*] - whether to configure RabbitMQ mirrored queues within a Rabbit Cluster.
 #  [*cluster_disk_nodes*] - which nodes to cluster with (including the current one)
 #  [*erlang_cookie*] - erlang cookie, must be the same for all nodes in a cluster
 #  [*wipe_db_on_cookie_change*] - whether to wipe the RabbitMQ data if the specified
@@ -39,12 +40,14 @@ class rabbitmq::server(
   $config_stomp = false,
   $stomp_port = '6163',
   $config_cluster = false,
+  $config_mirrored_queues = false,
   $cluster_disk_nodes = [],
+  $cluster_disk_nodes = false,
   $node_ip_address = 'UNSET',
-  $config='UNSET',
-  $env_config='UNSET',
-  $erlang_cookie='EOKOWXQREETZSHFNTPEY',
-  $wipe_db_on_cookie_change=false
+  $config ='UNSET',
+  $env_config ='UNSET',
+  $erlang_cookie ='EOKOWXQREETZSHFNTPEY',
+  $wipe_db_on_cookie_change = false
 ) {
 
   validate_bool($delete_guest_user, $config_stomp)
@@ -70,11 +73,6 @@ class rabbitmq::server(
   }
 
   $plugin_dir = "/usr/lib/rabbitmq/lib/rabbitmq_server-${version_real}/plugins"
-
-  package { $package_name:
-    ensure => $pkg_ensure_real,
-    notify => Class['rabbitmq::service'],
-  }
 
   file { '/etc/rabbitmq':
     ensure  => directory,
@@ -120,6 +118,35 @@ class rabbitmq::server(
         require => Package[$package_name],
         unless  => "/bin/grep -qx ${erlang_cookie} /var/lib/rabbitmq/.erlang.cookie"
       }
+    }
+    if $config_mirrored_queues {
+
+      $mirrored_queues_pkg_name = $rabbitmq::params::mirrored_queues_pkg_name
+      $mirrored_queues_pkg_url  = $rabbitmq::params::mirrored_queues_pkg_url
+      $erlang_pkg_name          = $rabbitmq::params::erlang_pkg_name
+
+      exec { 'download-rabbit':
+        command => "wget -O /tmp/${mirrored_queues_pkg_name} ${mirrored_queues_pkg_url}${mirrored_queues_pkg_name} --no-check-certificate",
+        path    => '/usr/bin:/usr/sbin:/bin:/sbin',
+        creates => "/tmp/${mirrored_queues_pkg_name}",
+      }
+
+      package { $erlang_pkg_name:
+        ensure   => $pkg_ensure_real,
+      }
+
+      package { $package_name:
+        ensure   => $pkg_ensure_real,
+        provider => 'dpkg',
+        require  => [Exec['download-rabbit'],Package[$erlang_pkg_name]],
+        source   => "/tmp/${mirrored_queues_pkg_name}",
+        notify   => Class['rabbitmq::service'],
+      }
+    } 
+  } else {
+    package { $package_name:
+      ensure => $pkg_ensure_real,
+      notify => Class['rabbitmq::service'],
     }
   }
 
