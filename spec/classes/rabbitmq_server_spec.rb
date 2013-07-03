@@ -113,4 +113,13 @@ describe 'rabbitmq::server' do
     end
   end
 
+  describe 'configure mirrored queues in cluster mode' do
+        let :params do
+          { :config_cluster => true,
+            :config_mirrored_queues => true
+          }
+        end
+    it { should contain_package('rabbitmq-server').with('ensure' => 'present') }
+  end
+
 end
