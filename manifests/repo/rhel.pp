@@ -4,7 +4,8 @@ class rabbitmq::repo::rhel (
     $relversion = "1",
 ) { 
     exec { "rpm --import ${key}":
-        path => ["/bin","/usr/bin","/sbin","/usr/sbin"],
+        path    => ["/bin","/usr/bin","/sbin","/usr/sbin"],
+        onlyif  => 'test `rpm -qa | grep gpg-pubkey-056e8e56-468e43f2 | wc -l` -eq 0';
     }
 
     package { "rabbitmq-server":
