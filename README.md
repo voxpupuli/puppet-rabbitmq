@@ -75,6 +75,7 @@ query all current users: `$ puppet resource rabbitmq_user`
     rabbitmq_user { 'dan':
       admin    => true,
       password => 'bar',
+      user_tags=> 'monitor',
       provider => 'rabbitmqctl',
     }
 
