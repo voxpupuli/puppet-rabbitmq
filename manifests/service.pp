@@ -37,4 +37,6 @@ class rabbitmq::service(
     hasrestart => true,
   }
 
+  Rabbitmq_plugin <||> ~> Service[$service_name]
+
 }
