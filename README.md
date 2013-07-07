@@ -25,7 +25,6 @@ Installs the RPM from rabbitmq upstream, and imports their signing key
 Sets up an apt repo source for the vendor rabbitmq packages
 
     class { 'rabbitmq::repo::apt':
-      pin    => 900,
       before => Class['rabbitmq::server']
     }
 
