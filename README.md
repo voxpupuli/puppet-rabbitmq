@@ -17,8 +17,8 @@ This module provides its core functionality through two main classes:
 Installs the RPM from rabbitmq upstream, and imports their signing key
 
     class { 'rabbitmq::repo::rhel':
-        $version    => "2.8.4",
-        $relversion => "1",
+        version    => "2.8.4",
+        relversion => "1",
     }
 
 ### rabbitmq::repo::apt
