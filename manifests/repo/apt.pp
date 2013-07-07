@@ -13,7 +13,7 @@ class rabbitmq::repo::apt(
     release     => 'testing',
     repos       => 'main',
     include_src => false,
-    key         => 'RabbitMQ Release Signing Key <info@rabbitmq.com>',
+    key         => '056E8E56',
     key_content => template('rabbitmq/rabbit.pub.key'),
     pin         => $pin,
   }
