@@ -41,6 +41,4 @@ class rabbitmq::service(
     }
   }
 
-  Rabbitmq_plugin <||> ~> Service[$service_name]
-
 }
