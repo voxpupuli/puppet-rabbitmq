@@ -1,3 +1,30 @@
+* 2013-07-18 3.0.0
+Summary:
+This release heavily refactors the RabbitMQ and changes functionality in
+several key ways.  Please pay attention to the new README.md file for
+details of how to interact with the class now.  Puppet 3 and RHEL are
+now fully supported.  The default version of RabbitMQ has changed to
+a 3.x release.
+
+Bugfixes:
+- Improve travis testing options.
+- Stop reimporting the GPG key on every run on RHEL and Debian.
+- Fix documentation to make it clear you don't have to set provider => each time.
+- Reference the standard rabbitmq port in the documentation instead of a custom port.
+- Fixes to the README formatting.
+
+Features:
+- Refactor the module to fix RHEL support.  All interaction with the module
+is now done through the main rabbitmq class.
+- Add support for mirrored queues (Only on Debian family distributions currently)
+- Add rabbitmq_exchange provider (using rabbitmqadmin)
+- Add new `rabbitmq` class parameters:
+  -  `manage_service`: Boolean to choose if Puppet should manage the service. (For pacemaker/HA setups)
+
+Incompatible Changes:
+- Rabbitmq::server has been removed and is now rabbitmq::config.  You should
+not use this class directly, only via the main rabbitmq class.
+
 * 2013-04-11 2.1.0
 - remove puppetversion from rabbitmq.config template
 - add cluster support
