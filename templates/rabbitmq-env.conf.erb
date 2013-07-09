@@ -1,4 +1,4 @@
-RABBITMQ_NODE_PORT=<%= port %>
-<% if node_ip_address != 'UNSET' -%>
-RABBITMQ_NODE_IP_ADDRESS=<%= node_ip_address %>
+RABBITMQ_NODE_PORT=<%= @port %>
+<% if @node_ip_address != 'UNSET' -%>
+RABBITMQ_NODE_IP_ADDRESS=<%= @node_ip_address %>
 <% end -%>
