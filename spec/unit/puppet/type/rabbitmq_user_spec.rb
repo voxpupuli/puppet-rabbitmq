@@ -16,7 +16,7 @@ describe Puppet::Type.type(:rabbitmq_user) do
   it 'should require a password' do
     expect {
       Puppet::Type.type(:rabbitmq_user).new(:name => 'foo')
-    }.to raise_error(ArgumentError, /must set password/)
+    }.to raise_error(/must set password/)
   end
   it 'should require a name' do
     expect {
