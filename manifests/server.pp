@@ -62,11 +62,11 @@ class rabbitmq::server(
     $version_real = $version
     $pkg_ensure_real   = $version
   }
-  if count(cluster_disk_nodes) > 0 {
+  if count($cluster_disk_nodes) > 0 {
     notify{"WARNING: The cluster_disk_nodes parameter is depricated. Use cluster_nodes instead.":}
-    cluster_nodes_real = cluster_disk_nodes
+    $cluster_nodes_real = $cluster_disk_nodes
   } else {
-    cluster_nodes_real = cluster_nodes
+    $cluster_nodes_real = $cluster_nodes
   }
   if $config == 'UNSET' {
     $config_real = template("${module_name}/rabbitmq.config")
