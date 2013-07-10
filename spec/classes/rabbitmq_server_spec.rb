@@ -105,6 +105,24 @@ describe 'rabbitmq::server' do
 
   end
 
+  describe 'configuring cluster' do
+  	let :params do
+  	  { :config_cluster => true,
+  	  	:cluster_nodes => ['hare-1', 'hare-2'],
+		:cluster_node_type => 'ram'
+  	  }
+  	end
+  	it 'should specify cluster nodes and node type in rabbitmq.config' do
+      verify_contents(subject, 'rabbitmq.config',
+        ['[',"{rabbit, [{cluster_nodes, {['rabbit@hare-1', 'rabbit@hare-2'], ram}}]}", '].'])  	
+  	end
+  	it 'should have the default erlang cookie' do
+      verify_contents(subject, 'erlang_cookie',
+        ['EOKOWXQREETZSHFNTPEY'])
+  	end
+
+  end
+
   describe 'specifying custom erlang cookie in cluster mode' do
   	let :params do
   	  { :config_cluster => true,
