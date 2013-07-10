@@ -1,6 +1,14 @@
 Puppet::Type.type(:rabbitmq_plugin).provide(:rabbitmqplugins) do
 
-  commands :rabbitmqplugins => 'rabbitmq-plugins'
+  if respond_to? :has_command
+    has_command(:rabbitmqplugins, 'rabbitmq-plugins') do
+       is_optional
+       environment :HOME => "/tmp"
+    end
+  else
+    commands :rabbitmqplugins => 'rabbitmq-plugins'
+  end
+
   defaultfor :feature => :posix
 
   def self.instances
