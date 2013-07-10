@@ -14,7 +14,7 @@
 #  [*config*] - contents of config file
 #  [*env_config*] - contents of env-config file
 #  [*config_cluster*] - whether to configure a RabbitMQ cluster
-#  [*cluster_disk_nodes*] - DEPRICATED (use clusted_nodes)
+#  [*cluster_disk_nodes*] - DEPRICATED (use cluster_nodes)
 #  [*cluster_nodes*] - which nodes to cluster with (including the current one)
 #  [*cluster_node_type*] - Type of cluster node (disc or ram)
 #  [*erlang_cookie*] - erlang cookie, must be the same for all nodes in a cluster
