@@ -14,6 +14,7 @@
 #  [*config*] - contents of config file
 #  [*env_config*] - contents of env-config file
 #  [*config_cluster*] - whether to configure a RabbitMQ cluster
+#  [*cluster_disk_nodes*] - DEPRICATED (use clusted_nodes)
 #  [*cluster_nodes*] - which nodes to cluster with (including the current one)
 #  [*cluster_node_type*] - Type of cluster node (disc or ram)
 #  [*erlang_cookie*] - erlang cookie, must be the same for all nodes in a cluster
@@ -40,6 +41,7 @@ class rabbitmq::server(
   $config_stomp = false,
   $stomp_port = '6163',
   $config_cluster = false,
+  $cluster_disk_nodes = [],
   $cluster_nodes = [],
   $cluster_node_type = 'disc',
   $node_ip_address = 'UNSET',
@@ -59,6 +61,12 @@ class rabbitmq::server(
   } else {
     $version_real = $version
     $pkg_ensure_real   = $version
+  }
+  if count(cluster_disk_nodes) > 0 {
+    notify{"WARNING: The cluster_disk_nodes parameter is depricated. Use cluster_nodes instead.":}
+    cluster_nodes_real = cluster_disk_nodes
+  } else {
+    cluster_nodes_real = cluster_nodes
   }
   if $config == 'UNSET' {
     $config_real = template("${module_name}/rabbitmq.config")
