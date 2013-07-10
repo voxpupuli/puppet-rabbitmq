@@ -34,7 +34,7 @@ describe Puppet::Type.type(:rabbitmq_exchange) do
   it 'should require a type' do
     expect {
       Puppet::Type.type(:rabbitmq_exchange).new(:name => 'foo@bar')
-    }.to raise_error(ArgumentError, /.*must set type when creating exchange.*/)
+    }.to raise_error(/.*must set type when creating exchange.*/)
   end
   it 'should not require a type when destroying' do
     expect {
