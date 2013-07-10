@@ -17,8 +17,8 @@ This module provides its core functionality through two main classes:
 Installs the RPM from rabbitmq upstream, and imports their signing key
 
     class { 'rabbitmq::repo::rhel':
-        $version    => "2.8.4",
-        $relversion => "1",
+        version    => "2.8.4",
+        relversion => "1",
     }
 
 ### rabbitmq::repo::apt
@@ -33,7 +33,7 @@ Sets up an apt repo source for the vendor rabbitmq packages
 Class for installing rabbitmq-server:
 
     class { 'rabbitmq::server':
-      port              => '5673',
+      port              => '5672',
       delete_guest_user => true,
     }
 
@@ -48,12 +48,22 @@ parameters `config_cluster`, `cluster_nodes`, and `cluster_node_type` e.g.:
     }
 
 **NOTE:** You still need to use `x-ha-policy: all` in your client 
-applications for any particular queue to take advantage of H/A, this module 
-merely clusters RabbitMQ instances.
+applications for any particular queue to take advantage of H/A.
+
+You should set the 'config_mirrored_queues' parameter if you plan
+on using RabbitMQ Mirrored Queues within your cluster:
+
+    class { 'rabbitmq::server':
+      config_cluster => true,
+      config_mirrored_queues => true,
+      cluster_disk_nodes => ['rabbit1', 'rabbit2'],
+    }
+
+By setting mirrored queues to true, the rabbitmq-server 2.8.7-1 package
+will be used.  This package version addressed several mirrored queues
+bugs and is the most widely tested.
 
 ## Native Types
-
-**NOTE:** Unfortunately, you must specify the provider explicitly for these types
 
 ### rabbitmq_user
 
@@ -62,7 +72,6 @@ query all current users: `$ puppet resource rabbitmq_user`
     rabbitmq_user { 'dan':
       admin    => true,
       password => 'bar',
-      provider => 'rabbitmqctl',
     }
 
 ### rabbitmq_vhost
@@ -71,7 +80,6 @@ query all current vhosts: `$ puppet resource rabbitmq_vhost`
 
     rabbitmq_vhost { 'myhost':
       ensure => present,
-      provider => 'rabbitmqctl',
     }
 
 ### rabbitmq\_user\_permissions
@@ -80,7 +88,6 @@ query all current vhosts: `$ puppet resource rabbitmq_vhost`
       configure_permission => '.*',
       read_permission      => '.*',
       write_permission     => '.*',
-      provider => 'rabbitmqctl',
     }
 
 ### rabbitmq_plugin
@@ -89,5 +96,4 @@ query all currently enabled plugins `$ puppet resource rabbitmq_plugin`
 
     rabbitmq_plugin {'rabbitmq_stomp':
       ensure => present,
-      provider => 'rabbitmqplugins',
     }
