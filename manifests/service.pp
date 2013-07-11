@@ -14,15 +14,16 @@
 # Sample Usage:
 #
 class rabbitmq::service(
-  $ensure         = 'running',
-  $service_name   = 'rabbitmq-server',
-  $manage_service = true
-) {
+  $service_ensure = $rabbitmq::service_ensure,
+  $service_manage = $rabbitmq::service_manage,
+  $service_name   = $rabbitmq::service_name,
+) inherits rabbitmq {
 
-  validate_re($ensure, '^(running|stopped)$')
-  validate_bool($manage_service)
-  if ($manage_service) {
-    if $ensure == 'running' {
+  validate_re($service_ensure, '^(running|stopped)$')
+  validate_bool($service_manage)
+
+  if ($service_manage) {
+    if $service_ensure == 'running' {
       Class['rabbitmq::service'] -> Rabbitmq_user<| |>
       Class['rabbitmq::service'] -> Rabbitmq_vhost<| |>
       Class['rabbitmq::service'] -> Rabbitmq_user_permissions<| |>
