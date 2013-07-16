@@ -3,7 +3,7 @@
 #   puppetlabs-apt
 #   puppetlabs-stdlib
 class rabbitmq::repo::apt(
-  $pin = undef
+  $pin = false
 ) {
 
   Class['rabbitmq::repo::apt'] -> Package<| title == 'rabbitmq-server' |>
@@ -15,10 +15,9 @@ class rabbitmq::repo::apt(
     include_src => false,
     key         => '056E8E56',
     key_content => template('rabbitmq/rabbit.pub.key'),
-    pin         => $pin,
   }
 
-  if ! ($pin == undef) {
+  if $pin {
     validate_re($pin, '\d\d\d')
     apt::pin { 'rabbitmq':
       packages => 'rabbitmq-server',
