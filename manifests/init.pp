@@ -6,7 +6,6 @@ class rabbitmq(
   $package_name     = $rabbitmq::params::package_name,
   $package_provider = $rabbitmq::params::package_provider,
   $package_source   = $rabbitmq::params::package_source,
-  $relversion       = $rabbitmq::params::relversion,
   $service_ensure   = $rabbitmq::params::service_ensure,
   $service_manage   = $rabbitmq::params::service_manage,
   $service_name     = $rabbitmq::params::service_name,

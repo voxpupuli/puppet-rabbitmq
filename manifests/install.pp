@@ -3,7 +3,6 @@ class rabbitmq::install(
   $package_name     = $rabbitmq::package_name,
   $package_provider = $rabbitmq::package_provider,
   $package_source   = $rabbitmq::package_source,
-  $version          = $rabbitmq::version,
 ) inherits rabbitmq {
 
   package { 'rabbitmq-server':

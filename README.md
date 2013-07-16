@@ -135,11 +135,6 @@ What provider to use to install the package.
 
 Where should the package be installed from?
 
-####`relversion`
-
-What is the minor version of the package to install?
-(This is used on Redhat).
-
 ####`management\_port`
 
 What port is the rabbitmq management interface on?

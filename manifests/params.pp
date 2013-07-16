@@ -23,10 +23,10 @@ class rabbitmq::params {
       $package_ensure   = 'installed'
       $package_name     = 'rabbitmq-server'
       $package_provider = 'rpm'
-      $relversion       = '1'
-      $version          = '3.1.3'
-      # This must remain at the end as we need $relversion and $version defined first.
-      $package_source   = "http://www.rabbitmq.com/releases/rabbitmq-server/v${version}/rabbitmq-server-${version}-${relversion}.noarch.rpm"
+      $version          = '3.1.3-1'
+      $base_version     = regsubst($version,'^(.*)-\d$','\1')
+      # This must remain at the end as we need $base_version and $version defined first.
+      $package_source   = "http://www.rabbitmq.com/releases/rabbitmq-server/v${base_version}/rabbitmq-server-${version}.noarch.rpm"
     }
     default: {
       fail("The ${module_name} module is not supported on an ${::osfamily} based system.")
