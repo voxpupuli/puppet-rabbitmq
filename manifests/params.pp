@@ -4,15 +4,33 @@
 #
 class rabbitmq::params {
 
+  $admin_enable    = true
+  $erlang_manage   = false
+  $management_port = '15672'
+  $service_ensure  = 'running'
+  $service_manage  = true
+  $service_name    = 'rabbitmq-server'
+
   case $::osfamily {
     'Debian': {
-      if $::config_mirrored_queues {
-        $mirrored_queues_pkg_name = 'rabbitmq-server_2.8.7-1_all.deb'
-        $mirrored_queues_pkg_url  = 'http://www.rabbitmq.com/releases/rabbitmq-server/v2.8.7/'
-        $erlang_pkg_name          = 'erlang-nox'
-      }
+      $package_ensure   = 'installed'
+      $package_name     = 'rabbitmq-server'
+      $package_provider = 'apt'
+      $package_source   = false
+      $version          = '3.1.3'
     }
-    default: { }
+    'RedHat': {
+      $package_ensure   = 'installed'
+      $package_name     = 'rabbitmq-server'
+      $package_provider = 'rpm'
+      $version          = '3.1.3-1'
+      $base_version     = regsubst($version,'^(.*)-\d$','\1')
+      # This must remain at the end as we need $base_version and $version defined first.
+      $package_source   = "http://www.rabbitmq.com/releases/rabbitmq-server/v${base_version}/rabbitmq-server-${version}.noarch.rpm"
+    }
+    default: {
+      fail("The ${module_name} module is not supported on an ${::osfamily} based system.")
+    }
   }
 
 }
