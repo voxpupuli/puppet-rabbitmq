@@ -14,7 +14,7 @@ class rabbitmq::repo::apt(
     repos       => 'main',
     include_src => false,
     key         => '056E8E56',
-    key_content => template('rabbitmq/rabbit.pub.key'),
+    key_content => template('rabbitmq/rabbit.pub.key.erb'),
   }
 
   if $pin {
