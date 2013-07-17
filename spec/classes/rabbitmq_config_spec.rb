@@ -5,6 +5,14 @@ describe 'rabbitmq::config' do
     context "on #{distro}" do
       let(:facts) {{ :osfamily => distro, :rabbitmq_erlang_cookie => 'EOKOWXQREETZSHFNTPEY' }}
 
+      context 'deprecated parameters' do
+        describe 'cluster_disk_nodes' do
+          let(:params) {{ :cluster_disk_nodes => ['node1', 'node2'] }}
+
+          it { should contain_notify('cluster_disk_nodes') }
+        end
+      end
+
       describe 'manages configuration directory correctly' do
         it { should contain_file('/etc/rabbitmq').with(
           'ensure' => 'directory'
@@ -116,13 +124,12 @@ describe 'rabbitmq::config' do
         end
         describe 'stomp when set' do
           let(:params) {{ :config_stomp => true, :stomp_port => 5679 }}
-          end
           it 'should specify stomp port in rabbitmq.config' do
             verify_contents(subject, 'rabbitmq.config',
             ['[','{rabbitmq_stomp, [{tcp_listeners, [5679]} ]}','].'])
           end
         end
-
+      end
     end
   end
 end

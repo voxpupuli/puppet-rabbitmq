@@ -3,7 +3,6 @@ class rabbitmq::config(
   $cluster_disk_nodes       = $rabbitmq::cluster_disk_nodes,
   $cluster_node_type        = $rabbitmq::cluster_node_type,
   $cluster_nodes            = $rabbitmq::cluster_nodes,
-  $cluster_nodes_real       = $rabbitmq::cluster_nodes_real,
   $config                   = $rabbitmq::config,
   $config_cluster           = $rabbitmq::config_cluster,
   $config_path              = $rabbitmq::config_path,
@@ -20,6 +19,17 @@ class rabbitmq::config(
   $stomp_port               = $rabbitmq::stomp_port,
   $wipe_db_on_cookie_change = $rabbitmq::wipe_db_on_cookie_change,
 ) inherits rabbitmq {
+
+  # Handle deprecated option.
+  if $cluster_disk_nodes {
+    notify { 'cluster_disk_nodes':
+      message => 'WARNING: The cluster_disk_nodes is deprecated.
+       Use cluster_nodes instead.',
+    }
+    $_cluster_nodes = $cluster_disk_nodes
+  } else {
+    $_cluster_nodes = $cluster_nodes
+  }
 
   file { '/etc/rabbitmq':
     ensure  => directory,

@@ -40,16 +40,6 @@ class rabbitmq(
   validate_re($port, '\d+')
   validate_re($stomp_port, '\d+')
 
-  # Handle deprecated option.
-  if $cluster_disk_nodes {
-    notify { 'cluster_disk_nodes':
-      message => 'WARNING: The cluster_disk_nodes is deprecated.
-       Use cluster_nodes instead.',
-    }
-    $cluster_nodes_real = $cluster_disk_nodes
-  } else {
-    $cluster_nodes_real = $cluster_nodes
-  }
 
   if $erlang_manage {
     include '::erlang'

@@ -13,14 +13,6 @@ describe 'rabbitmq' do
   context 'on supported distributions' do
     let(:facts) {{ :osfamily => 'Debian', :lsbdistcodename => 'squeeze' }}
 
-    context 'deprecated parameters' do
-      describe 'cluster_disk_nodes' do
-        let(:params) {{ :cluster_disk_nodes => ['node1', 'node2'] }}
-
-        it { should contain_notify('cluster_disk_nodes') }
-      end
-    end
-
     it { should contain_class('rabbitmq::install') }
     it { should contain_class('rabbitmq::config') }
     it { should contain_class('rabbitmq::service') }
