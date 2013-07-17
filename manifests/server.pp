@@ -15,7 +15,9 @@
 #  [*env_config*] - contents of env-config file
 #  [*config_cluster*] - whether to configure a RabbitMQ cluster
 #  [*config_mirrored_queues*] - whether to configure RabbitMQ mirrored queues within a Rabbit Cluster.
-#  [*cluster_disk_nodes*] - which nodes to cluster with (including the current one)
+#  [*cluster_disk_nodes*] - DEPRECATED (use cluster_nodes instead)
+#  [*cluster_nodes*] - which nodes to cluster with (including the current one)
+#  [*cluster_node_type*] - Type of cluster node (disc or ram)
 #  [*erlang_cookie*] - erlang cookie, must be the same for all nodes in a cluster
 #  [*wipe_db_on_cookie_change*] - whether to wipe the RabbitMQ data if the specified
 #    erlang_cookie differs from the current one. This is a sad parameter: actually,
@@ -43,6 +45,8 @@ class rabbitmq::server(
   $config_cluster = false,
   $config_mirrored_queues = false,
   $cluster_disk_nodes = [],
+  $cluster_nodes = [],
+  $cluster_node_type = 'disc',
   $node_ip_address = 'UNSET',
   $config='UNSET',
   $env_config='UNSET',
@@ -60,6 +64,12 @@ class rabbitmq::server(
   } else {
     $version_real = $version
     $pkg_ensure_real   = $version
+  }
+  if size($cluster_disk_nodes) > 0 {
+    notify{"WARNING: The cluster_disk_nodes is depricated. Use cluster_nodes instead.":}
+    $cluster_nodes_real = $cluster_disk_nodes
+  } else {
+    $cluster_nodes_real = $cluster_nodes
   }
   if $config == 'UNSET' {
     $config_real = template("${module_name}/rabbitmq.config")
