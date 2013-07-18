@@ -37,13 +37,12 @@ all features against earlier versions.
 
 ```puppet
 include '::rabbitmq'
-include '::rabbitmq::server'
 ```
 
 ##Usage
 
-The rabbitmq module is currently split and requires you to include two seperate
-classes to get full functionality.
+All options and configuration can be done through interacting with the parameters
+on the main rabbitmq class.  These are documented below.
 
 ##rabbitmq class
 
@@ -53,17 +52,7 @@ disabling puppet support of the service:
 
 ```puppet
 class { '::rabbitmq':
-  service_manage => false
-}
-```
-
-### rabbitmq::server
-
-This class manages much of the configuration of RabbitMQ and has a lot of
-parameters that can be tweaked:
-
-```puppet
-class { 'rabbitmq::server':
+  service_manage    => false
   port              => '5672',
   delete_guest_user => true,
 }
@@ -74,7 +63,7 @@ To use RabbitMQ clustering and H/A facilities, use the rabbitmq::server
 parameters `config\_cluster`, `cluster\_nodes`, and `cluster\_node\_type`, e.g.:
 
 ```puppet
-class { 'rabbitmq::server':
+class { 'rabbitmq':
   config_cluster => true,
   cluster_nodes => ['rabbit1', 'rabbit2'],
   cluster_node_type => 'ram',
@@ -88,7 +77,7 @@ You should set the 'config_mirrored_queues' parameter if you plan
 on using RabbitMQ Mirrored Queues within your cluster:
 
 ```puppet
-class { 'rabbitmq::server':
+class { 'rabbitmq':
   config_cluster => true,
   config_mirrored_queues => true,
   cluster_nodes => ['rabbit1', 'rabbit2'],
@@ -100,7 +89,7 @@ class { 'rabbitmq::server':
 ##Classes
 
 * rabbitmq: Main class for installation and service management.
-* rabbitmq::server: Main class for rabbitmq configuration/management.
+* rabbitmq::config: Main class for rabbitmq configuration/management.
 * rabbitmq::install: Handles package installation.
 * rabbitmq::params: Different configuration data for different systems.
 * rabbitmq::service: Handles the rabbitmq service.
@@ -109,13 +98,65 @@ class { 'rabbitmq::server':
 
 ###Parameters
 
-####`admin_enable`
+####`admin\_enable`
 
 If enabled sets up the management interface/plugin for RabbitMQ.
 
-####`erlang_enable`
+####`cluster\_disk\_nodes`
+
+DEPRECATED AND REPLACED BY CLUSTER_NODES.
+
+####`cluster\_node\_type`
+
+Choose between disk and ram nodes.
+
+####`cluster\_nodes`
+
+An array of nodes for clustering.
+
+####`config`
+
+The file to use as the rabbitmq.config template.
+
+####`config\_cluster`
+
+Boolean to enable or disable clustering support.
+
+####`config\_mirrored\_queues`
+
+Boolean to enable or disable mirrored queues.
+
+####`config\_path`
+
+The path to write the RabbitMQ configuration file to.
+
+####`config\_stomp`
+
+Boolean to enable or disable stomp.
+
+####`delete\_guest\_user`
+
+Boolean to decide if we should delete the default guest user.
+
+####`env\_config`
+
+The template file to use for rabbitmq_env.config.
+
+####`env\_config\_path`
+
+The path to write the rabbitmq_env.config file to.
+
+####`erlang\_cookie`
+
+The erlang cookie to use for clustering - must be the same between all nodes.
+
+####`erlang\_enable`
 
 If true then we include an erlang module.
+
+####`node\_ip\_address`
+
+The value of RABBITMQ_NODE_IP_ADDRESS in rabbitmq_env.config
 
 ####`package\_ensure`
 
@@ -134,9 +175,17 @@ What provider to use to install the package.
 
 Where should the package be installed from?
 
+####`plugin\_dir`
+
+Location of RabbitMQ plugins.
+
+####`port`
+
+The RabbitMQ port.
+
 ####`management\_port`
 
-What port is the rabbitmq management interface on?
+The port for the RabbitMQ management interface.
 
 ####`service\_ensure`
 
@@ -149,6 +198,14 @@ Determines if the service is managed.
 ####`service\_name`
 
 The name of the service to manage.
+
+####`stomp\_port`
+
+The port to use for Stomp.
+
+####`wipe\_db\_on\_cookie\_change`
+
+Boolean to determine if we should DESTROY AND DELETE the RabbitMQ database.
 
 ####`version`
 
