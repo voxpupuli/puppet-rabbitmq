@@ -1,16 +1,45 @@
+#
 class rabbitmq(
-  $admin_enable     = $rabbitmq::params::admin_enable,
-  $erlang_manage    = $rabbitmq::params::erlang_manage,
-  $management_port  = $rabbitmq::params::management_port,
-  $package_ensure   = $rabbitmq::params::package_ensure,
-  $package_name     = $rabbitmq::params::package_name,
-  $package_provider = $rabbitmq::params::package_provider,
-  $package_source   = $rabbitmq::params::package_source,
-  $service_ensure   = $rabbitmq::params::service_ensure,
-  $service_manage   = $rabbitmq::params::service_manage,
-  $service_name     = $rabbitmq::params::service_name,
-  $version          = $rabbitmq::params::version,
+  $admin_enable             = $rabbitmq::params::admin_enable,
+  $cluster_disk_nodes       = $rabbitmq::params::cluster_disk_nodes,
+  $cluster_node_type        = $rabbitmq::params::cluster_node_type,
+  $cluster_nodes            = $rabbitmq::params::cluster_nodes,
+  $config                   = $rabbitmq::params::config,
+  $config_cluster           = $rabbitmq::params::config_cluster,
+  $config_mirrored_queues   = $rabbitmq::params::config_mirrored_queues,
+  $config_path              = $rabbitmq::params::config_path,
+  $config_stomp             = $rabbitmq::params::config_stomp,
+  $delete_guest_user        = $rabbitmq::params::delete_guest_user,
+  $env_config               = $rabbitmq::params::env_config,
+  $env_config_path          = $rabbitmq::params::env_config_path,
+  $erlang_cookie            = $rabbitmq::params::erlang_cookie,
+  $erlang_manage            = $rabbitmq::params::erlang_manage,
+  $manage_service           = $rabbitmq::params::manage_service,
+  $management_port          = $rabbitmq::params::management_port,
+  $node_ip_address          = $rabbitmq::params::node_ip_address,
+  $package_ensure           = $rabbitmq::params::package_ensure,
+  $package_name             = $rabbitmq::params::package_name,
+  $package_provider         = $rabbitmq::params::package_provider,
+  $package_source           = $rabbitmq::params::package_source,
+  $plugin_dir               = $rabbitmq::params::plugin_dir,
+  $port                     = $rabbitmq::params::port,
+  $service_ensure           = $rabbitmq::params::service_ensure,
+  $service_manage           = $rabbitmq::params::service_manage,
+  $service_name             = $rabbitmq::params::service_name,
+  $stomp_port               = $rabbitmq::params::stomp_port,
+  $version                  = $rabbitmq::params::version,
+  $wipe_db_on_cookie_change = $rabbitmq::params::wipe_db_on_cookie_change,
 ) inherits rabbitmq::params {
+
+  # Validate parameters.
+  validate_bool($config_cluster)
+  validate_bool($config_mirrored_queues)
+  validate_bool($config_stomp)
+  validate_bool($delete_guest_user)
+  validate_bool($manage_service)
+  validate_re($port, '\d+')
+  validate_re($stomp_port, '\d+')
+
 
   if $erlang_manage {
     include '::erlang'
@@ -18,7 +47,7 @@ class rabbitmq(
   }
 
   include '::rabbitmq::install'
-  include '::rabbitmq::server'
+  include '::rabbitmq::config'
   include '::rabbitmq::service'
 
   case $::osfamily {
@@ -49,7 +78,7 @@ class rabbitmq(
   anchor { 'rabbitmq::end': }
 
   Anchor['rabbitmq::begin'] -> Class['::rabbitmq::install']
-    -> Class['::rabbitmq::server'] ~> Class['::rabbitmq::service']
+    -> Class['::rabbitmq::config'] ~> Class['::rabbitmq::service']
     -> Anchor['rabbitmq::end']
 
 }
