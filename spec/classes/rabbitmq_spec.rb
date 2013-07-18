@@ -14,7 +14,7 @@ describe 'rabbitmq' do
     let(:facts) {{ :osfamily => 'Debian', :lsbdistcodename => 'squeeze' }}
 
     it { should contain_class('rabbitmq::install') }
-    it { should contain_class('rabbitmq::server') }
+    it { should contain_class('rabbitmq::config') }
     it { should contain_class('rabbitmq::service') }
 
     context 'on Debian' do
