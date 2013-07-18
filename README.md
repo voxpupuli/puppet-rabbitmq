@@ -60,12 +60,12 @@ class { '::rabbitmq':
 
 ### Clustering
 To use RabbitMQ clustering and H/A facilities, use the rabbitmq::server
-parameters `config\_cluster`, `cluster\_nodes`, and `cluster\_node\_type`, e.g.:
+parameters `config_cluster`, `cluster_nodes`, and `cluster_node_type`, e.g.:
 
 ```puppet
 class { 'rabbitmq':
-  config_cluster => true,
-  cluster_nodes => ['rabbit1', 'rabbit2'],
+  config_cluster    => true 
+  cluster_nodes     => ['rabbit1', 'rabbit2'],
   cluster_node_type => 'ram',
 }
 ```
@@ -78,9 +78,9 @@ on using RabbitMQ Mirrored Queues within your cluster:
 
 ```puppet
 class { 'rabbitmq':
-  config_cluster => true,
+  config_cluster         => true,
   config_mirrored_queues => true,
-  cluster_nodes => ['rabbit1', 'rabbit2'],
+  cluster_nodes          => ['rabbit1', 'rabbit2'],
 }
 ```
 
@@ -215,7 +215,7 @@ Sets the version to install.
 
 ### rabbitmq\_user
 
-query all current users: `$ puppet resource rabbitmq\_user`
+query all current users: `$ puppet resource rabbitmq_user`
 
 ```
 rabbitmq_user { 'dan':
@@ -226,7 +226,7 @@ rabbitmq_user { 'dan':
 
 ### rabbitmq\_vhost
 
-query all current vhosts: `$ puppet resource rabbitmq\_vhost`
+query all current vhosts: `$ puppet resource rabbitmq_vhost`
 
 ```puppet
 rabbitmq_vhost { 'myhost':
@@ -246,7 +246,7 @@ rabbitmq_user_permissions { 'dan@myhost':
 
 ### rabbitmq\_plugin
 
-query all currently enabled plugins `$ puppet resource rabbitmq\_plugin`
+query all currently enabled plugins `$ puppet resource rabbitmq_plugin`
 
 ```puppet
 rabbitmq_plugin {'rabbitmq_stomp':
