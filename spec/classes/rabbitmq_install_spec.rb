@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'rabbitmq::install' do
+describe 'rabbitmq' do
 
   context "on RHEL" do
     let(:facts) {{ :osfamily => 'RedHat' }}

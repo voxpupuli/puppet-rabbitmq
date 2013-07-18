@@ -1,9 +1,9 @@
-class rabbitmq::install(
-  $package_ensure   = $rabbitmq::package_ensure,
-  $package_name     = $rabbitmq::package_name,
-  $package_provider = $rabbitmq::package_provider,
-  $package_source   = $rabbitmq::package_source,
-) inherits rabbitmq {
+class rabbitmq::install {
+
+  $package_ensure   = $rabbitmq::package_ensure
+  $package_name     = $rabbitmq::package_name
+  $package_provider = $rabbitmq::package_provider
+  $package_source   = $rabbitmq::package_source
 
   package { 'rabbitmq-server':
     ensure   => $package_ensure,
@@ -12,7 +12,7 @@ class rabbitmq::install(
     notify   => Class['rabbitmq::service'],
   }
 
-  if $package_source {
+  if $package_source != '' {
     Package['rabbitmq-server'] {
       source  => $package_source,
       require => Class['rabbitmq::repo::rhel'],
