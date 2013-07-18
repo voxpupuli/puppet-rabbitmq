@@ -98,19 +98,19 @@ class { 'rabbitmq':
 
 ###Parameters
 
-####`admin\_enable`
+####`admin_enable`
 
 If enabled sets up the management interface/plugin for RabbitMQ.
 
-####`cluster\_disk\_nodes`
+####`cluster_disk_nodes`
 
 DEPRECATED AND REPLACED BY CLUSTER_NODES.
 
-####`cluster\_node\_type`
+####`cluster_node_type`
 
 Choose between disk and ram nodes.
 
-####`cluster\_nodes`
+####`cluster_nodes`
 
 An array of nodes for clustering.
 
@@ -118,64 +118,64 @@ An array of nodes for clustering.
 
 The file to use as the rabbitmq.config template.
 
-####`config\_cluster`
+####`config_cluster`
 
 Boolean to enable or disable clustering support.
 
-####`config\_mirrored\_queues`
+####`config_mirrored_queues`
 
 Boolean to enable or disable mirrored queues.
 
-####`config\_path`
+####`config_path`
 
 The path to write the RabbitMQ configuration file to.
 
-####`config\_stomp`
+####`config_stomp`
 
 Boolean to enable or disable stomp.
 
-####`delete\_guest\_user`
+####`delete_guest_user`
 
 Boolean to decide if we should delete the default guest user.
 
-####`env\_config`
+####`env_config`
 
 The template file to use for rabbitmq_env.config.
 
-####`env\_config\_path`
+####`env_config_path`
 
 The path to write the rabbitmq_env.config file to.
 
-####`erlang\_cookie`
+####`erlang_cookie`
 
 The erlang cookie to use for clustering - must be the same between all nodes.
 
-####`erlang\_enable`
+####`erlang_enable`
 
 If true then we include an erlang module.
 
-####`node\_ip\_address`
+####`node_ip_address`
 
 The value of RABBITMQ_NODE_IP_ADDRESS in rabbitmq_env.config
 
-####`package\_ensure`
+####`package_ensure`
 
 Determines the ensure state of the package.  Set to installed by default, but could
 be changed to latest.
 
-####`package\_name`
+####`package_name`
 
 The name of the package to install.
 
-####`package\_provider`
+####`package_provider`
 
 What provider to use to install the package.
 
-####`package\_source`
+####`package_source`
 
 Where should the package be installed from?
 
-####`plugin\_dir`
+####`plugin_dir`
 
 Location of RabbitMQ plugins.
 
@@ -183,27 +183,27 @@ Location of RabbitMQ plugins.
 
 The RabbitMQ port.
 
-####`management\_port`
+####`management_port`
 
 The port for the RabbitMQ management interface.
 
-####`service\_ensure`
+####`service_ensure`
 
 The state of the service.
 
-####`service\_manage`
+####`service_manage`
 
 Determines if the service is managed.
 
-####`service\_name`
+####`service_name`
 
 The name of the service to manage.
 
-####`stomp\_port`
+####`stomp_port`
 
 The port to use for Stomp.
 
-####`wipe\_db\_on\_cookie\_change`
+####`wipe_db_on_cookie_change`
 
 Boolean to determine if we should DESTROY AND DELETE the RabbitMQ database.
 
