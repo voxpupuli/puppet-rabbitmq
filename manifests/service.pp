@@ -34,9 +34,10 @@ class rabbitmq::service(
       $enable_real = false
     }
 
-    service { $service_name:
+    service { 'rabbitmq':
       ensure     => $ensure_real,
       enable     => $enable_real,
+      name       => $service_name,
       hasstatus  => true,
       hasrestart => true,
     }

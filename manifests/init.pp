@@ -81,4 +81,12 @@ class rabbitmq(
     -> Class['::rabbitmq::config'] ~> Class['::rabbitmq::service']
     -> Anchor['rabbitmq::end']
 
+  if $delete_guest_user {
+    # delete the default guest user
+    rabbitmq_user{ 'guest':
+      ensure   => absent,
+      provider => 'rabbitmqctl',
+    }
+  }
+
 }

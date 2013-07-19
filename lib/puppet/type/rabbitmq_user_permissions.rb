@@ -11,6 +11,8 @@ Puppet::Type.newtype(:rabbitmq_user_permissions) do
     end
   end
 
+  autorequire(:service) { 'rabbitmq' }
+
   newparam(:name, :namevar => true) do
     'combination of user@vhost to grant privileges to'
     newvalues(/^\S+@\S+$/)
