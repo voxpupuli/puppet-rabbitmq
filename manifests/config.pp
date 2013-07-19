@@ -8,7 +8,6 @@ class rabbitmq::config(
   $config_path              = $rabbitmq::config_path,
   $config_mirrored_queues   = $rabbitmq::config_mirrored_queues,
   $config_stomp             = $rabbitmq::config_stomp,
-  $delete_guest_user        = $rabbitmq::delete_guest_user,
   $env_config               = $rabbitmq::env_config,
   $env_config_path          = $rabbitmq::env_config_path,
   $erlang_cookie            = $rabbitmq::erlang_cookie,
@@ -56,14 +55,6 @@ class rabbitmq::config(
     group   => '0',
     mode    => '0644',
     notify  => Class['rabbitmq::service'],
-  }
-
-  if $delete_guest_user {
-    # delete the default guest user
-    rabbitmq_user{ 'guest':
-      ensure   => absent,
-      provider => 'rabbitmqctl',
-    }
   }
 
   if $config_cluster {

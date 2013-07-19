@@ -11,6 +11,8 @@ Puppet::Type.newtype(:rabbitmq_plugin) do
     end
   end
 
+  autorequire(:anchor) { 'rabbitmq::install' }
+
   newparam(:name, :namevar => true) do
     'name of the plugin to enable'
     newvalues(/^\S+$/)
