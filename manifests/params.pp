@@ -40,7 +40,7 @@ class rabbitmq::params {
   $config                   = 'rabbitmq/rabbitmq.config.erb'
   $config_cluster           = false
   $config_mirrored_queues   = false
-  $config_path              = '/etc/rabbitmq/rabbitmq.conf'
+  $config_path              = '/etc/rabbitmq/rabbitmq.config'
   $config_stomp             = false
   $delete_guest_user        = false
   $env_config               = 'rabbitmq/rabbitmq-env.conf.erb'
