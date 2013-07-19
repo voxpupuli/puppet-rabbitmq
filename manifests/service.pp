@@ -24,9 +24,6 @@ class rabbitmq::service(
 
   if ($service_manage) {
     if $service_ensure == 'running' {
-      Class['rabbitmq::service'] -> Rabbitmq_user<| |>
-      Class['rabbitmq::service'] -> Rabbitmq_vhost<| |>
-      Class['rabbitmq::service'] -> Rabbitmq_user_permissions<| |>
       $ensure_real = 'running'
       $enable_real = true
     } else {
