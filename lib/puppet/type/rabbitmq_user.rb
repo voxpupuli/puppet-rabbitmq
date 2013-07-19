@@ -11,7 +11,7 @@ Puppet::Type.newtype(:rabbitmq_user) do
     end
   end
 
-  autorequire(:service) { 'rabbitmq' }
+  autorequire(:anchor) { 'rabbitmq::end' }
 
   newparam(:name, :namevar => true) do
     desc 'Name of user'

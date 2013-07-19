@@ -75,11 +75,12 @@ class rabbitmq(
   # mess everything up.  You can read about this at:
   # http://docs.puppetlabs.com/puppet/2.7/reference/lang_containment.html#known-issues
   anchor { 'rabbitmq::begin': }
+  anchor { 'rabbitmq::install': }
   anchor { 'rabbitmq::end': }
 
   Anchor['rabbitmq::begin'] -> Class['::rabbitmq::install']
-    -> Class['::rabbitmq::config'] ~> Class['::rabbitmq::service']
-    -> Anchor['rabbitmq::end']
+    -> Anchor['rabbitmq::install'] -> Class['::rabbitmq::config']
+    ~> Class['::rabbitmq::service'] -> Anchor['rabbitmq::end']
 
   if $delete_guest_user {
     # delete the default guest user
