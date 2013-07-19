@@ -1,6 +1,6 @@
 class rabbitmq::install::rabbitmqadmin(
   $management_port = $rabbitmq::management_port,
-) inherits rabbitmq {
+) {
 
   exec { 'Download rabbitmqadmin':
     command => "curl http://localhost:${management_port}/cli/rabbitmqadmin -o /var/lib/rabbitmq/rabbitmqadmin",

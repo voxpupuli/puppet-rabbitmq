@@ -17,7 +17,7 @@ class rabbitmq::service(
   $service_ensure = $rabbitmq::service_ensure,
   $service_manage = $rabbitmq::service_manage,
   $service_name   = $rabbitmq::service_name,
-) inherits rabbitmq {
+) {
 
   validate_re($service_ensure, '^(running|stopped)$')
   validate_bool($service_manage)

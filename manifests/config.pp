@@ -18,7 +18,7 @@ class rabbitmq::config(
   $service_name             = $rabbitmq::service_name,
   $stomp_port               = $rabbitmq::stomp_port,
   $wipe_db_on_cookie_change = $rabbitmq::wipe_db_on_cookie_change,
-) inherits rabbitmq {
+) {
 
   # Handle deprecated option.
   if $cluster_disk_nodes {
