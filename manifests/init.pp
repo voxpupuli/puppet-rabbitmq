@@ -67,18 +67,6 @@ class rabbitmq(
       require => Class['rabbitmq::install'],
       notify  => Class['rabbitmq::service']
     }
-
-    Class['::rabbitmq::service'] -> Class['::rabbitmq::install::rabbitmqadmin']
   }
-
-  # Anchor this as per #8140 - this ensures that classes won't float off and
-  # mess everything up.  You can read about this at:
-  # http://docs.puppetlabs.com/puppet/2.7/reference/lang_containment.html#known-issues
-  anchor { 'rabbitmq::begin': }
-  anchor { 'rabbitmq::end': }
-
-  Anchor['rabbitmq::begin'] -> Class['::rabbitmq::install']
-    -> Class['::rabbitmq::config'] ~> Class['::rabbitmq::service']
-    -> Anchor['rabbitmq::end']
 
 }

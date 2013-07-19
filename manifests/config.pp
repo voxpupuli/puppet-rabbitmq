@@ -18,7 +18,7 @@ class rabbitmq::config(
   $service_name             = $rabbitmq::service_name,
   $stomp_port               = $rabbitmq::stomp_port,
   $wipe_db_on_cookie_change = $rabbitmq::wipe_db_on_cookie_change,
-) inherits rabbitmq {
+) {
 
   # Handle deprecated option.
   if $cluster_disk_nodes {
@@ -36,6 +36,7 @@ class rabbitmq::config(
     owner   => '0',
     group   => '0',
     mode    => '0644',
+    require => Class['rabbitmq::install'],
   }
 
   file { 'rabbitmq.config':
@@ -45,6 +46,7 @@ class rabbitmq::config(
     owner   => '0',
     group   => '0',
     mode    => '0644',
+    require => File['/etc/rabbitmq'],
     notify  => Class['rabbitmq::service'],
   }
 
@@ -55,19 +57,20 @@ class rabbitmq::config(
     owner   => '0',
     group   => '0',
     mode    => '0644',
+    require => File['/etc/rabbitmq'],
     notify  => Class['rabbitmq::service'],
   }
 
   if $delete_guest_user {
     # delete the default guest user
-    rabbitmq_user{ 'guest':
+    rabbitmq_user { 'guest':
       ensure   => absent,
       provider => 'rabbitmqctl',
+      require  => Class['rabbitmq::service'],
     }
   }
 
   if $config_cluster {
-
     # rabbitmq_erlang_cookie is a fact in this module.
     if $erlang_cookie != $::rabbitmq_erlang_cookie {
       # Safety check.
