@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'rabbitmq::config' do
+describe 'rabbitmq' do
   ['Debian', 'RedHat'].each do |distro|
     context "on #{distro}" do
       let(:facts) {{ :osfamily => distro, :rabbitmq_erlang_cookie => 'EOKOWXQREETZSHFNTPEY' }}

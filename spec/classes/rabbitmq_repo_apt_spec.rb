@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe 'rabbitmq::repo::apt' do
+describe 'rabbitmq' do
   let(:facts)  {{ :osfamily => 'Debian' }}
 
   context 'with no pin' do
-    let(:params) {{ :pin => false }}
+    let(:params) {{ :package_apt_pin => '' }}
     describe 'it sets up an apt::source' do
 
       it { should contain_apt__source('rabbitmq').with(
@@ -18,7 +18,7 @@ describe 'rabbitmq::repo::apt' do
   end
 
   context 'with pin' do
-    let(:params) {{ :pin => '700' }}
+    let(:params) {{ :package_apt_pin => '700' }}
     describe 'it sets up an apt::source and pin' do
 
       it { should contain_apt__source('rabbitmq').with(

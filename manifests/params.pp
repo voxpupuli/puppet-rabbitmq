@@ -9,7 +9,7 @@ class rabbitmq::params {
       $package_ensure   = 'installed'
       $package_name     = 'rabbitmq-server'
       $package_provider = 'apt'
-      $package_source   = false
+      $package_source   = ''
       $version          = '3.1.3'
     }
     'RedHat': {
@@ -30,12 +30,14 @@ class rabbitmq::params {
   $admin_enable             = true
   $erlang_manage            = false
   $management_port          = '15672'
+  $package_apt_pin          = ''
+  $package_gpg_key          = 'http://www.rabbitmq.com/rabbitmq-signing-key-public.asc'
   $service_ensure           = 'running'
   $service_manage           = true
   $service_name             = 'rabbitmq-server'
   #config
-  $cluster_disk_nodes       = false
-  $cluster_node_type        = 'disc'
+  $cluster_disk_nodes       = []
+  $cluster_node_type        = 'disk'
   $cluster_nodes            = []
   $config                   = 'rabbitmq/rabbitmq.config.erb'
   $config_cluster           = false

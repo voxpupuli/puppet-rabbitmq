@@ -1,10 +1,9 @@
-# sets up the vmware hosted apt repo
 # requires
 #   puppetlabs-apt
 #   puppetlabs-stdlib
-class rabbitmq::repo::apt(
-  $pin = false
-) {
+class rabbitmq::repo::apt {
+
+  $pin = $rabbitmq::package_apt_pin
 
   Class['rabbitmq::repo::apt'] -> Package<| title == 'rabbitmq-server' |>
 

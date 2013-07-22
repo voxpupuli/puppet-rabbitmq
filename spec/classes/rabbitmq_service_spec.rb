@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'rabbitmq::service' do
+describe 'rabbitmq' do
   let(:facts) {{ :osfamily => 'Debian', :lsbdistcodename => 'precise' }}
 
   describe 'service with default params' do
