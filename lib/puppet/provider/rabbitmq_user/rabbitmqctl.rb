@@ -1,13 +1,12 @@
 require 'puppet'
 Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
 
-  if respond_to? :has_command
-    has_command(:rabbitmqctl, 'rabbitmqctl') do
-       is_optional
-       environment :HOME => "/tmp"
-    end
-  else
+  if Puppet::PUPPETVERSION.to_f < 3
     commands :rabbitmqctl => 'rabbitmqctl'
+  else
+     has_command(:rabbitmqctl, 'rabbitmqctl') do
+       environment :HOME => "/tmp"
+     end
   end
 
   defaultfor :feature => :posix
