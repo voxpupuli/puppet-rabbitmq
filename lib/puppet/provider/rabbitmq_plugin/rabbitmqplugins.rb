@@ -1,12 +1,11 @@
 Puppet::Type.type(:rabbitmq_plugin).provide(:rabbitmqplugins) do
 
-  if respond_to? :has_command
-    has_command(:rabbitmqplugins, 'rabbitmq-plugins') do
-       is_optional
-       environment :HOME => "/tmp"
-    end
+  if Puppet::PUPPETVERSION.to_f < 3
+    commands :rabbitmqplugins, 'rabbitmq-plugins'
   else
-    commands :rabbitmqplugins => 'rabbitmq-plugins'
+     has_command(:rabbitmqplugins, 'rabbitmq-plugins') do
+       environment :HOME => "/tmp"
+     end
   end
 
   defaultfor :feature => :posix
