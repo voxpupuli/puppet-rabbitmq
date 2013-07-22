@@ -14,8 +14,9 @@ Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl) do
     rabbitmqctl('list_users', '-q').find {|line|
       line =~ /unable to connect to node/
     }
-  rescue
-    true                                                                                                                                                                        end
+  rescue Puppet::Error => error
+    true
+  end
 
   # cache users permissions
   def self.users(name, vhost)

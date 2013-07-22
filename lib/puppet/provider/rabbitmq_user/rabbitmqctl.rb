@@ -15,7 +15,7 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
     rabbitmqctl('list_users', '-q').find {|line|
       line =~ /unable to connect to node/
     }
-  rescue
+  rescue Puppet::Error => error
     true
   end
 
