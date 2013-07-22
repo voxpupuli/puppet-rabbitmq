@@ -3,7 +3,7 @@ class rabbitmq::install::rabbitmqadmin(
 ) inherits rabbitmq {
 
   exec { 'Download rabbitmqadmin':
-    command => "curl http://localhost:${management_port}/cli/rabbitmqadmin -o /var/lib/rabbitmq/rabbitmqadmin",
+    command => "bash -c 'curl http://localhost:${management_port}/cli/rabbitmqadmin -o /var/lib/rabbitmq/rabbitmqadmin || wget http://localhost:${management_port}/cli/rabbitmqadmin -O /var/lib/rabbitmq/rabbitmqadmin'",
     path    => '/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin',
     creates => '/var/lib/rabbitmq/rabbitmqadmin',
     require => [
