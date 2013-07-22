@@ -21,7 +21,7 @@ describe "rabbitmq class:" do
     end
   end
 
-  describe file('/etc/rabbitmq/rabbitmq.conf') do
+  describe file('/etc/rabbitmq/rabbitmq.config') do
     it { should be_file }
     it { should contain 'cluster_nodes' }
     it { should contain 'rabbit@rabbit1' }
