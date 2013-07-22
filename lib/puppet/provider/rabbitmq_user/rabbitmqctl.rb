@@ -10,6 +10,14 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
   end
 
   defaultfor :feature => :posix
+  confine :false =>
+  begin
+    rabbitmqctl('list_users', '-q').find {|line|
+      line =~ /unable to connect to node/
+    }
+  rescue
+    true
+  end
 
   def self.instances
     rabbitmqctl('list_users').split(/\n/)[1..-2].collect do |line|
@@ -33,7 +41,7 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
   end
 
   def exists?
-    out = rabbitmqctl('list_users').split(/\n/)[1..-2].detect do |line|
+    rabbitmqctl('list_users').split(/\n/)[1..-2].detect do |line|
       line.match(/^#{Regexp.escape(resource[:name])}(\s+\S+|)$/)
     end
   end

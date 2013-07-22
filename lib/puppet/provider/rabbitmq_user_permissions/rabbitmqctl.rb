@@ -9,13 +9,20 @@ Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl) do
   end
 
   defaultfor :feature=> :posix
+  confine :false =>
+  begin
+    rabbitmqctl('list_users', '-q').find {|line|
+      line =~ /unable to connect to node/
+    }
+  rescue
+    true                                                                                                                                                                        end
 
   # cache users permissions
   def self.users(name, vhost)
     @users = {} unless @users
     unless @users[name]
       @users[name] = {}
-      out = rabbitmqctl('list_user_permissions', name).split(/\n/)[1..-2].each do |line|
+      rabbitmqctl('list_user_permissions', name).split(/\n/)[1..-2].each do |line|
         if line =~ /^(\S+)\s+(\S+)\s+(\S+)\s+(\S+)$/
           @users[name][$1] =
             {:configure => $2, :read => $3, :write => $4}
