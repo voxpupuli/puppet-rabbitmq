@@ -17,7 +17,9 @@ class rabbitmq(
   $manage_service           = $rabbitmq::params::manage_service,
   $management_port          = $rabbitmq::params::management_port,
   $node_ip_address          = $rabbitmq::params::node_ip_address,
+  $package_apt_pin          = $rabbitmq::params::package_apt_pin,
   $package_ensure           = $rabbitmq::params::package_ensure,
+  $package_gpg_key          = $rabbitmq::params::package_gpg_key,
   $package_name             = $rabbitmq::params::package_name,
   $package_provider         = $rabbitmq::params::package_provider,
   $package_source           = $rabbitmq::params::package_source,
@@ -31,14 +33,40 @@ class rabbitmq(
   $wipe_db_on_cookie_change = $rabbitmq::params::wipe_db_on_cookie_change,
 ) inherits rabbitmq::params {
 
-  # Validate parameters.
+  validate_bool($admin_enable)
+  validate_bool($erlang_manage)
+  # Validate install parameters.
+  validate_re($package_apt_pin, '^(|\d+)$')
+  validate_string($package_ensure)
+  validate_string($package_gpg_key)
+  validate_string($package_name)
+  validate_string($package_provider)
+  validate_string($package_source)
+  validate_re($version, '^\d+\.\d+\.\d+(-\d+)*$') # Allow 3 digits and optional -n postfix.
+  # Validate config parameters.
+  validate_array($cluster_disk_nodes)
+  validate_re($cluster_node_type, '^(disk|ram)$')
+  validate_array($cluster_nodes)
+  validate_string($config)
+  validate_absolute_path($config_path)
   validate_bool($config_cluster)
   validate_bool($config_mirrored_queues)
   validate_bool($config_stomp)
   validate_bool($delete_guest_user)
-  validate_bool($manage_service)
+  validate_string($env_config)
+  validate_absolute_path($env_config_path)
+  validate_string($erlang_cookie)
+  validate_re($management_port, '\d+')
+  validate_string($node_ip_address)
+  validate_absolute_path($plugin_dir)
   validate_re($port, '\d+')
   validate_re($stomp_port, '\d+')
+  validate_bool($wipe_db_on_cookie_change)
+  # Validate service parameters.
+  validate_bool($manage_service)
+  validate_re($service_ensure, '^(running|stopped)$')
+  validate_bool($service_manage)
+  validate_string($service_name)
 
 
   if $erlang_manage {
@@ -49,6 +77,7 @@ class rabbitmq(
   include '::rabbitmq::install'
   include '::rabbitmq::config'
   include '::rabbitmq::service'
+  include '::rabbitmq::management'
 
   case $::osfamily {
     'RedHat':
@@ -71,7 +100,7 @@ class rabbitmq(
     Class['::rabbitmq::service'] -> Class['::rabbitmq::install::rabbitmqadmin']
   }
 
-  # Anchor this as per #8140 - this ensures that classes won't float off and
+  # Anchor this as per #8040 - this ensures that classes won't float off and
   # mess everything up.  You can read about this at:
   # http://docs.puppetlabs.com/puppet/2.7/reference/lang_containment.html#known-issues
   anchor { 'rabbitmq::begin': }
@@ -79,6 +108,12 @@ class rabbitmq(
 
   Anchor['rabbitmq::begin'] -> Class['::rabbitmq::install']
     -> Class['::rabbitmq::config'] ~> Class['::rabbitmq::service']
-    -> Anchor['rabbitmq::end']
+    -> Class['::rabbitmq::management'] -> Anchor['rabbitmq::end']
+
+  # Make sure the various providers have their requirements in place.
+  Class['::rabbitmq::install'] -> Rabbitmq_plugin<| |>
+  Class['::rabbitmq::install::rabbitmqadmin'] -> Rabbitmq_exchange<| |>
+  Class['::rabbitmq::service'] -> Rabbitmq_user<| |>
+  Class['::rabbitmq::service'] -> Rabbitmq_user_permissions<| |>
 
 }
