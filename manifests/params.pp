@@ -12,7 +12,7 @@ class rabbitmq::params {
       $package_source   = ''
       $version          = '3.1.3'
     }
-    'RedHat': {
+    'RedHat', 'SUSE': {
       $package_ensure   = 'installed'
       $package_name     = 'rabbitmq-server'
       $package_provider = 'rpm'

@@ -98,7 +98,7 @@ class rabbitmq(
   include '::rabbitmq::management'
 
   case $::osfamily {
-    'RedHat':
+    'RedHat', 'SUSE':
       { include '::rabbitmq::repo::rhel' }
     'Debian':
       { include '::rabbitmq::repo::apt' }
