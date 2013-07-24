@@ -39,16 +39,15 @@ Class for installing rabbitmq-server:
 
 ### Clustering
 To use RabbitMQ clustering and H/A facilities, use the rabbitmq::server
-parameters `config_cluster` and `cluster_disk_nodes`, e.g.:
+parameters `config\_cluster`, `cluster\_nodes`, and `cluster\_node\_type`, e.g.:
 
     class { 'rabbitmq::server':
-      config_cluster => true,
-      cluster_disk_nodes => ['rabbit1', 'rabbit2'],
+      config_cluster    => true,
+      cluster_nodes     => ['rabbit1', 'rabbit2'],
+      cluster_node_type => 'ram',
     }
 
-Currently all cluster nodes are registered as disk nodes (not ram).
-
-**NOTE:** You still need to use `x-ha-policy: all` in your client 
+**NOTE:** You still need to use `x-ha-policy: all` in your client
 applications for any particular queue to take advantage of H/A.
 
 You should set the 'config_mirrored_queues' parameter if you plan
@@ -57,7 +56,7 @@ on using RabbitMQ Mirrored Queues within your cluster:
     class { 'rabbitmq::server':
       config_cluster => true,
       config_mirrored_queues => true,
-      cluster_disk_nodes => ['rabbit1', 'rabbit2'],
+      cluster_nodes => ['rabbit1', 'rabbit2'],
     }
 
 By setting mirrored queues to true, the rabbitmq-server 2.8.7-1 package
