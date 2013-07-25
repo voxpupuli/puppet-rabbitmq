@@ -23,13 +23,13 @@ Puppet::Type.newtype(:rabbitmq_exchange) do
 
   newparam(:user) do
     desc 'The user to use to connect to rabbitmq'
-    defaultto('guest')
+    #defaultto('guest')
     newvalues(/^\S+$/)
   end
 
   newparam(:password) do
     desc 'The password to use to connect to rabbitmq'
-    defaultto('guest')
+    #defaultto('guest')
     newvalues(/\S+/)
   end
 

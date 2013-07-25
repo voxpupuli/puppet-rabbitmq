@@ -5,6 +5,7 @@ Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl) do
   else
      has_command(:rabbitmqctl, 'rabbitmqctl') do
        environment :HOME => "/tmp"
+       environment :PATH => "/usr/sbin:/bin:/usr/bin"
      end
   end
 
