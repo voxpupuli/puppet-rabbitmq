@@ -1,4 +1,7 @@
 pkg/
 *.swp
 metadata.json
-spec/fixtures/modules/*
+spec/fixtures
+.rspec_system
+*.lock
+.idea
