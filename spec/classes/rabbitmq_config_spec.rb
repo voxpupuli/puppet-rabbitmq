@@ -76,7 +76,7 @@ describe 'rabbitmq' do
           }}
           it 'for cluster_nodes' do
             verify_contents(subject, 'rabbitmq.config',
-            ['[',"{rabbit, [{cluster_nodes, {['rabbit@hare-1', 'rabbit@hare-2'], ram}}]}", '].'])
+            ['[','  {rabbit, [', "    {cluster_nodes, {['rabbit@hare-1', 'rabbit@hare-2'], ram}}]}", '].'])
           end
 
           it 'for erlang_cookie' do
@@ -126,7 +126,30 @@ describe 'rabbitmq' do
           let(:params) {{ :config_stomp => true, :stomp_port => 5679 }}
           it 'should specify stomp port in rabbitmq.config' do
             verify_contents(subject, 'rabbitmq.config',
-            ['[','{rabbitmq_stomp, [{tcp_listeners, [5679]} ]}','].'])
+            ['[', '  {rabbit, [', '  ]}', '  {rabbitmq_stomp, [', '    {tcp_listeners, [5679]}', '].'])
+          end
+        end
+        describe 'stomp when set with ssl' do
+          let(:params) {{ :config_stomp => true, :stomp_port => 5679, :ssl_stomp_port => 5680 }}
+          it 'should specify stomp port and ssl stomp port in rabbitmq.config' do
+            verify_contents(subject, 'rabbitmq.config',
+            ['[', '  {rabbit, [', '  ]}', '  {rabbitmq_stomp, [', '    {tcp_listeners, [5679]}', '    {ssl_listeners, [5680]}', '].'])
+          end
+        end
+
+        describe 'default_user and default_pass set' do
+          let(:params) {{ :default_user => 'foo', :default_pass => 'bar' }}
+          it 'should set default_user and default_pass to specified values' do
+            verify_contents(subject, 'rabbitmq.config',
+            ['    {default_user, <<"foo">>},', '    {default_pass, <<"bar">>}'])
+          end
+        end
+
+        describe 'ssl options' do
+          let(:params) {{ :ssl => true, :ssl_management_port => 3141, :ssl_cacert => '/path/to/cacert', :ssl_cert => '/path/to/cert', :ssl_key => '/path/to/key' }}
+          it 'should set ssl options to specified values' do
+            verify_contents(subject, 'rabbitmq.config',
+            ['    {ssl_listeners, [3141]},', '    {ssl_options, [{cacertfile,"/path/to/cacert"},', '                    {certfile,"/path/to/cert"},', '                    {keyfile,"/path/to/key"},'])
           end
         end
       end
