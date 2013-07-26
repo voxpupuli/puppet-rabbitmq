@@ -44,6 +44,8 @@ class rabbitmq::params {
   $config_mirrored_queues   = false
   $config_path              = '/etc/rabbitmq/rabbitmq.config'
   $config_stomp             = false
+  $default_user             = 'guest'
+  $default_pass             = 'guest'
   $delete_guest_user        = false
   $env_config               = 'rabbitmq/rabbitmq-env.conf.erb'
   $env_config_path          = '/etc/rabbitmq/rabbitmq-env.conf'
@@ -52,6 +54,12 @@ class rabbitmq::params {
   $node_ip_address          = 'UNSET'
   $plugin_dir               = "/usr/lib/rabbitmq/lib/rabbitmq_server-${version}/plugins"
   $port                     = '5672'
+  $ssl                      = false
+  $ssl_cacert               = 'UNSET'
+  $ssl_cert                 = 'UNSET'
+  $ssl_key                  = 'UNSET'
+  $ssl_management_port      = '5671'
+  $ssl_stomp_port           = '6164'
   $stomp_port               = '6163'
   $wipe_db_on_cookie_change = false
 
