@@ -6,9 +6,11 @@
 Facter.add(:rabbitmq_erlang_cookie) do
   confine :osfamily => %w[Debian RedHat Suse]
 
-  case Facter.value(:osfamily)
-  when 'Debian', 'RedHat', 'Suse'
-    cookie = File.read('/var/lib/rabbitmq/.erlang.cookie')
+  setcode do
+    if File.exists?('/var/lib/rabbitmq/.erlang.cookie')
+      File.read('/var/lib/rabbitmq/.erlang.cookie')
+    else
+      nil
+    end
   end
-  cookie
 end
