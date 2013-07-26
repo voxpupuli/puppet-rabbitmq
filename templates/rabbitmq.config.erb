@@ -1,12 +1,29 @@
 % This file managed by Puppet
 % Template Path: <%= @module_name %>/templates/rabbitmq.config
 [
+  {rabbit, [
 <% if @config_cluster -%>
-{rabbit, [{cluster_nodes, {[<%= @_cluster_nodes.map { |n| "\'rabbit@#{n}\'" }.join(', ') %>], <%= @cluster_node_type %>}}]}<% if @config_stomp -%>,<% end %>
+    {cluster_nodes, {[<%= @_cluster_nodes.map { |n| "\'rabbit@#{n}\'" }.join(', ') %>], <%= @cluster_node_type %>}}]}
 <% end -%>
-<% if @config_stomp -%>
+<%- if @ssl %>
+    {ssl_listeners, [<%= @ssl_management_port %>]},
+    {ssl_options, [{cacertfile,"<%= @ssl_cacert %>"},
+                    {certfile,"<%= @ssl_cert %>"},
+                    {keyfile,"<%= @ssl_key %>"},
+                    {verify,verify_none},
+                    {fail_if_no_peer_cert,false}]},
+<%- end -%>
+    {default_user, <<"<%= @default_user %>">>},
+    {default_pass, <<"<%= @default_pass %>">>}
+  ]}
+<% if @config_stomp -%>,
 % Configure the Stomp Plugin listening port
-{rabbitmq_stomp, [{tcp_listeners, [<%= @stomp_port %>]} ]}
-<% end -%>
+  {rabbitmq_stomp, [
+    {tcp_listeners, [<%= @stomp_port %>]}
+  <%- if @ssl_stomp_port -%>,
+    {ssl_listeners, [<%= @ssl_stomp_port %>]}
+  <%- end -%>
+  ]}
+<%- end -%>
 ].
 % EOF

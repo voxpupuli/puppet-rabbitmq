@@ -9,6 +9,8 @@ class rabbitmq(
   $config_mirrored_queues   = $rabbitmq::params::config_mirrored_queues,
   $config_path              = $rabbitmq::params::config_path,
   $config_stomp             = $rabbitmq::params::config_stomp,
+  $default_user             = $rabbitmq::params::default_user,
+  $default_pass             = $rabbitmq::params::default_pass,
   $delete_guest_user        = $rabbitmq::params::delete_guest_user,
   $env_config               = $rabbitmq::params::env_config,
   $env_config_path          = $rabbitmq::params::env_config_path,
@@ -28,6 +30,12 @@ class rabbitmq(
   $service_ensure           = $rabbitmq::params::service_ensure,
   $service_manage           = $rabbitmq::params::service_manage,
   $service_name             = $rabbitmq::params::service_name,
+  $ssl                      = $rabbitmq::params::ssl,
+  $ssl_cacert               = $rabbitmq::params::ssl_cacert,
+  $ssl_cert                 = $rabbitmq::params::ssl_cert,
+  $ssl_key                  = $rabbitmq::params::ssl_key,
+  $ssl_management_port      = $rabbitmq::params::ssl_management_port,
+  $ssl_stomp_port           = $rabbitmq::params::ssl_stomp_port,
   $stomp_port               = $rabbitmq::params::stomp_port,
   $version                  = $rabbitmq::params::version,
   $wipe_db_on_cookie_change = $rabbitmq::params::wipe_db_on_cookie_change,
@@ -52,6 +60,8 @@ class rabbitmq(
   validate_bool($config_cluster)
   validate_bool($config_mirrored_queues)
   validate_bool($config_stomp)
+  validate_string($default_user)
+  validate_string($default_pass)
   validate_bool($delete_guest_user)
   validate_string($env_config)
   validate_absolute_path($env_config_path)
@@ -67,6 +77,14 @@ class rabbitmq(
   validate_re($service_ensure, '^(running|stopped)$')
   validate_bool($service_manage)
   validate_string($service_name)
+  validate_bool($ssl)
+  validate_string($ssl_cacert)
+  validate_string($ssl_cert)
+  validate_string($ssl_key)
+  validate_string($ssl_management_port)
+  validate_re($ssl_management_port, '\d+')
+  validate_string($ssl_stomp_port)
+  validate_re($ssl_stomp_port, '\d+')
 
 
   if $erlang_manage {
