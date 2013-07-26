@@ -113,7 +113,5 @@ class rabbitmq(
   # Make sure the various providers have their requirements in place.
   Class['::rabbitmq::install'] -> Rabbitmq_plugin<| |>
   Class['::rabbitmq::install::rabbitmqadmin'] -> Rabbitmq_exchange<| |>
-  Class['::rabbitmq::service'] -> Rabbitmq_user<| |>
-  Class['::rabbitmq::service'] -> Rabbitmq_user_permissions<| |>
 
 }
