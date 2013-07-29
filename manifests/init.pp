@@ -106,7 +106,7 @@ class rabbitmq(
       { }
   }
 
-  if $admin_enable {
+  if $admin_enable and $service_manage {
     include '::rabbitmq::install::rabbitmqadmin'
 
     rabbitmq_plugin { 'rabbitmq_management':
