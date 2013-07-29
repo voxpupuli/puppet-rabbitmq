@@ -9,14 +9,6 @@ Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl) do
   end
 
   defaultfor :feature=> :posix
-  confine :false =>
-  begin
-    rabbitmqctl('list_users', '-q').find {|line|
-      line =~ /unable to connect to node/
-    }
-  rescue Puppet::Error => error
-    true
-  end
 
   # cache users permissions
   def self.users(name, vhost)
