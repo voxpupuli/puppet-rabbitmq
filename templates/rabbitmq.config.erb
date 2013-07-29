@@ -3,7 +3,7 @@
 [
   {rabbit, [
 <% if @config_cluster -%>
-    {cluster_nodes, {[<%= @_cluster_nodes.map { |n| "\'rabbit@#{n}\'" }.join(', ') %>], <%= @cluster_node_type %>}}]}
+    {cluster_nodes, {[<%= @_cluster_nodes.map { |n| "\'rabbit@#{n}\'" }.join(', ') %>], <%= @cluster_node_type %>}},
 <% end -%>
 <%- if @ssl %>
     {ssl_listeners, [<%= @ssl_management_port %>]},
