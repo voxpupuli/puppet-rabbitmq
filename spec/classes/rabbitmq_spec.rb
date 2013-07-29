@@ -33,12 +33,21 @@ describe 'rabbitmq' do
 
     context 'with admin_enable set to true' do
       let(:params) {{ :admin_enable => true }}
-      it 'we enable the admin interface by default' do
-        should contain_class('rabbitmq::install::rabbitmqadmin')
-        should contain_rabbitmq_plugin('rabbitmq_management').with(
-          'require' => 'Class[Rabbitmq::Install]',
-          'notify'  => 'Class[Rabbitmq::Service]'
-        )
+      context 'with service_manage set to true' do
+        it 'we enable the admin interface by default' do
+          should contain_class('rabbitmq::install::rabbitmqadmin')
+          should contain_rabbitmq_plugin('rabbitmq_management').with(
+            'require' => 'Class[Rabbitmq::Install]',
+            'notify'  => 'Class[Rabbitmq::Service]'
+          )
+        end
+      end
+      context 'with service_manage set to false' do
+        let(:params) {{ :admin_enable => true, :service_manage => false }}
+        it 'should do nothing' do
+          should_not contain_class('rabbitmq::install::rabbitmqadmin')
+          should_not contain_rabbitmq_plugin('rabbitmq_management')
+        end
       end
     end
 
