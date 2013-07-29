@@ -75,13 +75,15 @@ describe 'rabbitmq' do
             :wipe_db_on_cookie_change => true
           }}
           it 'for cluster_nodes' do
-            verify_contents(subject, 'rabbitmq.config',
-            ['[','  {rabbit, [', "    {cluster_nodes, {['rabbit@hare-1', 'rabbit@hare-2'], ram}}]}", '].'])
+            should contain_file('rabbitmq.config').with({
+              'content' => /cluster_nodes.*\['rabbit@hare-1', 'rabbit@hare-2'\], ram/,
+            })
           end
 
           it 'for erlang_cookie' do
-            verify_contents(subject, 'erlang_cookie',
-            ['ORIGINAL'])
+            should contain_file('erlang_cookie').with({
+              'content' => 'ORIGINAL',
+            })
           end
         end
       end
@@ -111,45 +113,61 @@ describe 'rabbitmq' do
         describe 'node_ip_address when set' do
           let(:params) {{ :node_ip_address => '172.0.0.1' }}
           it 'should set RABBITMQ_NODE_IP_ADDRESS to specified value' do
-            verify_contents(subject, 'rabbitmq-env.config',
-            ['RABBITMQ_NODE_IP_ADDRESS=172.0.0.1'])
+            contain_file('rabbitmq-env.config').with({
+            'content' => 'RABBITMQ_NODE_IP_ADDRESS=172.0.0.1',
+            })
           end
         end
 
         describe 'stomp by default' do
           it 'should not specify stomp parameters in rabbitmq.config' do
-            verify_contents(subject, 'rabbitmq.config',
-            ['[','].'])
+            contain_file('rabbitmq.config').without({
+              'content' => /stomp/,
+            })
           end
         end
         describe 'stomp when set' do
           let(:params) {{ :config_stomp => true, :stomp_port => 5679 }}
           it 'should specify stomp port in rabbitmq.config' do
-            verify_contents(subject, 'rabbitmq.config',
-            ['[', '  {rabbit, [', '  ]}', '  {rabbitmq_stomp, [', '    {tcp_listeners, [5679]}', '].'])
+            contain_file('rabbitmq.config').with({
+              'content' => /rabbitmq_stomp.*tcp_listeners, \[5679\]/,
+            })
           end
         end
         describe 'stomp when set with ssl' do
           let(:params) {{ :config_stomp => true, :stomp_port => 5679, :ssl_stomp_port => 5680 }}
           it 'should specify stomp port and ssl stomp port in rabbitmq.config' do
-            verify_contents(subject, 'rabbitmq.config',
-            ['[', '  {rabbit, [', '  ]}', '  {rabbitmq_stomp, [', '    {tcp_listeners, [5679]}', '    {ssl_listeners, [5680]}', '].'])
+            contain_file('rabbitmq.config').with({
+              'content' => /rabbitmq_stomp.*tcp_listeners, \[5679\].*ssl_listeners, \[5680\]/,
+            })
           end
         end
 
         describe 'default_user and default_pass set' do
           let(:params) {{ :default_user => 'foo', :default_pass => 'bar' }}
           it 'should set default_user and default_pass to specified values' do
-            verify_contents(subject, 'rabbitmq.config',
-            ['    {default_user, <<"foo">>},', '    {default_pass, <<"bar">>}'])
+            contain_file('rabbitmq.config').with({
+              'content' => /default_user, <<"foo">>.*default_pass, <<"bar">>/,
+            })
           end
         end
 
         describe 'ssl options' do
-          let(:params) {{ :ssl => true, :ssl_management_port => 3141, :ssl_cacert => '/path/to/cacert', :ssl_cert => '/path/to/cert', :ssl_key => '/path/to/key' }}
+          let(:params) {
+            { :ssl => true,
+              :ssl_management_port => 3141,
+              :ssl_cacert => '/path/to/cacert',
+              :ssl_cert => '/path/to/cert',
+              :ssl_key => '/path/to/key'
+          } }
+
           it 'should set ssl options to specified values' do
-            verify_contents(subject, 'rabbitmq.config',
-            ['    {ssl_listeners, [3141]},', '    {ssl_options, [{cacertfile,"/path/to/cacert"},', '                    {certfile,"/path/to/cert"},', '                    {keyfile,"/path/to/key"},'])
+            contain_file('rabbitmq.config').with({
+              'content' => /ssl_listeners, \[3141\].*
+                            ssl_options, \[{cacertfile,"\/path\/to\/cacert".*
+                            certfile="\/path\/to\/cert".*
+                            keyfile,"\/path\/to\/key/,
+            })
           end
         end
       end
