@@ -3,7 +3,6 @@ fixtures:
     "stdlib": "git://github.com/puppetlabs/puppetlabs-stdlib.git"
     "apt": "git://github.com/puppetlabs/puppetlabs-apt.git"
     erlang:
-      repo: "https://github.com/apenney/garethr-erlang.git"
-      ref: '9c0faa28b51ec6145421451dfa6b82481e46350b'
+      repo: "https://github.com/garethr/garethr-erlang.git"
   symlinks:
     "rabbitmq": "#{source_dir}"
