@@ -1,31 +1,31 @@
-#
 class rabbitmq::config {
 
-  $cluster_disk_nodes       = $rabbitmq::cluster_disk_nodes
-  $cluster_node_type        = $rabbitmq::cluster_node_type
-  $cluster_nodes            = $rabbitmq::cluster_nodes
-  $config                   = $rabbitmq::config
-  $config_cluster           = $rabbitmq::config_cluster
-  $config_path              = $rabbitmq::config_path
-  $config_mirrored_queues   = $rabbitmq::config_mirrored_queues
-  $config_stomp             = $rabbitmq::config_stomp
-  $default_user             = $rabbitmq::default_user
-  $default_pass             = $rabbitmq::default_pass
-  $env_config               = $rabbitmq::env_config
-  $env_config_path          = $rabbitmq::env_config_path
-  $erlang_cookie            = $rabbitmq::erlang_cookie
-  $node_ip_address          = $rabbitmq::node_ip_address
-  $plugin_dir               = $rabbitmq::plugin_dir
-  $port                     = $rabbitmq::port
-  $service_name             = $rabbitmq::service_name
-  $ssl                      = $rabbitmq::ssl
-  $ssl_cacert               = $rabbitmq::ssl_cacert
-  $ssl_cert                 = $rabbitmq::ssl_cert
-  $ssl_key                  = $rabbitmq::ssl_key
-  $ssl_management_port      = $rabbitmq::ssl_management_port
-  $ssl_stomp_port           = $rabbitmq::ssl_stomp_port
-  $stomp_port               = $rabbitmq::stomp_port
-  $wipe_db_on_cookie_change = $rabbitmq::wipe_db_on_cookie_change
+  $cluster_disk_nodes         = $rabbitmq::cluster_disk_nodes
+  $cluster_node_type          = $rabbitmq::cluster_node_type
+  $cluster_nodes              = $rabbitmq::cluster_nodes
+  $config                     = $rabbitmq::config
+  $config_cluster             = $rabbitmq::config_cluster
+  $config_path                = $rabbitmq::config_path
+  $config_mirrored_queues     = $rabbitmq::config_mirrored_queues
+  $config_stomp               = $rabbitmq::config_stomp
+  $default_user               = $rabbitmq::default_user
+  $default_pass               = $rabbitmq::default_pass
+  $env_config                 = $rabbitmq::env_config
+  $env_config_path            = $rabbitmq::env_config_path
+  $erlang_cookie              = $rabbitmq::erlang_cookie
+  $node_ip_address            = $rabbitmq::node_ip_address
+  $plugin_dir                 = $rabbitmq::plugin_dir
+  $port                       = $rabbitmq::port
+  $service_name               = $rabbitmq::service_name
+  $ssl                        = $rabbitmq::ssl
+  $ssl_cacert                 = $rabbitmq::ssl_cacert
+  $ssl_cert                   = $rabbitmq::ssl_cert
+  $ssl_key                    = $rabbitmq::ssl_key
+  $ssl_management_port        = $rabbitmq::ssl_management_port
+  $ssl_stomp_port             = $rabbitmq::ssl_stomp_port
+  $stomp_port                 = $rabbitmq::stomp_port
+  $wipe_db_on_cookie_change   = $rabbitmq::wipe_db_on_cookie_change
+  $cluster_partition_handling = $rabbitmq::cluster_partition_handling
 
   # Handle deprecated option.
   if $cluster_disk_nodes != [] {
