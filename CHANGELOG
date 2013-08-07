@@ -20,6 +20,7 @@ is now done through the main rabbitmq class.
 - Add rabbitmq_exchange provider (using rabbitmqadmin)
 - Add new `rabbitmq` class parameters:
   -  `manage_service`: Boolean to choose if Puppet should manage the service. (For pacemaker/HA setups)
+- Add SuSE support.
 
 Incompatible Changes:
 - Rabbitmq::server has been removed and is now rabbitmq::config.  You should
