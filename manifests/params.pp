@@ -1,4 +1,4 @@
-# Class: rabbitmq::params
+  # Class: rabbitmq::params
 #
 #   The RabbitMQ Module configuration settings.
 #
@@ -27,40 +27,41 @@ class rabbitmq::params {
   }
 
   #install
-  $admin_enable             = true
-  $erlang_manage            = false
-  $management_port          = '15672'
-  $package_apt_pin          = ''
-  $package_gpg_key          = 'http://www.rabbitmq.com/rabbitmq-signing-key-public.asc'
-  $service_ensure           = 'running'
-  $service_manage           = true
-  $service_name             = 'rabbitmq-server'
-  #config
-  $cluster_disk_nodes       = []
-  $cluster_node_type        = 'disk'
-  $cluster_nodes            = []
-  $config                   = 'rabbitmq/rabbitmq.config.erb'
-  $config_cluster           = false
-  $config_mirrored_queues   = false
-  $config_path              = '/etc/rabbitmq/rabbitmq.config'
-  $config_stomp             = false
-  $default_user             = 'guest'
-  $default_pass             = 'guest'
-  $delete_guest_user        = false
-  $env_config               = 'rabbitmq/rabbitmq-env.conf.erb'
-  $env_config_path          = '/etc/rabbitmq/rabbitmq-env.conf'
-  $erlang_cookie            = 'EOKOWXQREETZSHFNTPEY'
-  $manage_service           = true
-  $node_ip_address          = 'UNSET'
-  $plugin_dir               = "/usr/lib/rabbitmq/lib/rabbitmq_server-${version}/plugins"
-  $port                     = '5672'
-  $ssl                      = false
-  $ssl_cacert               = 'UNSET'
-  $ssl_cert                 = 'UNSET'
-  $ssl_key                  = 'UNSET'
-  $ssl_management_port      = '5671'
-  $ssl_stomp_port           = '6164'
-  $stomp_port               = '6163'
-  $wipe_db_on_cookie_change = false
+  $admin_enable               = true
+  $erlang_manage              = false
+  $management_port            = '15672'
+  $package_apt_pin            = ''
+  $package_gpg_key            = 'http://www.rabbitmq.com/rabbitmq-signing-key-public.asc'
+  $service_ensure             = 'running'
+  $service_manage             = true
+  $service_name               = 'rabbitmq-server'
+  #config 
+  $cluster_disk_nodes         = []
+  $cluster_node_type          = 'disc'
+  $cluster_nodes              = []
+  $config                     = 'rabbitmq/rabbitmq.config.erb'
+  $config_cluster             = false
+  $config_mirrored_queues     = false
+  $config_path                = '/etc/rabbitmq/rabbitmq.config'
+  $config_stomp               = false
+  $default_user               = 'guest'
+  $default_pass               = 'guest'
+  $delete_guest_user          = false
+  $env_config                 = 'rabbitmq/rabbitmq-env.conf.erb'
+  $env_config_path            = '/etc/rabbitmq/rabbitmq-env.conf'
+  $erlang_cookie              = 'EOKOWXQREETZSHFNTPEY'
+  $manage_service             = true
+  $node_ip_address            = 'UNSET'
+  $plugin_dir                 = "/usr/lib/rabbitmq/lib/rabbitmq_server-${version}/plugins"
+  $port                       = '5672'
+  $ssl                        = false
+  $ssl_cacert                 = 'UNSET'
+  $ssl_cert                   = 'UNSET'
+  $ssl_key                    = 'UNSET'
+  $ssl_management_port        = '5671'
+  $ssl_stomp_port             = '6164'
+  $stomp_port                 = '6163'
+  $wipe_db_on_cookie_change   = false
+  $cluster_partition_handling = 'ignore'
 
 }
