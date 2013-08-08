@@ -5,9 +5,19 @@
 class rabbitmq::params {
 
   case $::osfamily {
+    'Archlinux': {
+      $package_ensure   = 'installed'
+      $package_name     = 'rabbitmq'
+      $service_name     = 'rabbitmq'
+      $package_source   = ''
+      $version          = '3.1.3-1'
+      $base_version     = regsubst($version,'^(.*)-\d$','\1')
+      # This must remain at the end as we need $base_version and $version defined first
+    }
     'Debian': {
       $package_ensure   = 'installed'
       $package_name     = 'rabbitmq-server'
+      $service_name     = 'rabbitmq-server'
       $package_provider = 'apt'
       $package_source   = ''
       $version          = '3.1.3'
@@ -15,6 +25,7 @@ class rabbitmq::params {
     'RedHat', 'SUSE': {
       $package_ensure   = 'installed'
       $package_name     = 'rabbitmq-server'
+      $service_name     = 'rabbitmq-server'
       $package_provider = 'rpm'
       $version          = '3.1.3-1'
       $base_version     = regsubst($version,'^(.*)-\d$','\1')
@@ -34,7 +45,6 @@ class rabbitmq::params {
   $package_gpg_key            = 'http://www.rabbitmq.com/rabbitmq-signing-key-public.asc'
   $service_ensure             = 'running'
   $service_manage             = true
-  $service_name               = 'rabbitmq-server'
   #config 
   $cluster_disk_nodes         = []
   $cluster_node_type          = 'disc'
