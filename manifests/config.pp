@@ -26,6 +26,13 @@ class rabbitmq::config {
   $stomp_port                 = $rabbitmq::stomp_port
   $wipe_db_on_cookie_change   = $rabbitmq::wipe_db_on_cookie_change
   $cluster_partition_handling = $rabbitmq::cluster_partition_handling
+  $default_env_variables      =  {
+    'RABBITMQ_NODE_PORT'        => $port,
+    'RABBITMQ_NODE_IP_ADDRESS'  => $node_ip_address
+  }
+
+  # Handle env variables.
+  $environment_variables = merge($default_env_variables, $rabbitmq::environment_variables)
 
   # Handle deprecated option.
   if $cluster_disk_nodes != [] {

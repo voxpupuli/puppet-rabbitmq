@@ -1,4 +1,5 @@
-RABBITMQ_NODE_PORT=<%= @port %>
-<% if @node_ip_address != 'UNSET' -%>
-RABBITMQ_NODE_IP_ADDRESS=<%= @node_ip_address %>
-<% end -%>
+<%- @environment_variables.keys.sort.each do |key| -%>
+<%- if @environment_variables[key] != 'UNSET' -%>
+<%= key %>=<%= @environment_variables[key] %>
+<%- end -%>
+<%- end -%>
