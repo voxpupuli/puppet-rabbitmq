@@ -96,8 +96,8 @@ Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl) do
       resource[:read_permission]      ||= read_permission
       resource[:write_permission]     ||= write_permission
       rabbitmqctl('set_permissions', '-p', should_vhost, should_user,
-        resource[:configure_permission], resource[:read_permission],
-        resource[:write_permission]
+        resource[:configure_permission], resource[:write_permission],
+        resource[:read_permission]
       )
     end
   end
