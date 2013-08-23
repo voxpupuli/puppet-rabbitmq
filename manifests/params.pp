@@ -64,4 +64,5 @@ class rabbitmq::params {
   $wipe_db_on_cookie_change   = false
   $cluster_partition_handling = 'ignore'
   $environment_variables      = {}
+  $config_variables           = {}
 }

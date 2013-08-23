@@ -14,6 +14,11 @@
                     {verify,verify_none},
                     {fail_if_no_peer_cert,false}]},
 <%- end -%>
+<% if @config_variables -%>
+<%- @config_variables.keys.sort.each do |key| -%>
+    {<%= key %>, <%= @config_variables[key] %>},
+<%- end -%>
+<%- end -%>
     {default_user, <<"<%= @default_user %>">>},
     {default_pass, <<"<%= @default_pass %>">>}
   ]}

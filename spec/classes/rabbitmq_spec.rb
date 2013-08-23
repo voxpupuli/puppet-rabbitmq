@@ -257,6 +257,24 @@ describe 'rabbitmq' do
         end
       end
 
+      describe 'config_variables options' do
+        let(:params) {{ :config_variables => {
+            'hipe_compile'                  => true,
+            'vm_memory_high_watermark'      => 0.4,
+            'frame_max'                     => 131072,
+            'collect_statistics'            => "none",
+            'auth_mechanisms'               => "['PLAIN', 'AMQPLAIN']",
+        }}}
+        it 'should set environment variables' do
+          should contain_file('rabbitmq.config') \
+            .with_content(/\{hipe_compile, true\}/) \
+            .with_content(/\{vm_memory_high_watermark, 0.4\}/) \
+            .with_content(/\{frame_max, 131072\}/) \
+            .with_content(/\{collect_statistics, none\}/) \
+            .with_content(/\{auth_mechanisms, \['PLAIN', 'AMQPLAIN'\]\}/)
+        end
+      end
+
       context 'delete_guest_user' do
         describe 'should do nothing by default' do
           it { should_not contain_rabbitmq_user('guest') }
