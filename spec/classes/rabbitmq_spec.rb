@@ -156,7 +156,27 @@ describe 'rabbitmq' do
       end
 
       describe 'rabbitmq-env configuration' do
-        it { should contain_file('rabbitmq-env.config') }
+        let(:params) {{ :environment_variables => {
+          'RABBITMQ_NODE_IP_ADDRESS'    => '1.1.1.1',
+          'RABBITMQ_NODE_PORT'          => '5656',
+          'RABBITMQ_NODENAME'           => 'HOSTNAME',
+          'RABBITMQ_SERVICENAME'        => 'RabbitMQ',
+          'RABBITMQ_CONSOLE_LOG'        => 'RabbitMQ.debug',
+          'RABBITMQ_CTL_ERL_ARGS'       => 'verbose',
+          'RABBITMQ_SERVER_ERL_ARGS'    => 'v',
+          'RABBITMQ_SERVER_START_ARGS'  => 'debug'
+        }}}
+        it 'should set environment variables' do
+          should contain_file('rabbitmq-env.config') \
+            .with_content(/RABBITMQ_NODE_IP_ADDRESS=1.1.1.1/) \
+            .with_content(/RABBITMQ_NODE_PORT=5656/) \
+            .with_content(/RABBITMQ_NODENAME=HOSTNAME/) \
+            .with_content(/RABBITMQ_SERVICENAME=RabbitMQ/) \
+            .with_content(/RABBITMQ_CONSOLE_LOG=RabbitMQ.debug/) \
+            .with_content(/RABBITMQ_CTL_ERL_ARGS=verbose/) \
+            .with_content(/RABBITMQ_SERVER_ERL_ARGS=v/) \
+            .with_content(/RABBITMQ_SERVER_START_ARGS=debug/)
+        end
       end
 
       context 'delete_guest_user' do
@@ -208,6 +228,7 @@ describe 'rabbitmq' do
           end
         end
       end
+
       describe 'default_user and default_pass set' do
         let(:params) {{ :default_user => 'foo', :default_pass => 'bar' }}
         it 'should set default_user and default_pass to specified values' do
