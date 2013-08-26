@@ -40,6 +40,7 @@ class rabbitmq(
   $version                    = $rabbitmq::params::version,
   $wipe_db_on_cookie_change   = $rabbitmq::params::wipe_db_on_cookie_change,
   $cluster_partition_handling = $rabbitmq::params::cluster_partition_handling,
+  $environment_variables      = $rabbitmq::params::environment_variables,
 ) inherits rabbitmq::params {
 
   validate_bool($admin_enable)
@@ -86,7 +87,7 @@ class rabbitmq(
   validate_re($ssl_management_port, '\d+')
   validate_string($ssl_stomp_port)
   validate_re($ssl_stomp_port, '\d+')
-
+  validate_hash($environment_variables)
 
   if $erlang_manage {
     include '::erlang'

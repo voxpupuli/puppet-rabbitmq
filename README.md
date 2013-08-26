@@ -58,6 +58,19 @@ class { '::rabbitmq':
 }
 ```
 
+### Environment Variables
+To use RabbitMQ Environment Variables, use the parameters `environment_variables` e.g.:
+
+```puppet
+class { 'rabbitmq':
+  port              => '5672',
+  environment_variables   => {
+    'RABBITMQ_NODENAME'     => 'node01',
+    'RABBITMQ_SERVICENAME'  => 'RabbitMQ'
+  }
+}
+```
+
 ### Clustering
 To use RabbitMQ clustering and H/A facilities, use the rabbitmq::server
 parameters `config_cluster`, `cluster_nodes`, and `cluster_node_type`, e.g.:
@@ -157,6 +170,10 @@ If true then we include an erlang module.
 ####`node_ip_address`
 
 The value of RABBITMQ_NODE_IP_ADDRESS in rabbitmq_env.config
+
+####`environment_variables`
+
+RabbitMQ Environment Variables in rabbitmq_env.config
 
 ####`package_ensure`
 
