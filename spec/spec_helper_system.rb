@@ -26,7 +26,7 @@ RSpec.configure do |c|
 
     # Install modules and dependencies
     puppet_module_install(:source => proj_root, :module_name => 'rabbitmq')
-    puppet_module_install(:source => "#{proj_root}/../erlang", :module_name => 'erlang')
+    shell('puppet module install garethr-erlang')
     shell('puppet module install puppetlabs-stdlib')
     shell('puppet module install puppetlabs-apt')
   end
