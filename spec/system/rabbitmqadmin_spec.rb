@@ -1,17 +1,23 @@
 require 'spec_helper_system'
 
 describe 'rabbitmq::install::rabbitmqadmin class' do
+
   let(:os) {
     node.facts['osfamily']
   }
 
   describe 'does nothing if service is unmanaged' do
-    puppet_apply(%{
-      class { 'rabbitmq':
-        admin_enable   => true,
-        manage_service => false,
-      }
-    })
+    before do
+      shell('rm /var/lib/rabbitmq/rabbitmqadmin')
+    end
+    it do
+      puppet_apply(%{
+        class { 'rabbitmq':
+          admin_enable   => true,
+          service_manage => false,
+        }
+      })
+    end
 
     describe file('/var/lib/rabbitmq/rabbitmqadmin') do
       it { should_not be_file }
@@ -20,12 +26,14 @@ describe 'rabbitmq::install::rabbitmqadmin class' do
 
   describe 'downloads the cli tools' do
 
-    puppet_apply(%{
-      class { 'rabbitmq':
-        admin_enable   => true,
-        manage_service => true,
-      }
-    })
+    it do
+      puppet_apply(%{
+        class { 'rabbitmq':
+          admin_enable   => true,
+          service_manage => true,
+        }
+      })
+    end
 
     describe file('/var/lib/rabbitmq/rabbitmqadmin') do
       it { should be_file }
