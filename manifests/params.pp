@@ -56,6 +56,8 @@ class rabbitmq::params {
   $config_stomp               = false
   $default_user               = 'guest'
   $default_pass               = 'guest'
+  $rabbitmqadmin_user         = false
+  $rabbitmqadmin_pass         = false
   $delete_guest_user          = false
   $env_config                 = 'rabbitmq/rabbitmq-env.conf.erb'
   $env_config_path            = '/etc/rabbitmq/rabbitmq-env.conf'

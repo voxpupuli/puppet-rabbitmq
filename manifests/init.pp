@@ -11,6 +11,8 @@ class rabbitmq(
   $config_stomp               = $rabbitmq::params::config_stomp,
   $default_user               = $rabbitmq::params::default_user,
   $default_pass               = $rabbitmq::params::default_pass,
+  $rabbitmqadmin_user         = $rabbitmq::params::rabbitmqadmin_user,
+  $rabbitmqadmin_pass         = $rabbitmq::params::rabbitmqadmin_pass,
   $delete_guest_user          = $rabbitmq::params::delete_guest_user,
   $env_config                 = $rabbitmq::params::env_config,
   $env_config_path            = $rabbitmq::params::env_config_path,
