@@ -79,6 +79,11 @@ class rabbitmq::config(
       } else {
         fail("ERROR: The current erlang cookie is ${::rabbitmq_erlang_cookie} and needs to change to ${erlang_cookie}. In order to do this the RabbitMQ database needs to be wiped.  Please set the parameter called wipe_db_on_cookie_change to true to allow this to happen automatically.")
       }
+    } else {
+      exec { 'wipe_db':
+        command => '/bin/true',
+        unless  => '/bin/true',
+      }
     }
 
     file { 'erlang_cookie':
