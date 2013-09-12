@@ -33,12 +33,30 @@ EOT
   end
 
   it 'should call rabbitmqadmin to create' do
-    @provider.expects(:rabbitmqadmin).with('declare', 'exchange', '--vhost=/', 'name=amq.direct', 'type=topic')
+    @provider.expects(:rabbitmqadmin).with('declare', 'exchange', '--vhost=/', '--user=guest', '--password=guest', 'name=amq.direct', 'type=topic')
     @provider.create
   end
 
   it 'should call rabbitmqadmin to destroy' do
-    @provider.expects(:rabbitmqadmin).with('delete', 'exchange', '--vhost=/', 'name=amq.direct')
+    @provider.expects(:rabbitmqadmin).with('delete', 'exchange', '--vhost=/', '--user=guest', '--password=guest', 'name=amq.direct')
     @provider.destroy
+  end
+
+  context 'specifying credentials' do
+    before :each do
+      @resource = Puppet::Type::Rabbitmq_exchange.new(
+        {:name => 'amq.direct@/',
+        :type => :topic,
+        :user => 'colin',
+        :password => 'secret',
+        }
+      )
+      @provider = provider_class.new(@resource)
+    end
+
+    it 'should call rabbitmqadmin to create' do
+      @provider.expects(:rabbitmqadmin).with('declare', 'exchange', '--vhost=/', '--user=colin', '--password=secret', 'name=amq.direct', 'type=topic')
+      @provider.create
+    end
   end
 end
