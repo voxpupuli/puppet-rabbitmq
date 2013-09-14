@@ -23,8 +23,8 @@ describe 'rabbitmq' do
       should contain_class('rabbitmq::repo::rhel')
     end
   end
-
-  ['Debian', 'RedHat', 'SUSE'].each do |distro|
+  
+  ['Debian', 'RedHat', 'SUSE', 'Archlinux'].each do |distro|
     context "on #{distro}" do
       let(:facts) {{
         :osfamily => distro,
@@ -362,6 +362,15 @@ describe 'rabbitmq' do
         'name'     => 'rabbitmq-server',
         'provider' => 'apt'
       )
+    end
+  end
+  
+  context "on Archlinux" do
+    let(:facts) {{ :osfamily => 'Archlinux' }}
+    it 'installs the rabbitmq package' do
+      should contain_package('rabbitmq-server').with(
+        'ensure'   => 'installed',
+        'name'     => 'rabbitmq')
     end
   end
 
