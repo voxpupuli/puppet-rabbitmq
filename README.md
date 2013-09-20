@@ -91,7 +91,7 @@ parameters `config_cluster`, `cluster_nodes`, and `cluster_node_type`, e.g.:
 
 ```puppet
 class { 'rabbitmq':
-  config_cluster    => true 
+  config_cluster    => true, 
   cluster_nodes     => ['rabbit1', 'rabbit2'],
   cluster_node_type => 'ram',
 }
