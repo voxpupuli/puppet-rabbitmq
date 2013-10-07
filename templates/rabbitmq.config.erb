@@ -19,7 +19,6 @@
     {<%= key %>, <%= @config_variables[key] %>},
 <%- end -%>
 <%- end -%>
-
 <% if !@delete_guest_user -%>
     {default_user, <<"<%= @default_user %>">>},
     {default_pass, <<"<%= @default_pass %>">>}
