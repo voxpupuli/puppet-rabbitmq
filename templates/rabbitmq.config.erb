@@ -16,11 +16,11 @@
 <%- end -%>
 <% if @config_variables -%>
 <%- @config_variables.keys.sort.each do |key| -%>
-    {<%= key %>, <%= @config_variables[key] %>},
+    {<%= key %>, <%= @config_variables[key] %>}
 <%- end -%>
 <%- end -%>
 <% if !@delete_guest_user -%>
-    {default_user, <<"<%= @default_user %>">>},
+    ,{default_user, <<"<%= @default_user %>">>},
     {default_pass, <<"<%= @default_pass %>">>}
 <%- end -%>
   ]}
