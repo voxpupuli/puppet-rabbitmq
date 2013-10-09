@@ -6,7 +6,9 @@
     {cluster_nodes, {[<%= @_cluster_nodes.map { |n| "\'rabbit@#{n}\'" }.join(', ') %>], <%= @cluster_node_type %>}},
     {cluster_partition_handling, <%= @cluster_partition_handling %>}
 <% end -%>
-<%- if @ssl %>,
+
+<%- if @config_cluster && (@ssl || @config_variables || !@delete_guest_user -%>,<%- end -%>
+<%- if @ssl %>
     {ssl_listeners, [<%= @ssl_management_port %>]},
     {ssl_options, [{cacertfile,"<%= @ssl_cacert %>"},
                     {certfile,"<%= @ssl_cert %>"},
@@ -14,16 +16,21 @@
                     {verify,verify_none},
                     {fail_if_no_peer_cert,false}]}
 <%- end -%>
+
+<% if @ssl && (@config_varibles || !@delete_guest_user) -%>,<%- end -%>
 <% if @config_variables -%>
 <%- @config_variables.keys.sort.each do |key| -%>,
     {<%= key %>, <%= @config_variables[key] %>}
 <%- end -%>
 <%- end -%>
-<% if !@delete_guest_user -%>,
+
+<% if @config_variables && !@delete_guest_user -%>,<%- end -%>
+<% if !@delete_guest_user -%>
     {default_user, <<"<%= @default_user %>">>},
     {default_pass, <<"<%= @default_pass %>">>}
 <%- end -%>
   ]}
+
 <% if @config_stomp -%>,
 % Configure the Stomp Plugin listening port
   {rabbitmq_stomp, [
