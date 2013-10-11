@@ -15,15 +15,34 @@ describe 'rabbitmq' do
     it 'includes rabbitmq::repo::apt' do
       should contain_class('rabbitmq::repo::apt')
     end
-  end
 
+    describe 'apt::source default values' do
+      let(:facts) {{ :osfamily => 'Debian' }}
+      it 'should add a repo with defaults values' do
+        contain_file('/etc/apt/sources.list.d/rabbitmq.list')\
+          .with_content(/deb http\:\/\/www\.rabbitmq.com\/debian\/ testing main/)
+      end
+    end
+
+    describe 'apt::source custom values' do
+      let(:params) {
+        { :location => 'http://www.foorepo.com/debian',
+          :release => 'unstable',
+          :repos => 'main'
+        }}
+      it 'should add a repo with custom new values' do
+        contain_file('/etc/apt/sources.list.d/rabbitmq.list')\
+          .with_content(/deb http\:\/\/www\.foorepo.com\/debian\/ unstable main/)
+      end
+    end
+  end
   context 'on Redhat' do
     let(:facts) {{ :osfamily => 'RedHat' }}
     it 'includes rabbitmq::repo::rhel' do
       should contain_class('rabbitmq::repo::rhel')
     end
   end
-  
+
   ['Debian', 'RedHat', 'SUSE', 'Archlinux'].each do |distro|
     context "on #{distro}" do
       let(:facts) {{
@@ -364,7 +383,7 @@ describe 'rabbitmq' do
       )
     end
   end
-  
+
   context "on Archlinux" do
     let(:facts) {{ :osfamily => 'Archlinux' }}
     it 'installs the rabbitmq package' do

@@ -30,4 +30,4 @@ class rabbitmq::repo::apt(
       priority => $pin,
     }
   }
-  }
+}
