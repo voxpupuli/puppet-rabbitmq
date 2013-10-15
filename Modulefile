@@ -1,5 +1,5 @@
 name    'puppetlabs-rabbitmq'
-version '3.0.0'
+version '3.1.0'
 source 'git://github.com/puppetlabs/puppetlabs-rabbitmq.git'
 author 'puppetlabs'
 license 'Apache'
