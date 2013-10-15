@@ -1,3 +1,21 @@
+2013-09-14 - Version 3.1.0
+
+Summary:
+
+This release focuses on a few small (but critical) bugfixes as well as extends
+the amount of custom RabbitMQ configuration you can do with the module.
+
+Features:
+- You can now change RabbitMQ 'Config Variables' via the parameter `config_variables`.
+- You can now change RabbitMQ 'Environment Variables' via the parameter `environment_variables`.
+- ArchLinux support added.
+
+Fixes:
+- Make use of the user/password parameters in rabbitmq_exchange{}
+- Correct the read/write parameter order on set_permissions/list_permissions as
+  they were reversed.
+- Make the module pull down 3.1.5 by default.
+
 * 2013-07-18 3.0.0
 Summary:
 This release heavily refactors the RabbitMQ and changes functionality in
