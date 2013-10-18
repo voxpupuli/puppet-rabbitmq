@@ -76,21 +76,6 @@ describe 'rabbitmq' do
         end
       end
 
-      context 'with erlang_manage set to true' do
-        let(:params) {{ :erlang_manage => true }}
-        it 'includes erlang' do
-          should contain_class('erlang')
-        end
-      end
-
-      context 'with erlang_manage set to false' do
-        let(:params) {{ :erlang_manage => false }}
-        it 'doesnt include erlang' do
-          should_not contain_class('erlang')
-        end
-      end
-
-
       context 'deprecated parameters' do
         describe 'cluster_disk_nodes' do
           let(:params) {{ :cluster_disk_nodes => ['node1', 'node2'] }}

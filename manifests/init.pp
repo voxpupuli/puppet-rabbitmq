@@ -15,7 +15,6 @@ class rabbitmq(
   $env_config                 = $rabbitmq::params::env_config,
   $env_config_path            = $rabbitmq::params::env_config_path,
   $erlang_cookie              = $rabbitmq::params::erlang_cookie,
-  $erlang_manage              = $rabbitmq::params::erlang_manage,
   $manage_service             = $rabbitmq::params::manage_service,
   $management_port            = $rabbitmq::params::management_port,
   $node_ip_address            = $rabbitmq::params::node_ip_address,
@@ -54,7 +53,6 @@ class rabbitmq(
 ) inherits rabbitmq::params {
 
   validate_bool($admin_enable)
-  validate_bool($erlang_manage)
   # Validate install parameters.
   validate_re($package_apt_pin, '^(|\d+)$')
   validate_string($package_ensure)
@@ -106,11 +104,6 @@ class rabbitmq(
   validate_hash($environment_variables)
   validate_hash($config_variables)
   validate_hash($config_kernel_variables)
-
-  if $erlang_manage {
-    include '::erlang'
-    Class['::erlang'] -> Class['::rabbitmq::install']
-  }
 
   include '::rabbitmq::install'
   include '::rabbitmq::config'
