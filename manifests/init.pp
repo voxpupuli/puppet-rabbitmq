@@ -118,7 +118,8 @@ class rabbitmq(
     rabbitmq_plugin { 'rabbitmq_management':
       ensure  => present,
       require => Class['rabbitmq::install'],
-      notify  => Class['rabbitmq::service']
+      notify  => Class['rabbitmq::service'],
+      provider => 'rabbitmqplugins'
     }
 
     Class['::rabbitmq::service'] -> Class['::rabbitmq::install::rabbitmqadmin']
