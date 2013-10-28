@@ -385,7 +385,7 @@ describe 'rabbitmq' do
         end
       end
 
-      describe 'service with manage_service equal to false' do
+      describe 'service with service_manage equal to false' do
         let :params do
           { :service_manage => false }
         end
