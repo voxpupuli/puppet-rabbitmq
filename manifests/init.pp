@@ -44,6 +44,7 @@ class rabbitmq(
   $cluster_partition_handling = $rabbitmq::params::cluster_partition_handling,
   $environment_variables      = $rabbitmq::params::environment_variables,
   $config_variables           = $rabbitmq::params::config_variables,
+  $config_kernel_variables    = $rabbitmq::params::config_kernel_variables,
 ) inherits rabbitmq::params {
 
   validate_bool($admin_enable)
@@ -92,6 +93,7 @@ class rabbitmq(
   validate_re($ssl_stomp_port, '\d+')
   validate_hash($environment_variables)
   validate_hash($config_variables)
+  validate_hash($config_kernel_variables)
 
   if $erlang_manage {
     include '::erlang'

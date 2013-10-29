@@ -77,4 +77,5 @@ class rabbitmq::params {
   $cluster_partition_handling = 'ignore'
   $environment_variables      = {}
   $config_variables           = {}
+  $config_kernel_variables    = {}
 }

@@ -275,6 +275,18 @@ describe 'rabbitmq' do
         end
       end
 
+      describe 'config_kernel_variables options' do
+        let(:params) {{ :config_kernel_variables => {
+            'inet_dist_listen_min'      => 9100,
+            'inet_dist_listen_max'      => 9105,
+        }}}
+        it 'should set config variables' do
+          should contain_file('rabbitmq.config') \
+            .with_content(/\{inet_dist_listen_min, 9100\}/) \
+            .with_content(/\{inet_dist_listen_max, 9105\}/) 
+        end
+      end
+
       context 'delete_guest_user' do
         describe 'should do nothing by default' do
           it { should_not contain_rabbitmq_user('guest') }
