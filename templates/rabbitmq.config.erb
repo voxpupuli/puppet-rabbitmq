@@ -2,6 +2,9 @@
 % Template Path: <%= @module_name %>/templates/rabbitmq.config
 [
   {rabbit, [
+<% if @ldap_auth -%>
+    {auth_backends, [rabbit_auth_backend_internal, rabbit_auth_backend_ldap]},
+<% end -%>
 <% if @config_cluster -%>
     {cluster_nodes, {[<%= @_cluster_nodes.map { |n| "\'rabbit@#{n}\'" }.join(', ') %>], <%= @cluster_node_type %>}},
     {cluster_partition_handling, <%= @cluster_partition_handling %>},
@@ -30,6 +33,17 @@
     {ssl_listeners, [<%= @ssl_stomp_port %>]}
   <%- end -%>
   ]}
+<%- if @ldap_auth -%>,
+% Configure the LDAP authentication plugin
+  {rabbitmq_auth_backend_ldap, [
+    {other_bind, anon},
+    {servers, ["<%= @ldap_server %>"]},
+    {user_dn_pattern, "<%= @ldap_user_dn_pattern %>"},
+    {use_ssl, <%= @ldap_use_ssl %>},
+    {port, <%= @ldap_port %>},
+    {log, <%= @ldap_log %>}
+  ]}
+<% end -%>
 <%- end -%>
 ].
 % EOF
