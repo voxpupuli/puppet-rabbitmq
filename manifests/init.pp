@@ -38,6 +38,12 @@ class rabbitmq(
   $ssl_stomp_port             = $rabbitmq::params::ssl_stomp_port,
   $ssl_verify                 = $rabbitmq::params::ssl_verify,
   $ssl_fail_if_no_peer_cert   = $rabbitmq::params::ssl_fail_if_no_peer_cert,
+  $ldap_auth                  = $rabbitmq::params::ldap_auth,
+  $ldap_server                = $rabbitmq::params::ldap_server,
+  $ldap_user_dn_pattern       = $rabbitmq::params::ldap_user_dn_pattern,
+  $ldap_use_ssl               = $rabbitmq::params::ldap_use_ssl,
+  $ldap_port                  = $rabbitmq::params::ldap_port,
+  $ldap_log                   = $rabbitmq::params::ldap_log,
   $stomp_port                 = $rabbitmq::params::stomp_port,
   $version                    = $rabbitmq::params::version,
   $wipe_db_on_cookie_change   = $rabbitmq::params::wipe_db_on_cookie_change,
@@ -90,6 +96,12 @@ class rabbitmq(
   validate_re($ssl_management_port, '\d+')
   validate_string($ssl_stomp_port)
   validate_re($ssl_stomp_port, '\d+')
+  validate_bool($ldap_auth)
+  validate_string($ldap_server)
+  validate_string($ldap_user_dn_pattern)
+  validate_bool($ldap_use_ssl)
+  validate_re($ldap_port, '\d+')
+  validate_bool($ldap_log)
   validate_hash($environment_variables)
   validate_hash($config_variables)
 
@@ -123,6 +135,15 @@ class rabbitmq(
     }
 
     Class['::rabbitmq::service'] -> Class['::rabbitmq::install::rabbitmqadmin']
+  }
+
+  if ($ldap_auth) {
+    rabbitmq_plugin { 'rabbitmq_auth_backend_ldap':
+      ensure   => present,
+      require  => Class['rabbitmq::install'],
+      notify   => Class['rabbitmq::service'],
+      provider => 'rabbitmqplugins',
+    }
   }
 
   # Anchor this as per #8040 - this ensures that classes won't float off and
