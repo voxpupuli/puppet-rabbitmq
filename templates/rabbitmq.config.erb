@@ -24,7 +24,11 @@
 <%- end -%>
     {default_user, <<"<%= @default_user %>">>},
     {default_pass, <<"<%= @default_pass %>">>}
+  ]}<% if @config_kernel_variables -%>,
+  {kernel, [
+    <%= @config_kernel_variables.sort.map{|k,v| "{#{k}, #{v}}"}.join(",\n    ") %>
   ]}
+<%- end -%>
 <% if @config_stomp -%>,
 % Configure the Stomp Plugin listening port
   {rabbitmq_stomp, [

@@ -85,6 +85,19 @@ class { 'rabbitmq':
 }
 ```
 
+To change Erlang Kernel Config Variables in rabbitmq.config, use the parameters 
+`config_kernel_variables` e.g.:
+
+```puppet
+class { 'rabbitmq':
+  port              => '5672',
+  kernel_config_options => {
+    'inet_dist_listen_min' => 9100,
+    'inet_dist_listen_max' => 9105,
+  }
+}
+```
+
 ### Clustering
 To use RabbitMQ clustering and H/A facilities, use the rabbitmq::server
 parameters `config_cluster`, `cluster_nodes`, and `cluster_node_type`, e.g.:
