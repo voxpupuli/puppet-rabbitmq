@@ -8,7 +8,8 @@ class rabbitmq::install::rabbitmqadmin {
     creates => '/var/lib/rabbitmq/rabbitmqadmin',
     require => [
       Class['rabbitmq::service'],
-      Rabbitmq_plugin['rabbitmq_management']
+      Rabbitmq_plugin['rabbitmq_management'],
+      Package['curl']
     ],
   }
 
@@ -20,4 +21,7 @@ class rabbitmq::install::rabbitmqadmin {
     require => Exec['Download rabbitmqadmin'],
   }
 
+  package { 'curl':
+    ensure   => latest,
+  }
 }
