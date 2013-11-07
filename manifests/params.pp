@@ -49,7 +49,8 @@ class rabbitmq::params {
   $cluster_disk_nodes         = []
   $cluster_node_type          = 'disc'
   $cluster_nodes              = []
-  $config                     = 'rabbitmq/rabbitmq.config.erb'
+  $config                     = ''
+  $config_file_template       = 'rabbitmq/rabbitmq.config.erb'
   $config_cluster             = false
   $config_mirrored_queues     = false
   $config_path                = '/etc/rabbitmq/rabbitmq.config'
