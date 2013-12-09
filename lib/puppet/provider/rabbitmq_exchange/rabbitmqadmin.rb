@@ -14,7 +14,7 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin) do
 
   def self.instances
     resources = []
-    rabbitmqadmin('list', 'exchanges').split(/\n/)[3..-2].collect do |line|
+    rabbitmqadmin('list', 'exchanges', "--user=#{resource[:user]}", "--password=#{resource[:password]}").split(/\n/)[3..-2].collect do |line|
       if line =~ /^\|\s+(\S+)\s+\|\s+(\S+)?\s+\|\s+(\S+)\s+\|\s+(\S+)\s+\|\s+(\S+)\s+\|\s+(\S+)\s+\|$/
         entry = {
           :ensure => :present,
