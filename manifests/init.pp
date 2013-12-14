@@ -123,7 +123,14 @@ class rabbitmq(
     'Debian':
       { include '::rabbitmq::repo::apt' }
     default:
-      { }
+      {
+        case $::operatingsystem {
+          'Amazon':
+            { include '::rabbitmq::repo::rhel' }
+          default:.
+            { }
+         }
+      }
   }
 
   if $admin_enable and $service_manage {
