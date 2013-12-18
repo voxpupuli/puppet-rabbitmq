@@ -52,7 +52,7 @@ disabling puppet support of the service:
 
 ```puppet
 class { '::rabbitmq':
-  service_manage    => false
+  service_manage    => false,
   port              => '5672',
   delete_guest_user => true,
 }
