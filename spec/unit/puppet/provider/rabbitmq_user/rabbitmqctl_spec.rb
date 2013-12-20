@@ -58,11 +58,19 @@ EOT
     @provider.expects(:rabbitmqctl).with('add_user', 'foo', 'bar')
     @provider.create
   end
-  it 'shoud create user, set password and set to admin' do
+  it 'should create user, set password and set to admin' do
     @resource[:password] = 'bar'
     @resource[:admin] = 'true'
     @provider.expects(:rabbitmqctl).with('add_user', 'foo', 'bar')
-    @provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', 'administrator')
+    @provider.expects(:rabbitmqctl).with('list_users').returns <<-EOT
+Listing users ...
+foo   []
+icinga  [monitoring]
+kitchen []
+kitchen2        [abc, def, ghi]
+...done.
+EOT
+    @provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', ['administrator'])
     @provider.create
   end
   it 'should call rabbitmqctl to delete' do
@@ -93,11 +101,50 @@ EOT
     expect { @provider.admin }.to raise_error(Puppet::Error, /Could not match line/)
   end
   it 'should be able to set admin value' do
-    @provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', 'administrator')
+    @provider.expects(:rabbitmqctl).with('list_users').returns <<-EOT
+Listing users ...
+foo   []
+icinga  [monitoring]
+kitchen []
+kitchen2        [abc, def, ghi]
+...done.
+EOT
+    @provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', ['administrator'])
+    @provider.admin=:true
+  end
+  it 'should not interfere with existing tags on the user when setting admin value' do
+    @provider.expects(:rabbitmqctl).with('list_users').returns <<-EOT
+Listing users ...
+foo   [bar, baz]
+icinga  [monitoring]
+kitchen []
+kitchen2        [abc, def, ghi]
+...done.
+EOT
+    @provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', ['bar','baz', 'administrator']) 
     @provider.admin=:true
   end
   it 'should be able to unset admin value' do
-    @provider.expects(:rabbitmqctl).with('set_user_tags', 'foo')
+    @provider.expects(:rabbitmqctl).with('list_users').returns <<-EOT
+Listing users ...
+foo     [administrator]
+guest   [administrator]
+icinga  []
+...done.
+EOT
+    @provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', [])
+    @provider.admin=:false
+  end
+  it 'should not interfere with existing tags on the user when unsetting admin value' do
+    @provider.expects(:rabbitmqctl).with('list_users').returns <<-EOT
+Listing users ...
+foo   [administrator, bar, baz]
+icinga  [monitoring]
+kitchen []
+kitchen2        [abc, def, ghi]
+...done.
+EOT
+    @provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', ['bar','baz']) 
     @provider.admin=:false
   end
 end
