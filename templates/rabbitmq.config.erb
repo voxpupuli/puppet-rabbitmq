@@ -6,7 +6,7 @@
     {auth_backends, [rabbit_auth_backend_internal, rabbit_auth_backend_ldap]},
 <% end -%>
 <% if @config_cluster -%>
-    {cluster_nodes, {[<%= @_cluster_nodes.map { |n| "\'rabbit@#{n}\'" }.join(', ') %>], <%= @cluster_node_type %>}},
+    {cluster_nodes, {[<%= @r_cluster_nodes.map { |n| "\'rabbit@#{n}\'" }.join(', ') %>], <%= @cluster_node_type %>}},
     {cluster_partition_handling, <%= @cluster_partition_handling %>},
 <% end -%>
 <%- if @ssl %>
