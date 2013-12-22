@@ -56,14 +56,14 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
     else
       usertags = get_user_tags
       usertags.delete('administrator')
-      rabbitmqctl('set_user_tags', resource[:name], usertags.entries)
+      rabbitmqctl('set_user_tags', resource[:name], usertags.entries.sort)
     end
   end
 
   def make_user_admin
     usertags = get_user_tags
     usertags.add('administrator')
-    rabbitmqctl('set_user_tags', resource[:name], usertags.entries)
+    rabbitmqctl('set_user_tags', resource[:name], usertags.entries.sort)
   end
 
   private

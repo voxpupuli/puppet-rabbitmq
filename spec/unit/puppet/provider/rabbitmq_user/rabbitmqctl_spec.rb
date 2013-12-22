@@ -121,7 +121,7 @@ kitchen []
 kitchen2        [abc, def, ghi]
 ...done.
 EOT
-    @provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', ['bar','baz', 'administrator']) 
+    @provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', ['bar','baz', 'administrator'].sort) 
     @provider.admin=:true
   end
   it 'should be able to unset admin value' do
@@ -144,7 +144,7 @@ kitchen []
 kitchen2        [abc, def, ghi]
 ...done.
 EOT
-    @provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', ['bar','baz']) 
+    @provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', ['bar','baz'].sort) 
     @provider.admin=:false
   end
 end
