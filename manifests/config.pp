@@ -42,9 +42,9 @@ class rabbitmq::config {
       message => 'WARNING: The cluster_disk_nodes is deprecated.
        Use cluster_nodes instead.',
     }
-    $_cluster_nodes = $cluster_disk_nodes
+    $cluster_nodes_ = $cluster_disk_nodes
   } else {
-    $_cluster_nodes = $cluster_nodes
+    $cluster_nodes_ = $cluster_nodes
   }
 
   file { '/etc/rabbitmq':
@@ -80,7 +80,6 @@ class rabbitmq::config {
     mode    => '0644',
     notify  => Class['rabbitmq::service'],
   }
-
 
   if $config_cluster {
 
