@@ -8,7 +8,8 @@ class rabbitmq::install::rabbitmqadmin {
     source  => "http://localhost:${management_port}/cli/rabbitmqadmin",
     require => [
       Class['rabbitmq::service'],
-      Rabbitmq_plugin['rabbitmq_management']
+      Rabbitmq_plugin['rabbitmq_management'],
+      Package['curl'],
     ],
   }
 
