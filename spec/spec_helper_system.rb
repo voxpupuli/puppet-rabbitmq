@@ -29,5 +29,6 @@ RSpec.configure do |c|
     shell('puppet module install garethr-erlang')
     shell('puppet module install puppetlabs-stdlib')
     shell('puppet module install puppetlabs-apt')
+    shell('puppet module install nanliu-staging')
   end
 end
