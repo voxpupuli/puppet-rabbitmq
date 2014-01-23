@@ -25,6 +25,7 @@ class rabbitmq(
   $package_name               = $rabbitmq::params::package_name,
   $package_provider           = $rabbitmq::params::package_provider,
   $package_source             = $rabbitmq::params::package_source,
+  $manage_repos               = $rabbitmq::params::manage_repos,
   $plugin_dir                 = $rabbitmq::params::plugin_dir,
   $port                       = $rabbitmq::params::port,
   $service_ensure             = $rabbitmq::params::service_ensure,
@@ -57,6 +58,7 @@ class rabbitmq(
   validate_bool($erlang_manage)
   # Validate install parameters.
   validate_re($package_apt_pin, '^(|\d+)$')
+  validate_bool($manage_repos)
   validate_string($package_ensure)
   validate_string($package_gpg_key)
   validate_string($package_name)
@@ -117,13 +119,15 @@ class rabbitmq(
   include '::rabbitmq::service'
   include '::rabbitmq::management'
 
-  case $::osfamily {
-    'RedHat', 'SUSE':
-      { include '::rabbitmq::repo::rhel' }
-    'Debian':
-      { include '::rabbitmq::repo::apt' }
-    default:
-      { }
+  if $manage_repos {
+    case $::osfamily {
+      'RedHat', 'SUSE':
+        { include '::rabbitmq::repo::rhel' }
+      'Debian':
+        { include '::rabbitmq::repo::apt' }
+      default:
+        { }
+    }
   }
 
   if $admin_enable and $service_manage {
