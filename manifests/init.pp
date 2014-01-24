@@ -24,6 +24,7 @@ class rabbitmq(
   $package_name               = $rabbitmq::params::package_name,
   $package_provider           = $rabbitmq::params::package_provider,
   $package_source             = $rabbitmq::params::package_source,
+  $manage_repos               = $rabbitmq::params::manage_repos,
   $plugin_dir                 = $rabbitmq::params::plugin_dir,
   $port                       = $rabbitmq::params::port,
   $service_ensure             = $rabbitmq::params::service_ensure,
@@ -60,6 +61,7 @@ class rabbitmq(
   validate_string($package_name)
   validate_string($package_provider)
   validate_string($package_source)
+  validate_bool($manage_repos)
   validate_re($version, '^\d+\.\d+\.\d+(-\d+)*$') # Allow 3 digits and optional -n postfix.
   # Validate config parameters.
   validate_array($cluster_disk_nodes)
@@ -110,13 +112,15 @@ class rabbitmq(
   include '::rabbitmq::service'
   include '::rabbitmq::management'
 
-  case $::osfamily {
-    'RedHat', 'SUSE':
-      { include '::rabbitmq::repo::rhel' }
-    'Debian':
-      { include '::rabbitmq::repo::apt' }
-    default:
-      { }
+  if $rabbitmq::manage_repos == true {
+    case $::osfamily {
+      'RedHat', 'SUSE':
+        { include '::rabbitmq::repo::rhel' }
+      'Debian':
+        { include '::rabbitmq::repo::apt' }
+      default:
+        { }
+    }
   }
 
   if $admin_enable and $service_manage {

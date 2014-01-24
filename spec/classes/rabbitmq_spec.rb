@@ -36,13 +36,30 @@ describe 'rabbitmq' do
       end
     end
   end
+
+  context 'on Debian' do
+    let(:params) {{ :manage_repos => false }}
+    let(:facts) {{ :osfamily => 'Debian', :lsbdistcodename => 'squeeze' }}
+    it 'does not include rabbitmq::repo::apt when manage_repos is false' do
+      should_not contain_class('rabbitmq::repo::apt')
+    end
+  end
+
   context 'on Redhat' do
     let(:facts) {{ :osfamily => 'RedHat' }}
     it 'includes rabbitmq::repo::rhel' do
       should contain_class('rabbitmq::repo::rhel')
     end
   end
-
+  
+  context 'on Redhat' do
+    let(:params) {{ :manage_repos => false }}
+    let(:facts) {{ :osfamily => 'RedHat' }}
+    it 'does not include rabbitmq::repo::rhel when manage_repos is false' do
+      should_not contain_class('rabbitmq::repo::rhel')
+    end
+  end
+  
   ['Debian', 'RedHat', 'SUSE', 'Archlinux'].each do |distro|
     context "on #{distro}" do
       let(:facts) {{
