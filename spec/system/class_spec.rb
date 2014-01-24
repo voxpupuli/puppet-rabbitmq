@@ -3,9 +3,7 @@ require 'spec_helper_system'
 describe "rabbitmq class:" do
   context 'should run successfully' do
     pp="
-      class { 'erlang': epel_enable => true}
       class { 'rabbitmq': }
-      Class['erlang'] -> Class['rabbitmq']
     "
 
     context puppet_apply(pp) do
