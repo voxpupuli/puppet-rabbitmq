@@ -179,6 +179,14 @@ Boolean to enable or disable stomp.
 
 Boolean to decide if we should delete the default guest user.
 
+####`rabbitmqadmin_user`
+
+Invoke rabbitmqadmin API using the given username.
+
+####`rabbitmqadmin_pass`
+
+Invoke rabbitmqadmin API using the given password.
+
 ####`env_config`
 
 The template file to use for rabbitmq_env.config.
