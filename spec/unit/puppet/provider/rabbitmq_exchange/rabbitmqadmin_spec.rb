@@ -14,19 +14,22 @@ describe provider_class do
   end
 
   it 'should return instances' do
-    provider_class.expects(:rabbitmqadmin).with('list', 'exchanges').returns <<-EOT
-+--------------+-----------------------+---------+-------------+---------+----------+
-|    vhost     |         name          |  type   | auto_delete | durable | internal |
-+--------------+-----------------------+---------+-------------+---------+----------+
-| /            |                       | direct  | False       | True    | False    |
-| /            | amq.direct            | direct  | False       | True    | False    |
-| /            | amq.fanout            | fanout  | False       | True    | False    |
-| /            | amq.headers           | headers | False       | True    | False    |
-| /            | amq.match             | headers | False       | True    | False    |
-| /            | amq.rabbitmq.log      | topic   | False       | True    | False    |
-| /            | amq.rabbitmq.trace    | topic   | False       | True    | False    |
-| /            | amq.topic             | topic   | False       | True    | False    |
-+--------------+-----------------------+---------+-------------+---------+----------+
+    provider_class.expects(:rabbitmqctl).with('list_vhosts').returns <<-EOT
+Listing vhosts ...
+/
+...done.
+EOT
+    provider_class.expects(:rabbitmqctl).with('list_exchanges', '-p', '/', 'name', 'type').returns <<-EOT
+Listing exchanges ...
+        direct
+	amq.direct      direct
+	amq.fanout      fanout
+	amq.headers     headers
+	amq.match       headers
+	amq.rabbitmq.log        topic
+	amq.rabbitmq.trace      topic
+	amq.topic       topic
+	...done.
 EOT
     instances = provider_class.instances
     instances.size.should == 8
