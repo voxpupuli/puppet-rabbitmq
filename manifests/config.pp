@@ -4,6 +4,7 @@ class rabbitmq::config {
   $cluster_node_type          = $rabbitmq::cluster_node_type
   $cluster_nodes              = $rabbitmq::cluster_nodes
   $config                     = $rabbitmq::config
+  $config_file_template       = $rabbitmq::config_file_template
   $config_cluster             = $rabbitmq::config_cluster
   $config_path                = $rabbitmq::config_path
   $config_mirrored_queues     = $rabbitmq::config_mirrored_queues
@@ -36,7 +37,7 @@ class rabbitmq::config {
   # Handle env variables.
   $environment_variables = merge($default_env_variables, $rabbitmq::environment_variables)
 
-  # Handle deprecated option.
+  # Handle deprecated options.
   if $cluster_disk_nodes != [] {
     notify { 'cluster_disk_nodes':
       message => 'WARNING: The cluster_disk_nodes is deprecated.
@@ -45,6 +46,16 @@ class rabbitmq::config {
     $_cluster_nodes = $cluster_disk_nodes
   } else {
     $_cluster_nodes = $cluster_nodes
+  }
+
+  if $config != '' {
+    notify { 'rabbitmq_config':
+      message => 'WARNING: The config parameter is deprecated.
+       Use stmdod compliant: config_file_template.',
+    }
+    $_config = $config
+  } else {
+    $_config = $config_file_template
   }
 
   file { '/etc/rabbitmq':
@@ -64,7 +75,7 @@ class rabbitmq::config {
   file { 'rabbitmq.config':
     ensure  => file,
     path    => $config_path,
-    content => template($config),
+    content => template($_config),
     owner   => '0',
     group   => '0',
     mode    => '0644',

@@ -7,6 +7,7 @@ class rabbitmq::repo::apt(
   $repos       = 'main',
   $include_src = false,
   $key         = '056E8E56',
+  $key_server  = 'keys.gnupg.net',
   $key_content = template('rabbitmq/rabbit.pub.key.erb')
   ) {
 
@@ -21,6 +22,7 @@ class rabbitmq::repo::apt(
     include_src => $include_src,
     key         => $key,
     key_content => $key_content,
+    key_server  => $key_server,
   }
 
   if $pin {

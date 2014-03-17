@@ -5,6 +5,7 @@ class rabbitmq(
   $cluster_node_type          = $rabbitmq::params::cluster_node_type,
   $cluster_nodes              = $rabbitmq::params::cluster_nodes,
   $config                     = $rabbitmq::params::config,
+  $config_file_template       = $rabbitmq::params::config_file_template,
   $config_cluster             = $rabbitmq::params::config_cluster,
   $config_mirrored_queues     = $rabbitmq::params::config_mirrored_queues,
   $config_path                = $rabbitmq::params::config_path,
@@ -68,6 +69,7 @@ class rabbitmq(
   validate_re($cluster_node_type, '^(ram|disc)$')
   validate_array($cluster_nodes)
   validate_string($config)
+  validate_string($config_file_template)
   validate_absolute_path($config_path)
   validate_bool($config_cluster)
   validate_bool($config_mirrored_queues)
