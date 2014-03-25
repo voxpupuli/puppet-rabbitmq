@@ -283,6 +283,17 @@ rabbitmq_vhost { 'myhost':
 }
 ```
 
+### rabbitmq\_exchange
+
+```puppet
+rabbitmq_exchange { 'myexchange@myhost':
+  user     => 'dan',
+  password => 'bar',
+  type     => 'topic',
+  ensure   => present,
+}
+```
+
 ### rabbitmq\_user\_permissions
 
 ```puppet
