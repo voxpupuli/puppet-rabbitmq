@@ -11,7 +11,7 @@ describe 'rabbitmq' do
   end
 
   context 'on Debian' do
-    let(:facts) {{ :osfamily => 'Debian', :lsbdistcodename => 'squeeze' }}
+    let(:facts) {{ :osfamily => 'Debian', :lsbdistid => 'Debian', :lsbdistcodename => 'squeeze' }}
     it 'includes rabbitmq::repo::apt' do
       should contain_class('rabbitmq::repo::apt')
     end
@@ -39,7 +39,7 @@ describe 'rabbitmq' do
 
   context 'on Debian' do
     let(:params) {{ :manage_repos => false }}
-    let(:facts) {{ :osfamily => 'Debian', :lsbdistcodename => 'squeeze' }}
+    let(:facts) {{ :osfamily => 'Debian', :lsbdistid => 'Debian', :lsbdistcodename => 'squeeze' }}
     it 'does not include rabbitmq::repo::apt when manage_repos is false' do
       should_not contain_class('rabbitmq::repo::apt')
     end
@@ -51,7 +51,7 @@ describe 'rabbitmq' do
       should contain_class('rabbitmq::repo::rhel')
     end
   end
-  
+
   context 'on Redhat' do
     let(:params) {{ :manage_repos => false }}
     let(:facts) {{ :osfamily => 'RedHat' }}
@@ -59,13 +59,14 @@ describe 'rabbitmq' do
       should_not contain_class('rabbitmq::repo::rhel')
     end
   end
-  
+
   ['Debian', 'RedHat', 'SUSE', 'Archlinux'].each do |distro|
     context "on #{distro}" do
       let(:facts) {{
         :osfamily => distro,
         :rabbitmq_erlang_cookie => 'EOKOWXQREETZSHFNTPEY',
-        :lsbdistcodename => 'squeeze'
+        :lsbdistcodename => 'squeeze',
+        :lsbdistid => 'Debian'
       }}
 
       it { should contain_class('rabbitmq::install') }
@@ -112,7 +113,7 @@ describe 'rabbitmq' do
       end
 
       context 'configures config_cluster' do
-        let(:facts) {{ :osfamily => distro, :rabbitmq_erlang_cookie => 'ORIGINAL' }}
+        let(:facts) {{ :osfamily => distro, :rabbitmq_erlang_cookie => 'ORIGINAL', :lsbdistid => 'Debian' }}
         let(:params) {{
           :config_cluster           => true,
           :cluster_nodes            => ['hare-1', 'hare-2'],
@@ -412,7 +413,7 @@ describe 'rabbitmq' do
   end
 
   context "on Debian" do
-    let(:facts) {{ :osfamily => 'Debian', :lsbdistcodename => 'precise' }}
+    let(:facts) {{ :osfamily => 'Debian', :lsbdistid => 'Debian', :lsbdistcodename => 'precise' }}
     it 'installs the rabbitmq package' do
       should contain_package('rabbitmq-server').with(
         'ensure'   => 'installed',
@@ -432,7 +433,7 @@ describe 'rabbitmq' do
   end
 
   describe 'repo management on Debian' do
-    let(:facts)  {{ :osfamily => 'Debian' }}
+    let(:facts)  {{ :osfamily => 'Debian', :lsbdistid => 'Debian' }}
 
     context 'with no pin' do
       let(:params) {{ :package_apt_pin => '' }}
