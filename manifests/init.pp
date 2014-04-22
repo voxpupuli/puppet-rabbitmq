@@ -81,7 +81,7 @@ class rabbitmq(
   validate_re($management_port, '\d+')
   validate_string($node_ip_address)
   validate_absolute_path($plugin_dir)
-  validate_re($port, '\d+')
+  validate_re($port, ['\d+','UNSET'])
   validate_re($stomp_port, '\d+')
   validate_bool($wipe_db_on_cookie_change)
   # Validate service parameters.
