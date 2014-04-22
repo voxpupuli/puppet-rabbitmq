@@ -22,6 +22,14 @@ bar 1 2 3
 EOT
     @provider.exists?.should == {:configure=>"1", :write=>"2", :read=>"3"}
   end
+  it 'should match user permissions with empty columns' do
+    @provider.class.expects(:rabbitmqctl).with('list_user_permissions', 'foo').returns <<-EOT
+Listing users ...
+bar			3
+...done.
+EOT
+    @provider.exists?.should == {:configure=>"", :write=>"", :read=>"3"}
+  end
   it 'should not match user permissions with more than 3 columns' do
     @provider.class.expects(:rabbitmqctl).with('list_user_permissions', 'foo').returns <<-EOT
 Listing users ...
