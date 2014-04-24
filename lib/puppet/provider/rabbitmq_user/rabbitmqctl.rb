@@ -1,4 +1,5 @@
 require 'puppet'
+require 'set'
 Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
 
   if Puppet::PUPPETVERSION.to_f < 3
@@ -13,7 +14,7 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
 
   def self.instances
     rabbitmqctl('list_users').split(/\n/)[1..-2].collect do |line|
-      if line =~ /^(\S+)(\s+\S+|)$/
+      if line =~ /^(\S+)(\s+\[.*?\]|)$/
         new(:name => $1)
       else
         raise Puppet::Error, "Cannot parse invalid user line: #{line}"
@@ -34,33 +35,43 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
 
   def exists?
     rabbitmqctl('list_users').split(/\n/)[1..-2].detect do |line|
-      line.match(/^#{Regexp.escape(resource[:name])}(\s+\S+|)$/)
+      line.match(/^#{Regexp.escape(resource[:name])}(\s+(\[.*?\]|\S+)|)$/)
     end
   end
 
   # def password
   # def password=()
   def admin
-    match = rabbitmqctl('list_users').split(/\n/)[1..-2].collect do |line|
-      line.match(/^#{Regexp.escape(resource[:name])}\s+\[(administrator)?\]/)
-    end.compact.first
-    if match
-      (:true if match[1].to_s == 'administrator') || :false
+    if usertags = get_user_tags
+      (:true if usertags.include?('administrator')) || :false
     else
       raise Puppet::Error, "Could not match line '#{resource[:name]} (true|false)' from list_users (perhaps you are running on an older version of rabbitmq that does not support admin users?)"
     end
   end
 
+
   def admin=(state)
     if state == :true
       make_user_admin()
     else
-      rabbitmqctl('set_user_tags', resource[:name])
+      usertags = get_user_tags
+      usertags.delete('administrator')
+      rabbitmqctl('set_user_tags', resource[:name], usertags.entries.sort)
     end
   end
 
   def make_user_admin
-    rabbitmqctl('set_user_tags', resource[:name], 'administrator')
+    usertags = get_user_tags
+    usertags.add('administrator')
+    rabbitmqctl('set_user_tags', resource[:name], usertags.entries.sort)
+  end
+
+  private
+  def get_user_tags
+    match = rabbitmqctl('list_users').split(/\n/)[1..-2].collect do |line|
+      line.match(/^#{Regexp.escape(resource[:name])}\s+\[(.*?)\]/)
+    end.compact.first
+    Set.new(match[1].split(/, /)) if match
   end
 
 end
