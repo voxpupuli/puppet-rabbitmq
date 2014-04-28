@@ -92,7 +92,7 @@ To change Erlang Kernel Config Variables in rabbitmq.config, use the parameters
 ```puppet
 class { 'rabbitmq':
   port              => '5672',
-  kernel_config_options => {
+  config_kernel_variables  => {
     'inet_dist_listen_min' => 9100,
     'inet_dist_listen_max' => 9105,
   }
