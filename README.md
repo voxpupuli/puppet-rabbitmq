@@ -191,10 +191,6 @@ The path to write the rabbitmq_env.config file to.
 
 The erlang cookie to use for clustering - must be the same between all nodes.
 
-####`erlang_enable`
-
-If true then we include an erlang module.
-
 ####`config_variables`
 
 To set config variables in rabbitmq.config
