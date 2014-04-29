@@ -15,7 +15,6 @@ class rabbitmq(
   $env_config                 = $rabbitmq::params::env_config,
   $env_config_path            = $rabbitmq::params::env_config_path,
   $erlang_cookie              = $rabbitmq::params::erlang_cookie,
-  $manage_service             = $rabbitmq::params::manage_service,
   $management_port            = $rabbitmq::params::management_port,
   $node_ip_address            = $rabbitmq::params::node_ip_address,
   $package_apt_pin            = $rabbitmq::params::package_apt_pin,
@@ -85,7 +84,6 @@ class rabbitmq(
   validate_re($stomp_port, '\d+')
   validate_bool($wipe_db_on_cookie_change)
   # Validate service parameters.
-  validate_bool($manage_service)
   validate_re($service_ensure, '^(running|stopped)$')
   validate_bool($service_manage)
   validate_string($service_name)

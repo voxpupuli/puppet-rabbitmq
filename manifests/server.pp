@@ -41,7 +41,7 @@ class rabbitmq::server(
   $version                  = $rabbitmq::params::version,
   $service_name             = $rabbitmq::params::service_name,
   $service_ensure           = $rabbitmq::params::service_ensure,
-  $manage_service           = $rabbitmq::params::service_manage,
+  $service_manage           = $rabbitmq::params::service_manage,
   $config_stomp             = $rabbitmq::params::config_stomp,
   $stomp_port               = $rabbitmq::params::stomp_port,
   $config_cluster           = $rabbitmq::params::config_cluster,
@@ -54,7 +54,16 @@ class rabbitmq::server(
   $env_config               = $rabbitmq::params::env_config,
   $erlang_cookie            = $rabbitmq::params::erlang_cookie,
   $wipe_db_on_cookie_change = $rabbitmq::params::wipe_db_on_cookie_change,
+  # DEPRECATED
+  $manage_service           = undef,
 ) inherits rabbitmq::params {
+
+  if $manage_service != undef {
+    warning('The $manage_service parameter is deprecated; please use $service_manage instead')
+    $_service_manage = $manage_service
+  } else {
+    $_service_manage = $service_manage
+  }
   anchor {'before::rabbimq::class':
     before => Class['rabbitmq'],
   }
@@ -70,7 +79,7 @@ class rabbitmq::server(
     version                   => $version,
     service_name              => $service_name,
     service_ensure            => $service_ensure,
-    manage_service            => $manage_service,
+    service_manage            => $_service_manage,
     config_stomp              => $config_stomp,
     stomp_port                => $stomp_port,
     config_cluster            => $config_cluster,
