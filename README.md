@@ -248,6 +248,10 @@ The name of the service to manage.
 
 The port to use for Stomp.
 
+####`stomp_ensure`
+
+The state of the Stomp plugin. 'false' for noop.
+
 ####`wipe_db_on_cookie_change`
 
 Boolean to determine if we should DESTROY AND DELETE the RabbitMQ database.
