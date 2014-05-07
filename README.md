@@ -334,7 +334,6 @@ To use the module, add the following snippet to your site.pp or an appropriate p
 
 	include 'erlang'
 	class { 'erlang': epel_enable => true}
-	Class['erlang'] -> Class['rabbitmq']
 
 ##Development
 
