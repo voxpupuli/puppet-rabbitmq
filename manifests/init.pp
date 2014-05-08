@@ -6,7 +6,6 @@ class rabbitmq(
   $cluster_nodes              = $rabbitmq::params::cluster_nodes,
   $config                     = $rabbitmq::params::config,
   $config_cluster             = $rabbitmq::params::config_cluster,
-  $config_mirrored_queues     = $rabbitmq::params::config_mirrored_queues,
   $config_path                = $rabbitmq::params::config_path,
   $config_stomp               = $rabbitmq::params::config_stomp,
   $default_user               = $rabbitmq::params::default_user,
@@ -69,7 +68,6 @@ class rabbitmq(
   validate_string($config)
   validate_absolute_path($config_path)
   validate_bool($config_cluster)
-  validate_bool($config_mirrored_queues)
   validate_bool($config_stomp)
   validate_string($default_user)
   validate_string($default_pass)

@@ -6,7 +6,6 @@ class rabbitmq::config {
   $config                     = $rabbitmq::config
   $config_cluster             = $rabbitmq::config_cluster
   $config_path                = $rabbitmq::config_path
-  $config_mirrored_queues     = $rabbitmq::config_mirrored_queues
   $config_stomp               = $rabbitmq::config_stomp
   $default_user               = $rabbitmq::default_user
   $default_pass               = $rabbitmq::default_pass

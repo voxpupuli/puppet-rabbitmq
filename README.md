@@ -86,7 +86,7 @@ class { 'rabbitmq':
 }
 ```
 
-To change Erlang Kernel Config Variables in rabbitmq.config, use the parameters 
+To change Erlang Kernel Config Variables in rabbitmq.config, use the parameters
 `config_kernel_variables` e.g.:
 
 ```puppet
@@ -100,28 +100,14 @@ class { 'rabbitmq':
 ```
 
 ### Clustering
-To use RabbitMQ clustering and H/A facilities, use the rabbitmq::server
-parameters `config_cluster`, `cluster_nodes`, and `cluster_node_type`, e.g.:
+To use RabbitMQ clustering facilities, use the rabbitmq parameters
+`config_cluster`, `cluster_nodes`, and `cluster_node_type`, e.g.:
 
 ```puppet
 class { 'rabbitmq':
-  config_cluster    => true, 
+  config_cluster    => true,
   cluster_nodes     => ['rabbit1', 'rabbit2'],
   cluster_node_type => 'ram',
-}
-```
-
-**NOTE:** You still need to use `x-ha-policy: all` in your client 
-applications for any particular queue to take advantage of H/A.
-
-You should set the 'config_mirrored_queues' parameter if you plan
-on using RabbitMQ Mirrored Queues within your cluster:
-
-```puppet
-class { 'rabbitmq':
-  config_cluster         => true,
-  config_mirrored_queues => true,
-  cluster_nodes          => ['rabbit1', 'rabbit2'],
 }
 ```
 
@@ -165,7 +151,11 @@ Boolean to enable or disable clustering support.
 
 ####`config_mirrored_queues`
 
-Boolean to enable or disable mirrored queues.
+DEPRECATED
+
+Configuring queue mirroring should be done by setting the according policy for
+the queue. You can read more about it
+[here](http://www.rabbitmq.com/ha.html#genesis)
 
 ####`config_path`
 
@@ -327,13 +317,13 @@ Testing on other platforms has been light and cannot be guaranteed.
 To have a suitable erlang version installed on RedHat systems,
 you have to install another puppet module from http://forge.puppetlabs.com/garethr/erlang with:
 
-	puppet module install garethr-erlang
+    puppet module install garethr-erlang
 
 This module handles the packages for erlang.
 To use the module, add the following snippet to your site.pp or an appropriate profile class:
 
-	include 'erlang'
-	class { 'erlang': epel_enable => true}
+    include 'erlang'
+    class { 'erlang': epel_enable => true}
 
 ##Development
 
