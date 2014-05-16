@@ -1,3 +1,40 @@
+2014-05-16 - Version 4.0.0
+
+Summary:
+
+This release includes many new features and bug fixes.  With the exception of
+erlang management this should be backwards compatible with 3.1.0.
+
+Backwards-incompatible Changes:
+- erlang_manage was removed.  You will need to manage erlang separately. See
+the README for more information on how to configure this.
+
+Features:
+- Improved SSL support
+- Add LDAP support
+- Add ability to manage RabbitMQ repositories
+- Add ability to manage Erlang kernel configuration options
+- Improved handling of user tags
+- Use nanliu-staging module instead of hardcoded 'curl'
+- Switch to yum or zypper provider instead of rpm
+- Add ability to manage STOMP plugin installation.
+- Allow empty permission fields
+- Convert existing system tests to beaker acceptance tests.
+
+Bugfixes:
+- exchanges no longer recreated on each puppet run if non-default vhost is used
+- Allow port to be UNSET
+- Re-added rabbitmq::server class
+- Deprecated previously unused manage_service variable in favor of 
+  service_manage
+- Use correct key for rabbitmq apt::source
+- config_mirrored_queues variable removed
+  - It previously did nothing, will now at least throw a warning if you try to
+    use it
+- Remove unnecessary dependency on Class['rabbitmq::repo::rhel'] in
+  rabbitmq::install
+
+
 2013-09-14 - Version 3.1.0
 
 Summary:
