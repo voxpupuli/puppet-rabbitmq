@@ -96,7 +96,7 @@ class rabbitmq(
   validate_re($ssl_management_port, '\d+')
   validate_string($ssl_stomp_port)
   validate_re($ssl_stomp_port, '\d+')
-  validate_string($stomp_ensure)
+  validate_bool($stomp_ensure)
   validate_bool($ldap_auth)
   validate_string($ldap_server)
   validate_string($ldap_user_dn_pattern)

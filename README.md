@@ -250,7 +250,7 @@ The port to use for Stomp.
 
 ####`stomp_ensure`
 
-The state of the Stomp plugin. 'false' for noop.
+Boolean to install the stomp plugin.
 
 ####`wipe_db_on_cookie_change`
 
