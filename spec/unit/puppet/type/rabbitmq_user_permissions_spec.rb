@@ -26,6 +26,10 @@ describe Puppet::Type.type(:rabbitmq_user_permissions) do
       @perms[param] = '.*?'
       @perms[param].should == '.*?'  
     end
+    it "should accept an empty string for #{param}" do
+      @perms[param] = ''
+      @perms[param].should == ''  
+    end
     it "should not accept invalid regex for #{param}" do
       expect {
         @perms[param] = '*'
