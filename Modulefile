@@ -1,10 +1,10 @@
 name    'puppetlabs-rabbitmq'
-version '3.1.0'
+version '4.0.0'
 source 'git://github.com/puppetlabs/puppetlabs-rabbitmq.git'
 author 'puppetlabs'
 license 'Apache'
 summary 'RabbitMQ Puppet Module'
-description 'This module manages RabbitMQ. Tested on Debian/Ubuntu'
+description 'This module manages RabbitMQ. Tested on Debian, Ubuntu, and RedHat'
 project_page 'http://github.com/puppetlabs/puppetlabs-rabbitmq'
 
 ## Add dependencies, if any:
