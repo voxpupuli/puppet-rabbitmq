@@ -80,6 +80,7 @@ class rabbitmq::params {
   $ssl_stomp_port             = '6164'
   $ssl_verify                 = 'verify_none'
   $ssl_fail_if_no_peer_cert   = 'false'
+  $stomp_ensure               = false
   $ldap_auth                  = false
   $ldap_server                = 'ldap'
   $ldap_user_dn_pattern       = 'cn=${username},ou=People,dc=example,dc=com'
