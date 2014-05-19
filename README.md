@@ -317,8 +317,8 @@ The module has been tested on:
 
 Testing on other platforms has been light and cannot be guaranteed.
 
-### RedHat module dependencies
-To have a suitable erlang version installed on RedHat systems,
+### Module dependencies
+To have a suitable erlang version installed on RedHat and Debian systems,
 you have to install another puppet module from http://forge.puppetlabs.com/garethr/erlang with:
 
     puppet module install garethr-erlang
@@ -326,8 +326,17 @@ you have to install another puppet module from http://forge.puppetlabs.com/garet
 This module handles the packages for erlang.
 To use the module, add the following snippet to your site.pp or an appropriate profile class:
 
+For RedHat systems:
+
     include 'erlang'
     class { 'erlang': epel_enable => true}
+
+For Debian systems:
+
+    include 'erlang'
+    package { 'erlang-base':
+      ensure => 'latest',
+    }
 
 ##Development
 
