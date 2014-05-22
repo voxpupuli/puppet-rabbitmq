@@ -275,6 +275,30 @@ describe 'rabbitmq' do
         end
       end
 
+      describe 'configuring ldap authentication' do
+        let :params do
+          { :config_stomp         => false,
+            :ldap_auth            => true,
+            :ldap_server          => 'ldap.example.com',
+            :ldap_user_dn_pattern => 'ou=users,dc=example,dc=com',
+            :ldap_use_ssl         => false,
+            :ldap_port            => '389',
+            :ldap_log             => true
+          }
+        end
+
+        it { should contain_rabbitmq_plugin('rabbitmq_auth_backend_ldap') }
+
+        it 'should contain ldap parameters' do
+          verify_contents(subject, 'rabbitmq.config', 
+                          ['[', '  {rabbit, [', '    {auth_backends, [rabbit_auth_backend_internal, rabbit_auth_backend_ldap]},', '  ]}',
+                            '  {rabbitmq_auth_backend_ldap, [', '    {other_bind, anon},',
+                            '    {servers, ["ldap.example.com"]},',
+                            '    {user_dn_pattern, "ou=users,dc=example,dc=com"},', '    {use_ssl, false},',
+                            '    {port, 389},', '    {log, true}'])
+        end
+      end
+
       describe 'default_user and default_pass set' do
         let(:params) {{ :default_user => 'foo', :default_pass => 'bar' }}
         it 'should set default_user and default_pass to specified values' do
