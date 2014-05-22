@@ -1,5 +1,6 @@
 class rabbitmq::config {
 
+  $admin_enable               = $rabbitmq::admin_enable
   $cluster_disk_nodes         = $rabbitmq::cluster_disk_nodes
   $cluster_node_type          = $rabbitmq::cluster_node_type
   $cluster_nodes              = $rabbitmq::cluster_nodes
@@ -12,6 +13,7 @@ class rabbitmq::config {
   $env_config                 = $rabbitmq::env_config
   $env_config_path            = $rabbitmq::env_config_path
   $erlang_cookie              = $rabbitmq::erlang_cookie
+  $management_port            = $rabbitmq::management_port
   $node_ip_address            = $rabbitmq::node_ip_address
   $plugin_dir                 = $rabbitmq::plugin_dir
   $port                       = $rabbitmq::port
@@ -21,6 +23,7 @@ class rabbitmq::config {
   $ssl_cacert                 = $rabbitmq::ssl_cacert
   $ssl_cert                   = $rabbitmq::ssl_cert
   $ssl_key                    = $rabbitmq::ssl_key
+  $ssl_port                   = $rabbitmq::ssl_port
   $ssl_management_port        = $rabbitmq::ssl_management_port
   $ssl_stomp_port             = $rabbitmq::ssl_stomp_port
   $ssl_verify                 = $rabbitmq::ssl_verify
