@@ -1,11 +1,12 @@
 #
 class rabbitmq::install::rabbitmqadmin {
 
-  $management_port = $rabbitmq::management_port
+  $real_management_port = $rabbitmq::ssl ? { true => $rabbitmq::ssl_management_port, default => $rabbitmq::management_port }
+  $protocol = $rabbitmq::ssl ? { true => 'https', default => 'http' }
 
   staging::file { 'rabbitmqadmin':
     target  => '/var/lib/rabbitmq/rabbitmqadmin',
-    source  => "http://localhost:${management_port}/cli/rabbitmqadmin",
+    source  => "${protocol}://localhost:${real_management_port}/cli/rabbitmqadmin",
     require => [
       Class['rabbitmq::service'],
       Rabbitmq_plugin['rabbitmq_management']
