@@ -315,11 +315,11 @@ describe 'rabbitmq' do
 
         it 'should set ssl options to specified values' do
           contain_file('rabbitmq.config').with({
-            'content' => /tcp_listeners, \[\].*
+            'content' => %r|tcp_listeners, \[\].*
             ssl_listeners, \[3141\].*
-            ssl_options, \[{cacertfile,"\/path\/to\/cacert".*
-            certfile="\/path\/to\/cert".*
-            keyfile,"\/path\/to\/key/,
+            ssl_options, \[{cacertfile,"/path/to/cacert".*
+            certfile="/path/to/cert".*
+            keyfile,"/path/to/key|,
           })
         end
       end
