@@ -94,7 +94,7 @@ class rabbitmq(
   validate_re($ssl_management_port, '\d+')
   validate_string($ssl_stomp_port)
   validate_re($ssl_stomp_port, '\d+')
-  validate_re($stomp_ensure, '^(present|absent)$')
+  validate_bool($stomp_ensure)
   validate_bool($ldap_auth)
   validate_string($ldap_server)
   validate_string($ldap_user_dn_pattern)
@@ -124,12 +124,14 @@ class rabbitmq(
   if $admin_enable and $service_manage {
     include '::rabbitmq::install::rabbitmqadmin'
 
-    rabbitmq_plugin { 'rabbitmq_management':
+  if $stomp_ensure {
+    rabbitmq_plugin { 'rabbitmq_stomp':
       ensure  => present,
       require => Class['rabbitmq::install'],
       notify  => Class['rabbitmq::service'],
       provider => 'rabbitmqplugins'
     }
+  }
 
     Class['::rabbitmq::service'] -> Class['::rabbitmq::install::rabbitmqadmin']
   }
