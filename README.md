@@ -271,6 +271,16 @@ rabbitmq_user { 'dan':
   password => 'bar',
 }
 ```
+Optional parameter tags will set further rabbitmq tags like monitoring, policymaker, etc.
+To set the administrator tag use admin-flag.
+```puppet
+rabbitmq_user { 'dan':
+  admin    => true,
+  password => 'bar',
+  tags     => ['monitoring', 'tag1'],
+}
+```
+
 
 ### rabbitmq\_vhost
 
