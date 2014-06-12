@@ -60,7 +60,6 @@ class rabbitmq(
   validate_string($package_gpg_key)
   validate_string($package_name)
   validate_string($package_provider)
-  validate_string($package_source)
   validate_bool($manage_repos)
   validate_re($version, '^\d+\.\d+\.\d+(-\d+)*$') # Allow 3 digits and optional -n postfix.
   # Validate config parameters.
