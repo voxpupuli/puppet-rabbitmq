@@ -20,7 +20,7 @@ describe 'rabbitmq' do
       let(:facts) {{ :osfamily => 'Debian' }}
       it 'should add a repo with defaults values' do
         contain_file('/etc/apt/sources.list.d/rabbitmq.list')\
-          .with_content(/deb http\:\/\/www\.rabbitmq.com\/debian\/ testing main/)
+          .with_content(%r|deb http\://www\.rabbitmq.com/debian/ testing main|)
       end
     end
 
@@ -32,7 +32,7 @@ describe 'rabbitmq' do
         }}
       it 'should add a repo with custom new values' do
         contain_file('/etc/apt/sources.list.d/rabbitmq.list')\
-          .with_content(/deb http\:\/\/www\.foorepo.com\/debian\/ unstable main/)
+          .with_content(%r|deb http\://www\.foorepo.com/debian/ unstable main|)
       end
     end
   end
@@ -319,10 +319,10 @@ describe 'rabbitmq' do
 
         it 'should set ssl options to specified values' do
           contain_file('rabbitmq.config').with({
-            'content' => /ssl_listeners, \[3141\].*
-            ssl_options, \[{cacertfile,"\/path\/to\/cacert".*
-            certfile="\/path\/to\/cert".*
-            keyfile,"\/path\/to\/key/,
+            'content' => %r|ssl_listeners, \[3141\].*
+            ssl_options, \[{cacertfile,"/path/to/cacert".*
+            certfile="/path/to/cert".*
+            keyfile,"/path/to/key|,
           })
         end
       end
