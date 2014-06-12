@@ -234,6 +234,15 @@ Determines if the service is managed.
 
 The name of the service to manage.
 
+####`ssl`
+
+Configures the service for using SSL.
+
+####`ssl_only`
+
+Configures the service to only use SSL.  No cleartext TCP listeners will be created.
+Requires that ssl => true also.
+
 ####`stomp_port`
 
 The port to use for Stomp.

@@ -17,6 +17,7 @@ class rabbitmq::config {
   $port                       = $rabbitmq::port
   $service_name               = $rabbitmq::service_name
   $ssl                        = $rabbitmq::ssl
+  $ssl_only                   = $rabbitmq::ssl_only
   $ssl_cacert                 = $rabbitmq::ssl_cacert
   $ssl_cert                   = $rabbitmq::ssl_cert
   $ssl_key                    = $rabbitmq::ssl_key
@@ -117,3 +118,4 @@ class rabbitmq::config {
 
 
 }
+

@@ -327,6 +327,27 @@ describe 'rabbitmq' do
         end
       end
 
+      describe 'ssl options with ssl_only' do
+        let(:params) {
+          { :ssl => true,
+            :ssl_only => true,
+            :ssl_management_port => 3141,
+            :ssl_cacert => '/path/to/cacert',
+            :ssl_cert => '/path/to/cert',
+            :ssl_key => '/path/to/key'
+        } }
+
+        it 'should set ssl options to specified values' do
+          contain_file('rabbitmq.config').with({
+            'content' => %r|tcp_listeners, \[\].*
+            ssl_listeners, \[3141\].*
+            ssl_options, \[{cacertfile,"/path/to/cacert".*
+            certfile="/path/to/cert".*
+            keyfile,"/path/to/key|,
+          })
+        end
+      end
+
       describe 'config_variables options' do
         let(:params) {{ :config_variables => {
             'hipe_compile'                  => true,
