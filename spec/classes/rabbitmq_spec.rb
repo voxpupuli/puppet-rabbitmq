@@ -360,14 +360,14 @@ describe 'rabbitmq' do
 
         it 'should set rabbitmq_management ssl options to specified values' do
           contain_file('rabbitmq.config').with({
-            'content' => /\{rabbitmq_management, \[.*
+            'content' => %r|\{rabbitmq_management, \[.*
                           \{listener, \[.*
                           \{port, 3141\},.*
                           \{ssl, true\},.*
                           \{ssl_opts, \[\{cacertfile, "/path/to/cacert"\},.*
                           \{certfile, "/path/to/cert"\},.*
                           \{keyfile, "/path/to/key"\}\]\}.*
-                          \]\}/,
+                          \]\}|,
           })
         end
       end
@@ -401,14 +401,14 @@ describe 'rabbitmq' do
 
         it 'should set rabbitmq_management ssl options to specified values' do
           contain_file('rabbitmq.config').with({
-            'content' => /\{rabbitmq_management, \[.*
+            'content' => %r|\{rabbitmq_management, \[.*
                           \{listener, \[.*
                           \{port, 3141\},.*
                           \{ssl, true\},.*
                           \{ssl_opts, \[\{cacertfile, "/path/to/cacert"\},.*
                           \{certfile, "/path/to/cert"\},.*
                           \{keyfile, "/path/to/key"\}\]\}.*
-                          \]\}/,
+                          \]\}|,
           })
         end
       end
