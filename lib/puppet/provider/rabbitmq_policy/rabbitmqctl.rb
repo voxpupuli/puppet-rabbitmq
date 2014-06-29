@@ -36,7 +36,7 @@ Puppet::Type.type(:rabbitmq_policy).provide(:rabbitmqctl) do
 
   def destroy
     rabbitmqctl('clear_policy', resource[:name])
-    @property_hash[:ensure] = :absent
+    @property_hash = {}  # used in conjunction with flush to avoid calling non-indempotent destroy twice
   end
 
   def exists?
@@ -44,7 +44,14 @@ Puppet::Type.type(:rabbitmq_policy).provide(:rabbitmqctl) do
   end
 
   def flush
-    self.create
+    # flush is used purely in an update capacity
+    # @property_hash is tested to avoid calling non-indempotent destroy twice
+    if @property_hash == {}
+      Puppet.debug 'hash empty - instance does not exist on system'
+    elsif self.exists?
+      self.create
+    else
+      self.destroy
+    end
   end
 end
-

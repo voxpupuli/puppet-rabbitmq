@@ -38,7 +38,7 @@ Puppet::Type.type(:rabbitmq_parameter).provide(:rabbitmqctl) do
   def destroy
     data = resource[:name].split(/\s+/)
     rabbitmqctl('clear_parameter', data[1], data[2], '-p', data[0])
-    @property_hash[:ensure] = :absent
+    @property_hash = {}  # used in conjunction with flush to avoid calling non-indempotent destroy twice
   end
 
   def exists?
@@ -46,7 +46,14 @@ Puppet::Type.type(:rabbitmq_parameter).provide(:rabbitmqctl) do
   end
 
   def flush
-    self.create
+    # flush is used purely in an update capacity
+    # @property_hash is tested to avoid calling non-indempotent destroy twice
+    if @property_hash == {}
+      Puppet.debug 'hash empty - instance does not exist on system'
+    elsif self.exists?
+      self.create
+    else
+      self.destroy
+    end
   end
 end
-
