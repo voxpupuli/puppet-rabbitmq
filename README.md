@@ -403,6 +403,35 @@ rabbitmq_plugin {'rabbitmq_stomp':
 }
 ```
 
+### rabbitmq\_federation\_upstream
+
+`uri` and `vhost` are required. Other parameters are set to the default values shown in the example if not provided.
+
+```puppet
+rabbitmq_federation_upstream { 'myupstream':
+  uri             => 'amqp://dan:bar@localhost/myhost',
+  vhost           => 'myhost',
+  ack_mode        => 'on-confirm',
+  expires         => 1000,  # defaults to forever if not provided
+  max_hops        => 1,
+  message_ttl     => 1000,  # defaults to forever if not provided
+  prefetch_count  => 1000,
+  reconnect_delay => 1,
+  trust_user_id   => false,
+}
+```
+
+###rabbitmq\_federation\_upstreamset 
+
+`vhost` is required. `upstreams` defaults to all if not provided.
+
+```puppet
+rabbitmq_federation_upstreamset { 'myupstreamset':
+  vhost => 'myhost',
+  upstreams => ['myupstream', 'myupstream1'],
+}
+```
+
 ##Limitations
 
 This module has been built on and tested against Puppet 2.7 and higher.
@@ -466,3 +495,4 @@ You can read the complete module contribution guide [on the Puppet Labs wiki.](h
 * Dan Bode <dan@puppetlabs.com>
 * RPM/RHEL packages by Vincent Janelle <randomfrequency@gmail.com>
 * Puppetlabs Module Team
+
