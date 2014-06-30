@@ -17,7 +17,7 @@ Puppet::Type.type(:rabbitmq_federation_upstreamset).provide(:rabbitmqctl) do
           names = JSON.parse($2).collect { |data| data['upstream'] }
           new(:name => $1, :ensure => :present, :vhost => vhost, :upstreams => names)
         else
-          raise Puppet::Error, "Cannot parse invalid user line: #{line}"
+          raise Puppet::Error, "Cannot parse invalid federation-upstream-set line: #{line}"
         end
       end
     end.flatten

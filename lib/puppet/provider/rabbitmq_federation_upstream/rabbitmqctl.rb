@@ -29,7 +29,7 @@ Puppet::Type.type(:rabbitmq_federation_upstream).provide(:rabbitmqctl) do
           data = JSON.parse($2)
           new(:name => $1, :ensure => :present, :vhost => vhost, :uri => data['uri'], :expires => data['expires'].to_s, :message_ttl => data['message-ttl'].to_s, :ack_mode => data['ack-mode'], :trust_user_id => bool_to_sym(data['trust-user-id']), :prefetch_count => data['prefetch-count'].to_s, :max_hops => data['max-hops'].to_s, :reconnect_delay => data['reconnect-delay'].to_s)
         else
-          raise Puppet::Error, "Cannot parse invalid user line: #{line}"
+          raise Puppet::Error, "Cannot parse invalid federation-upstream line: #{line}"
         end
       end
     end.flatten
@@ -68,4 +68,3 @@ Puppet::Type.type(:rabbitmq_federation_upstream).provide(:rabbitmqctl) do
     end
   end
 end
-
