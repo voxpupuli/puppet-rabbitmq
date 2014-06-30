@@ -15,7 +15,7 @@ Puppet::Type.type(:rabbitmq_parameter).provide(:rabbitmqctl) do
       # Federation should be handled by the dedicated federation classes to avoid errors
       rabbitmqctl('list_parameters', '-p', vhost).split(/\n/)[1..-2].select { |line| line =~ /^(?!federation)/ }.collect do |line|
         if line =~ /^(\S+)\s+(\S+)\s+(\S+)$/
-          new(:name => $2, :ensure => :present, :vhost => vhost, :component_name => $1, :value => JSON.parse($3))
+          new(:name => $2, :ensure => :present, :vhost => vhost, :component => $1, :value => JSON.parse($3))
         else
           raise Puppet::Error, "Cannot parse invalid parameter line: #{line}"
         end
@@ -31,11 +31,11 @@ Puppet::Type.type(:rabbitmq_parameter).provide(:rabbitmqctl) do
   end
 
   def create
-    rabbitmqctl('set_parameter', resource[:component_name], resource[:name], resource[:value].to_json, '-p', resource[:vhost])
+    rabbitmqctl('set_parameter', resource[:component], resource[:name], resource[:value].to_json, '-p', resource[:vhost])
   end
 
   def destroy
-    rabbitmqctl('clear_parameter', resource[:component_name], resource[:name], '-p', resource[:vhost])
+    rabbitmqctl('clear_parameter', resource[:component], resource[:name], '-p', resource[:vhost])
     @property_hash = {}  # used in conjunction with flush to avoid calling non-indempotent destroy twice
   end
 

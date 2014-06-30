@@ -12,7 +12,7 @@ Puppet::Type.newtype(:rabbitmq_parameter) do
         /^(\S+)\s(\S+)\s(\S+)$/,
         [
           [:vhost, lambda{|x| x} ],
-          [:component_name, lambda{|x| x} ],
+          [:component, lambda{|x| x} ],
           [:name, lambda{|x| x} ]
         ]
       ]
@@ -30,14 +30,14 @@ Puppet::Type.newtype(:rabbitmq_parameter) do
     defaultto '/'
   end
 
-  newparam(:component_name, :namevar => true) do
-    desc 'Component name for parameter'
+  newparam(:component, :namevar => true) do
+    desc 'Component for parameter'
     # The federation classes in this module have better validation and defaults
     # and should be used when appropriate otherwise errors can occur in the prefetch
     # method of those providers
     validate do |value|
       unless value =~ /^(?!federation)[\w-]+$/
-        raise ArgumentError, 'Component name invalid. For federation support use rabbitmq_federation_upstream or rabbitmq_federation_upstreamset classes.'
+        raise ArgumentError, 'Component invalid. For federation support use rabbitmq_federation_upstream or rabbitmq_federation_upstreamset classes.'
       end
     end
   end

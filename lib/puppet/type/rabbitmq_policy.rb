@@ -13,6 +13,7 @@ Puppet::Type.newtype(:rabbitmq_policy) do
 
   newproperty(:vhost) do
     desc 'The name of the rabbitmq vhost this policy applies to'
+    newvalues(/^[\w\/-]+$/)
     defaultto '/'
   end
 

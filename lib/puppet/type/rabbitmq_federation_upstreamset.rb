@@ -23,12 +23,12 @@ Puppet::Type.newtype(:rabbitmq_federation_upstreamset) do
 
   newproperty(:upstreams, :array_matching => :all) do
     desc 'A list of the upstreams which comprise this upstream set'
-    newvalues(/^[\w\w-]+$/)
     validate do |value|
       if 'all' == value
         raise ArgumentError, 'TxihHe upstream set named "all" cannot be configured as it is implicit'
+      elsif !(value =~ /^[\w\w-]+$/)
+        raise ArgumentError, 'No spaces allowed in upstreams'
       end
     end
   end
 end
-
