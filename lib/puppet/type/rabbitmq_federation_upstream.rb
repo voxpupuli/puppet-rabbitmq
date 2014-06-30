@@ -23,6 +23,7 @@ Puppet::Type.newtype(:rabbitmq_federation_upstream) do
 
   newproperty(:uri) do
     desc 'The uri for the server to connect to'
+    newvalues(/^amqps?:\/\/.+$/)
   end
 
   newproperty(:expires) do
@@ -68,4 +69,3 @@ Puppet::Type.newtype(:rabbitmq_federation_upstream) do
     defaultto :false
   end
 end
-
