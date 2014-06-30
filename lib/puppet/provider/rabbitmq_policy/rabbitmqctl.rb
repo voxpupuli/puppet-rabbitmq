@@ -15,9 +15,9 @@ Puppet::Type.type(:rabbitmq_policy).provide(:rabbitmqctl) do
       rabbitmqctl('list_policies', '-p', vhost).split(/\n/)[1..-2].collect do |line|
         # /   federate mcollective exchanges  exchanges   ^(mcollective_|amq\\.)  {"federation-upstream-set":"all"}   0
         if line =~ /^(\S+)\s+(.+)\s+(\S+)\s+(\S+)\s(\S+)\s+(\S+)$/
-          new(:name => $2, :ensure => :present, :vhost => $1, :apply_to => $3, :pattern => $4, :data => JSON.parse($5), :priority => $6)
+          new(:name => $2, :ensure => :present, :vhost => $1, :apply_to => $3, :pattern => $4, :definition => JSON.parse($5), :priority => $6)
         else
-          raise Puppet::Error, "Cannot parse invalid user line: #{line}"
+          raise Puppet::Error, "Cannot parse invalid policy line: #{line}"
         end
       end
     end.flatten
@@ -31,11 +31,11 @@ Puppet::Type.type(:rabbitmq_policy).provide(:rabbitmqctl) do
   end
 
   def create
-    rabbitmqctl('set_policy', '--apply-to', resource[:apply_to], resource[:name], resource[:pattern], resource[:data].to_json, '--priority', resource[:priority], '-p', resource[:vhost])
+    rabbitmqctl('set_policy', '--apply-to', resource[:apply_to], resource[:name], resource[:pattern], resource[:definition].to_json, '--priority', resource[:priority], '-p', resource[:vhost])
   end
 
   def destroy
-    rabbitmqctl('clear_policy', resource[:name])
+    rabbitmqctl('clear_policy', '-p', resource[:vhost], resource[:name])
     @property_hash = {}  # used in conjunction with flush to avoid calling non-indempotent destroy twice
   end
 

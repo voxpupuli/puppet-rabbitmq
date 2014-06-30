@@ -28,16 +28,20 @@ Puppet::Type.newtype(:rabbitmq_policy) do
 
   newproperty(:apply_to) do
     desc 'What to apply this policy to'
-    newvalues(/^(exchanges|queues)$/) # FIXME - both?
+    newvalues(/^(exchanges|queues|all)$/)
+    defaultto 'all'
   end
 
-  newproperty(:data) do
-    desc 'Hash of data for the policy'
-    defaultto {}
+  newproperty(:definition) do
+    desc 'Hash of definition data for the policy'
+    validate do |value|
+      unless value.is_a?(Hash) and value.length > 0
+        raise ArgumentError, 'definition must be a non-empty Hash'
+      end
+    end
   end
 
   autorequire(:rabbitmq_vhost) do
     [self[:vhost]]
   end
 end
-
