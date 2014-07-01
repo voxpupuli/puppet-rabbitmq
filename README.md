@@ -405,7 +405,7 @@ rabbitmq_plugin {'rabbitmq_stomp':
 
 ### rabbitmq\_federation\_upstream
 
-`uri` and `vhost` are required. Other parameters are set to the default values shown in the example if not provided.
+`uri` and `vhost` are required. Other parameters default to the values shown in the example if not provided.
 
 ```puppet
 rabbitmq_federation_upstream { 'myupstream':
@@ -423,12 +423,48 @@ rabbitmq_federation_upstream { 'myupstream':
 
 ###rabbitmq\_federation\_upstreamset 
 
-`vhost` is required. `upstreams` defaults to all if not provided.
+`vhost` is required. Do not provide `upstreams` to set to `'all'`.
+
+NOTE: It is an error to provide `'all'` in the `upstreams` array.
 
 ```puppet
 rabbitmq_federation_upstreamset { 'myupstreamset':
   vhost => 'myhost',
   upstreams => ['myupstream', 'myupstream1'],
+}
+```
+
+###rabbitmq\_policy 
+
+`vhost`, `definition` and `pattern` are required. `definition` must be a non-empty Hash. Other parameters default to the values shown in the example if not provided.
+
+```puppet
+rabbitmq_policy { 'mypolicy':
+  vhost      => 'myhost',
+  definition => {'federation-upstream' => 'myfederationupstream'},
+  pattern    => '^.*$',
+  apply_to   => 'all',
+  priority   => 0,
+}
+```
+
+###rabbitmq\_parameter 
+
+The resource title is parsed as '`vhost` `component` `name`'. All three are required. `value` is also required and must be a non-empty Hash.
+
+NOTE: Federation components (federation upstreams and federation upstream sets) cannot be managed with this type. Instead use the rabbitmq_federation_upstream and rabbitmq_federation_upstreamset types.
+
+```puppet
+rabbitmq_parameter { 'myvhost shovel myparameter':
+   value => {'src-uri'             => 'amqp://dan:bar@localhost/',
+             'src-exchange'        => '/',
+             'src-exchange-key'    => 'mykey',
+             'dest-uri'            => 'amqp://dan:bar@localhost/',
+             'dest-exchange'       => '/',
+             'dest-exchange-key'   => 'mykey1',
+             'add-forward-headers' => false,
+             'ack-mode'            => 'on-confirm',
+             'delete-after'        => 'never'},
 }
 ```
 
