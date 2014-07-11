@@ -14,7 +14,7 @@
 #  [*config*] - contents of config file
 #  [*env_config*] - contents of env-config file
 #  [*config_cluster*] - whether to configure a RabbitMQ cluster
-#  [*config_mirrored_queues*] - DEPRECATED (doesn't do anything)
+#  [*config_mirrored_queues*] - whether to use RabbitMQ Mirrored Queues
 #  [*cluster_disk_nodes*] - DEPRECATED (use cluster_nodes instead)
 #  [*cluster_nodes*] - which nodes to cluster with (including the current one)
 #  [*cluster_node_type*] - Type of cluster node (disc or ram)
@@ -45,6 +45,7 @@ class rabbitmq::server(
   $config_stomp             = $rabbitmq::params::config_stomp,
   $stomp_port               = $rabbitmq::params::stomp_port,
   $config_cluster           = $rabbitmq::params::config_cluster,
+  $config_mirrored_queues   = $rabbitmq::params::config_mirrored_queues,
   $cluster_disk_nodes       = $rabbitmq::params::cluster_disk_nodes,
   $cluster_nodes            = $rabbitmq::params::cluster_nodes,
   $cluster_node_type        = $rabbitmq::params::cluster_node_type,
@@ -55,7 +56,6 @@ class rabbitmq::server(
   $wipe_db_on_cookie_change = $rabbitmq::params::wipe_db_on_cookie_change,
   # DEPRECATED
   $manage_service           = undef,
-  $config_mirrored_queues   = undef,
 ) inherits rabbitmq::params {
 
   if $manage_service != undef {
@@ -63,10 +63,6 @@ class rabbitmq::server(
     $_service_manage = $manage_service
   } else {
     $_service_manage = $service_manage
-  }
-
-  if $config_mirrored_queues != undef {
-    warning('The $config_mirrored_queues parameter is deprecated in this class, use the rabbitmq class')
   }
 
   anchor {'before::rabbimq::class':
@@ -88,6 +84,7 @@ class rabbitmq::server(
     config_stomp              => $config_stomp,
     stomp_port                => $stomp_port,
     config_cluster            => $config_cluster,
+    config_mirrored_queues    => $config_mirrored_queues,
     cluster_disk_nodes        => $cluster_disk_nodes,
     cluster_nodes             => $cluster_nodes,
     cluster_node_type         => $cluster_node_type,

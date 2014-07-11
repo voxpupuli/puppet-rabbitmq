@@ -168,8 +168,6 @@ Boolean to enable or disable clustering support.
 
 ####`config_mirrored_queues`
 
-DEPRECATED
-
 Configuring queue mirroring should be done by setting the according policy for
 the queue. You can read more about it
 [here](http://www.rabbitmq.com/ha.html#genesis)
