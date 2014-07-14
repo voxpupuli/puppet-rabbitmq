@@ -7,6 +7,7 @@ class rabbitmq::install::rabbitmqadmin {
     target      => '/var/lib/rabbitmq/rabbitmqadmin',
     source      => "http://localhost:${management_port}/cli/rabbitmqadmin",
     curl_option => '--noproxy localhost',
+    wget_option => '--no-proxy',
     require => [
       Class['rabbitmq::service'],
       Rabbitmq_plugin['rabbitmq_management']
