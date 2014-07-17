@@ -25,7 +25,7 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin) do
 
   def self.all_exchanges(vhost)
     exchanges = []
-    parse_command(rabbitmqctl('list_exchanges', '-p', vhost, 'name', 'type'))
+    parse_command(rabbitmqctl('list_exchanges', '-p', vhost, 'name', 'type', 'durable'))
   end
 
   def self.parse_command(cmd_output)
@@ -41,7 +41,7 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin) do
     resources = []
     all_vhosts.each do |vhost|
         all_exchanges(vhost).collect do |line|
-            name, type = line.split()
+            name, type, durable = line.split()
             if type.nil?
                 # if name is empty, it will wrongly get the type's value.
                 # This way type will get the correct value
@@ -52,6 +52,7 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin) do
               :type   => type,
               :ensure => :present,
               :name   => "%s@%s" % [name, vhost],
+              :durable => durable,
             }
             resources << new(exchange) if exchange[:type]
         end
@@ -75,7 +76,7 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin) do
   def create
     vhost_opt = should_vhost ? "--vhost=#{should_vhost}" : ''
     name = resource[:name].split('@')[0]
-    rabbitmqadmin('declare', 'exchange', vhost_opt, "--user=#{resource[:user]}", "--password=#{resource[:password]}", "name=#{name}", "type=#{resource[:type]}")
+    rabbitmqadmin('declare', 'exchange', vhost_opt, "--user=#{resource[:user]}", "--password=#{resource[:password]}", "name=#{name}", "type=#{resource[:type]}", "durable=#{resource[:durable]}")
     @property_hash[:ensure] = :present
   end
 
