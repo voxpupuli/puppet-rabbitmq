@@ -30,8 +30,24 @@ Puppet::Type.type(:rabbitmq_policy).provide(:rabbitmqctl) do
     end
   end
 
+  def fixnumify obj
+    if obj.respond_to? :to_i
+      if "#{obj.to_i}" == obj
+        obj.to_i
+      else
+        obj
+      end
+    elsif obj.is_a? Array
+      obj.map {|item| fixnumify item }
+    elsif obj.is_a? Hash
+      obj.merge( obj ) {|k, val| fixnumify val }
+    else
+      obj
+    end
+  end
+
   def create
-    rabbitmqctl('set_policy', '--apply-to', resource[:apply_to], resource[:name], resource[:pattern], resource[:definition].to_json, '--priority', resource[:priority], '-p', resource[:vhost])
+    rabbitmqctl('set_policy', '--apply-to', resource[:apply_to], resource[:name], resource[:pattern], fixnumify(resource[:definition]).to_json, '--priority', resource[:priority], '-p', resource[:vhost])
   end
 
   def destroy
