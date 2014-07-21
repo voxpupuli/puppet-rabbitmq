@@ -33,6 +33,12 @@ Puppet::Type.newtype(:rabbitmq_exchange) do
     newvalues(/\S+/)
   end
 
+  newparam(:durable) do
+    desc 'Whether the exchange is created as durable'
+    defaultto('false')
+    newvalues(/true|false/)
+  end
+
   validate do
     if self[:ensure] == :present and self[:type].nil?
       raise ArgumentError, "must set type when creating exchange for #{self[:name]} whose type is #{self[:type]}"

@@ -19,16 +19,16 @@ Listing vhosts ...
 /
 ...done.
 EOT
-    provider_class.expects(:rabbitmqctl).with('list_exchanges', '-p', '/', 'name', 'type').returns <<-EOT
+    provider_class.expects(:rabbitmqctl).with('list_exchanges', '-p', '/', 'name', 'type', 'durable').returns <<-EOT
 Listing exchanges ...
         direct
-	amq.direct      direct
-	amq.fanout      fanout
-	amq.headers     headers
-	amq.match       headers
-	amq.rabbitmq.log        topic
-	amq.rabbitmq.trace      topic
-	amq.topic       topic
+	amq.direct      direct  true
+	amq.fanout      fanout  true
+	amq.headers     headers true
+	amq.match       headers true
+	amq.rabbitmq.log        topic   true
+	amq.rabbitmq.trace      topic   true
+	amq.topic       topic   true
 	...done.
 EOT
     instances = provider_class.instances
@@ -36,7 +36,7 @@ EOT
   end
 
   it 'should call rabbitmqadmin to create' do
-    @provider.expects(:rabbitmqadmin).with('declare', 'exchange', '--vhost=/', '--user=guest', '--password=guest', 'name=amq.direct', 'type=topic')
+    @provider.expects(:rabbitmqadmin).with('declare', 'exchange', '--vhost=/', '--user=guest', '--password=guest', 'name=amq.direct', 'type=topic', 'durable=false')
     @provider.create
   end
 
@@ -58,7 +58,7 @@ EOT
     end
 
     it 'should call rabbitmqadmin to create' do
-      @provider.expects(:rabbitmqadmin).with('declare', 'exchange', '--vhost=/', '--user=colin', '--password=secret', 'name=amq.direct', 'type=topic')
+      @provider.expects(:rabbitmqadmin).with('declare', 'exchange', '--vhost=/', '--user=colin', '--password=secret', 'name=amq.direct', 'type=topic', 'durable=false')
       @provider.create
     end
   end

@@ -51,4 +51,19 @@ describe Puppet::Type.type(:rabbitmq_exchange) do
     @exchange[:password] = :PaSsw0rD
     @exchange[:password].should == :PaSsw0rD
   end
+
+  it 'should accept a durable parameter' do
+    @exchange[:durable] = :true
+    expect(@exchange[:durable]).to eq(:true)
+  end
+
+  it 'should default durable to false' do
+    expect(@exchange[:durable]).to eq('false')
+  end
+
+  it 'should only allow true/false for durable' do
+    expect {
+      Puppet::Type.type(:rabbitmq_exchange).new(:name => 'foo@bar', :ensure => :present, :declare => 'foobar')
+    }.to raise_error('Invalid parameter declare')
+  end
 end
