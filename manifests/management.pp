@@ -10,10 +10,4 @@ class rabbitmq::management {
     }
   }
 
-  if $rabbitmq::config_mirrored_queues {
-    rabbitmq::policy { 'ha-all':
-      pattern  => '.*',
-      definition => '{"ha-mode":"all","ha-sync-mode":"automatic"}'
-    }
-  }
 }
