@@ -111,23 +111,6 @@ class { 'rabbitmq':
 }
 ```
 
-**NOTE:** If you are using a version of RabbitMQ less than 3.0,
-you still need to use `x-ha-policy: all` in your client
-applications for any particular queue to take advantage of H/A via
-mirrored queues.
-
-If you are using a version of RabbitMQ >= 3.0 You should set the
-'config_mirrored_queues' parameter if you plan
-on using RabbitMQ Mirrored Queues within your cluster:
-
-```puppet
-class { 'rabbitmq':
-  config_cluster         => true,
-  config_mirrored_queues => true,
-  cluster_nodes          => ['rabbit1', 'rabbit2'],
-}
-```
-
 ##Reference
 
 ##Classes
