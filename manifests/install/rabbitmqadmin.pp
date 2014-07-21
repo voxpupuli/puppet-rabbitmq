@@ -4,8 +4,10 @@ class rabbitmq::install::rabbitmqadmin {
   $management_port = $rabbitmq::management_port
 
   staging::file { 'rabbitmqadmin':
-    target  => '/var/lib/rabbitmq/rabbitmqadmin',
-    source  => "http://localhost:${management_port}/cli/rabbitmqadmin",
+    target      => '/var/lib/rabbitmq/rabbitmqadmin',
+    source      => "http://localhost:${management_port}/cli/rabbitmqadmin",
+    curl_option => '--noproxy localhost',
+    wget_option => '--no-proxy',
     require => [
       Class['rabbitmq::service'],
       Rabbitmq_plugin['rabbitmq_management']
