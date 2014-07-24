@@ -10,6 +10,8 @@ class rabbitmq::config {
   $config_cluster             = $rabbitmq::config_cluster
   $config_path                = $rabbitmq::config_path
   $config_stomp               = $rabbitmq::config_stomp
+  $config_shovel              = $rabbitmq::config_shovel
+  $config_shovel_statics      = $rabbitmq::config_shovel_statics
   $default_user               = $rabbitmq::default_user
   $default_pass               = $rabbitmq::default_pass
   $env_config                 = $rabbitmq::env_config

@@ -7,6 +7,8 @@ class rabbitmq(
   $config_cluster             = $rabbitmq::params::config_cluster,
   $config_path                = $rabbitmq::params::config_path,
   $config_stomp               = $rabbitmq::params::config_stomp,
+  $config_shovel              = $rabbitmq::params::config_shovel,
+  $config_shovel_statics      = $rabbitmq::params::config_shovel_statics,
   $default_user               = $rabbitmq::params::default_user,
   $default_pass               = $rabbitmq::params::default_pass,
   $delete_guest_user          = $rabbitmq::params::delete_guest_user,
@@ -84,6 +86,8 @@ class rabbitmq(
   validate_absolute_path($config_path)
   validate_bool($config_cluster)
   validate_bool($config_stomp)
+  validate_bool($config_shovel)
+  validate_hash($config_shovel_statics)
   validate_string($default_user)
   validate_string($default_pass)
   validate_bool($delete_guest_user)
@@ -210,9 +214,10 @@ class rabbitmq(
     include '::rabbitmq::install::rabbitmqadmin'
 
     rabbitmq_plugin { 'rabbitmq_management':
-      ensure  => present,
-      require => Class['rabbitmq::install'],
-      notify  => Class['rabbitmq::service'],
+      ensure   => present,
+      require  => Class['rabbitmq::install'],
+      notify   => Class['rabbitmq::service'],
+      provider => 'rabbitmqplugins',
     }
 
     Class['::rabbitmq::service'] -> Class['::rabbitmq::install::rabbitmqadmin']
@@ -235,6 +240,27 @@ class rabbitmq(
     }
   }
 
+  if ($config_shovel) {
+    rabbitmq_plugin { 'rabbitmq_shovel':
+      ensure   => present,
+      require  => Class['rabbitmq::install'],
+      notify   => Class['rabbitmq::service'],
+      provider => 'rabbitmqplugins',
+    }
+
+    if ($admin_enable) {
+      rabbitmq_plugin { 'rabbitmq_shovel_management':
+        ensure   => present,
+        require  => Class['rabbitmq::install'],
+        notify   => Class['rabbitmq::service'],
+        provider => 'rabbitmqplugins',
+      }
+    }
+  }
+
+  # Anchor this as per #8040 - this ensures that classes won't float off and
+  # mess everything up.  You can read about this at:
+  # http://docs.puppetlabs.com/puppet/2.7/reference/lang_containment.html#known-issues
   anchor { 'rabbitmq::begin': }
   anchor { 'rabbitmq::end': }
 

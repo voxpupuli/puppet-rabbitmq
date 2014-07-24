@@ -121,5 +121,11 @@
     {log, <%= @ldap_log %>}
   ]}
 <%- end -%>
+<%- if @config_shovel and not @config_shovel_statics.empty? -%>,
+  {rabbitmq_shovel,
+    [{shovels,[
+      <%= @config_shovel_statics.sort.map{|k,v| "{#{k},[#{v}]}"}.join(",\n      ") %>
+    ]}]}
+<%- end -%>
 ].
 % EOF
