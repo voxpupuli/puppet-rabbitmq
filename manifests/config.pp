@@ -4,7 +4,7 @@ class rabbitmq::config {
   $cluster_node_type          = $rabbitmq::cluster_node_type
   $cluster_nodes              = $rabbitmq::cluster_nodes
   $config                     = $rabbitmq::config
-  $config_cluster             = $rabbitmq::config_cluster
+  $config_cluster             = $rabbitmq::_config_cluster
   $config_path                = $rabbitmq::config_path
   $config_stomp               = $rabbitmq::config_stomp
   $default_user               = $rabbitmq::default_user

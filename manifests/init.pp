@@ -53,6 +53,10 @@ class rabbitmq(
   $config_kernel_variables    = $rabbitmq::params::config_kernel_variables,
 ) inherits rabbitmq::params {
 
+  include stdlib
+
+  $_config_cluster = str2bol($config_cluster)
+
   validate_bool($admin_enable)
   # Validate install parameters.
   validate_re($package_apt_pin, '^(|\d+)$')
@@ -68,7 +72,7 @@ class rabbitmq(
   validate_array($cluster_nodes)
   validate_string($config)
   validate_absolute_path($config_path)
-  validate_bool($config_cluster)
+  validate_bool($_config_cluster)
   validate_bool($config_stomp)
   validate_string($default_user)
   validate_string($default_pass)
