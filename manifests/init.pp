@@ -57,6 +57,12 @@ class rabbitmq(
 
   $_config_cluster = str2bol($config_cluster)
 
+  if is_array($cluster_nodes) {
+    $_cluster_nodes = $cluster_nodes
+  } else {
+    $_cluster_nodes = split($cluster_nodes, ',')
+  }
+
   validate_bool($admin_enable)
   # Validate install parameters.
   validate_re($package_apt_pin, '^(|\d+)$')
@@ -69,7 +75,7 @@ class rabbitmq(
   # Validate config parameters.
   validate_array($cluster_disk_nodes)
   validate_re($cluster_node_type, '^(ram|disc)$')
-  validate_array($cluster_nodes)
+  validate_array($_cluster_nodes)
   validate_string($config)
   validate_absolute_path($config_path)
   validate_bool($_config_cluster)

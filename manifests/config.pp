@@ -2,7 +2,7 @@ class rabbitmq::config {
 
   $cluster_disk_nodes         = $rabbitmq::cluster_disk_nodes
   $cluster_node_type          = $rabbitmq::cluster_node_type
-  $cluster_nodes              = $rabbitmq::cluster_nodes
+  $cluster_nodes              = $rabbitmq::_cluster_nodes
   $config                     = $rabbitmq::config
   $config_cluster             = $rabbitmq::_config_cluster
   $config_path                = $rabbitmq::config_path
