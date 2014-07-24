@@ -48,6 +48,7 @@ class rabbitmq(
   $version                    = $rabbitmq::params::version,
   $wipe_db_on_cookie_change   = $rabbitmq::params::wipe_db_on_cookie_change,
   $cluster_partition_handling = $rabbitmq::params::cluster_partition_handling,
+  $ulimit                     = $rabbitmq::params::ulimit,
   $environment_variables      = $rabbitmq::params::environment_variables,
   $config_variables           = $rabbitmq::params::config_variables,
   $config_kernel_variables    = $rabbitmq::params::config_kernel_variables,
@@ -82,6 +83,7 @@ class rabbitmq(
   validate_re($port, ['\d+','UNSET'])
   validate_re($stomp_port, '\d+')
   validate_bool($wipe_db_on_cookie_change)
+  validate_re($ulimit, '\d+')
   # Validate service parameters.
   validate_re($service_ensure, '^(running|stopped)$')
   validate_bool($service_manage)
