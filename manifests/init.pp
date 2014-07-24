@@ -55,7 +55,7 @@ class rabbitmq(
 
   include stdlib
 
-  $_config_cluster = str2bol($config_cluster)
+  $_config_cluster = str2bool($config_cluster)
 
   if is_array($cluster_nodes) {
     $_cluster_nodes = $cluster_nodes
