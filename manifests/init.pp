@@ -53,14 +53,12 @@ class rabbitmq(
   $config_kernel_variables    = $rabbitmq::params::config_kernel_variables,
 ) inherits rabbitmq::params {
 
-  include stdlib
-
   $_config_cluster = str2bool($config_cluster)
 
   if is_array($cluster_nodes) {
     $_cluster_nodes = $cluster_nodes
   } else {
-    $_cluster_nodes = split($cluster_nodes, ',')
+    $_cluster_nodes = split(regsubst($cluster_nodes, ',\s+', ','), ',')
   }
 
   validate_bool($admin_enable)
