@@ -47,7 +47,7 @@ Puppet::Type.type(:rabbitmq_policy).provide(:rabbitmqctl) do
   end
 
   def create
-    rabbitmqctl('set_policy', '--apply-to', resource[:apply_to], resource[:name], resource[:pattern], fixnumify(resource[:definition]).to_json, '--priority', resource[:priority], '-p', resource[:vhost])
+    rabbitmqctl('set_policy', '-p', resource[:vhost], '--apply-to', resource[:apply_to], resource[:name], resource[:pattern], fixnumify(resource[:definition]).to_json, '--priority', resource[:priority])
   end
 
   def destroy
