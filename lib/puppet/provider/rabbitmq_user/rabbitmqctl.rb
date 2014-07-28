@@ -28,6 +28,25 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
     end
   end
 
+  def change_password
+    rabbitmqctl('change_password', resource[:name], resource[:password])
+  end
+
+  def password
+    nil
+  end
+
+
+  def check_password
+    responce = rabbitmqctl('eval', 'rabbit_auth_backend_internal:check_user_login(<<"' + resource[:name] + '">>, [{password, <<"' + resource[:password] +'">>}]).')
+    #responce = curl('-i', '-u', resource[:name] + ':' + resource[:password], 'http://localhost:' + resource[:management_port] + '/api/whoami')
+    if responce.include? 'invalid credentials'
+        false
+    else
+        true
+    end
+  end
+
   def destroy
     rabbitmqctl('delete_user', resource[:name])
   end
@@ -38,8 +57,6 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
     end
   end
 
-  # def password
-  # def password=()
   def admin
     match = rabbitmqctl('list_users').split(/\n/)[1..-2].collect do |line|
       line.match(/^#{Regexp.escape(resource[:name])}\s+\[(administrator)?\]/)

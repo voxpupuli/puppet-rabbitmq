@@ -18,9 +18,14 @@ Puppet::Type.newtype(:rabbitmq_user) do
     newvalues(/^\S+$/)
   end
 
-  # newproperty(:password) do
-  newparam(:password) do
-    desc 'User password to be set *on creation*'
+  newproperty(:password) do
+    desc 'User password to be set *on creation* and validated each run'
+    def insync?(is)
+      provider.check_password
+    end
+    def set(value)
+      provider.change_password
+    end
   end
 
   newproperty(:admin) do
