@@ -7,7 +7,7 @@ class rabbitmq::repo::apt(
   $repos       = 'main',
   $include_src = false,
   $key         = '056E8E56',
-  $key_content = template('rabbitmq/rabbit.pub.key.erb')
+  $key_source  = 'http://www.rabbitmq.com/rabbitmq-signing-key-public.asc',
   ) {
 
   $pin = $rabbitmq::package_apt_pin
@@ -20,7 +20,7 @@ class rabbitmq::repo::apt(
     repos       => $repos,
     include_src => $include_src,
     key         => $key,
-    key_content => $key_content,
+    key_source  => $key_source,
   }
 
   if $pin {

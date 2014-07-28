@@ -22,11 +22,21 @@ class rabbitmq::params {
       $package_source   = ''
       $version          = '3.1.5'
     }
-    'RedHat', 'SUSE': {
+    'RedHat': {
       $package_ensure   = 'installed'
       $package_name     = 'rabbitmq-server'
       $service_name     = 'rabbitmq-server'
-      $package_provider = 'rpm'
+      $package_provider = 'yum'
+      $version          = '3.1.5-1'
+      $base_version     = regsubst($version,'^(.*)-\d$','\1')
+      # This must remain at the end as we need $base_version and $version defined first.
+      $package_source   = "http://www.rabbitmq.com/releases/rabbitmq-server/v${base_version}/rabbitmq-server-${version}.noarch.rpm"
+    }
+    'SUSE': {
+      $package_ensure   = 'installed'
+      $package_name     = 'rabbitmq-server'
+      $service_name     = 'rabbitmq-server'
+      $package_provider = 'zypper'
       $version          = '3.1.5-1'
       $base_version     = regsubst($version,'^(.*)-\d$','\1')
       # This must remain at the end as we need $base_version and $version defined first.
@@ -39,10 +49,10 @@ class rabbitmq::params {
 
   #install
   $admin_enable               = true
-  $erlang_manage              = false
   $management_port            = '15672'
   $package_apt_pin            = ''
   $package_gpg_key            = 'http://www.rabbitmq.com/rabbitmq-signing-key-public.asc'
+  $manage_repos               = true
   $service_ensure             = 'running'
   $service_manage             = true
   #config
@@ -51,7 +61,6 @@ class rabbitmq::params {
   $cluster_nodes              = []
   $config                     = 'rabbitmq/rabbitmq.config.erb'
   $config_cluster             = false
-  $config_mirrored_queues     = false
   $config_path                = '/etc/rabbitmq/rabbitmq.config'
   $config_stomp               = false
   $default_user               = 'guest'
@@ -60,11 +69,11 @@ class rabbitmq::params {
   $env_config                 = 'rabbitmq/rabbitmq-env.conf.erb'
   $env_config_path            = '/etc/rabbitmq/rabbitmq-env.conf'
   $erlang_cookie              = 'EOKOWXQREETZSHFNTPEY'
-  $manage_service             = true
   $node_ip_address            = 'UNSET'
   $plugin_dir                 = "/usr/lib/rabbitmq/lib/rabbitmq_server-${version}/plugins"
   $port                       = '5672'
   $ssl                        = false
+  $ssl_only                   = false
   $ssl_cacert                 = 'UNSET'
   $ssl_cert                   = 'UNSET'
   $ssl_key                    = 'UNSET'
@@ -72,6 +81,7 @@ class rabbitmq::params {
   $ssl_stomp_port             = '6164'
   $ssl_verify                 = 'verify_none'
   $ssl_fail_if_no_peer_cert   = 'false'
+  $stomp_ensure               = false
   $ldap_auth                  = false
   $ldap_server                = 'ldap'
   $ldap_user_dn_pattern       = 'cn=${username},ou=People,dc=example,dc=com'

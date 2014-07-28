@@ -6,7 +6,6 @@ class rabbitmq::config {
   $config                     = $rabbitmq::config
   $config_cluster             = $rabbitmq::config_cluster
   $config_path                = $rabbitmq::config_path
-  $config_mirrored_queues     = $rabbitmq::config_mirrored_queues
   $config_stomp               = $rabbitmq::config_stomp
   $default_user               = $rabbitmq::default_user
   $default_pass               = $rabbitmq::default_pass
@@ -18,11 +17,14 @@ class rabbitmq::config {
   $port                       = $rabbitmq::port
   $service_name               = $rabbitmq::service_name
   $ssl                        = $rabbitmq::ssl
+  $ssl_only                   = $rabbitmq::ssl_only
   $ssl_cacert                 = $rabbitmq::ssl_cacert
   $ssl_cert                   = $rabbitmq::ssl_cert
   $ssl_key                    = $rabbitmq::ssl_key
   $ssl_management_port        = $rabbitmq::ssl_management_port
   $ssl_stomp_port             = $rabbitmq::ssl_stomp_port
+  $ssl_verify                 = $rabbitmq::ssl_verify
+  $ssl_fail_if_no_peer_cert   = $rabbitmq::ssl_fail_if_no_peer_cert
   $stomp_port                 = $rabbitmq::stomp_port
   $wipe_db_on_cookie_change   = $rabbitmq::wipe_db_on_cookie_change
   $config_variables           = $rabbitmq::config_variables
@@ -42,9 +44,9 @@ class rabbitmq::config {
       message => 'WARNING: The cluster_disk_nodes is deprecated.
        Use cluster_nodes instead.',
     }
-    $_cluster_nodes = $cluster_disk_nodes
+    $r_cluster_nodes = $cluster_disk_nodes
   } else {
-    $_cluster_nodes = $cluster_nodes
+    $r_cluster_nodes = $cluster_nodes
   }
 
   file { '/etc/rabbitmq':
@@ -116,3 +118,4 @@ class rabbitmq::config {
 
 
 }
+

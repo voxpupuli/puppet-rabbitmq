@@ -15,7 +15,6 @@ class rabbitmq::install {
   if $package_source {
     Package['rabbitmq-server'] {
       source  => $package_source,
-      require => Class['rabbitmq::repo::rhel'],
     }
   }
 

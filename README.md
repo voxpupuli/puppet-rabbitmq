@@ -11,6 +11,7 @@
 4. [Usage - Configuration options and additional functionality](#usage)
 5. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
 5. [Limitations - OS compatibility, etc.](#limitations)
+   * [RedHat module dependencies](#redhat-module-dependecies)
 6. [Development - Guide for contributing to the module](#development)
 
 ##Overview
@@ -52,7 +53,7 @@ disabling puppet support of the service:
 
 ```puppet
 class { '::rabbitmq':
-  service_manage    => false
+  service_manage    => false,
   port              => '5672',
   delete_guest_user => true,
 }
@@ -85,13 +86,13 @@ class { 'rabbitmq':
 }
 ```
 
-To change Erlang Kernel Config Variables in rabbitmq.config, use the parameters 
+To change Erlang Kernel Config Variables in rabbitmq.config, use the parameters
 `config_kernel_variables` e.g.:
 
 ```puppet
 class { 'rabbitmq':
   port              => '5672',
-  kernel_config_options => {
+  config_kernel_variables  => {
     'inet_dist_listen_min' => 9100,
     'inet_dist_listen_max' => 9105,
   }
@@ -99,28 +100,14 @@ class { 'rabbitmq':
 ```
 
 ### Clustering
-To use RabbitMQ clustering and H/A facilities, use the rabbitmq::server
-parameters `config_cluster`, `cluster_nodes`, and `cluster_node_type`, e.g.:
+To use RabbitMQ clustering facilities, use the rabbitmq parameters
+`config_cluster`, `cluster_nodes`, and `cluster_node_type`, e.g.:
 
 ```puppet
 class { 'rabbitmq':
-  config_cluster    => true, 
+  config_cluster    => true,
   cluster_nodes     => ['rabbit1', 'rabbit2'],
   cluster_node_type => 'ram',
-}
-```
-
-**NOTE:** You still need to use `x-ha-policy: all` in your client 
-applications for any particular queue to take advantage of H/A.
-
-You should set the 'config_mirrored_queues' parameter if you plan
-on using RabbitMQ Mirrored Queues within your cluster:
-
-```puppet
-class { 'rabbitmq':
-  config_cluster         => true,
-  config_mirrored_queues => true,
-  cluster_nodes          => ['rabbit1', 'rabbit2'],
 }
 ```
 
@@ -164,7 +151,11 @@ Boolean to enable or disable clustering support.
 
 ####`config_mirrored_queues`
 
-Boolean to enable or disable mirrored queues.
+DEPRECATED
+
+Configuring queue mirroring should be done by setting the according policy for
+the queue. You can read more about it
+[here](http://www.rabbitmq.com/ha.html#genesis)
 
 ####`config_path`
 
@@ -189,10 +180,6 @@ The path to write the rabbitmq_env.config file to.
 ####`erlang_cookie`
 
 The erlang cookie to use for clustering - must be the same between all nodes.
-
-####`erlang_enable`
-
-If true then we include an erlang module.
 
 ####`config_variables`
 
@@ -247,9 +234,22 @@ Determines if the service is managed.
 
 The name of the service to manage.
 
+####`ssl`
+
+Configures the service for using SSL.
+
+####`ssl_only`
+
+Configures the service to only use SSL.  No cleartext TCP listeners will be created.
+Requires that ssl => true also.
+
 ####`stomp_port`
 
 The port to use for Stomp.
+
+####`stomp_ensure`
+
+Boolean to install the stomp plugin.
 
 ####`wipe_db_on_cookie_change`
 
@@ -271,6 +271,16 @@ rabbitmq_user { 'dan':
   password => 'bar',
 }
 ```
+Optional parameter tags will set further rabbitmq tags like monitoring, policymaker, etc.
+To set the administrator tag use admin-flag.
+```puppet
+rabbitmq_user { 'dan':
+  admin    => true,
+  password => 'bar',
+  tags     => ['monitoring', 'tag1'],
+}
+```
+
 
 ### rabbitmq\_vhost
 
@@ -279,6 +289,17 @@ query all current vhosts: `$ puppet resource rabbitmq_vhost`
 ```puppet
 rabbitmq_vhost { 'myhost':
   ensure => present,
+}
+```
+
+### rabbitmq\_exchange
+
+```puppet
+rabbitmq_exchange { 'myexchange@myhost':
+  user     => 'dan',
+  password => 'bar',
+  type     => 'topic',
+  ensure   => present,
 }
 ```
 
@@ -314,6 +335,27 @@ The module has been tested on:
 * Ubuntu 12.04
 
 Testing on other platforms has been light and cannot be guaranteed.
+
+### Module dependencies
+To have a suitable erlang version installed on RedHat and Debian systems,
+you have to install another puppet module from http://forge.puppetlabs.com/garethr/erlang with:
+
+    puppet module install garethr-erlang
+
+This module handles the packages for erlang.
+To use the module, add the following snippet to your site.pp or an appropriate profile class:
+
+For RedHat systems:
+
+    include 'erlang'
+    class { 'erlang': epel_enable => true}
+
+For Debian systems:
+
+    include 'erlang'
+    package { 'erlang-base':
+      ensure => 'latest',
+    }
 
 ##Development
 
