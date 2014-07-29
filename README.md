@@ -127,7 +127,7 @@ class { 'rabbitmq':
 
 ####`admin_enable`
 
-If enabled sets up the management interface/plugin for RabbitMQ.
+Boolean, if enabled sets up the management interface/plugin for RabbitMQ.
 
 ####`cluster_disk_nodes`
 
@@ -141,6 +141,10 @@ Choose between disk and ram nodes.
 
 An array of nodes for clustering.
 
+####`cluster_partition_handling`
+
+Value to set for `cluster_partition_handling` RabbitMQ configuration variable.
+
 ####`config`
 
 The file to use as the rabbitmq.config template.
@@ -148,6 +152,10 @@ The file to use as the rabbitmq.config template.
 ####`config_cluster`
 
 Boolean to enable or disable clustering support.
+
+####`config_kernel_variables`
+
+Hash of Erlang kernel configuration variables to set (see [Variables Configurable in rabbitmq.config](#variables-configurable-in-rabbitmq.config)).
 
 ####`config_mirrored_queues`
 
@@ -165,6 +173,18 @@ The path to write the RabbitMQ configuration file to.
 
 Boolean to enable or disable stomp.
 
+####`config_variables`
+
+To set config variables in rabbitmq.config
+
+####`default_user`
+
+Username to set for the `default_user` in rabbitmq.config.
+
+####`default_pass`
+
+Password to set for the `default_user` in rabbitmq.config.
+
 ####`delete_guest_user`
 
 Boolean to decide if we should delete the default guest user.
@@ -177,26 +197,58 @@ The template file to use for rabbitmq_env.config.
 
 The path to write the rabbitmq_env.config file to.
 
+####`environment_variables`
+
+RabbitMQ Environment Variables in rabbitmq_env.config
+
 ####`erlang_cookie`
 
 The erlang cookie to use for clustering - must be the same between all nodes.
 
-####`config_variables`
+####`ldap_auth`
 
-To set config variables in rabbitmq.config
+Boolean, set to true to enable LDAP auth.
+
+####`ldap_server`
+
+LDAP server to use for auth.
+
+####`ldap_user_dn_pattern`
+
+User DN pattern for LDAP auth.
+
+####`ldap_use_ssl`
+
+Boolean, set to true to use SSL for the LDAP server.
+
+####`ldap_port`
+
+Numeric port for LDAP server.
+
+####`ldap_log`
+
+Boolean, set to true to log LDAP auth.
+
+####`manage_repos`
+
+Boolean, whether or not to manage package repositories.
+
+####`management_port`
+
+The port for the RabbitMQ management interface.
 
 ####`node_ip_address`
 
 The value of RABBITMQ_NODE_IP_ADDRESS in rabbitmq_env.config
 
-####`environment_variables`
-
-RabbitMQ Environment Variables in rabbitmq_env.config
-
 ####`package_ensure`
 
 Determines the ensure state of the package.  Set to installed by default, but could
 be changed to latest.
+
+####`package_gpg_key`
+
+RPM package GPG key to import.
 
 ####`package_name`
 
@@ -217,10 +269,6 @@ Location of RabbitMQ plugins.
 ####`port`
 
 The RabbitMQ port.
-
-####`management_port`
-
-The port for the RabbitMQ management interface.
 
 ####`service_ensure`
 
@@ -243,6 +291,34 @@ Configures the service for using SSL.
 Configures the service to only use SSL.  No cleartext TCP listeners will be created.
 Requires that ssl => true also.
 
+####`ssl_cacert`
+
+CA cert path to use for SSL.
+
+####`ssl_cert`
+
+Cert to use for SSL.
+
+####`ssl_key`
+
+Key to use for SSL.
+
+####`ssl_management_port`
+
+SSL management port.
+
+####`ssl_stomp_port`
+
+SSL stomp port.
+
+####`ssl_verify`
+
+rabbitmq.config SSL verify setting.
+
+####`ssl_fail_if_no_peer_cert`
+
+rabbitmq.config `fail_if_no_peer_cert` setting.
+
 ####`stomp_port`
 
 The port to use for Stomp.
@@ -251,13 +327,13 @@ The port to use for Stomp.
 
 Boolean to install the stomp plugin.
 
-####`wipe_db_on_cookie_change`
-
-Boolean to determine if we should DESTROY AND DELETE the RabbitMQ database.
-
 ####`version`
 
 Sets the version to install.
+
+####`wipe_db_on_cookie_change`
+
+Boolean to determine if we should DESTROY AND DELETE the RabbitMQ database.
 
 ##Native Types
 
