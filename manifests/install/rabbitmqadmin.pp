@@ -19,4 +19,5 @@ class rabbitmq::install::rabbitmqadmin {
     mode    => '0755',
     require => Staging::File['rabbitmqadmin'],
   }
+
 }
