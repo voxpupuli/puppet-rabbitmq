@@ -357,6 +357,17 @@ For Debian systems:
       ensure => 'latest',
     }
 
+### Downgrade Issues
+
+Be advised that there were configuration file syntax and other changes made between RabbitMQ
+versions 2 and 3. In order to downgrade from 3 to 2 (not that this is a terribly good idea)
+you will need to manually remove all RabbitMQ configuration files (``/etc/rabbitmq``) and
+the mnesia directory (usually ``/var/lib/rabbitmq/mnesia``). The latter action will delete
+any and all messages stored to disk.
+
+Failure to do this will result in RabbitMQ failing to start with a cryptic error message about
+"init terminating in do_boot", containing "rabbit_upgrade,maybe_upgrade_mnesia".
+
 ##Development
 
 Puppet Labs modules on the Puppet Forge are open projects, and community
