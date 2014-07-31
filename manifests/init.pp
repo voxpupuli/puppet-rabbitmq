@@ -112,7 +112,6 @@ class rabbitmq(
     fail('$ssl_only => true requires that $ssl => true')
   }
 
-  include '::rabbitmq::policy'
   include '::rabbitmq::install'
   include '::rabbitmq::config'
   include '::rabbitmq::service'
