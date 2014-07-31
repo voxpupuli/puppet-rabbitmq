@@ -1,5 +1,3 @@
-class rabbitmq::defines {}
-
 define rabbitmq::policy (
     $pattern,
     $definition,
