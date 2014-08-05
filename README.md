@@ -323,6 +323,21 @@ rabbitmq_plugin {'rabbitmq_stomp':
 }
 ```
 
+### rabbitmq\_policy
+
+vhost setting is mandatory. This is required in order to properly set and list policies through rabbitmqctl.
+possible values for apply_to: `queues`, `exchanges` or `all`.
+
+```puppet
+rabbitmq_policy { 'affiliate_queues':
+    vhost      => '/',
+    pattern    => '^affiliate_.*$',
+    apply_to   => 'all',
+    definition => '{"ha-mode":"all","ha-sync-mode":"automatic"}',
+    priority   => 0,
+}
+```
+
 ##Limitations
 
 This module has been built on and tested against Puppet 2.7 and higher.
