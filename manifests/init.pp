@@ -129,23 +129,23 @@ class rabbitmq(
   if $admin_enable and $service_manage {
     include '::rabbitmq::install::rabbitmqadmin'
 
-    rabbitmq_plugin { 'rabbitmq_management':
+  if $stomp_ensure {
+    rabbitmq_plugin { 'rabbitmq_stomp':
       ensure  => present,
       require => Class['rabbitmq::install'],
       notify  => Class['rabbitmq::service'],
       provider => 'rabbitmqplugins'
     }
+  }
 
     Class['::rabbitmq::service'] -> Class['::rabbitmq::install::rabbitmqadmin']
   }
 
-  if $stomp_ensure {
-    rabbitmq_plugin { 'rabbitmq_stomp':
-      ensure  => $stomp_ensure,
-      require => Class['rabbitmq::install'],
-      notify  => Class['rabbitmq::service'],
-      provider => 'rabbitmqplugins'
-    }
+  rabbitmq_plugin { 'rabbitmq_stomp':
+    ensure  => $stomp_ensure,
+    require => Class['rabbitmq::install'],
+    notify  => Class['rabbitmq::service'],
+    provider => 'rabbitmqplugins'
   }
 
   if ($ldap_auth) {
