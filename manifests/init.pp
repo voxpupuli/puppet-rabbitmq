@@ -51,6 +51,7 @@ class rabbitmq(
   $environment_variables      = $rabbitmq::params::environment_variables,
   $config_variables           = $rabbitmq::params::config_variables,
   $config_kernel_variables    = $rabbitmq::params::config_kernel_variables,
+  $config_mirrored_queues     = $rabbitmq::params::config_mirrored_queues,
 ) inherits rabbitmq::params {
 
   validate_bool($admin_enable)
@@ -82,6 +83,7 @@ class rabbitmq(
   validate_re($port, ['\d+','UNSET'])
   validate_re($stomp_port, '\d+')
   validate_bool($wipe_db_on_cookie_change)
+  validate_bool($config_mirrored_queues)
   # Validate service parameters.
   validate_re($service_ensure, '^(running|stopped)$')
   validate_bool($service_manage)
