@@ -28,9 +28,9 @@ describe 'rabbitmq' do
   end
 
   context 'on Debian' do
-    let(:params) {{ :manage_repos => false }}
+    let(:params) {{ :repos_ensure => false }}
     let(:facts) {{ :osfamily => 'Debian', :lsbdistid => 'Debian', :lsbdistcodename => 'squeeze' }}
-    it 'does ensure rabbitmq apt::source is absent  when manage_repos is false' do
+    it 'does ensure rabbitmq apt::source is absent  when repos_ensure is false' do
       should contain_apt__source('rabbitmq').with(
         'ensure'  => 'absent'
       )
@@ -45,9 +45,9 @@ describe 'rabbitmq' do
   end
 
   context 'on Redhat' do
-    let(:params) {{ :manage_repos => false }}
+    let(:params) {{ :repos_ensure => false }}
     let(:facts) {{ :osfamily => 'RedHat' }}
-    it 'does not import repo public key when manage_repos is false' do
+    it 'does not import repo public key when repos_ensure is false' do
       should_not contain_exec('rpm --import http://www.rabbitmq.com/rabbitmq-signing-key-public.asc')
     end
   end

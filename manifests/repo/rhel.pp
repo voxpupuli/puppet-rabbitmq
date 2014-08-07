@@ -2,7 +2,7 @@
 # Imports the gpg key if it doesn't already exist.
 class rabbitmq::repo::rhel {
 
-  if $rabbitmq::manage_repos {
+  if $rabbitmq::repos_ensure {
 
     $package_gpg_key = $rabbitmq::package_gpg_key
 
