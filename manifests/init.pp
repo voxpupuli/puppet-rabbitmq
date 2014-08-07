@@ -141,7 +141,7 @@ class rabbitmq(
 
   if $stomp_ensure {
     rabbitmq_plugin { 'rabbitmq_stomp':
-      ensure  => $stomp_ensure,
+      ensure  => present,
       require => Class['rabbitmq::install'],
       notify  => Class['rabbitmq::service'],
       provider => 'rabbitmqplugins'
