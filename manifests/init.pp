@@ -53,6 +53,14 @@ class rabbitmq(
   $config_kernel_variables    = $rabbitmq::params::config_kernel_variables,
 ) inherits rabbitmq::params {
 
+  $_config_cluster = str2bool($config_cluster)
+
+  if is_array($cluster_nodes) {
+    $_cluster_nodes = $cluster_nodes
+  } else {
+    $_cluster_nodes = split(regsubst($cluster_nodes, ',\s+', ','), ',')
+  }
+
   validate_bool($admin_enable)
   # Validate install parameters.
   validate_re($package_apt_pin, '^(|\d+)$')
@@ -65,10 +73,10 @@ class rabbitmq(
   # Validate config parameters.
   validate_array($cluster_disk_nodes)
   validate_re($cluster_node_type, '^(ram|disc)$')
-  validate_array($cluster_nodes)
+  validate_array($_cluster_nodes)
   validate_string($config)
   validate_absolute_path($config_path)
-  validate_bool($config_cluster)
+  validate_bool($_config_cluster)
   validate_bool($config_stomp)
   validate_string($default_user)
   validate_string($default_pass)
