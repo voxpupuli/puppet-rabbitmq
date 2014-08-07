@@ -83,6 +83,20 @@ describe 'rabbitmq' do
               'require' => 'Class[Rabbitmq::Install]',
               'notify'  => 'Class[Rabbitmq::Service]'
             )
+            should contain_staging__file('rabbitmqadmin').with_source("http://guest:guest@localhost:15672/cli/rabbitmqadmin")
+          end
+        end
+        context 'with service_manage set to true and default user/pass specified' do
+          let(:params) {{ :admin_enable => true, :default_user => 'foobar', :default_pass => 'hunter2' }}
+          it 'we use the correct URL to rabbitmqadmin' do
+            should contain_staging__file('rabbitmqadmin').with_source("http://foobar:hunter2@localhost:15672/cli/rabbitmqadmin")
+          end
+        end
+        context 'with service_manage set to true and management port specified' do
+          # note that the 2.x management port is 55672 not 15672
+          let(:params) {{ :admin_enable => true, :management_port => '55672' }}
+          it 'we use the correct URL to rabbitmqadmin' do
+            should contain_staging__file('rabbitmqadmin').with_source("http://guest:guest@localhost:55672/cli/rabbitmqadmin")
           end
         end
         context 'with service_manage set to false' do
