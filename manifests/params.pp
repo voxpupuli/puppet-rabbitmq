@@ -42,6 +42,13 @@ class rabbitmq::params {
       # This must remain at the end as we need $base_version and $version defined first.
       $package_source   = "http://www.rabbitmq.com/releases/rabbitmq-server/v${base_version}/rabbitmq-server-${version}.noarch.rpm"
     }
+    'Gentoo': {
+      $package_ensure   = 'installed'
+      $package_name     = 'rabbitmq-server'
+      $service_name     = 'rabbitmq'
+      $version          = '3.3.4'
+      $base_version     = regsubst($version,'^(.*)-\d$','\1')
+    }
     default: {
       fail("The ${module_name} module is not supported on an ${::osfamily} based system.")
     }

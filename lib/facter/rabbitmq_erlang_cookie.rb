@@ -4,7 +4,7 @@
 #
 # Resolution: Returns the cookie.
 Facter.add(:rabbitmq_erlang_cookie) do
-  confine :osfamily => %w[Debian RedHat Suse]
+  confine :osfamily => %w[Debian RedHat Suse Gentoo]
 
   setcode do
     if File.exists?('/var/lib/rabbitmq/.erlang.cookie')
