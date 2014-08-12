@@ -21,7 +21,7 @@ Puppet::Type.newtype(:rabbitmq_federation_upstream) do
     [self[:vhost]]
   end
 
-  newproperty(:uri) do
+  newproperty(:uri, :array_matching => :all) do
     desc 'The uri for the server to connect to'
     newvalues(/^amqps?:\/\/\S+$/)
   end
