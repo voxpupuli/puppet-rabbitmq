@@ -1,3 +1,5 @@
+# Class: rabbitmq::repo::rhel
+# Imports the gpg key if it doesn't already exist.
 class rabbitmq::repo::rhel {
 
   $package_gpg_key = $rabbitmq::package_gpg_key
