@@ -6,4 +6,3 @@ spec/fixtures
 .bundle
 .vagrant
 .*sw*
-metadata.json
