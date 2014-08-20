@@ -6,7 +6,7 @@
   "license": "Apache 2.0",
   "source": "https://github.com/puppetlabs/puppetlabs-rabbitmq",
   "project_page": "https://github.com/puppetlabs/puppetlabs-rabbitmq",
-  "issues_url": "https://github.com/puppetlabs/puppetlabs-rabbitmq/issues",
+  "issues_url": "https://tickets.puppetlabs.com/browse/MODULES",
   "dependencies": [
     {
       "name": "puppetlabs/stdlib",
