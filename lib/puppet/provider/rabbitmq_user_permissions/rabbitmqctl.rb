@@ -104,7 +104,7 @@ Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl) do
   end
 
   def self.strip_backslashes(string)
-    # See: https://github.com/rabbitmq/rabbitmq-server/blob/16418a9488e15c4d8ef3bfa9fce69190fb8ec796/docs/rabbitmqctl.1.pod#output-escaping
+    # See: https://github.com/rabbitmq/rabbitmq-server/blob/v1_7/docs/rabbitmqctl.1.pod#output-escaping
     string.gsub(/\\\\/, '\\')
   end
 
