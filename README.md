@@ -327,6 +327,10 @@ The port to use for Stomp.
 
 Boolean to install the stomp plugin.
 
+####`tcp_keepalive`
+
+Boolean to enable TCP connection keepalive for RabbitMQ service.
+
 ####`version`
 
 Sets the version to install.
