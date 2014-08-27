@@ -395,14 +395,14 @@ describe 'rabbitmq' do
       describe 'tcp_keepalive enabled' do
         let(:params) {{ :tcp_keepalive => true }}
         it 'should set tcp_listen_options keepalive true' do
-          should contian_file('rabbitmq.config') \
+          should contain_file('rabbitmq.config') \
             .with_content(/\{tcp_listen_options, \[\{keepalive, true\}\]\},/)
         end
       end
 
       describe 'tcp_keepalive disabled (default)' do
         it 'should not set tcp_listen_options' do
-          should contian_file('rabbitmq.config') \
+          should contain_file('rabbitmq.config') \
             .without_content(/\{tcp_listen_options, \[\{keepalive, true\}\]\},/)
         end
       end
@@ -415,7 +415,7 @@ describe 'rabbitmq' do
         it 'should raise an error' do
           expect {
             should contain_file('rabbitmq.config')
-          }.to raise_error(Puppet::Error, /validate_bool\(\): "string" does not match boolean$/)
+          }.to raise_error(Puppet::Error, /validate_bool/)
         end
       end
 
