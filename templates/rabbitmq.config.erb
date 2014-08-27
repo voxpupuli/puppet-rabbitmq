@@ -9,6 +9,9 @@
     {cluster_nodes, {[<%= @r_cluster_nodes.map { |n| "\'rabbit@#{n}\'" }.join(', ') %>], <%= @cluster_node_type %>}},
     {cluster_partition_handling, <%= @cluster_partition_handling %>},
 <% end -%>
+<%- if @tcp_keepalive -%>
+    {tcp_listen_options, [{keepalive, true}]},
+<%- end -%>
 <%- if @ssl_only -%>
     {tcp_listeners, []},
 <%- end -%>

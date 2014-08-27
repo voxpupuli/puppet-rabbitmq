@@ -474,6 +474,33 @@ describe 'rabbitmq' do
         end
       end
 
+      describe 'tcp_keepalive enabled' do
+        let(:params) {{ :tcp_keepalive => true }}
+        it 'should set tcp_listen_options keepalive true' do
+          should contain_file('rabbitmq.config') \
+            .with_content(/\{tcp_listen_options, \[\{keepalive, true\}\]\},/)
+        end
+      end
+
+      describe 'tcp_keepalive disabled (default)' do
+        it 'should not set tcp_listen_options' do
+          should contain_file('rabbitmq.config') \
+            .without_content(/\{tcp_listen_options, \[\{keepalive, true\}\]\},/)
+        end
+      end
+
+      describe 'non-bool tcp_keepalive parameter' do
+        let :params do
+          { :tcp_keepalive => 'string' }
+        end
+
+        it 'should raise an error' do
+          expect {
+            should contain_file('rabbitmq.config')
+          }.to raise_error(Puppet::Error, /is not a boolean/)
+        end
+      end
+
       context 'delete_guest_user' do
         describe 'should do nothing by default' do
           it { should_not contain_rabbitmq_user('guest') }

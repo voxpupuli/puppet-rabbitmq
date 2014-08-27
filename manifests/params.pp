@@ -72,6 +72,7 @@ class rabbitmq::params {
   $node_ip_address            = 'UNSET'
   $plugin_dir                 = "/usr/lib/rabbitmq/lib/rabbitmq_server-${version}/plugins"
   $port                       = '5672'
+  $tcp_keepalive              = false
   $ssl                        = false
   $ssl_only                   = false
   $ssl_cacert                 = 'UNSET'

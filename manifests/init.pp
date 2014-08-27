@@ -25,6 +25,7 @@ class rabbitmq(
   $manage_repos               = $rabbitmq::params::manage_repos,
   $plugin_dir                 = $rabbitmq::params::plugin_dir,
   $port                       = $rabbitmq::params::port,
+  $tcp_keepalive              = $rabbitmq::params::tcp_keepalive,
   $service_ensure             = $rabbitmq::params::service_ensure,
   $service_manage             = $rabbitmq::params::service_manage,
   $service_name               = $rabbitmq::params::service_name,
@@ -83,6 +84,7 @@ class rabbitmq(
   validate_re($port, ['\d+','UNSET'])
   validate_re($stomp_port, '\d+')
   validate_bool($wipe_db_on_cookie_change)
+  validate_bool($tcp_keepalive)
   # Validate service parameters.
   validate_re($service_ensure, '^(running|stopped)$')
   validate_bool($service_manage)

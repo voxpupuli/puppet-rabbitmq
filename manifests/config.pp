@@ -17,6 +17,7 @@ class rabbitmq::config {
   $node_ip_address            = $rabbitmq::node_ip_address
   $plugin_dir                 = $rabbitmq::plugin_dir
   $port                       = $rabbitmq::port
+  $tcp_keepalive              = $rabbitmq::tcp_keepalive
   $service_name               = $rabbitmq::service_name
   $ssl                        = $rabbitmq::ssl
   $ssl_only                   = $rabbitmq::ssl_only
