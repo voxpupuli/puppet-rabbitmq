@@ -415,7 +415,7 @@ describe 'rabbitmq' do
         it 'should raise an error' do
           expect {
             should contain_file('rabbitmq.config')
-          }.to raise_error(Puppet::Error, /validate_bool/)
+          }.to raise_error(Puppet::Error, /is not a boolean/)
         end
       end
 
