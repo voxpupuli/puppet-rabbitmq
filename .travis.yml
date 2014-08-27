@@ -15,7 +15,6 @@ rvm:
   - 2.1.1
 env:
   matrix:
-    - PUPPET_GEM_VERSION="~> 2.7.0" FACTER_GEM_VERSION="~> 1.7.0"
     - PUPPET_GEM_VERSION="~> 3.4.0"
     - PUPPET_GEM_VERSION="~> 3.5.0"
   global:
@@ -26,12 +25,6 @@ env:
         495e61kP5cxcKNVdDJSiUPPK6fNGQ1xX8=
 matrix:
   exclude:
-    - rvm: 1.9.3
-      env: PUPPET_GEM_VERSION="~> 2.7.0" FACTER_GEM_VERSION="~> 1.7.0"
-    - rvm: 2.0.0
-      env: PUPPET_GEM_VERSION="~> 2.7.0" FACTER_GEM_VERSION="~> 1.7.0"
-    - rvm: 2.1.1
-      env: PUPPET_GEM_VERSION="~> 2.7.0" FACTER_GEM_VERSION="~> 1.7.0"
     - rvm: 2.1.1
       env: PUPPET_GEM_VERSION="~> 3.4.0"
 notifications:
