@@ -53,6 +53,7 @@ class rabbitmq(
   $environment_variables      = $rabbitmq::params::environment_variables,
   $config_variables           = $rabbitmq::params::config_variables,
   $config_kernel_variables    = $rabbitmq::params::config_kernel_variables,
+  $install_class              = $rabbitmq::params::install_class
 ) inherits rabbitmq::params {
 
   validate_bool($admin_enable)
@@ -113,7 +114,9 @@ class rabbitmq(
     fail('$ssl_only => true requires that $ssl => true')
   }
 
-  include '::rabbitmq::install'
+  if $install_class {
+    include $install_class
+  }
   include '::rabbitmq::config'
   include '::rabbitmq::service'
   include '::rabbitmq::management'
@@ -134,7 +137,7 @@ class rabbitmq(
 
     rabbitmq_plugin { 'rabbitmq_management':
       ensure  => present,
-      require => Class['rabbitmq::install'],
+      require => Class[$install_class],
       notify  => Class['rabbitmq::service'],
       provider => 'rabbitmqplugins'
     }
@@ -145,7 +148,7 @@ class rabbitmq(
   if $stomp_ensure {
     rabbitmq_plugin { 'rabbitmq_stomp':
       ensure  => present,
-      require => Class['rabbitmq::install'],
+      require => Class[$install_class],
       notify  => Class['rabbitmq::service'],
       provider => 'rabbitmqplugins'
     }
@@ -154,7 +157,7 @@ class rabbitmq(
   if ($ldap_auth) {
     rabbitmq_plugin { 'rabbitmq_auth_backend_ldap':
       ensure   => present,
-      require  => Class['rabbitmq::install'],
+      require  => Class[$install_class],
       notify   => Class['rabbitmq::service'],
       provider => 'rabbitmqplugins',
     }
@@ -166,12 +169,12 @@ class rabbitmq(
   anchor { 'rabbitmq::begin': }
   anchor { 'rabbitmq::end': }
 
-  Anchor['rabbitmq::begin'] -> Class['::rabbitmq::install']
+  Anchor['rabbitmq::begin'] -> Class[$install_class]
     -> Class['::rabbitmq::config'] ~> Class['::rabbitmq::service']
     -> Class['::rabbitmq::management'] -> Anchor['rabbitmq::end']
 
   # Make sure the various providers have their requirements in place.
-  Class['::rabbitmq::install'] -> Rabbitmq_plugin<| |>
+  Class[$install_class] -> Rabbitmq_plugin<| |>
   Class['::rabbitmq::install::rabbitmqadmin'] -> Rabbitmq_exchange<| |>
 
 }

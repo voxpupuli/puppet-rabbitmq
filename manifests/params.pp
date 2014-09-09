@@ -96,4 +96,5 @@ class rabbitmq::params {
   $environment_variables      = {}
   $config_variables           = {}
   $config_kernel_variables    = {}
+  $install_class              = '::rabbitmq::install'
 }
