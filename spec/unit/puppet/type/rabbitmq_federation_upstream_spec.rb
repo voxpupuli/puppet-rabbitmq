@@ -22,7 +22,7 @@ describe Puppet::Type.type(:rabbitmq_federation_upstream) do
   end
   it 'should accept a uri' do
     @federation_upstream[:uri] = 'amqp://foouser:foo@localhost/'
-    @federation_upstream[:uri].should == 'amqp://foouser:foo@localhost/'
+    @federation_upstream[:uri].should == ['amqp://foouser:foo@localhost/']
   end
   it 'should accept expires' do
     @federation_upstream[:expires] = 100
