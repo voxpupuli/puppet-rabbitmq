@@ -11,9 +11,10 @@
 # Sample Usage:
 #
 class rabbitmq::service(
-  $service_ensure = $rabbitmq::service_ensure,
-  $service_manage = $rabbitmq::service_manage,
-  $service_name   = $rabbitmq::service_name,
+  $service_ensure   = $rabbitmq::service_ensure,
+  $service_manage   = $rabbitmq::service_manage,
+  $service_name     = $rabbitmq::service_name,
+  $service_provider = $rabbitmq::service_provider,
 ) inherits rabbitmq {
 
   validate_re($service_ensure, '^(running|stopped)$')
@@ -28,12 +29,23 @@ class rabbitmq::service(
       $enable_real = false
     }
 
-    service { 'rabbitmq-server':
-      ensure     => $ensure_real,
-      enable     => $enable_real,
-      hasstatus  => true,
-      hasrestart => true,
-      name       => $service_name,
+    if ($service_provider) {
+      service { 'rabbitmq-server':
+        ensure     => $ensure_real,
+        enable     => $enable_real,
+        hasstatus  => true,
+        hasrestart => true,
+        provider   => $service_provider,
+        name       => $service_name,
+      }
+    } else {
+      service { 'rabbitmq-server':
+        ensure     => $ensure_real,
+        enable     => $enable_real,
+        hasstatus  => true,
+        hasrestart => true,
+        name       => $service_name,
+      }
     }
   }
 

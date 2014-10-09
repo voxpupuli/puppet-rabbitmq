@@ -7,9 +7,10 @@ class rabbitmq::repo::apt(
   $repos       = 'main',
   $include_src = false,
   $key         = '056E8E56',
-  $key_source  = 'http://www.rabbitmq.com/rabbitmq-signing-key-public.asc',
+  $key_content = undef,
   ) {
 
+  $package_gpg_key = $rabbitmq::package_gpg_key
   $pin = $rabbitmq::package_apt_pin
 
   Class['rabbitmq::repo::apt'] -> Package<| title == 'rabbitmq-server' |>
@@ -20,7 +21,8 @@ class rabbitmq::repo::apt(
     repos       => $repos,
     include_src => $include_src,
     key         => $key,
-    key_source  => $key_source,
+    key_source  => $package_gpg_key,
+    key_content => $key_content,
   }
 
   if $pin {

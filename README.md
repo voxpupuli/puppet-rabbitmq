@@ -59,6 +59,26 @@ class { '::rabbitmq':
 }
 ```
 
+Or such as using custom Puppet service providers and offline installation from intranet
+or local mirrors:
+
+```puppet
+class { '::rabbitmq':
+   key_content      => template('openstack/rabbit.pub.key'),
+   package_gpg_key  => '/tmp/rabbit.pub.key',
+   service_provider => 'pacemaker',
+}
+```
+
+And this one will use default Puppet service ptype provider and external package key source
+for any (apt/rpm) package provider:
+
+```puppet
+class { '::rabbitmq':
+   package_gpg_key  => 'http://www.some_site.some_domain/some_key.pub.key',
+}
+```
+
 ### Environment Variables
 To use RabbitMQ Environment Variables, use the parameters `environment_variables` e.g.:
 
@@ -205,6 +225,11 @@ RabbitMQ Environment Variables in rabbitmq_env.config
 
 The erlang cookie to use for clustering - must be the same between all nodes.
 
+###`key_content`
+
+Uses content method for Debian OS family. Should be a template for apt::source
+class. Overrides `package_gpg_key` behavior, if enabled. Undefined by default.
+
 ####`ldap_auth`
 
 Boolean, set to true to enable LDAP auth.
@@ -248,7 +273,10 @@ be changed to latest.
 
 ####`package_gpg_key`
 
-RPM package GPG key to import.
+RPM package GPG key to import. Uses source method. Should be a file name for RHEL/SUSE
+or URL for Debian OS family. 
+Set to http://www.rabbitmq.com/rabbitmq-signing-key-public.asc by default.
+Note, that `key_content`, if specified, would override this parameter for Debian OS family.
 
 ####`package_name`
 
@@ -281,6 +309,11 @@ Determines if the service is managed.
 ####`service_name`
 
 The name of the service to manage.
+
+####`service_provider`
+
+The type of Puppet service provider to be used for RabbitMQ service definition.
+Undefined by default (will use Puppet default provider type).
 
 ####`ssl`
 
