@@ -255,11 +255,19 @@ describe 'rabbitmq' do
             })
           end
         end
+        describe 'stomp when set ssl port w/o ssl enabled' do
+          let(:params) {{ :config_stomp => true, :stomp_port => 5679, :ssl => false, :ssl_stomp_port => 5680 }}
+          it 'should not configure ssl_listeners in rabbitmq.config' do
+            should contain_file('rabbitmq.config').without({
+              'content' => /rabbitmq_stomp.*ssl_listeners, \[5680\]/m,
+            })
+          end
+        end
         describe 'stomp when set with ssl' do
-          let(:params) {{ :config_stomp => true, :stomp_port => 5679, :ssl_stomp_port => 5680 }}
+          let(:params) {{ :config_stomp => true, :stomp_port => 5679, :ssl => true, :ssl_stomp_port => 5680 }}
           it 'should specify stomp port and ssl stomp port in rabbitmq.config' do
-            contain_file('rabbitmq.config').with({
-              'content' => /rabbitmq_stomp.*tcp_listeners, \[5679\].*ssl_listeners, \[5680\]/,
+            should contain_file('rabbitmq.config').with({
+              'content' => /rabbitmq_stomp.*tcp_listeners, \[5679\].*ssl_listeners, \[5680\]/m,
             })
           end
         end

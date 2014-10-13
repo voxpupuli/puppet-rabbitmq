@@ -54,7 +54,7 @@
 % Configure the Stomp Plugin listening port
   {rabbitmq_stomp, [
     {tcp_listeners, [<%= @stomp_port %>]}
-  <%- if @ssl_stomp_port -%>,
+  <%- if @ssl && @ssl_stomp_port -%>,
     {ssl_listeners, [<%= @ssl_stomp_port %>]}
   <%- end -%>
   ]}
