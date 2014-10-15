@@ -113,6 +113,10 @@ class rabbitmq(
     fail('$ssl_only => true requires that $ssl => true')
   }
 
+  if $config_stomp and $ssl_stomp_port and ! $ssl {
+    warning('$ssl_stomp_port requires that $ssl => true and will be ignored')
+  }
+
   include '::rabbitmq::install'
   include '::rabbitmq::config'
   include '::rabbitmq::service'
