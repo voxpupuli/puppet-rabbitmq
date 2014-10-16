@@ -144,6 +144,7 @@ class rabbitmq(
     }
 
     Class['::rabbitmq::service'] -> Class['::rabbitmq::install::rabbitmqadmin']
+    Class['::rabbitmq::install::rabbitmqadmin'] -> Rabbitmq_exchange<| |>
   }
 
   if $stomp_ensure {
@@ -176,6 +177,11 @@ class rabbitmq(
 
   # Make sure the various providers have their requirements in place.
   Class['::rabbitmq::install'] -> Rabbitmq_plugin<| |>
-  Class['::rabbitmq::install::rabbitmqadmin'] -> Rabbitmq_exchange<| |>
-
+  Class['::rabbitmq::service'] -> Rabbitmq_vhost<| |>
+  Class['::rabbitmq::service'] -> Rabbitmq_parameter<| |>
+  Class['::rabbitmq::service'] -> Rabbitmq_policy<| |>
+  Class['::rabbitmq::service'] -> Rabbitmq_federation_upstream<| |>
+  Class['::rabbitmq::service'] -> Rabbitmq_federation_upstreamset<| |>
+  
 }
+

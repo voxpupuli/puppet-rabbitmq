@@ -1,9 +1,16 @@
 require 'puppet'
 Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin) do
 
-  commands :rabbitmqctl => '/usr/sbin/rabbitmqctl'
-  has_command(:rabbitmqadmin, '/usr/local/bin/rabbitmqadmin') do
-    environment( { 'HOME' => '' })
+  if Puppet::PUPPETVERSION.to_f < 3
+    commands :rabbitmqctl => 'rabbitmqctl'
+    commands :rabbitmqadmin => '/usr/local/bin/rabbitmqadmin'
+  else
+    has_command(:rabbitmqctl, 'rabbitmqctl') do
+      environment :HOME => "/tmp"
+    end
+    has_command(:rabbitmqadmin, '/usr/local/bin/rabbitmqadmin') do
+      environment :HOME => "/root"
+    end
   end
   defaultfor :feature => :posix
 
@@ -16,15 +23,10 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin) do
   end
 
   def self.all_vhosts
-    vhosts = []
-    parse_command(rabbitmqctl('list_vhosts')).collect do |vhost|
-        vhosts.push(vhost)
-    end
-    vhosts
+    parse_command(rabbitmqctl('list_vhosts'))
   end
 
   def self.all_exchanges(vhost)
-    exchanges = []
     parse_command(rabbitmqctl('list_exchanges', '-p', vhost, 'name', 'type'))
   end
 
@@ -87,3 +89,4 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin) do
   end
 
 end
+
