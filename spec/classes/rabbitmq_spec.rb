@@ -17,22 +17,12 @@ describe 'rabbitmq' do
     end
 
     describe 'apt::source default values' do
-      let(:facts) {{ :osfamily => 'Debian' }}
       it 'should add a repo with defaults values' do
-        should contain_file('/etc/apt/sources.list.d/rabbitmq.list')\
-          .with_content(%r|deb http\://www\.rabbitmq.com/debian/ testing main|)
-      end
-    end
-
-    describe 'apt::source custom values' do
-      let(:params) {
-        { :location => 'http://www.foorepo.com/debian',
-          :release => 'unstable',
-          :repos => 'main'
-        }}
-      it 'should add a repo with custom new values' do
-        should contain_file('/etc/apt/sources.list.d/rabbitmq.list')\
-          .with_content(%r|deb http\://www\.foorepo.com/debian/ unstable main|)
+        should contain_apt__source('rabbitmq').with( {
+          :location => 'http://www.rabbitmq.com/debian/',
+          :release  => 'testing',
+          :repos    => 'main',
+        })
       end
     end
   end
@@ -235,9 +225,8 @@ describe 'rabbitmq' do
         describe 'node_ip_address when set' do
           let(:params) {{ :node_ip_address => '172.0.0.1' }}
           it 'should set RABBITMQ_NODE_IP_ADDRESS to specified value' do
-            should contain_file('rabbitmq-env.config').with({
-              'content' => 'RABBITMQ_NODE_IP_ADDRESS=172.0.0.1',
-            })
+            should contain_file('rabbitmq-env.config').
+              with_content(%r{RABBITMQ_NODE_IP_ADDRESS=172\.0\.0\.1})
           end
         end
 
@@ -340,12 +329,18 @@ describe 'rabbitmq' do
         } }
 
         it 'should set ssl options to specified values' do
-          should contain_file('rabbitmq.config').with({
-            'content' => %r|ssl_listeners, \[3141\].*
-            ssl_options, \[\{cacertfile,"/path/to/cacert".*
-            certfile="/path/to/cert".*
-            keyfile,"/path/to/key|,
-          })
+          should contain_file('rabbitmq.config').with_content(
+            %r{ssl_listeners, \[3141\]}
+          )
+          should contain_file('rabbitmq.config').with_content(
+            %r{ssl_options, \[\{cacertfile,"/path/to/cacert"}
+          )
+          should contain_file('rabbitmq.config').with_content(
+            %r{certfile,"/path/to/cert"}
+          )
+          should contain_file('rabbitmq.config').with_content(
+            %r{keyfile,"/path/to/key"}
+          )
         end
       end
 
@@ -353,20 +348,18 @@ describe 'rabbitmq' do
         let(:params) {
           { :ssl => true,
             :ssl_only => true,
-            :ssl_management_port => 3141,
+            :ssl_port => 3141,
             :ssl_cacert => '/path/to/cacert',
             :ssl_cert => '/path/to/cert',
             :ssl_key => '/path/to/key'
         } }
 
         it 'should set ssl options to specified values' do
-          should contain_file('rabbitmq.config').with({
-            'content' => %r|tcp_listeners, \[\].*
-            ssl_listeners, \[3141\].*
-            ssl_options, \[\{cacertfile,"/path/to/cacert".*
-            certfile="/path/to/cert".*
-            keyfile,"/path/to/key|,
-          })
+          should contain_file('rabbitmq.config').with_content(%r{tcp_listeners, \[\]})
+          should contain_file('rabbitmq.config').with_content(%r{ssl_listeners, \[3141\]})
+          should contain_file('rabbitmq.config').with_content(%r{ssl_options, \[\{cacertfile,"/path/to/cacert"})
+          should contain_file('rabbitmq.config').with_content(%r{certfile,"/path/to/cert"})
+          should contain_file('rabbitmq.config').with_content(%r{keyfile,"/path/to/key})
         end
       end
 
@@ -381,16 +374,13 @@ describe 'rabbitmq' do
         } }
 
         it 'should set rabbitmq_management ssl options to specified values' do
-          should contain_file('rabbitmq.config').with({
-            'content' => %r|\{rabbitmq_management, \[.*
-                          \{listener, \[.*
-                          \{port, 3141\},.*
-                          \{ssl, true\},.*
-                          \{ssl_opts, \[\{cacertfile, "/path/to/cacert"\},.*
-                          \{certfile, "/path/to/cert"\},.*
-                          \{keyfile, "/path/to/key"\}\]\}.*
-                          \]\}|,
-          })
+          should contain_file('rabbitmq.config').with_content(%r{rabbitmq_management, \[})
+          should contain_file('rabbitmq.config').with_content(%r{listener, \[})
+          should contain_file('rabbitmq.config').with_content(%r{port, 3141\}})
+          should contain_file('rabbitmq.config').with_content(%r{ssl, true\}})
+          should contain_file('rabbitmq.config').with_content(%r{ssl_opts, \[\{cacertfile, "/path/to/cacert"\},})
+          should contain_file('rabbitmq.config').with_content(%r{certfile, "/path/to/cert"\},})
+          should contain_file('rabbitmq.config').with_content(%r{keyfile, "/path/to/key"\}\]\}})
         end
       end
 
@@ -402,12 +392,9 @@ describe 'rabbitmq' do
         } }
 
         it 'should set rabbitmq_management  options to specified values' do
-          should contain_file('rabbitmq.config').with({
-            'content' => /\{rabbitmq_management, \[.*
-                          \{listener, \[.*
-                          \{port, 3141\},.*
-                          \]\}/m,
-          })
+          should contain_file('rabbitmq.config').with_content(%r{rabbitmq_management, \[})
+          should contain_file('rabbitmq.config').with_content(%r{listener, \[})
+          should contain_file('rabbitmq.config').with_content(%r{port, 3141\}})
         end
       end
 
@@ -422,16 +409,13 @@ describe 'rabbitmq' do
         } }
 
         it 'should set rabbitmq_management ssl options to specified values' do
-          should contain_file('rabbitmq.config').with({
-            'content' => %r|\{rabbitmq_management, \[.*
-                          \{listener, \[.*
-                          \{port, 3141\},.*
-                          \{ssl, true\},.*
-                          \{ssl_opts, \[\{cacertfile, "/path/to/cacert"\},.*
-                          \{certfile, "/path/to/cert"\},.*
-                          \{keyfile, "/path/to/key"\}\]\}.*
-                          \]\}|,
-          })
+          should contain_file('rabbitmq.config').with_content(%r{rabbitmq_management, \[})
+          should contain_file('rabbitmq.config').with_content(%r{listener, \[})
+          should contain_file('rabbitmq.config').with_content(%r{port, 3141\},})
+          should contain_file('rabbitmq.config').with_content(%r{ssl, true\},})
+          should contain_file('rabbitmq.config').with_content(%r{ssl_opts, \[\{cacertfile, "/path/to/cacert"\},})
+          should contain_file('rabbitmq.config').with_content(%r{certfile, "/path/to/cert"\},})
+          should contain_file('rabbitmq.config').with_content(%r{keyfile, "/path/to/key"\}\]\}})
         end
       end
 
@@ -443,12 +427,10 @@ describe 'rabbitmq' do
         } }
 
         it 'should set rabbitmq_management  options to specified values' do
-          should contain_file('rabbitmq.config').with({
-            'content' => /\{rabbitmq_management, \[.*
-                          \{listener, \[.*
-                          \{port, 3141\},.*
-                          \]\}/m,
-          })
+          should contain_file('rabbitmq.config') \
+            .with_content(/\{rabbitmq_management, \[/) \
+            .with_content(/\{listener, \[/) \
+            .with_content(/\{port, 3141\}/)
         end
       end
 
