@@ -17,7 +17,7 @@
 <%- end -%>
 <%- if @ssl -%>
     {ssl_listeners, [<%= @ssl_port %>]},
-    {ssl_options, [{cacertfile,"<%= @ssl_cacert %>"},
+    {ssl_options, [<%- if @ssl_cacert != 'UNSET' -%>{cacertfile,"<%= @ssl_cacert %>"},<%- end -%>
                     {certfile,"<%= @ssl_cert %>"},
                     {keyfile,"<%= @ssl_key %>"},
                     {verify,<%= @ssl_verify %>},
@@ -41,7 +41,7 @@
 <%- if @ssl -%>
       {port, <%= @ssl_management_port %>},
       {ssl, true},
-      {ssl_opts, [{cacertfile, "<%= @ssl_cacert %>"},
+      {ssl_opts, [<%- if @ssl_cacert != 'UNSET' -%>{cacertfile, "<%= @ssl_cacert %>"},<%- end -%>
                   {certfile, "<%= @ssl_cert %>"},
                   {keyfile, "<%= @ssl_key %>"}]}
 <%- else -%>
