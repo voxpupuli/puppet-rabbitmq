@@ -1,9 +1,16 @@
 require 'puppet'
 Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin) do
 
-  commands :rabbitmqctl => '/usr/sbin/rabbitmqctl'
-  has_command(:rabbitmqadmin, '/usr/local/bin/rabbitmqadmin') do
-    environment( { 'HOME' => '' })
+  if Puppet::PUPPETVERSION.to_f < 3
+    commands :rabbitmqctl   => 'rabbitmqctl'
+    commands :rabbitmqadmin => '/usr/local/bin/rabbitmqadmin'
+  else
+    has_command(:rabbitmqctl, 'rabbitmqctl') do
+      environment :HOME => "/tmp"
+    end
+    has_command(:rabbitmqadmin, '/usr/local/bin/rabbitmqadmin') do
+      environment :HOME => "/tmp"
+    end
   end
   defaultfor :feature => :posix
 
