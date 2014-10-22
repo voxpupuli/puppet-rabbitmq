@@ -16,12 +16,13 @@ Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl) do
     unless @users[name]
       @users[name] = {}
       rabbitmqctl('list_user_permissions', name).split(/\n/)[1..-1].each do |line|
-        if line =~ /^(\S+)\s+(\S*)\s+(\S*)\s+(\S*)$/
-          @users[name][$1] =
-            {:configure => $2, :read => $4, :write => $3}
-        else
-          raise Puppet::Error, "cannot parse line from list_user_permissions:#{line}"
-        end
+          if line =~ /^(\S+)\s+(\S*)\s+(\S*)\s+(\S*)$/
+            @users[name][$1] =
+              {:configure => $2, :read => $4, :write => $3}
+          elsif line =~ /^...done.$/
+          else
+            raise Puppet::Error, "cannot parse line from list_user_permissions:#{line}"
+          end
       end
     end
     @users[name][vhost]

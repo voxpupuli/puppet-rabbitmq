@@ -11,7 +11,9 @@ Puppet::Type.type(:rabbitmq_vhost).provide(:rabbitmqctl) do
   def self.instances
     rabbitmqctl('list_vhosts').split(/\n/)[1..-1].map do |line|
       if line =~ /^(\S+)$/
-        new(:name => $1)
+        if line != /^...done.$/
+          new(:name => $1)
+        end
       else
         raise Puppet::Error, "Cannot parse invalid user line: #{line}"
       end
