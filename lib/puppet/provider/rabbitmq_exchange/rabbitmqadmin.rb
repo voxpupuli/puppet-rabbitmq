@@ -41,7 +41,7 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin) do
     # while the last line is
     # ...done.
     #
-    cmd_output.split(/\n/)[1..-2]
+    cmd_output.split(/\n/)[1..-1]
   end
 
   def self.instances

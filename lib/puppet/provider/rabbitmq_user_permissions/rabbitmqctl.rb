@@ -15,7 +15,7 @@ Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl) do
     @users = {} unless @users
     unless @users[name]
       @users[name] = {}
-      rabbitmqctl('list_user_permissions', name).split(/\n/)[1..-2].each do |line|
+      rabbitmqctl('list_user_permissions', name).split(/\n/)[1..-1].each do |line|
         if line =~ /^(\S+)\s+(\S*)\s+(\S*)\s+(\S*)$/
           @users[name][$1] =
             {:configure => $2, :read => $4, :write => $3}
