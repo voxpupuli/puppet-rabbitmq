@@ -11,7 +11,7 @@ Puppet::Type.type(:rabbitmq_vhost).provide(:rabbitmqctl) do
   def self.instances
     rabbitmqctl('list_vhosts').split(/\n/)[1..-1].map do |line|
       if line =~ /^(\S+)$/
-        if line != /^...done.$/
+        if line !~ /^...done.$/
           new(:name => $1)
         end
       else

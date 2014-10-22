@@ -15,7 +15,7 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
   def self.instances
     rabbitmqctl('list_users').split(/\n/)[1..-1].collect do |line|
       if line =~ /^(\S+)(\s+\[.*?\]|)$/
-        if line != /^...done.$/
+        if line !~ /^...done.$/
           new(:name => $1)
         end
       else

@@ -25,7 +25,7 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin) do
   def self.all_vhosts
     vhosts = []
     parse_command(rabbitmqctl('list_vhosts')).collect do |vhost|
-      if vhost != /^...done.$/
+      if vhost !~ /^...done.$/
         vhosts.push(vhost)
       end
     end
