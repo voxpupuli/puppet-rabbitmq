@@ -22,14 +22,14 @@ EOT
     provider_class.expects(:rabbitmqctl).with('list_exchanges', '-p', '/', 'name', 'type').returns <<-EOT
 Listing exchanges ...
         direct
-	amq.direct      direct
-	amq.fanout      fanout
-	amq.headers     headers
-	amq.match       headers
-	amq.rabbitmq.log        topic
-	amq.rabbitmq.trace      topic
-	amq.topic       topic
-	...done.
+amq.direct      direct
+amq.fanout      fanout
+amq.headers     headers
+amq.match       headers
+amq.rabbitmq.log        topic
+amq.rabbitmq.trace      topic
+amq.topic       topic
+...done.
 EOT
     instances = provider_class.instances
     instances.size.should == 8
