@@ -17,7 +17,6 @@ describe provider_class do
     provider_class.expects(:rabbitmqctl).with('list_vhosts').returns <<-EOT
 Listing vhosts ...
 /
-...done.
 EOT
     provider_class.expects(:rabbitmqctl).with('list_exchanges', '-p', '/', 'name', 'type').returns <<-EOT
 Listing exchanges ...
@@ -29,7 +28,6 @@ amq.match       headers
 amq.rabbitmq.log        topic
 amq.rabbitmq.trace      topic
 amq.topic       topic
-...done.
 EOT
     instances = provider_class.instances
     instances.size.should == 8
