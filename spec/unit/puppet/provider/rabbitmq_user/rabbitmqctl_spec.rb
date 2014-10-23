@@ -1,5 +1,7 @@
 require 'puppet'
 require 'mocha'
+require 'puppet/util'
+require 'puppet/util/execution'
 RSpec.configure do |config|
   config.mock_with :mocha
 end
@@ -10,8 +12,14 @@ describe provider_class do
       {:name => 'foo', :password => 'bar'}
     )
     @provider = provider_class.new(@resource)
+    if Puppet::Util::Execution.respond_to? :execute
+      Puppet::Util::Execution.stubs(:execute).returns(0)
+    else
+      Puppet::Util.stubs(:execute).returns(0)
+    end
   end
   it 'should match user names' do
+    @provider.expects(:wait_for_rabbitmq).once
     @provider.expects(:rabbitmqctl).with('list_users').returns <<-EOT
 Listing users ...
 foo
@@ -20,6 +28,7 @@ EOT
     @provider.exists?.should == 'foo'
   end
   it 'should match user names with 2.4.1 syntax' do
+    @provider.expects(:wait_for_rabbitmq).once
     @provider.expects(:rabbitmqctl).with('list_users').returns <<-EOT
 Listing users ...
 foo bar
@@ -28,6 +37,7 @@ EOT
     @provider.exists?.should == 'foo bar'
   end
   it 'should not match if no users on system' do
+    @provider.expects(:wait_for_rabbitmq).once
     @provider.expects(:rabbitmqctl).with('list_users').returns <<-EOT
 Listing users ...
 ...done.
@@ -35,6 +45,7 @@ EOT
     @provider.exists?.should be_nil
   end
   it 'should not match if no matching users on system' do
+    @provider.expects(:wait_for_rabbitmq).once
     @provider.expects(:rabbitmqctl).with('list_users').returns <<-EOT
 Listing users ...
 fooey
@@ -43,6 +54,7 @@ EOT
     @provider.exists?.should be_nil
   end
   it 'should match user names from list' do
+    @provider.expects(:wait_for_rabbitmq).once
     @provider.expects(:rabbitmqctl).with('list_users').returns <<-EOT
 Listing users ...
 one

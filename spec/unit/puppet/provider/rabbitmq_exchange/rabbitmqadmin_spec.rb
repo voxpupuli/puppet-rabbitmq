@@ -1,5 +1,7 @@
 require 'puppet'
 require 'mocha'
+require 'puppet/util'
+require 'puppet/util/execution'
 RSpec.configure do |config|
   config.mock_with :mocha
 end
@@ -11,9 +13,20 @@ describe provider_class do
        :type => :topic}
     )
     @provider = provider_class.new(@resource)
+    if Puppet::Util::Execution.respond_to? :execute
+      Puppet::Util::Execution.stubs(:execute).returns(0)
+    else
+      Puppet::Util.stubs(:execute).returns(0)
+    end
+  end
+
+  it 'should wait for rabbit on exists?' do
+    @provider.expects(:wait_for_rabbitmq).once
+    @provider.exists?
   end
 
   it 'should return instances' do
+    provider_class.expects(:wait_for_rabbitmq).once
     provider_class.expects(:rabbitmqctl).with('list_vhosts').returns <<-EOT
 Listing vhosts ...
 /
