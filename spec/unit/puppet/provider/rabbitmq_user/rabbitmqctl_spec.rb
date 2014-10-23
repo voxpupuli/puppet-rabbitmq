@@ -10,6 +10,8 @@ describe provider_class do
       {:name => 'foo', :password => 'bar'}
     )
     @provider = provider_class.new(@resource)
+    @provider.class.stubs(:wait_for_online).returns(true)
+    @provider
   end
   it 'should match user names' do
     @provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
@@ -99,7 +101,7 @@ icinga  [monitoring]
 kitchen []
 kitchen2        [abc, def, ghi]
 EOT
-    @provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', ['bar','baz', 'administrator'].sort) 
+    @provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', ['bar','baz', 'administrator'].sort)
     @provider.admin=:true
   end
   it 'should be able to unset admin value' do
@@ -118,7 +120,7 @@ icinga  [monitoring]
 kitchen []
 kitchen2        [abc, def, ghi]
 EOT
-    @provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', ['bar','baz'].sort) 
+    @provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', ['bar','baz'].sort)
     @provider.admin=:false
   end
 
