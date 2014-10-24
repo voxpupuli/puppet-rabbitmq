@@ -36,11 +36,6 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin) do
   end
 
   def self.parse_command(cmd_output)
-    # first line is:
-    # Listing exchanges/vhosts ...
-    # while the last line is
-    # ...done.
-    #
     cmd_output.split(/\n/)[0..-1]
   end
 

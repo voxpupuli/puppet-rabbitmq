@@ -112,7 +112,7 @@ EOT
     @provider.admin=:false
   end
   it 'should not interfere with existing tags on the user when unsetting admin value' do
-    @provider.expects(:rabbitmqctl).with('list_users').returns <<-EOT
+    @provider.expects(:rabbitmqctl).with('list_users','-q').returns <<-EOT
 foo   [administrator, bar, baz]
 icinga  [monitoring]
 kitchen []
