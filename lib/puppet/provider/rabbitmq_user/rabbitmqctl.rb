@@ -13,11 +13,9 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
   defaultfor :feature => :posix
 
   def self.instances
-    rabbitmqctl('list_users').split(/\n/)[1..-1].collect do |line|
+    rabbitmqctl('list_users','-q').split(/\n/)[0..-1].collect do |line|
       if line =~ /^(\S+)(\s+\[.*?\]|)$/
-        if line !~ /^...done.$/
           new(:name => $1)
-        end
       else
         raise Puppet::Error, "Cannot parse invalid user line: #{line}"
       end
@@ -39,7 +37,7 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
   end
 
   def exists?
-    rabbitmqctl('list_users').split(/\n/)[1..-1].detect do |line|
+    rabbitmqctl('list_users','-q').split(/\n/)[0..-1].detect do |line|
       line.match(/^#{Regexp.escape(resource[:name])}(\s+(\[.*?\]|\S+)|)$/)
     end
   end
@@ -92,10 +90,8 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
 
   private
   def get_user_tags
-    match = rabbitmqctl('list_users').split(/\n/)[1..-1].collect do |line|
-      if line != /^...done.$/
-        line.match(/^#{Regexp.escape(resource[:name])}\s+\[(.*?)\]/)
-      end
+    match = rabbitmqctl('list_users','-q').split(/\n/)[0..-1].collect do |line|
+      line.match(/^#{Regexp.escape(resource[:name])}\s+\[(.*?)\]/)
     end.compact.first
     Set.new(match[1].split(/, /)) if match
   end

@@ -9,11 +9,9 @@ Puppet::Type.type(:rabbitmq_vhost).provide(:rabbitmqctl) do
   end
 
   def self.instances
-    rabbitmqctl('list_vhosts').split(/\n/)[1..-1].map do |line|
+    rabbitmqctl('list_vhosts', '-q').split(/\n/)[0..-1].map do |line|
       if line =~ /^(\S+)$/
-        if line !~ /^...done.$/
           new(:name => $1)
-        end
       else
         raise Puppet::Error, "Cannot parse invalid user line: #{line}"
       end
@@ -29,7 +27,7 @@ Puppet::Type.type(:rabbitmq_vhost).provide(:rabbitmqctl) do
   end
 
   def exists?
-    out = rabbitmqctl('list_vhosts').split(/\n/)[1..-1].detect do |line|
+    out = rabbitmqctl('list_vhosts', '-q').split(/\n/)[0..-1].detect do |line|
       line.match(/^#{Regexp.escape(resource[:name])}$/)
     end
   end
