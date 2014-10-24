@@ -14,10 +14,10 @@ describe provider_class do
   end
 
   it 'should return instances' do
-    provider_class.expects(:rabbitmqctl).with('list_vhosts').returns <<-EOT
+    provider_class.expects(:rabbitmqctl).with('list_vhosts','-q').returns <<-EOT
 /
 EOT
-    provider_class.expects(:rabbitmqctl).with('list_exchanges', '-p', '/', 'name', 'type').returns <<-EOT
+    provider_class.expects(:rabbitmqctl).with('list_exchanges', '-p', '/', 'name', 'type','-q').returns <<-EOT
         direct
 amq.direct      direct
 amq.fanout      fanout

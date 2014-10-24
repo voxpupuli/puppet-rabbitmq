@@ -15,7 +15,7 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
   def self.instances
     rabbitmqctl('list_users','-q').split(/\n/)[0..-1].collect do |line|
       if line =~ /^(\S+)(\s+\[.*?\]|)$/
-          new(:name => $1)
+        new(:name => $1)
       else
         raise Puppet::Error, "Cannot parse invalid user line: #{line}"
       end
