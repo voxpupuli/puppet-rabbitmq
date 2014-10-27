@@ -15,7 +15,11 @@ Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl) do
     @users = {} unless @users
     unless @users[name]
       @users[name] = {}
-      rabbitmqctl('list_user_permissions', name).split(/\n/)[1..-2].each do |line|
+      # RabbitMQ 3.4.0 and up no longer include the "...done." at the end
+      user_perms_split = rabbitmqctl('list_user_permissions', name).split(/\n/)
+      user_perms = user_perms_split[-1] == "...done." ? user_perms_split[1..-2] : user_perms_split[1..-1]
+
+      user_perms.each do |line|
         if line =~ /^(\S+)\s+(\S*)\s+(\S*)\s+(\S*)$/
           @users[name][$1] =
             {:configure => $2, :read => $4, :write => $3}
