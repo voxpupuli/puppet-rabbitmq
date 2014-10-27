@@ -370,6 +370,14 @@ Boolean to determine if we should DESTROY AND DELETE the RabbitMQ database.
 
 query all current users: `$ puppet resource rabbitmq_user`
 
+WARNING: These providers are buggy.  They lack idempotence.  On subsequent puppet runs 
+this resource will complain that the user already exists and you will need to comment out 
+this provider's invocation in your manifests, or other resources which depend on it 
+will fail.  The ruby aware can patch this issue in:  
+
+       lib/puppet/provider/rabbitmq_user/rabbitmqctl.rb
+
+
 ```
 rabbitmq_user { 'dan':
   admin    => true,
