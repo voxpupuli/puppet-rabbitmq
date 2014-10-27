@@ -9,7 +9,11 @@ Puppet::Type.type(:rabbitmq_vhost).provide(:rabbitmqctl) do
   end
 
   def self.instances
-    rabbitmqctl('list_vhosts').split(/\n/)[1..-2].map do |line|
+  # RabbitMQ 3.4.0 and up no longer include the "...done." at the end
+  vhosts_split = rabbitmqctl('list_vhosts').split(/\n/)
+  vhosts = vhosts_split[-1] == "...done." ? vhosts_split[1..-2] : vhosts_split[1..-1]
+
+  vhosts.map do |line|
       if line =~ /^(\S+)$/
         new(:name => $1)
       else
@@ -27,7 +31,10 @@ Puppet::Type.type(:rabbitmq_vhost).provide(:rabbitmqctl) do
   end
 
   def exists?
-    out = rabbitmqctl('list_vhosts').split(/\n/)[1..-2].detect do |line|
+    vhosts_split = rabbitmqctl('list_vhosts').split(/\n/)
+    vhosts = vhosts_split[-1] == "...done." ? vhosts_split[1..-2] : vhosts_split[1..-1]
+
+    vhosts.detect do |line|
       line.match(/^#{Regexp.escape(resource[:name])}$/)
     end
   end

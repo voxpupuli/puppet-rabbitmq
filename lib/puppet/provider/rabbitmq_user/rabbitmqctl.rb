@@ -13,7 +13,11 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
   defaultfor :feature => :posix
 
   def self.instances
-    rabbitmqctl('list_users').split(/\n/)[1..-2].collect do |line|
+    # RabbitMQ 3.4.0 and up no longer include the "...done." at the end
+    users_split = rabbitmqctl('list_users').split(/\n/)
+    users = users_split[-1] == "...done." ? users_split[1..-2] : users_split[1..-1]
+
+    users.collect do |line|
       if line =~ /^(\S+)(\s+\[.*?\]|)$/
         new(:name => $1)
       else
@@ -37,7 +41,11 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
   end
 
   def exists?
-    rabbitmqctl('list_users').split(/\n/)[1..-2].detect do |line|
+    # RabbitMQ 3.4.0 and up no longer include the "...done." at the end
+    users_split = rabbitmqctl('list_users').split(/\n/)
+    users = users_split[-1] == "...done." ? users_split[1..-2] : users_split[1..-1]
+
+    users.detect do |line|
       line.match(/^#{Regexp.escape(resource[:name])}(\s+(\[.*?\]|\S+)|)$/)
     end
   end
@@ -90,7 +98,11 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
 
   private
   def get_user_tags
-    match = rabbitmqctl('list_users').split(/\n/)[1..-2].collect do |line|
+    # RabbitMQ 3.4.0 and up no longer include the "...done." at the end
+    users_split = rabbitmqctl('list_users').split(/\n/)
+    users = users_split[-1] == "...done." ? users_split[1..-2] : users_split[1..-1]
+
+    match = users.collect do |line|
       line.match(/^#{Regexp.escape(resource[:name])}\s+\[(.*?)\]/)
     end.compact.first
     Set.new(match[1].split(/, /)) if match
