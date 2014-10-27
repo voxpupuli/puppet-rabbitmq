@@ -1,5 +1,6 @@
-require 'puppet'
-Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin) do
+require File.join File.dirname(__FILE__), '../rabbitmq_wait.rb'
+
+Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, :parent => Puppet::Provider::Rabbitmq_wait) do
 
   if Puppet::PUPPETVERSION.to_f < 3
     commands :rabbitmqctl   => 'rabbitmqctl'
@@ -45,6 +46,7 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin) do
   end
 
   def self.instances
+    self.wait_for_rabbitmq
     resources = []
     all_vhosts.each do |vhost|
         all_exchanges(vhost).collect do |line|
@@ -67,6 +69,7 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin) do
   end
 
   def self.prefetch(resources)
+    self.wait_for_rabbitmq
     packages = instances
     resources.keys.each do |name|
       if provider = packages.find{ |pkg| pkg.name == name }
@@ -76,6 +79,7 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin) do
   end
 
   def exists?
+    wait_for_rabbitmq
     @property_hash[:ensure] == :present
   end
 

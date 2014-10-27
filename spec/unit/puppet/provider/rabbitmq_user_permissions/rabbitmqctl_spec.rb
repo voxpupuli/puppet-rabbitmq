@@ -1,5 +1,7 @@
 require 'puppet'
 require 'mocha'
+require 'puppet/util'
+require 'puppet/util/execution'
 RSpec.configure do |config|
   config.mock_with :mocha
 end
@@ -10,11 +12,17 @@ describe 'Puppet::Type.type(:rabbitmq_user_permissions).provider(:rabbitmqctl)' 
       {:name => 'foo@bar'}
     )
     @provider = @provider_class.new(@resource)
+    if Puppet::Util::Execution.respond_to? :execute
+      Puppet::Util::Execution.stubs(:execute).returns(0)
+    else
+      Puppet::Util.stubs(:execute).returns(0)
+    end
   end
   after :each do
     @provider_class.instance_variable_set(:@users, nil)
   end
   it 'should match user permissions from list' do
+    @provider.expects(:wait_for_rabbitmq).once
     @provider.class.expects(:rabbitmqctl).with('list_user_permissions', 'foo').returns <<-EOT
 Listing users ...
 bar 1 2 3
@@ -23,6 +31,7 @@ EOT
     @provider.exists?.should == {:configure=>"1", :write=>"2", :read=>"3"}
   end
   it 'should match user permissions with empty columns' do
+    @provider.expects(:wait_for_rabbitmq).once
     @provider.class.expects(:rabbitmqctl).with('list_user_permissions', 'foo').returns <<-EOT
 Listing users ...
 bar			3
@@ -31,6 +40,7 @@ EOT
     @provider.exists?.should == {:configure=>"", :write=>"", :read=>"3"}
   end
   it 'should not match user permissions with more than 3 columns' do
+    @provider.expects(:wait_for_rabbitmq).once
     @provider.class.expects(:rabbitmqctl).with('list_user_permissions', 'foo').returns <<-EOT
 Listing users ...
 bar 1 2 3 4
