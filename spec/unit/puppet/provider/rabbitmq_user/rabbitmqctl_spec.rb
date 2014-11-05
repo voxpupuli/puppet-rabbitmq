@@ -77,7 +77,7 @@ EOT
     @provider.admin.should == :false
   end
   it 'should fail if admin value is invalid' do
-    @provider.expects(:rabbitmqctl).with('q', 'list_users').returns <<-EOT
+    @provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
 foo fail
 EOT
     expect { @provider.admin }.to raise_error(Puppet::Error, /Could not match line/)

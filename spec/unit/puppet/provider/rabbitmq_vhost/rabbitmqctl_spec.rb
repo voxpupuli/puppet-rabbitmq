@@ -12,7 +12,7 @@ describe provider_class do
     @provider = provider_class.new(@resource)
   end
   it 'should match vhost names' do
-    @provider.expects(:rabbitmqctl).with('list_vhosts').returns <<-EOT
+    @provider.expects(:rabbitmqctl).with('-q', 'list_vhosts').returns <<-EOT
 Listing vhosts ...
 foo
 ...done.
@@ -20,14 +20,14 @@ EOT
     @provider.exists?.should == 'foo'
   end
   it 'should not match if no vhosts on system' do
-    @provider.expects(:rabbitmqctl).with('list_vhosts').returns <<-EOT
+    @provider.expects(:rabbitmqctl).with('-q', 'list_vhosts').returns <<-EOT
 Listing vhosts ...
 ...done.
 EOT
     @provider.exists?.should be_nil
   end
   it 'should not match if no matching vhosts on system' do
-    @provider.expects(:rabbitmqctl).with('list_vhosts').returns <<-EOT
+    @provider.expects(:rabbitmqctl).with('-q', 'list_vhosts').returns <<-EOT
 Listing vhosts ...
 fooey
 ...done.

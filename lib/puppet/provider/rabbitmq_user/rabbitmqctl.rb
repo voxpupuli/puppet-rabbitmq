@@ -90,7 +90,7 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
 
   private
   def get_user_tags
-    match = rabbitmqctl('list_users').split(/\n/)[1..-2].collect do |line|
+    match = rabbitmqctl('-q', 'list_users').split(/\n/).collect do |line|
       line.match(/^#{Regexp.escape(resource[:name])}\s+\[(.*?)\]/)
     end.compact.first
     Set.new(match[1].split(/, /)) if match
