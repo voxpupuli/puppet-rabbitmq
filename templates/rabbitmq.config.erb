@@ -37,17 +37,23 @@
 <%- end -%>
 <%- if @admin_enable -%>,
   {rabbitmq_management, [
-    {listener, [
 <%- if @ssl -%>
+    {listener, [
       {port, <%= @ssl_management_port %>},
       {ssl, true},
       {ssl_opts, [{cacertfile, "<%= @ssl_cacert %>"},
                   {certfile, "<%= @ssl_cert %>"},
                   {keyfile, "<%= @ssl_key %>"}]}
-<%- else -%>
-      {port, <%= @management_port %>}
-<%- end -%>
+    ]},
+    {listener, [
+      {port, 15672},
+      {ip, "127.0.0.1"}
     ]}
+<%- else -%>
+    {listener, [
+      {port, <%= @management_port %>}
+    ]}
+<%- end -%>
   ]}
 <%- end -%>
 <% if @config_stomp -%>,
