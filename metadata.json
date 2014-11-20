@@ -2,7 +2,7 @@
   "name": "puppetlabs-rabbitmq",
   "version": "4.1.0",
   "author": "puppetlabs",
-  "summary": "RabbitMQ Puppet Module",
+  "summary": "Installs, configures, and manages RabbitMQ.",
   "license": "Apache 2.0",
   "source": "https://github.com/puppetlabs/puppetlabs-rabbitmq",
   "project_page": "https://github.com/puppetlabs/puppetlabs-rabbitmq",
