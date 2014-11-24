@@ -1,11 +1,11 @@
 {
-  "name": "puppetlabs-rabbitmq",
+  "name": "piksel-rabbitmq",
   "version": "4.1.0",
-  "author": "puppetlabs",
+  "author": "piksel",
   "summary": "RabbitMQ Puppet Module",
   "license": "Apache 2.0",
-  "source": "https://github.com/puppetlabs/puppetlabs-rabbitmq",
-  "project_page": "https://github.com/puppetlabs/puppetlabs-rabbitmq",
+  "source": "https://github.com/sgran/puppetlabs-rabbitmq",
+  "project_page": "https://github.com/sgran/puppetlabs-rabbitmq",
   "issues_url": "https://tickets.puppetlabs.com/browse/MODULES",
   "dependencies": [
     {
