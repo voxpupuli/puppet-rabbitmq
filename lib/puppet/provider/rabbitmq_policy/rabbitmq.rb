@@ -13,7 +13,7 @@ Puppet::Type.type(:rabbitmq_policy).provide(:rabbitmqctl) do
   end
 
   def self.instances
-    rabbitmqctl('-q', 'list_policies', '-p', should_vhost).split(/\n/)[1..-2].detect do |line|
+    rabbitmqctl('-q', 'list_policies', '-p', should_vhost).split(/\n/).detect do |line|
       if line =~ /^(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+.*$/
         new(:name => $2, :vhost => $1, :match => $3, :policy => $4)
       else
@@ -31,7 +31,7 @@ Puppet::Type.type(:rabbitmq_policy).provide(:rabbitmqctl) do
   end
 
   def exists?
-    out = rabbitmqctl('-q', 'list_policies', '-p', should_vhost).split(/\n/)[1..-2].detect do |line|
+    out = rabbitmqctl('-q', 'list_policies', '-p', should_vhost).split(/\n/).detect do |line|
       line.match(/^\S+\s+#{resource[:name]}\s+\S+.*$/)
     end
   end
