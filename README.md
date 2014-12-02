@@ -34,7 +34,9 @@ all features against earlier versions.
 * rabbitmq configuration file.
 * rabbitmq service.
 
-###Beginning with rabbitmq
+###Beginning with rabbitmq  
+
+If running CentOS/RHEL, ensure the epel repo is present first.
 
 ```puppet
 include '::rabbitmq'
