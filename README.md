@@ -271,7 +271,7 @@ be changed to latest.
 ####`package_gpg_key`
 
 RPM package GPG key to import. Uses source method. Should be a URL for Debian/RedHat
-OS family, or a file name for RedHat OS family. 
+OS family, or a file name for RedHat OS family.
 Set to http://www.rabbitmq.com/rabbitmq-signing-key-public.asc by default.
 Note, that `key_content`, if specified, would override this parameter for Debian OS family.
 
@@ -426,6 +426,43 @@ query all currently enabled plugins `$ puppet resource rabbitmq_plugin`
 rabbitmq_plugin {'rabbitmq_stomp':
   ensure => present,
 }
+```
+
+### rabbitmq\_parameter
+```puppet
+
+rabbitmq_parameter{'shovel-test':
+    vhost => '/foo',
+    type => 'shovel',
+    value => '{"src-uri": "amqp://", "src-queue": "my-queue","dest-uri": "amqp://remote-server", "dest-queue": "another-queue"}''
+}
+```
+
+### rabbitmq\_policy
+```puppet
+
+  rabbitmq_policy{'mirror-seasick-queues':
+    vhost => '/foo',
+    definition => {'ha-mode' => 'all'},
+    apply_to => 'queues',
+    pattern => '.*',
+  }
+
+```
+
+### rabbitmq\_shovel
+```puppet
+rabbitmq_shovel{'bar-to-baz':
+    vhost => 'foo',
+    src_uris => ["amqp://],
+    src_exchange => 'bar',
+    src_exchange_key => '#',
+
+    dst_uris => ["amqp://",],
+    dst_exchange => 'baz',
+    add_forward_headers => true,
+  }
+
 ```
 
 ##Limitations
