@@ -63,6 +63,8 @@ class rabbitmq::params {
   $config_cluster             = false
   $config_path                = '/etc/rabbitmq/rabbitmq.config'
   $config_stomp               = false
+  $config_shovel              = false
+  $config_shovel_statics      = {}
   $default_user               = 'guest'
   $default_pass               = 'guest'
   $delete_guest_user          = false

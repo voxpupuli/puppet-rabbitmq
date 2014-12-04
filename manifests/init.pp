@@ -8,6 +8,8 @@ class rabbitmq(
   $config_cluster             = $rabbitmq::params::config_cluster,
   $config_path                = $rabbitmq::params::config_path,
   $config_stomp               = $rabbitmq::params::config_stomp,
+  $config_shovel              = $rabbitmq::params::config_shovel,
+  $config_shovel_statics      = $rabbitmq::params::config_shovel_statics,
   $default_user               = $rabbitmq::params::default_user,
   $default_pass               = $rabbitmq::params::default_pass,
   $delete_guest_user          = $rabbitmq::params::delete_guest_user,
@@ -73,6 +75,8 @@ class rabbitmq(
   validate_absolute_path($config_path)
   validate_bool($config_cluster)
   validate_bool($config_stomp)
+  validate_bool($config_shovel)
+  validate_hash($config_shovel_statics)
   validate_string($default_user)
   validate_string($default_pass)
   validate_bool($delete_guest_user)
@@ -142,9 +146,9 @@ class rabbitmq(
     include '::rabbitmq::install::rabbitmqadmin'
 
     rabbitmq_plugin { 'rabbitmq_management':
-      ensure  => present,
-      require => Class['rabbitmq::install'],
-      notify  => Class['rabbitmq::service'],
+      ensure   => present,
+      require  => Class['rabbitmq::install'],
+      notify   => Class['rabbitmq::service'],
       provider => 'rabbitmqplugins'
     }
 
@@ -166,6 +170,24 @@ class rabbitmq(
       require  => Class['rabbitmq::install'],
       notify   => Class['rabbitmq::service'],
       provider => 'rabbitmqplugins',
+    }
+  }
+
+  if ($config_shovel) {
+    rabbitmq_plugin { 'rabbitmq_shovel':
+      ensure   => present,
+      require  => Class['rabbitmq::install'],
+      notify   => Class['rabbitmq::service'],
+      provider => 'rabbitmqplugins',
+    }
+
+    if ($admin_enable) {
+      rabbitmq_plugin { 'rabbitmq_shovel_management':
+        ensure   => present,
+        require  => Class['rabbitmq::install'],
+        notify   => Class['rabbitmq::service'],
+        provider => 'rabbitmqplugins',
+      }
     }
   }
 
