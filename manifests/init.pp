@@ -1,4 +1,4 @@
-  #
+# Main rabbitmq class
 class rabbitmq(
   $admin_enable               = $rabbitmq::params::admin_enable,
   $cluster_disk_nodes         = $rabbitmq::params::cluster_disk_nodes,
@@ -142,9 +142,9 @@ class rabbitmq(
     include '::rabbitmq::install::rabbitmqadmin'
 
     rabbitmq_plugin { 'rabbitmq_management':
-      ensure  => present,
-      require => Class['rabbitmq::install'],
-      notify  => Class['rabbitmq::service'],
+      ensure   => present,
+      require  => Class['rabbitmq::install'],
+      notify   => Class['rabbitmq::service'],
       provider => 'rabbitmqplugins'
     }
 
@@ -153,9 +153,9 @@ class rabbitmq(
 
   if $stomp_ensure {
     rabbitmq_plugin { 'rabbitmq_stomp':
-      ensure  => present,
-      require => Class['rabbitmq::install'],
-      notify  => Class['rabbitmq::service'],
+      ensure   => present,
+      require  => Class['rabbitmq::install'],
+      notify   => Class['rabbitmq::service'],
       provider => 'rabbitmqplugins'
     }
   }

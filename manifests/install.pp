@@ -1,3 +1,5 @@
+# Class rabbitmq::install
+# Ensures the rabbitmq-server exists
 class rabbitmq::install {
 
   $package_ensure   = $rabbitmq::package_ensure
