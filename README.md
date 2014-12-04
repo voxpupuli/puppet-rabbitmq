@@ -271,7 +271,7 @@ be changed to latest.
 ####`package_gpg_key`
 
 RPM package GPG key to import. Uses source method. Should be a URL for Debian/RedHat
-OS family, or a file name for RedHat OS family. 
+OS family, or a file name for RedHat OS family.
 Set to http://www.rabbitmq.com/rabbitmq-signing-key-public.asc by default.
 Note, that `key_content`, if specified, would override this parameter for Debian OS family.
 
@@ -415,6 +415,20 @@ rabbitmq_user_permissions { 'dan@myhost':
   configure_permission => '.*',
   read_permission      => '.*',
   write_permission     => '.*',
+}
+```
+
+### rabbitmq\_policy
+
+```puppet
+rabbitmq_policy { 'ha-all@myhost':
+  pattern    => '.*',
+  priority   => 0,
+  applyto    => 'all',
+  definition => {
+    'ha-mode'      => 'all',
+    'ha-sync-mode' => 'automatic'
+  }
 }
 ```
 
