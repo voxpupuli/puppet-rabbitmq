@@ -83,7 +83,6 @@ describe 'rabbitmq class:' do
       }
       EOS
 
-      
       apply_manifest(pp_pre, :catch_failures => true)
       apply_manifest(pp, :catch_failures => true)
     end
