@@ -427,8 +427,8 @@ rabbitmq_policy { 'ha-all@myhost':
   applyto    => 'all',
   definition => {
     'ha-mode'      => 'all',
-    'ha-sync-mode' => 'automatic'
-  }
+    'ha-sync-mode' => 'automatic',
+  },
 }
 ```
 
@@ -445,13 +445,14 @@ rabbitmq_plugin {'rabbitmq_stomp':
 ##Limitations
 
 This module has been built on and tested against Puppet 2.7 and higher.
+Puppet 2.7 support is slated for removal at the next major version.
 
 The module has been tested on:
 
 * RedHat Enterprise Linux 5/6
 * Debian 6/7
 * CentOS 5/6
-* Ubuntu 12.04
+* Ubuntu 12.04/14.04
 
 Testing on other platforms has been light and cannot be guaranteed.
 
