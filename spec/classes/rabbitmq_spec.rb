@@ -98,14 +98,6 @@ describe 'rabbitmq' do
         end
       end
 
-      context 'deprecated parameters' do
-        describe 'cluster_disk_nodes' do
-          let(:params) {{ :cluster_disk_nodes => ['node1', 'node2'] }}
-
-          it { should contain_notify('cluster_disk_nodes') }
-        end
-      end
-
       describe 'manages configuration directory correctly' do
         it { should contain_file('/etc/rabbitmq').with(
           'ensure' => 'directory'

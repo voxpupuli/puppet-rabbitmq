@@ -47,10 +47,7 @@ class rabbitmq::config {
 
   # Handle deprecated option.
   if $cluster_disk_nodes != [] {
-    notify { 'cluster_disk_nodes':
-      message => 'WARNING: The cluster_disk_nodes is deprecated.
-       Use cluster_nodes instead.',
-    }
+    warning('The $cluster_disk_nodes is deprecated. Use $cluster_nodes instead.')
     $r_cluster_nodes = $cluster_disk_nodes
   } else {
     $r_cluster_nodes = $cluster_nodes
