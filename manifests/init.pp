@@ -23,6 +23,7 @@ class rabbitmq(
   $package_provider           = $rabbitmq::params::package_provider,
   $package_source             = $rabbitmq::params::package_source,
   $repos_ensure               = $rabbitmq::params::repos_ensure,
+  $manage_repos               = $rabbitmq::params::manage_repos,
   $plugin_dir                 = $rabbitmq::params::plugin_dir,
   $port                       = $rabbitmq::params::port,
   $tcp_keepalive              = $rabbitmq::params::tcp_keepalive,
@@ -123,7 +124,11 @@ class rabbitmq(
   include '::rabbitmq::service'
   include '::rabbitmq::management'
 
-  if $rabbitmq::manage_repos == true {
+  if $manage_repos != undef {
+    warning('$manage_repos is now deprecated. Please use $repos_ensure instead')
+  }
+
+  if $manage_repos != false {
     case $::osfamily {
       'RedHat', 'SUSE':
         { include '::rabbitmq::repo::rhel' }
