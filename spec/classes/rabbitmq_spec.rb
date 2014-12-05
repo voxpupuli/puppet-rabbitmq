@@ -19,6 +19,35 @@ describe 'rabbitmq' do
     describe 'apt::source default values' do
       it 'should add a repo with defaults values' do
         should contain_apt__source('rabbitmq').with( {
+          :ensure   => 'present',
+          :location => 'http://www.rabbitmq.com/debian/',
+          :release  => 'testing',
+          :repos    => 'main',
+        })
+      end
+    end
+  end
+
+  context 'on Debian' do
+    let(:params) {{ :manage_repos => false }}
+    let(:facts) {{ :osfamily => 'Debian', :lsbdistid => 'Debian', :lsbdistcodename => 'squeeze' }}
+    it 'does ensure rabbitmq apt::source is absent when manage_repos is false' do
+      should_not contain_apt__source('rabbitmq')
+    end
+  end
+
+  context 'on Debian' do
+    let(:params) {{ :manage_repos => true }}
+    let(:facts) {{ :osfamily => 'Debian', :lsbdistid => 'Debian', :lsbdistcodename => 'squeeze' }}
+    
+    it 'includes rabbitmq::repo::apt' do
+      should contain_class('rabbitmq::repo::apt')
+    end
+
+    describe 'apt::source default values' do
+      it 'should add a repo with defaults values' do
+        should contain_apt__source('rabbitmq').with( {
+          :ensure   => 'present',
           :location => 'http://www.rabbitmq.com/debian/',
           :release  => 'testing',
           :repos    => 'main',
@@ -30,10 +59,83 @@ describe 'rabbitmq' do
   context 'on Debian' do
     let(:params) {{ :repos_ensure => false }}
     let(:facts) {{ :osfamily => 'Debian', :lsbdistid => 'Debian', :lsbdistcodename => 'squeeze' }}
-    it 'does ensure rabbitmq apt::source is absent  when repos_ensure is false' do
+    it 'does ensure rabbitmq apt::source is absent when repos_ensure is false' do
       should contain_apt__source('rabbitmq').with(
         'ensure'  => 'absent'
       )
+    end
+  end
+
+  context 'on Debian' do
+    let(:params) {{ :repos_ensure => true }}
+    let(:facts) {{ :osfamily => 'Debian', :lsbdistid => 'Debian', :lsbdistcodename => 'squeeze' }}
+    
+    it 'includes rabbitmq::repo::apt' do
+      should contain_class('rabbitmq::repo::apt')
+    end
+
+    describe 'apt::source default values' do
+      it 'should add a repo with defaults values' do
+        should contain_apt__source('rabbitmq').with( {
+          :ensure   => 'present',
+          :location => 'http://www.rabbitmq.com/debian/',
+          :release  => 'testing',
+          :repos    => 'main',
+        })
+      end
+    end
+  end
+
+  context 'on Debian' do
+    let(:params) {{ :manage_repos => true, :repos_ensure => false }}
+    let(:facts) {{ :osfamily => 'Debian', :lsbdistid => 'Debian', :lsbdistcodename => 'squeeze' }}
+    
+    it 'includes rabbitmq::repo::apt' do
+      should contain_class('rabbitmq::repo::apt')
+    end
+
+    describe 'apt::source default values' do
+      it 'should add a repo with defaults values' do
+        should contain_apt__source('rabbitmq').with( {
+          :ensure => 'absent',
+        })
+      end
+    end
+  end
+
+  context 'on Debian' do
+    let(:params) {{ :manage_repos => true, :repos_ensure => true }}
+    let(:facts) {{ :osfamily => 'Debian', :lsbdistid => 'Debian', :lsbdistcodename => 'squeeze' }}
+    
+    it 'includes rabbitmq::repo::apt' do
+      should contain_class('rabbitmq::repo::apt')
+    end
+
+    describe 'apt::source default values' do
+      it 'should add a repo with defaults values' do
+        should contain_apt__source('rabbitmq').with( {
+          :ensure   => 'present',
+          :location => 'http://www.rabbitmq.com/debian/',
+          :release  => 'testing',
+          :repos    => 'main',
+        })
+      end
+    end
+  end
+
+  context 'on Debian' do
+    let(:params) {{ :manage_repos => false, :repos_ensure => true }}
+    let(:facts) {{ :osfamily => 'Debian', :lsbdistid => 'Debian', :lsbdistcodename => 'squeeze' }}
+    it 'does ensure rabbitmq apt::source is absent when manage_repos is false and repos_ensure is true' do
+      should_not contain_apt__source('rabbitmq')
+    end
+  end
+
+  context 'on Debian' do
+    let(:params) {{ :manage_repos => false, :repos_ensure => false }}
+    let(:facts) {{ :osfamily => 'Debian', :lsbdistid => 'Debian', :lsbdistcodename => 'squeeze' }}
+    it 'does ensure rabbitmq apt::source is absent when manage_repos is false and repos_ensure is false' do
+      should_not contain_apt__source('rabbitmq')
     end
   end
 
@@ -41,6 +143,7 @@ describe 'rabbitmq' do
     let(:facts) {{ :osfamily => 'RedHat' }}
     it 'includes rabbitmq::repo::rhel' do
       should contain_class('rabbitmq::repo::rhel')
+      should contain_exec('rpm --import http://www.rabbitmq.com/rabbitmq-signing-key-public.asc')
     end
   end
 
@@ -48,6 +151,70 @@ describe 'rabbitmq' do
     let(:params) {{ :repos_ensure => false }}
     let(:facts) {{ :osfamily => 'RedHat' }}
     it 'does not import repo public key when repos_ensure is false' do
+      should contain_class('rabbitmq::repo::rhel')
+      should_not contain_exec('rpm --import http://www.rabbitmq.com/rabbitmq-signing-key-public.asc')
+    end
+  end
+
+  context 'on Redhat' do
+    let(:params) {{ :repos_ensure => true }}
+    let(:facts) {{ :osfamily => 'RedHat' }}
+    it 'does import repo public key when repos_ensure is true' do
+      should contain_class('rabbitmq::repo::rhel')
+      should contain_exec('rpm --import http://www.rabbitmq.com/rabbitmq-signing-key-public.asc')
+    end
+  end
+
+  context 'on Redhat' do
+    let(:params) {{ :manage_repos => false }}
+    let(:facts) {{ :osfamily => 'RedHat' }}
+    it 'does not import repo public key when manage_repos is false' do
+      should_not contain_class('rabbitmq::repo::rhel')
+      should_not contain_exec('rpm --import http://www.rabbitmq.com/rabbitmq-signing-key-public.asc')
+    end
+  end
+
+  context 'on Redhat' do
+    let(:params) {{ :manage_repos => true }}
+    let(:facts) {{ :osfamily => 'RedHat' }}
+    it 'does import repo public key when manage_repos is true' do
+      should contain_class('rabbitmq::repo::rhel')
+      should contain_exec('rpm --import http://www.rabbitmq.com/rabbitmq-signing-key-public.asc')
+    end
+  end
+
+  context 'on Redhat' do
+    let(:params) {{ :manage_repos => false, :repos_ensure => true }}
+    let(:facts) {{ :osfamily => 'RedHat' }}
+    it 'does not import repo public key when manage_repos is false and repos_ensure is true' do
+      should_not contain_class('rabbitmq::repo::rhel')
+      should_not contain_exec('rpm --import http://www.rabbitmq.com/rabbitmq-signing-key-public.asc')
+    end
+  end
+
+  context 'on Redhat' do
+    let(:params) {{ :manage_repos => true, :repos_ensure => true }}
+    let(:facts) {{ :osfamily => 'RedHat' }}
+    it 'does import repo public key when manage_repos is true and repos_ensure is true' do
+      should contain_class('rabbitmq::repo::rhel')
+      should contain_exec('rpm --import http://www.rabbitmq.com/rabbitmq-signing-key-public.asc')
+    end
+  end
+
+  context 'on Redhat' do
+    let(:params) {{ :manage_repos => false, :repos_ensure => false }}
+    let(:facts) {{ :osfamily => 'RedHat' }}
+    it 'does not import repo public key when manage_repos is false and repos_ensure is false' do
+      should_not contain_class('rabbitmq::repo::rhel')
+      should_not contain_exec('rpm --import http://www.rabbitmq.com/rabbitmq-signing-key-public.asc')
+    end
+  end
+
+  context 'on Redhat' do
+    let(:params) {{ :manage_repos => true, :repos_ensure => false }}
+    let(:facts) {{ :osfamily => 'RedHat' }}
+    it 'does not import repo public key when manage_repos is true and repos_ensure is false' do
+      should contain_class('rabbitmq::repo::rhel')
       should_not contain_exec('rpm --import http://www.rabbitmq.com/rabbitmq-signing-key-public.asc')
     end
   end
