@@ -1,11 +1,9 @@
 #
 class rabbitmq::install::rabbitmqadmin {
 
-  if($rabbitmq::ssl) {
-    $management_port = $rabbitmq::ssl_management_port
-  }
-  else {
-    $management_port = $rabbitmq::management_port
+  $management_port = $rabbitmq::ssl ? {
+    true        => $rabbitmq::ssl_management_port,
+    default     => $rabbitmq::management_port,
   }
 
   $default_user = $rabbitmq::default_user
