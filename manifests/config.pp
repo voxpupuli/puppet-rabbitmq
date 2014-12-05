@@ -9,6 +9,7 @@ class rabbitmq::config {
   $cluster_nodes              = $rabbitmq::cluster_nodes
   $config                     = $rabbitmq::config
   $config_cluster             = $rabbitmq::config_cluster
+  $config_owner               = $rabbitmq::config_owner
   $config_path                = $rabbitmq::config_path
   $config_stomp               = $rabbitmq::config_stomp
   $default_user               = $rabbitmq::default_user
@@ -55,14 +56,14 @@ class rabbitmq::config {
 
   file { '/etc/rabbitmq':
     ensure  => directory,
-    owner   => '0',
+    owner   => 'rabbitmq',
     group   => '0',
     mode    => '0644',
   }
 
   file { '/etc/rabbitmq/ssl':
     ensure  => directory,
-    owner   => '0',
+    owner   => $config_owner,
     group   => '0',
     mode    => '0644',
   }
@@ -71,7 +72,7 @@ class rabbitmq::config {
     ensure  => file,
     path    => $config_path,
     content => template($config),
-    owner   => '0',
+    owner   => $config_owner,
     group   => '0',
     mode    => '0644',
     notify  => Class['rabbitmq::service'],
@@ -81,7 +82,7 @@ class rabbitmq::config {
     ensure  => file,
     path    => $env_config_path,
     content => template($env_config),
-    owner   => '0',
+    owner   => $config_owner,
     group   => '0',
     mode    => '0644',
     notify  => Class['rabbitmq::service'],

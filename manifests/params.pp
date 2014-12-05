@@ -13,6 +13,7 @@ class rabbitmq::params {
       $version          = '3.1.3-1'
       $base_version     = regsubst($version,'^(.*)-\d$','\1')
       # This must remain at the end as we need $base_version and $version defined first
+      $config_owner     = 'root'
     }
     'Debian': {
       $package_ensure   = 'installed'
@@ -21,6 +22,7 @@ class rabbitmq::params {
       $package_provider = 'apt'
       $package_source   = ''
       $version          = '3.1.5'
+      $config_owner     = 'root'
     }
     'RedHat': {
       $package_ensure   = 'installed'
@@ -31,6 +33,7 @@ class rabbitmq::params {
       $base_version     = regsubst($version,'^(.*)-\d$','\1')
       # This must remain at the end as we need $base_version and $version defined first.
       $package_source   = "http://www.rabbitmq.com/releases/rabbitmq-server/v${base_version}/rabbitmq-server-${version}.noarch.rpm"
+      $config_owner     = 'root'
     }
     'SUSE': {
       $package_ensure   = 'installed'
@@ -41,6 +44,14 @@ class rabbitmq::params {
       $base_version     = regsubst($version,'^(.*)-\d$','\1')
       # This must remain at the end as we need $base_version and $version defined first.
       $package_source   = "http://www.rabbitmq.com/releases/rabbitmq-server/v${base_version}/rabbitmq-server-${version}.noarch.rpm"
+      $config_owner     = 'root'
+    }
+    'Gentoo': {
+      $package_ensure   = 'installed'
+      $package_name     = 'rabbitmq-server'
+      $service_name     = 'rabbitmq'
+      $version          = '3.3.4'
+      $config_owner     = 'rabbitmq'
     }
     default: {
       fail("The ${module_name} module is not supported on an ${::osfamily} based system.")
