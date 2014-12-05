@@ -54,17 +54,17 @@ class rabbitmq::config {
   }
 
   file { '/etc/rabbitmq':
-    ensure  => directory,
-    owner   => '0',
-    group   => '0',
-    mode    => '0644',
+    ensure => directory,
+    owner  => '0',
+    group  => '0',
+    mode   => '0644',
   }
 
   file { '/etc/rabbitmq/ssl':
-    ensure  => directory,
-    owner   => '0',
-    group   => '0',
-    mode    => '0644',
+    ensure => directory,
+    owner  => '0',
+    group  => '0',
+    mode   => '0644',
   }
 
   file { 'rabbitmq.config':
@@ -107,8 +107,8 @@ class rabbitmq::config {
       # Safety check.
       if $wipe_db_on_cookie_change {
         exec { 'wipe_db':
-          command    => "puppet resource service ${service_name} ensure=stopped; rm -rf /var/lib/rabbitmq/mnesia",
-          path       => '/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin',
+          command => "puppet resource service ${service_name} ensure=stopped; rm -rf /var/lib/rabbitmq/mnesia",
+          path    => '/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin',
         }
         File['erlang_cookie'] {
           require => Exec['wipe_db'],

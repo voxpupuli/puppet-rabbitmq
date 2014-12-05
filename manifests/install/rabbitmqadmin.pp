@@ -7,11 +7,11 @@ class rabbitmq::install::rabbitmqadmin {
   $protocol = $rabbitmq::ssl ? { false => 'http', default => 'https' }
 
   staging::file { 'rabbitmqadmin':
-    target  => '/var/lib/rabbitmq/rabbitmqadmin',
-    source  => "${protocol}://${default_user}:${default_pass}@localhost:${management_port}/cli/rabbitmqadmin",
+    target      => '/var/lib/rabbitmq/rabbitmqadmin',
+    source      => "${protocol}://${default_user}:${default_pass}@localhost:${management_port}/cli/rabbitmqadmin",
     curl_option => '--noproxy localhost',
     wget_option => '--no-proxy',
-    require => [
+    require     => [
       Class['rabbitmq::service'],
       Rabbitmq_plugin['rabbitmq_management']
     ],
