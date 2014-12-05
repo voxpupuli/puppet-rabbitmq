@@ -420,6 +420,35 @@ rabbitmq_exchange { 'myexchange@myhost':
 }
 ```
 
+### rabbitmq\_queue
+
+```puppet
+rabbitmq_queue { 'myqueue@myhost':
+  user        => 'dan',
+  password    => 'bar',
+  durable     => true,
+  auto_delete => false,
+  arguments   => {
+    x-message-ttl => 123,
+    x-dead-letter-exchange => 'other'
+  },
+  ensure      => present,
+}
+```
+
+### rabbitmq\_binding
+
+```puppet
+rabbitmq_binding { 'myexchange@myqueue@myhost':
+  user             => 'dan',
+  password         => 'bar',
+  destination_type => 'queue',
+  routing_key      => '#',
+  arguments        => {},
+  ensure           => present,
+}
+```
+
 ### rabbitmq\_user\_permissions
 
 ```puppet
