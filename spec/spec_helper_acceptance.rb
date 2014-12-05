@@ -20,8 +20,8 @@ RSpec.configure do |c|
   # Readable test descriptions
   c.formatter = :documentation
   c.before :suite do
-    puppet_module_install(:source => proj_root, :module_name => 'rabbitmq')
     hosts.each do |host|
+      copy_module_to(host, :source => proj_root, :module_name => 'rabbitmq')
 
       shell("/bin/touch #{default['puppetpath']}/hiera.yaml")
       shell('puppet module install puppetlabs-stdlib', { :acceptable_exit_codes => [0,1] })
