@@ -9,6 +9,7 @@ group :development, :test do
   gem 'beaker',                  :require => false
   gem 'beaker-rspec',            :require => false
   gem 'pry',                     :require => false
+  gem 'nokogiri', '1.5.11',      :require => false # pin to make TravisCI happy
 end
 
 if facterversion = ENV['FACTER_GEM_VERSION']
