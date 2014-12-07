@@ -6,7 +6,7 @@ group :development, :test do
   gem 'puppetlabs_spec_helper',  :require => false
   gem 'puppet-lint',             :require => false
   gem 'serverspec',              :require => false
-  gem 'beaker',                  :require => false
+  gem 'beaker', '~>1.0',         :require => false
   gem 'beaker-rspec',            :require => false
   gem 'pry',                     :require => false
 end
