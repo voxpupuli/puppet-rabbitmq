@@ -89,11 +89,12 @@ class rabbitmq::config {
 
   file { 'rabbitmqadmin.conf':
     ensure  => file,
-    path    => '/tmp/.rabbitmqadmin.conf',
+    path    => '/etc/rabbitmq/rabbitmqadmin.conf',
     content => template('rabbitmq/rabbitmqadmin.conf.erb'),
     owner   => '0',
     group   => '0',
     mode    => '0644',
+    require => File['/etc/rabbitmq'],
   }
 
 

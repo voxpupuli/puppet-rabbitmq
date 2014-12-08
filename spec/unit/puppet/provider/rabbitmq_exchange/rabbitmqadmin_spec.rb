@@ -36,12 +36,12 @@ EOT
   end
 
   it 'should call rabbitmqadmin to create' do
-    @provider.expects(:rabbitmqadmin).with('declare', 'exchange', '--vhost=/', '--user=guest', '--password=guest', 'name=amq.direct', 'type=topic')
+    @provider.expects(:rabbitmqadmin).with('declare', 'exchange', '--vhost=/', '--user=guest', '--password=guest', 'name=amq.direct', 'type=topic', '-c', '/etc/rabbitmq/rabbitmqadmin.conf')
     @provider.create
   end
 
   it 'should call rabbitmqadmin to destroy' do
-    @provider.expects(:rabbitmqadmin).with('delete', 'exchange', '--vhost=/', '--user=guest', '--password=guest', 'name=amq.direct')
+    @provider.expects(:rabbitmqadmin).with('delete', 'exchange', '--vhost=/', '--user=guest', '--password=guest', 'name=amq.direct', '-c', '/etc/rabbitmq/rabbitmqadmin.conf')
     @provider.destroy
   end
 
@@ -58,7 +58,7 @@ EOT
     end
 
     it 'should call rabbitmqadmin to create' do
-      @provider.expects(:rabbitmqadmin).with('declare', 'exchange', '--vhost=/', '--user=colin', '--password=secret', 'name=amq.direct', 'type=topic')
+      @provider.expects(:rabbitmqadmin).with('declare', 'exchange', '--vhost=/', '--user=colin', '--password=secret', 'name=amq.direct', 'type=topic', '-c', '/etc/rabbitmq/rabbitmqadmin.conf')
       @provider.create
     end
   end
