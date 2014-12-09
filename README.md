@@ -34,7 +34,8 @@ all features against earlier versions.
 * rabbitmq configuration file.
 * rabbitmq service.
 
-###Beginning with rabbitmq
+###Beginning with rabbitmq  
+
 
 ```puppet
 include '::rabbitmq'
@@ -457,6 +458,9 @@ The module has been tested on:
 Testing on other platforms has been light and cannot be guaranteed.
 
 ### Module dependencies
+
+If running CentOS/RHEL, and using the yum provider, ensure the epel repo is present.
+
 To have a suitable erlang version installed on RedHat and Debian systems,
 you have to install another puppet module from http://forge.puppetlabs.com/garethr/erlang with:
 
