@@ -15,7 +15,13 @@ class rabbitmq::repo::apt(
 
   Class['rabbitmq::repo::apt'] -> Package<| title == 'rabbitmq-server' |>
 
+  $ensure_source = $rabbitmq::repos_ensure ? {
+    false   => 'absent',
+    default => 'present',
+  }
+
   apt::source { 'rabbitmq':
+    ensure      => $ensure_source,
     location    => $location,
     release     => $release,
     repos       => $repos,

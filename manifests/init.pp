@@ -22,6 +22,7 @@ class rabbitmq(
   $package_name               = $rabbitmq::params::package_name,
   $package_provider           = $rabbitmq::params::package_provider,
   $package_source             = $rabbitmq::params::package_source,
+  $repos_ensure               = $rabbitmq::params::repos_ensure,
   $manage_repos               = $rabbitmq::params::manage_repos,
   $plugin_dir                 = $rabbitmq::params::plugin_dir,
   $port                       = $rabbitmq::params::port,
@@ -63,7 +64,7 @@ class rabbitmq(
   validate_string($package_gpg_key)
   validate_string($package_name)
   validate_string($package_provider)
-  validate_bool($manage_repos)
+  validate_bool($repos_ensure)
   validate_re($version, '^\d+\.\d+\.\d+(-\d+)*$') # Allow 3 digits and optional -n postfix.
   # Validate config parameters.
   validate_array($cluster_disk_nodes)
@@ -123,7 +124,11 @@ class rabbitmq(
   include '::rabbitmq::service'
   include '::rabbitmq::management'
 
-  if $rabbitmq::manage_repos == true {
+  if $manage_repos != undef {
+    warning('$manage_repos is now deprecated. Please use $repos_ensure instead')
+  }
+
+  if $manage_repos != false {
     case $::osfamily {
       'RedHat', 'SUSE':
         { include '::rabbitmq::repo::rhel' }
