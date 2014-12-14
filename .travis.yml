@@ -6,9 +6,9 @@ matrix:
   fast_finish: true
   include:
   - rvm: 1.8.7
-    env: PUPPET_GEM_VERSION="~> 2.7.0" FACTER_GEM_VERSION="~> 1.6.0"
+    env: PUPPET_GEM_VERSION="~> 2.7.0" FACTER_GEM_VERSION="~> 1.6.0" NOKOGIRI_GEM_VERSION="~> 1.5.11" MIMETYPES_GEM_VERSION="~> 1.25.1"
   - rvm: 1.8.7
-    env: PUPPET_GEM_VERSION="~> 2.7.0" FACTER_GEM_VERSION="~> 1.7.0"
+    env: PUPPET_GEM_VERSION="~> 2.7.0" FACTER_GEM_VERSION="~> 1.7.0" NOKOGIRI_GEM_VERSION="~> 1.5.11" MIMETYPES_GEM_VERSION="~> 1.25.1"
   - rvm: 1.9.3
     env: PUPPET_GEM_VERSION="~> 3.0"
   - rvm: 2.0.0

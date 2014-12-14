@@ -27,4 +27,16 @@ else
   gem 'puppet', :require => false
 end
 
+if nokogiriversion = ENV['NOKOGIRI_GEM_VERSION']
+  gem 'nokogiri', nokogiriversion, :require => false
+else
+  gem 'nokogiri', :require => false
+end
+
+if mimetypesversion = ENV['MIMETYPES_GEM_VERSION']
+  gem 'mime-types', mimetypesversion, :require => false
+else
+  gem 'mime-types', :require => false
+end
+
 # vim:ft=ruby
