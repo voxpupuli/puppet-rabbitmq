@@ -26,6 +26,9 @@ Puppet::Type.newtype(:rabbitmq_user) do
     def set(value)
       provider.change_password
     end
+    def change_to_s(current, desired)
+      "password has been changed"
+    end
   end
 
   newproperty(:admin) do
