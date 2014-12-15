@@ -139,7 +139,7 @@ class { 'rabbitmq':
 * rabbitmq::params: Different configuration data for different systems.
 * rabbitmq::service: Handles the rabbitmq service.
 * rabbitmq::repo::apt: Handles apt repo for Debian systems.
-* rabbitmq::repo::rhel: Handles yum repo for Redhat systems.
+* rabbitmq::repo::rhel: Handles rpm repo for Redhat systems.
 
 ###Parameters
 
