@@ -5,7 +5,6 @@ class rabbitmq(
   $cluster_node_type          = $rabbitmq::params::cluster_node_type,
   $cluster_nodes              = $rabbitmq::params::cluster_nodes,
   $config                     = $rabbitmq::params::config,
-  $config_cluster             = $rabbitmq::params::config_cluster,
   $config_path                = $rabbitmq::params::config_path,
   $config_stomp               = $rabbitmq::params::config_stomp,
   $default_user               = $rabbitmq::params::default_user,
@@ -72,7 +71,6 @@ class rabbitmq(
   validate_array($cluster_nodes)
   validate_string($config)
   validate_absolute_path($config_path)
-  validate_bool($config_cluster)
   validate_bool($config_stomp)
   validate_string($default_user)
   validate_string($default_pass)
