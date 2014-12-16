@@ -68,7 +68,7 @@ class rabbitmq(
   validate_re($version, '^\d+\.\d+\.\d+(-\d+)*$') # Allow 3 digits and optional -n postfix.
   # Validate config parameters.
   validate_array($cluster_disk_nodes)
-  validate_re($cluster_node_type, '^(ram|disc)$')
+  validate_re($cluster_node_type, '^(ram|disc|disk)$') # Both disc and disk are valid http://www.rabbitmq.com/clustering.html
   validate_array($cluster_nodes)
   validate_string($config)
   validate_absolute_path($config_path)

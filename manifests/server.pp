@@ -17,7 +17,7 @@
 #  [*config_mirrored_queues*] - DEPRECATED (doesn't do anything)
 #  [*cluster_disk_nodes*] - DEPRECATED (use cluster_nodes instead)
 #  [*cluster_nodes*] - which nodes to cluster with (including the current one)
-#  [*cluster_node_type*] - Type of cluster node (disc or ram)
+#  [*cluster_node_type*] - Type of cluster node (disc/disk or ram)
 #  [*erlang_cookie*] - erlang cookie, must be the same for all nodes in a cluster
 #  [*wipe_db_on_cookie_change*] - whether to wipe the RabbitMQ data if the specified
 #    erlang_cookie differs from the current one. This is a sad parameter: actually,
