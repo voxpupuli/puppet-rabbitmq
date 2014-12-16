@@ -278,7 +278,7 @@ describe 'rabbitmq' do
       end
 
       context 'configures config_cluster' do
-        let(:facts) {{ :osfamily => distro, :rabbitmq_erlang_cookie => 'ORIGINAL', :lsbdistid => 'Debian' }}
+        let(:facts) {{ :osfamily => distro, :lsbdistid => 'Debian' }}
         let(:params) {{
           :config_cluster           => true,
           :cluster_nodes            => ['hare-1', 'hare-2'],
@@ -286,12 +286,6 @@ describe 'rabbitmq' do
           :erlang_cookie            => 'TESTCOOKIE',
           :wipe_db_on_cookie_change => false
         }}
-
-        describe 'with defaults' do
-          it 'fails' do
-            expect{subject}.to raise_error(/^ERROR: The current erlang cookie is ORIGINAL/)
-          end
-        end
 
         describe 'with wipe_db_on_cookie_change set' do
           let(:params) {{
@@ -303,19 +297,6 @@ describe 'rabbitmq' do
           }}
           it 'wipes the database' do
             should contain_exec('wipe_db')
-            should contain_file('erlang_cookie')
-          end
-        end
-
-        describe 'correctly when cookies match' do
-          let(:params) {{
-            :config_cluster           => true,
-            :cluster_nodes            => ['hare-1', 'hare-2'],
-            :cluster_node_type        => 'ram',
-            :erlang_cookie            => 'ORIGINAL',
-            :wipe_db_on_cookie_change => true
-          }}
-          it 'and doesnt wipe anything' do
             should contain_file('erlang_cookie')
           end
         end
