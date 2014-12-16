@@ -223,7 +223,6 @@ describe 'rabbitmq' do
     context "on #{distro}" do
       let(:facts) {{
         :osfamily => distro,
-        :rabbitmq_erlang_cookie => 'EOKOWXQREETZSHFNTPEY',
         :lsbdistcodename => 'squeeze',
         :lsbdistid => 'Debian'
       }}
@@ -277,70 +276,6 @@ describe 'rabbitmq' do
         it { should contain_file('rabbitmq.config') }
       end
 
-      context 'configures config_cluster' do
-        let(:facts) {{ :osfamily => distro, :rabbitmq_erlang_cookie => 'ORIGINAL', :lsbdistid => 'Debian' }}
-        let(:params) {{
-          :config_cluster           => true,
-          :cluster_nodes            => ['hare-1', 'hare-2'],
-          :cluster_node_type        => 'ram',
-          :erlang_cookie            => 'TESTCOOKIE',
-          :wipe_db_on_cookie_change => false
-        }}
-
-        describe 'with defaults' do
-          it 'fails' do
-            expect{subject}.to raise_error(/^ERROR: The current erlang cookie is ORIGINAL/)
-          end
-        end
-
-        describe 'with wipe_db_on_cookie_change set' do
-          let(:params) {{
-            :config_cluster           => true,
-            :cluster_nodes            => ['hare-1', 'hare-2'],
-            :cluster_node_type        => 'ram',
-            :erlang_cookie            => 'TESTCOOKIE',
-            :wipe_db_on_cookie_change => true
-          }}
-          it 'wipes the database' do
-            should contain_exec('wipe_db')
-            should contain_file('erlang_cookie')
-          end
-        end
-
-        describe 'correctly when cookies match' do
-          let(:params) {{
-            :config_cluster           => true,
-            :cluster_nodes            => ['hare-1', 'hare-2'],
-            :cluster_node_type        => 'ram',
-            :erlang_cookie            => 'ORIGINAL',
-            :wipe_db_on_cookie_change => true
-          }}
-          it 'and doesnt wipe anything' do
-            should contain_file('erlang_cookie')
-          end
-        end
-
-        describe 'and sets appropriate configuration' do
-          let(:params) {{
-            :config_cluster           => true,
-            :cluster_nodes            => ['hare-1', 'hare-2'],
-            :cluster_node_type        => 'ram',
-            :erlang_cookie            => 'ORIGINAL',
-            :wipe_db_on_cookie_change => true
-          }}
-          it 'for cluster_nodes' do
-            should contain_file('rabbitmq.config').with({
-              'content' => /cluster_nodes.*\['rabbit@hare-1', 'rabbit@hare-2'\], ram/,
-            })
-          end
-
-          it 'for erlang_cookie' do
-            should contain_file('erlang_cookie').with({
-              'content' => 'ORIGINAL',
-            })
-          end
-        end
-      end
 
       describe 'rabbitmq-env configuration' do
         let(:params) {{ :environment_variables => {

@@ -61,7 +61,6 @@ class rabbitmq::params {
   $cluster_node_type          = 'disc'
   $cluster_nodes              = []
   $config                     = 'rabbitmq/rabbitmq.config.erb'
-  $config_cluster             = false
   $config_path                = '/etc/rabbitmq/rabbitmq.config'
   $config_stomp               = false
   $default_user               = 'guest'
