@@ -5,7 +5,7 @@ class rabbitmq::install {
   $package_ensure   = $rabbitmq::package_ensure
   $package_name     = $rabbitmq::package_name
   $package_provider = $rabbitmq::package_provider
-  $package_source   = $rabbitmq::package_source
+  $package_source   = $rabbitmq::real_package_source
 
   package { 'rabbitmq-server':
     ensure   => $package_ensure,
