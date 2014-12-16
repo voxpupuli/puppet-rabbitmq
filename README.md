@@ -288,6 +288,12 @@ What provider to use to install the package.
 
 Where should the package be installed from?
 
+On Debian- and Arch-based systems using the default package provider,
+this parameter is ignored and the package is installed from the
+rabbitmq repository, if enabled with manage_repo => true, or from the
+system repository otherwise. If you want to use dpkg as the
+package_provider, you must specify a local package_source.
+
 ####`plugin_dir`
 
 Location of RabbitMQ plugins.
@@ -360,6 +366,11 @@ Boolean to enable TCP connection keepalive for RabbitMQ service.
 ####`version`
 
 Sets the version to install.
+
+On Debian- and Arch-based operating systems, the version parameter is
+ignored and the latest version is installed from the rabbitmq
+repository, if enabled with manage_repo => true, or from the system
+repository otherwise.
 
 ####`wipe_db_on_cookie_change`
 

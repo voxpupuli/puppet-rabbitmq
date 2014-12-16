@@ -21,7 +21,7 @@ class rabbitmq(
   $package_gpg_key            = $rabbitmq::params::package_gpg_key,
   $package_name               = $rabbitmq::params::package_name,
   $package_provider           = $rabbitmq::params::package_provider,
-  $package_source             = $rabbitmq::params::package_source,
+  $package_source             = undef,
   $repos_ensure               = $rabbitmq::params::repos_ensure,
   $manage_repos               = $rabbitmq::params::manage_repos,
   $plugin_dir                 = $rabbitmq::params::plugin_dir,
@@ -117,6 +117,22 @@ class rabbitmq(
 
   if $config_stomp and $ssl_stomp_port and ! $ssl {
     warning('$ssl_stomp_port requires that $ssl => true and will be ignored')
+  }
+
+  # This needs to happen here instead of params.pp because
+  # $package_source needs to override the constructed value in params.pp
+  if $package_source { # $package_source was specified by user so use that one
+    $real_package_source = $package_source
+  } else { #  package_source was not specified, so construct it
+    case $::osfamily {
+      'RedHat', 'SUSE': {
+        $base_version   = regsubst($version,'^(.*)-\d$','\1')
+        $real_package_source = "http://www.rabbitmq.com/releases/rabbitmq-server/v${base_version}/rabbitmq-server-${version}.noarch.rpm"
+      }
+      default: { # Archlinux and Debian
+        $real_package_source = ''
+      }
+    }
   }
 
   include '::rabbitmq::install'
