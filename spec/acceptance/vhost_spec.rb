@@ -23,10 +23,14 @@ describe 'rabbitmq vhost:' do
       EOS
 
       apply_manifest(pp, :catch_failures => true)
+      apply_manifest(pp, :catch_changes => true)
     end
 
-    describe command('rabbitmqctl list_vhosts | grep myhost') do
-      its(:stdout) { should match /myhost/ }
+    it 'should have the vhost' do
+      shell('rabbitmqctl list_vhosts') do |r|
+        expect(r.stdout).to match(/myhost/)
+        expect(r.exit_code).to be_zero
+      end
     end
 
   end
