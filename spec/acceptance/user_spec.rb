@@ -24,11 +24,14 @@ describe 'rabbitmq user:' do
       EOS
 
       apply_manifest(pp, :catch_failures => true)
+      apply_manifest(pp, :catch_changes => true)
     end
 
-    describe command('rabbitmqctl list_users | grep dan') do
-      its(:stdout) { should match /dan/ }
-      its(:stdout) { should match /administrator/ }
+    it 'should have the user' do
+      shell('rabbitmqctl list_users') do |r|
+        expect(r.stdout).to match(/dan.*administrator/)
+        expect(r.exit_code).to be_zero
+      end
     end
 
   end

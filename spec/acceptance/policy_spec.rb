@@ -33,13 +33,14 @@ describe 'rabbitmq policy on a vhost:' do
       EOS
 
       apply_manifest(pp, :catch_failures => true)
+      apply_manifest(pp, :catch_changes => true)
     end
 
-    describe command('rabbitmqctl list_policies -p myhost') do
-      its(:stdout) { should match /myhost/ }
-      its(:stdout) { should match /ha-all/ }
-      its(:stdout) { should match /ha-sync-mode/ }
-      its(:stdout) { should match /\.\*/ }
+    it 'should have the policy' do
+      shell('rabbitmqctl list_policies -p myhost') do |r|
+        expect(r.stdout).to match(/myhost.*ha-all.*ha-sync-mode/)
+        expect(r.exit_code).to be_zero
+      end
     end
 
   end
