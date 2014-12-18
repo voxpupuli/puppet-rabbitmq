@@ -222,6 +222,7 @@ RabbitMQ Environment Variables in rabbitmq_env.config
 ####`erlang_cookie`
 
 The erlang cookie to use for clustering - must be the same between all nodes.
+This value has no default and must be set explicitly if using clustering.
 
 ###`key_content`
 

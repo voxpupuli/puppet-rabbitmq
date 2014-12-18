@@ -97,7 +97,6 @@ class rabbitmq::config {
     require => File['/etc/rabbitmq'],
   }
 
-
   if $config_cluster {
 
     if $erlang_cookie == undef {

@@ -59,7 +59,7 @@ class rabbitmq::params {
   $delete_guest_user          = false
   $env_config                 = 'rabbitmq/rabbitmq-env.conf.erb'
   $env_config_path            = '/etc/rabbitmq/rabbitmq-env.conf'
-  $erlang_cookie              = 'EOKOWXQREETZSHFNTPEY'
+  $erlang_cookie              = undef
   $node_ip_address            = 'UNSET'
   $plugin_dir                 = "/usr/lib/rabbitmq/lib/rabbitmq_server-${version}/plugins"
   $port                       = '5672'
