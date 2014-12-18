@@ -87,6 +87,16 @@ class rabbitmq::config {
     notify  => Class['rabbitmq::service'],
   }
 
+  file { 'rabbitmqadmin.conf':
+    ensure  => file,
+    path    => '/etc/rabbitmq/rabbitmqadmin.conf',
+    content => template('rabbitmq/rabbitmqadmin.conf.erb'),
+    owner   => '0',
+    group   => '0',
+    mode    => '0644',
+    require => File['/etc/rabbitmq'],
+  }
+
 
   if $config_cluster {
 
