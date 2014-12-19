@@ -455,6 +455,16 @@ rabbitmq_plugin {'rabbitmq_stomp':
 }
 ```
 
+### rabbitmq\_erlang\_cookie
+
+This is essentially a private type used by the rabbitmq::config class
+to manage the erlang cookie. It replaces the rabbitmq_erlang_cookie fact
+from earlier versions of this module. It manages the content of the cookie
+usually located at /var/lib/rabbitmq/.erlang.cookie, which includes
+stopping the rabbitmq service and wiping out the database at
+/var/lib/rabbitmq/mnesia if the user agrees to it. We don't recommend using
+this type directly.
+
 ##Limitations
 
 This module has been built on and tested against Puppet 2.7 and higher.
