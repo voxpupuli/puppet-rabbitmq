@@ -113,7 +113,7 @@ class rabbitmq::config {
     }
 
     # rabbitmq_erlang_cookie is a fact in this module.
-    if $erlang_cookie != $::rabbitmq_erlang_cookie {
+    if $erlang_cookie != getvar('::rabbitmq_erlang_cookie') {
       # Safety check.
       if $wipe_db_on_cookie_change {
         exec { 'wipe_db':
