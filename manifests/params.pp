@@ -47,7 +47,6 @@ class rabbitmq::params {
   $service_ensure             = 'running'
   $service_manage             = true
   #config
-  $cluster_disk_nodes         = []
   $cluster_node_type          = 'disc'
   $cluster_nodes              = []
   $config                     = 'rabbitmq/rabbitmq.config.erb'

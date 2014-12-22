@@ -1,7 +1,6 @@
 # Main rabbitmq class
 class rabbitmq(
   $admin_enable               = $rabbitmq::params::admin_enable,
-  $cluster_disk_nodes         = $rabbitmq::params::cluster_disk_nodes,
   $cluster_node_type          = $rabbitmq::params::cluster_node_type,
   $cluster_nodes              = $rabbitmq::params::cluster_nodes,
   $config                     = $rabbitmq::params::config,
@@ -67,7 +66,6 @@ class rabbitmq(
   validate_bool($repos_ensure)
   validate_re($version, '^\d+\.\d+\.\d+(-\d+)*$') # Allow 3 digits and optional -n postfix.
   # Validate config parameters.
-  validate_array($cluster_disk_nodes)
   validate_re($cluster_node_type, '^(ram|disc|disk)$') # Both disc and disk are valid http://www.rabbitmq.com/clustering.html
   validate_array($cluster_nodes)
   validate_string($config)

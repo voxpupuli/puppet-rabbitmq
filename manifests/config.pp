@@ -4,7 +4,6 @@
 class rabbitmq::config {
 
   $admin_enable               = $rabbitmq::admin_enable
-  $cluster_disk_nodes         = $rabbitmq::cluster_disk_nodes
   $cluster_node_type          = $rabbitmq::cluster_node_type
   $cluster_nodes              = $rabbitmq::cluster_nodes
   $config                     = $rabbitmq::config
@@ -44,14 +43,6 @@ class rabbitmq::config {
 
   # Handle env variables.
   $environment_variables = merge($default_env_variables, $rabbitmq::environment_variables)
-
-  # Handle deprecated option.
-  if $cluster_disk_nodes != [] {
-    warning('The $cluster_disk_nodes is deprecated. Use $cluster_nodes instead.')
-    $r_cluster_nodes = $cluster_disk_nodes
-  } else {
-    $r_cluster_nodes = $cluster_nodes
-  }
 
   file { '/etc/rabbitmq':
     ensure => directory,
