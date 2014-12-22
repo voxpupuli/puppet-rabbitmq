@@ -1,18 +1,72 @@
-2014-08-20 - Version 4.1.0
+## 2014-12-22 - Version 5.0.0
 
-Summary:
+### Summary
+
+This release fixes a longstanding security issue where the rabbitmq
+erlang cookie was exposed as a fact by managing the cookie with a
+provider. It also drops support for Puppet 2.7, adds many features
+and fixes several bugs.
+
+#### Backwards-incompatible Changes
+
+- Removed the rabbitmq_erlang_cookie fact and replaced the logic to
+  manage that cookie with a provider.
+- Dropped official support for Puppet 2.7 (EOL 9/30/2014
+  https://groups.google.com/forum/#!topic/puppet-users/QLguMcLraLE )
+- Changed the default value of $rabbitmq::params::ldap_user_dn_pattern
+  to not contain a variable
+- Removed deprecated parameters: $rabbitmq::cluster_disk_nodes,
+  $rabbitmq::server::manage_service, and
+  $rabbitmq::server::config_mirrored_queues
+
+#### Features
+
+- Add tcp_keepalive parameter to enable TCP keepalive
+- Use https to download rabbitmqadmin tool when $rabbitmq::ssl is true
+- Add key_content parameter for offline Debian package installations
+- Use 16 character apt key to avoid potential collisions
+- Add rabbitmq_policy type, including support for rabbitmq <3.2.0
+- Add rabbitmq::ensure_repo parameter
+- Add ability to change rabbitmq_user password
+- Allow disk as a valid cluster node type
+
+#### Bugfixes
+
+- Avoid attempting to install rabbitmqadmin via a proxy (since it is
+  downloaded from localhost)
+- Optimize check for RHEL GPG key
+- Configure ssl_listener in stomp only if using ssl
+- Use rpm as default package provider for RedHat, bringing the module in
+  line with the documented instructions to manage erlang separately and allowing
+  the default version and source parameters to become meaningful
+- Configure cacertfile only if verify_none is not set
+- Use -q flag for rabbitmqctl commands to avoid parsing inconsistent
+  debug output
+- Use the -m flag for rabbitmqplugins commands, again to avoid parsing
+  inconsistent debug output
+- Strip backslashes from the rabbitmqctl output to avoid parsing issues
+- Fix limitation where version parameter was ignored
+- Add /etc/rabbitmq/rabbitmqadmin.conf to fix rabbitmqadmin port usage
+  when ssl is on
+- Fix linter errors and warnings
+- Add, update, and fix tests
+- Update docs
+
+## 2014-08-20 - Version 4.1.0
+
+### Summary
 
 This release adds several new features, fixes bugs, and improves tests and
 documentation.
 
-Features:
+#### Features
 - Autorequire the rabbitmq-server service in the rabbitmq_vhost type
 - Add credentials to rabbitmqadmin URL
 - Added $ssl_only parameter to rabbitmq, rabbitmq::params, and
 rabbitmq::config
 - Added property tags to rabbitmq_user provider
 
-Bugfixes:
+#### Bugfixes
 - Fix erroneous commas in rabbitmq::config
 - Use correct ensure value for the rabbitmq_stomp rabbitmq_plugin
 - Set HOME env variable to nil when leveraging rabbitmq to remove type error
@@ -22,18 +76,18 @@ from Python script
 - Allow LDAP auth configuration without configuring stomp
 - Added missing $ssl_verify and $ssl_fail_if_no_peer_cert to rabbitmq::config
 
-2014-05-16 - Version 4.0.0
+## 2014-05-16 - Version 4.0.0
 
-Summary:
+### Summary
 
 This release includes many new features and bug fixes.  With the exception of
 erlang management this should be backwards compatible with 3.1.0.
 
-Backwards-incompatible Changes:
+#### Backwards-incompatible Changes
 - erlang_manage was removed.  You will need to manage erlang separately. See
 the README for more information on how to configure this.
 
-Features:
+#### Features
 - Improved SSL support
 - Add LDAP support
 - Add ability to manage RabbitMQ repositories
@@ -45,7 +99,7 @@ Features:
 - Allow empty permission fields
 - Convert existing system tests to beaker acceptance tests.
 
-Bugfixes:
+#### Bugfixes
 - exchanges no longer recreated on each puppet run if non-default vhost is used
 - Allow port to be UNSET
 - Re-added rabbitmq::server class
@@ -59,40 +113,43 @@ Bugfixes:
   rabbitmq::install
 
 
-2013-09-14 - Version 3.1.0
+## 2013-09-14 - Version 3.1.0
 
-Summary:
+### Summary
 
 This release focuses on a few small (but critical) bugfixes as well as extends
 the amount of custom RabbitMQ configuration you can do with the module.
 
-Features:
+#### Features
 - You can now change RabbitMQ 'Config Variables' via the parameter `config_variables`.
 - You can now change RabbitMQ 'Environment Variables' via the parameter `environment_variables`.
 - ArchLinux support added.
 
-Fixes:
+#### Fixes
 - Make use of the user/password parameters in rabbitmq_exchange{}
 - Correct the read/write parameter order on set_permissions/list_permissions as
   they were reversed.
 - Make the module pull down 3.1.5 by default.
 
-* 2013-07-18 3.0.0
-Summary:
+## 2013-07-18 3.0.0
+
+### Summary
+
 This release heavily refactors the RabbitMQ and changes functionality in
 several key ways.  Please pay attention to the new README.md file for
 details of how to interact with the class now.  Puppet 3 and RHEL are
 now fully supported.  The default version of RabbitMQ has changed to
 a 3.x release.
 
-Bugfixes:
+#### Bugfixes
+
 - Improve travis testing options.
 - Stop reimporting the GPG key on every run on RHEL and Debian.
 - Fix documentation to make it clear you don't have to set provider => each time.
 - Reference the standard rabbitmq port in the documentation instead of a custom port.
 - Fixes to the README formatting.
 
-Features:
+#### Features
 - Refactor the module to fix RHEL support.  All interaction with the module
 is now done through the main rabbitmq class.
 - Add support for mirrored queues (Only on Debian family distributions currently)
@@ -101,39 +158,41 @@ is now done through the main rabbitmq class.
   - `manage_service`: Boolean to choose if Puppet should manage the service. (For pacemaker/HA setups)
 - Add SuSE support.
 
-Incompatible Changes:
+#### Incompatible Changes
+
 - Rabbitmq::server has been removed and is now rabbitmq::config.  You should
 not use this class directly, only via the main rabbitmq class.
 
-* 2013-04-11 2.1.0
+## 2013-04-11 2.1.0
+
 - remove puppetversion from rabbitmq.config template
 - add cluster support
 - escape resource names in regexp
 
-* 2012-07-31 Jeff McCune <jeff@puppetlabs.com> 2.0.2
+## 2012-07-31 Jeff McCune <jeff@puppetlabs.com> 2.0.2
 - Re-release 2.0.1 with $EDITOR droppings cleaned up
 
-* 2012-05-03 2.0.0
+## 2012-05-03 2.0.0
 - added support for new-style admin users
 - added support for rabbitmq 2.7.1
 
-* 2011-06-14 Dan Bode <dan@Puppetlabs.com> 2.0.0rc1
+## 2011-06-14 Dan Bode <dan@Puppetlabs.com> 2.0.0rc1
 - Massive refactor:
 - added native types for user/vhost/user_permissions
 - added apt support for vendor packages
 - added smoke tests
 
-* 2011-04-08 Jeff McCune <jeff@puppetlabs.com> 1.0.4
+## 2011-04-08 Jeff McCune <jeff@puppetlabs.com> 1.0.4
 - Update module for RabbitMQ 2.4.1 and rabbitmq-plugin-stomp package.
 
-2011-03-24 1.0.3
+## 2011-03-24 1.0.3
 - Initial release to the forge.  Reviewed by Cody.  Whitespace is good.
 
-2011-03-22 1.0.2
+## 2011-03-22 1.0.2
 - Whitespace only fix again...  ack '\t' is my friend...
 
-2011-03-22 1.0.1
+## 2011-03-22 1.0.1
 - Whitespace only fix.
 
-2011-03-22 1.0.0
+## 2011-03-22 1.0.0
 - Initial Release.  Manage the package, file and service.
