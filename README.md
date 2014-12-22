@@ -463,8 +463,7 @@ this type directly.
 
 ##Limitations
 
-This module has been built on and tested against Puppet 2.7 and higher.
-Puppet 2.7 support is slated for removal at the next major version.
+This module has been built on and tested against Puppet 3.x.
 
 The module has been tested on:
 
