@@ -147,10 +147,6 @@ class { 'rabbitmq':
 
 Boolean, if enabled sets up the management interface/plugin for RabbitMQ.
 
-####`cluster_disk_nodes`
-
-DEPRECATED AND REPLACED BY CLUSTER_NODES.
-
 ####`cluster_node_type`
 
 Choose between disk and ram nodes.
