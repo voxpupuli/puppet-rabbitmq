@@ -111,6 +111,12 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
     match = rabbitmqctl('-q', 'list_users').split(/\n/).collect do |line|
       line.match(/^#{Regexp.escape(resource[:name])}\s+\[(.*?)\]/)
     end.compact.first
-    Set.new(match[1].split(/, /)) if match
+    if match
+      # RabbitMQ 3.3.5 and up separate tags with ', '
+      # 3.3.4 just separates with space
+      # this splits by space and then strips word-final commas
+      # (if you're ending a valid tag name with a comma, why)
+      Set.new(match[1].split(' ')).map{|x| x.gsub(/,$/, '')}
+    end
   end
 end
