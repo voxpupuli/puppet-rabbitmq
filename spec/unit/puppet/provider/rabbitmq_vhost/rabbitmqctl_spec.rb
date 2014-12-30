@@ -10,6 +10,8 @@ describe provider_class do
       {:name => 'foo'}
     )
     @provider = provider_class.new(@resource)
+    @provider.class.stubs(:wait_for_online).returns(true)
+    @provider
   end
   it 'should match vhost names' do
     @provider.expects(:rabbitmqctl).with('-q', 'list_vhosts').returns <<-EOT
