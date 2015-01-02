@@ -121,7 +121,9 @@ class rabbitmq(
   # $package_source needs to override the constructed value in params.pp
   if $package_source { # $package_source was specified by user so use that one
     $real_package_source = $package_source
-  } else { #  package_source was not specified, so construct it
+  # NOTE(bogdando) do not enforce the source value for yum provider #MODULES-1631
+  } elsif $package_provider != 'yum' {
+    # package_source was not specified, so construct it, unless the provider is 'yum'
     case $::osfamily {
       'RedHat', 'SUSE': {
         $base_version   = regsubst($version,'^(.*)-\d$','\1')
@@ -131,6 +133,8 @@ class rabbitmq(
         $real_package_source = ''
       }
     }
+  } else { # for yum provider, use the source as is
+    $real_package_source = $package_source
   }
 
   include '::rabbitmq::install'
