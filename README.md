@@ -123,9 +123,11 @@ To use RabbitMQ clustering facilities, use the rabbitmq parameters
 
 ```puppet
 class { 'rabbitmq':
-  config_cluster    => true,
-  cluster_nodes     => ['rabbit1', 'rabbit2'],
-  cluster_node_type => 'ram',
+  config_cluster           => true,
+  cluster_nodes            => ['rabbit1', 'rabbit2'],
+  cluster_node_type        => 'ram',
+  erlang_cookie            => 'A_SECRET_COOKIE_STRING',
+  wipe_db_on_cookie_change => true,
 }
 ```
 
