@@ -34,7 +34,7 @@ all features against earlier versions.
 * rabbitmq configuration file.
 * rabbitmq service.
 
-###Beginning with rabbitmq  
+###Beginning with rabbitmq
 
 
 ```puppet
@@ -343,6 +343,10 @@ SSL stomp port.
 ####`ssl_verify`
 
 rabbitmq.config SSL verify setting.
+
+####`ssl_versions`
+
+Choose which SSL versions to enable. By default, sslv3, tlsv1, tlsv1.1, and tlsv1.2 are enabled. To protect against POODLE, you should disable sslv3 and tlsv1.
 
 ####`ssl_fail_if_no_peer_cert`
 
