@@ -15,7 +15,8 @@ class rabbitmq::install::rabbitmqadmin {
   staging::file { 'rabbitmqadmin':
     target      => '/var/lib/rabbitmq/rabbitmqadmin',
     source      => "${protocol}://${default_user}:${default_pass}@localhost:${management_port}/cli/rabbitmqadmin",
-    curl_option => '-k --noproxy localhost',
+    curl_option => '-k --noproxy localhost --retry 30 --retry-delay 6',
+    timeout     => '180',
     wget_option => '--no-proxy',
     require     => [
       Class['rabbitmq::service'],
