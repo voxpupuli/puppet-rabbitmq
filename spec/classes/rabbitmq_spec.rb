@@ -39,7 +39,7 @@ describe 'rabbitmq' do
   context 'on Debian' do
     let(:params) {{ :manage_repos => true }}
     let(:facts) {{ :osfamily => 'Debian', :lsbdistid => 'Debian', :lsbdistcodename => 'squeeze' }}
-    
+
     it 'includes rabbitmq::repo::apt' do
       should contain_class('rabbitmq::repo::apt')
     end
@@ -69,7 +69,7 @@ describe 'rabbitmq' do
   context 'on Debian' do
     let(:params) {{ :repos_ensure => true }}
     let(:facts) {{ :osfamily => 'Debian', :lsbdistid => 'Debian', :lsbdistcodename => 'squeeze' }}
-    
+
     it 'includes rabbitmq::repo::apt' do
       should contain_class('rabbitmq::repo::apt')
     end
@@ -89,7 +89,7 @@ describe 'rabbitmq' do
   context 'on Debian' do
     let(:params) {{ :manage_repos => true, :repos_ensure => false }}
     let(:facts) {{ :osfamily => 'Debian', :lsbdistid => 'Debian', :lsbdistcodename => 'squeeze' }}
-    
+
     it 'includes rabbitmq::repo::apt' do
       should contain_class('rabbitmq::repo::apt')
     end
@@ -106,7 +106,7 @@ describe 'rabbitmq' do
   context 'on Debian' do
     let(:params) {{ :manage_repos => true, :repos_ensure => true }}
     let(:facts) {{ :osfamily => 'Debian', :lsbdistid => 'Debian', :lsbdistcodename => 'squeeze' }}
-    
+
     it 'includes rabbitmq::repo::apt' do
       should contain_class('rabbitmq::repo::apt')
     end
@@ -481,6 +481,9 @@ describe 'rabbitmq' do
           should contain_file('rabbitmq.config').with_content(
             %r{keyfile,"/path/to/key"}
           )
+          should contain_file('rabbitmq.config').with_content(
+            %r{ssl, \[\{versions, \['sslv3', 'tlsv1', 'tlsv1.1', 'tlsv1.2'\]\}\]}
+          )
         end
       end
 
@@ -500,6 +503,26 @@ describe 'rabbitmq' do
           should contain_file('rabbitmq.config').with_content(%r{ssl_options, \[\{cacertfile,"/path/to/cacert"})
           should contain_file('rabbitmq.config').with_content(%r{certfile,"/path/to/cert"})
           should contain_file('rabbitmq.config').with_content(%r{keyfile,"/path/to/key})
+          should contain_file('rabbitmq.config').with_content(%r{ssl, \[\{versions, \['sslv3', 'tlsv1', 'tlsv1.1', 'tlsv1.2'\]\}\]})
+        end
+      end
+
+      describe 'ssl options with specific ssl versions' do
+        let(:params) {
+          { :ssl => true,
+            :ssl_port => 3141,
+            :ssl_cacert => '/path/to/cacert',
+            :ssl_cert => '/path/to/cert',
+            :ssl_key => '/path/to/key',
+            :ssl_versions => ['tlsv1.2', 'tlsv1.1']
+        } }
+
+        it 'should set ssl options to specified values' do
+          should contain_file('rabbitmq.config').with_content(%r{ssl_listeners, \[3141\]})
+          should contain_file('rabbitmq.config').with_content(%r{ssl_options, \[\{cacertfile,"/path/to/cacert"})
+          should contain_file('rabbitmq.config').with_content(%r{certfile,"/path/to/cert"})
+          should contain_file('rabbitmq.config').with_content(%r{keyfile,"/path/to/key})
+          should contain_file('rabbitmq.config').with_content(%r{ssl, \[\{versions, \['tlsv1.1', 'tlsv1.2'\]\}\]})
         end
       end
 

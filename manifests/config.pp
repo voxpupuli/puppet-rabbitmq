@@ -31,6 +31,7 @@ class rabbitmq::config {
   $ssl_stomp_port             = $rabbitmq::ssl_stomp_port
   $ssl_verify                 = $rabbitmq::ssl_verify
   $ssl_fail_if_no_peer_cert   = $rabbitmq::ssl_fail_if_no_peer_cert
+  $ssl_versions               = $rabbitmq::ssl_versions
   $stomp_port                 = $rabbitmq::stomp_port
   $wipe_db_on_cookie_change   = $rabbitmq::wipe_db_on_cookie_change
   $config_variables           = $rabbitmq::config_variables

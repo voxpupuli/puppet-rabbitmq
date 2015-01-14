@@ -1,6 +1,9 @@
 % This file managed by Puppet
 % Template Path: <%= @module_name %>/templates/rabbitmq.config
 [
+<% if @ssl -%>
+  {ssl, [{versions, [<%= @ssl_versions.sort.map { |v| "'#{v}'" }.join(', ') %>]}]},
+<% end -%>
   {rabbit, [
 <% if @ldap_auth -%>
     {auth_backends, [rabbit_auth_backend_internal, rabbit_auth_backend_ldap]},
@@ -21,7 +24,8 @@
                     {certfile,"<%= @ssl_cert %>"},
                     {keyfile,"<%= @ssl_key %>"},
                     {verify,<%= @ssl_verify %>},
-                    {fail_if_no_peer_cert,<%= @ssl_fail_if_no_peer_cert %>}]},
+                    {fail_if_no_peer_cert,<%= @ssl_fail_if_no_peer_cert %>},
+                    {ssl, [{versions, [<%= @ssl_versions.sort.map { |v| "'#{v}'" }.join(', ') %>]}]}]},
 <%- end -%>
 <% if @config_variables -%>
 <%- @config_variables.keys.sort.each do |key| -%>
