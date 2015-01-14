@@ -111,6 +111,6 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
     match = rabbitmqctl('-q', 'list_users').split(/\n/).collect do |line|
       line.match(/^#{Regexp.escape(resource[:name])}\s+\[(.*?)\]/)
     end.compact.first
-    Set.new(match[1].split(/, /)) if match
+    Set.new(match[1].split(' ').map{|x| x.gsub(/,$/, '')}) if match
   end
 end
