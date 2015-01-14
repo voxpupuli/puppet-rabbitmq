@@ -31,7 +31,7 @@ class rabbitmq::repo::apt(
     key_content => $key_content,
   }
 
-  if $pin {
+  if $pin != '' {
     validate_re($pin, '\d\d\d')
     apt::pin { 'rabbitmq':
       packages => 'rabbitmq-server',
