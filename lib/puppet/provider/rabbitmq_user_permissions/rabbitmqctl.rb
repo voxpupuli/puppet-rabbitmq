@@ -1,4 +1,5 @@
-Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl) do
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmqctl'))
+Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl, :parent => Puppet::Provider::Rabbitmqctl) do
 
   if Puppet::PUPPETVERSION.to_f < 3
     commands :rabbitmqctl => 'rabbitmqctl'
@@ -15,7 +16,9 @@ Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl) do
     @users = {} unless @users
     unless @users[name]
       @users[name] = {}
-      rabbitmqctl('-q', 'list_user_permissions', name).split(/\n/).each do |line|
+      self.run_with_retries {
+        rabbitmqctl('-q', 'list_user_permissions', name)
+      }.split(/\n/).each do |line|
         line = self::strip_backslashes(line)
         if line =~ /^(\S+)\s+(\S*)\s+(\S*)\s+(\S*)$/
           @users[name][$1] =

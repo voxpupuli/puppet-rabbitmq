@@ -1,5 +1,6 @@
 require 'puppet'
-Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin) do
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmqctl'))
+Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, :parent => Puppet::Provider::Rabbitmqctl) do
 
   if Puppet::PUPPETVERSION.to_f < 3
     commands :rabbitmqctl   => 'rabbitmqctl'
@@ -24,7 +25,11 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin) do
 
   def self.all_vhosts
     vhosts = []
-    parse_command(rabbitmqctl('list_vhosts')).collect do |vhost|
+    parse_command(
+      self.run_with_retries {
+        rabbitmqctl('list_vhosts')
+      }
+    ).collect do |vhost|
         vhosts.push(vhost)
     end
     vhosts
@@ -32,7 +37,11 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin) do
 
   def self.all_exchanges(vhost)
     exchanges = []
-    parse_command(rabbitmqctl('list_exchanges', '-p', vhost, 'name', 'type'))
+    parse_command(
+      self.run_with_retries {
+        rabbitmqctl('list_exchanges', '-p', vhost, 'name', 'type')
+      }
+    )
   end
 
   def self.parse_command(cmd_output)
