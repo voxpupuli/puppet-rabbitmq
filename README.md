@@ -320,7 +320,7 @@ Configures the service for using SSL.
 ####`ssl_only`
 
 Configures the service to only use SSL.  No cleartext TCP listeners will be created.
-Requires that ssl => true also.
+Requires that ssl => true and port => UNSET also
 
 ####`ssl_cacert`
 
