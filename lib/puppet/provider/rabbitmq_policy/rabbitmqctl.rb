@@ -37,19 +37,11 @@ Puppet::Type.type(:rabbitmq_policy).provide(:rabbitmqctl, :parent => Puppet::Pro
   end
 
   def should_policy
-    if @should_policy
-      @should_policy
-    else
-      @should_policy = resource[:name].rpartition('@').first
-    end
+    @should_policy ||= resource[:name].rpartition('@').first
   end
 
   def should_vhost
-    if @should_vhost
-      @should_vhost
-    else
-      @should_vhost = resource[:name].rpartition('@').last
-    end
+    @should_vhost ||= resource[:name].rpartition('@').last
   end
 
   def create
