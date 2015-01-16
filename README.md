@@ -84,8 +84,8 @@ To use RabbitMQ Environment Variables, use the parameters `environment_variables
 class { 'rabbitmq':
   port              => '5672',
   environment_variables   => {
-    'RABBITMQ_NODENAME'     => 'node01',
-    'RABBITMQ_SERVICENAME'  => 'RabbitMQ'
+    'NODENAME'     => 'node01',
+    'SERVICENAME'  => 'RabbitMQ'
   }
 }
 ```
@@ -261,7 +261,7 @@ The port for the RabbitMQ management interface.
 
 ####`node_ip_address`
 
-The value of RABBITMQ_NODE_IP_ADDRESS in rabbitmq_env.config
+The value of NODE_IP_ADDRESS in rabbitmq_env.config
 
 ####`package_ensure`
 
