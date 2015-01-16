@@ -16,12 +16,18 @@
     {tcp_listeners, []},
 <%- end -%>
 <%- if @ssl -%>
+    <%- if @ssl_versions -%>
+      {ssl, [{versions, [<%= @ssl_versions.sort.map { |v| "'#{v}'" }.join(', ') %>]}]},
+    <%- end -%>
     {ssl_listeners, [<%= @ssl_port %>]},
     {ssl_options, [<%- if @ssl_cacert != 'UNSET' -%>{cacertfile,"<%= @ssl_cacert %>"},<%- end -%>
                     {certfile,"<%= @ssl_cert %>"},
                     {keyfile,"<%= @ssl_key %>"},
                     {verify,<%= @ssl_verify %>},
-                    {fail_if_no_peer_cert,<%= @ssl_fail_if_no_peer_cert %>}]},
+                    {fail_if_no_peer_cert,<%= @ssl_fail_if_no_peer_cert %>}
+                    <%- if @ssl_versions -%>
+                      ,{ssl, [{versions, [<%= @ssl_versions.sort.map { |v| "'#{v}'" }.join(', ') %>]}]}
+                    <% end -%>]},
 <%- end -%>
 <% if @config_variables -%>
 <%- @config_variables.keys.sort.each do |key| -%>

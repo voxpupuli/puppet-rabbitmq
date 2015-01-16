@@ -34,7 +34,7 @@ all features against earlier versions.
 * rabbitmq configuration file.
 * rabbitmq service.
 
-###Beginning with rabbitmq  
+###Beginning with rabbitmq
 
 
 ```puppet
@@ -349,6 +349,10 @@ rabbitmq.config SSL verify setting.
 ####`ssl_fail_if_no_peer_cert`
 
 rabbitmq.config `fail_if_no_peer_cert` setting.
+
+####`ssl_versions`
+
+Choose which SSL versions to enable. Example: `['tlsv1.2', 'tlsv1.1']`
 
 ####`stomp_port`
 

@@ -73,6 +73,7 @@ class rabbitmq::params {
   $ssl_stomp_port             = '6164'
   $ssl_verify                 = 'verify_none'
   $ssl_fail_if_no_peer_cert   = false
+  $ssl_versions               = undef
   $stomp_ensure               = false
   $ldap_auth                  = false
   $ldap_server                = 'ldap'

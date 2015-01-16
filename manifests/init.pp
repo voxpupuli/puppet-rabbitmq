@@ -39,6 +39,7 @@ class rabbitmq(
   $ssl_stomp_port             = $rabbitmq::params::ssl_stomp_port,
   $ssl_verify                 = $rabbitmq::params::ssl_verify,
   $ssl_fail_if_no_peer_cert   = $rabbitmq::params::ssl_fail_if_no_peer_cert,
+  $ssl_versions               = $rabbitmq::params::ssl_versions,
   $stomp_ensure               = $rabbitmq::params::stomp_ensure,
   $ldap_auth                  = $rabbitmq::params::ldap_auth,
   $ldap_server                = $rabbitmq::params::ldap_server,
@@ -115,6 +116,14 @@ class rabbitmq(
 
   if $config_stomp and $ssl_stomp_port and ! $ssl {
     warning('$ssl_stomp_port requires that $ssl => true and will be ignored')
+  }
+
+  if $ssl_versions {
+    if $ssl {
+      validate_array($ssl_versions)
+    } else {
+      fail('$ssl_versions requires that $ssl => true')
+    }
   }
 
   # This needs to happen here instead of params.pp because
