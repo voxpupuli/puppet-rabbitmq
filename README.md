@@ -352,7 +352,9 @@ rabbitmq.config `fail_if_no_peer_cert` setting.
 
 ####`ssl_versions`
 
-Choose which SSL versions to enable. Example: `['tlsv1.2', 'tlsv1.1']`
+Choose which SSL versions to enable. Example: `['tlsv1.2', 'tlsv1.1']`.
+
+Note that it is recommended to disable `sslv3` and `tlsv1` to prevent against POODLE and BEAST attacks. Please see the [RabbitMQ SSL](https://www.rabbitmq.com/ssl.html) documentation for more information.
 
 ####`stomp_port`
 
