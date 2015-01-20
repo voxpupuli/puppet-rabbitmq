@@ -323,25 +323,25 @@ describe 'rabbitmq' do
 
       describe 'rabbitmq-env configuration' do
         let(:params) {{ :environment_variables => {
-          'RABBITMQ_NODE_IP_ADDRESS'    => '1.1.1.1',
-          'RABBITMQ_NODE_PORT'          => '5656',
-          'RABBITMQ_NODENAME'           => 'HOSTNAME',
-          'RABBITMQ_SERVICENAME'        => 'RabbitMQ',
-          'RABBITMQ_CONSOLE_LOG'        => 'RabbitMQ.debug',
-          'RABBITMQ_CTL_ERL_ARGS'       => 'verbose',
-          'RABBITMQ_SERVER_ERL_ARGS'    => 'v',
-          'RABBITMQ_SERVER_START_ARGS'  => 'debug'
+          'NODE_IP_ADDRESS'    => '1.1.1.1',
+          'NODE_PORT'          => '5656',
+          'NODENAME'           => 'HOSTNAME',
+          'SERVICENAME'        => 'RabbitMQ',
+          'CONSOLE_LOG'        => 'RabbitMQ.debug',
+          'CTL_ERL_ARGS'       => 'verbose',
+          'SERVER_ERL_ARGS'    => 'v',
+          'SERVER_START_ARGS'  => 'debug'
         }}}
         it 'should set environment variables' do
           should contain_file('rabbitmq-env.config') \
-            .with_content(/RABBITMQ_NODE_IP_ADDRESS=1.1.1.1/) \
-            .with_content(/RABBITMQ_NODE_PORT=5656/) \
-            .with_content(/RABBITMQ_NODENAME=HOSTNAME/) \
-            .with_content(/RABBITMQ_SERVICENAME=RabbitMQ/) \
-            .with_content(/RABBITMQ_CONSOLE_LOG=RabbitMQ.debug/) \
-            .with_content(/RABBITMQ_CTL_ERL_ARGS=verbose/) \
-            .with_content(/RABBITMQ_SERVER_ERL_ARGS=v/) \
-            .with_content(/RABBITMQ_SERVER_START_ARGS=debug/)
+            .with_content(/NODE_IP_ADDRESS=1.1.1.1/) \
+            .with_content(/NODE_PORT=5656/) \
+            .with_content(/NODENAME=HOSTNAME/) \
+            .with_content(/SERVICENAME=RabbitMQ/) \
+            .with_content(/CONSOLE_LOG=RabbitMQ.debug/) \
+            .with_content(/CTL_ERL_ARGS=verbose/) \
+            .with_content(/SERVER_ERL_ARGS=v/) \
+            .with_content(/SERVER_START_ARGS=debug/)
         end
       end
 
@@ -364,9 +364,9 @@ describe 'rabbitmq' do
       context 'configuration setting' do
         describe 'node_ip_address when set' do
           let(:params) {{ :node_ip_address => '172.0.0.1' }}
-          it 'should set RABBITMQ_NODE_IP_ADDRESS to specified value' do
+          it 'should set NODE_IP_ADDRESS to specified value' do
             should contain_file('rabbitmq-env.config').
-              with_content(%r{RABBITMQ_NODE_IP_ADDRESS=172\.0\.0\.1})
+              with_content(%r{NODE_IP_ADDRESS=172\.0\.0\.1})
           end
         end
 
