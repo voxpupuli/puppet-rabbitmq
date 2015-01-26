@@ -18,6 +18,8 @@ class rabbitmq::install::rabbitmqadmin {
     curl_option => '-k --noproxy localhost --retry 30 --retry-delay 6',
     timeout     => '180',
     wget_option => '--no-proxy',
+    tries       => 30,
+    try_sleep   => 6,
     require     => [
       Class['rabbitmq::service'],
       Rabbitmq_plugin['rabbitmq_management']
