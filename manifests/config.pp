@@ -37,6 +37,7 @@ class rabbitmq::config {
   $ssl_verify                 = $rabbitmq::ssl_verify
   $ssl_fail_if_no_peer_cert   = $rabbitmq::ssl_fail_if_no_peer_cert
   $ssl_versions               = $rabbitmq::ssl_versions
+  $ssl_ciphers                = $rabbitmq::ssl_ciphers
   $stomp_port                 = $rabbitmq::stomp_port
   $ldap_auth                  = $rabbitmq::ldap_auth
   $ldap_server                = $rabbitmq::ldap_server

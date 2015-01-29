@@ -101,6 +101,7 @@ class rabbitmq::params {
   $ssl_verify                 = 'verify_none'
   $ssl_fail_if_no_peer_cert   = false
   $ssl_versions               = undef
+  $ssl_ciphers                = []
   $stomp_ensure               = false
   $ldap_auth                  = false
   $ldap_server                = 'ldap'

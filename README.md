@@ -368,6 +368,14 @@ Choose which SSL versions to enable. Example: `['tlsv1.2', 'tlsv1.1']`.
 
 Note that it is recommended to disable `sslv3` and `tlsv1` to prevent against POODLE and BEAST attacks. Please see the [RabbitMQ SSL](https://www.rabbitmq.com/ssl.html) documentation for more information.
 
+####`ssl_ciphers`
+
+Support only a given list of SSL ciphers. Example: `['dhe_rsa,aes_256_cbc,sha','dhe_dss,aes_256_cbc,sha','ecdhe_rsa,aes_256_cbc,sha']`.
+
+Supported ciphers in your install can be listed with:
+ rabbitmqctl eval 'ssl:cipher_suites().'
+Functionality can be tested with cipherscan or similar tool: https://github.com/jvehent/cipherscan.git
+
 ####`stomp_port`
 
 The port to use for Stomp.

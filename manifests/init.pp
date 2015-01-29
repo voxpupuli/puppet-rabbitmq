@@ -45,6 +45,7 @@ class rabbitmq(
   $ssl_verify                 = $rabbitmq::params::ssl_verify,
   $ssl_fail_if_no_peer_cert   = $rabbitmq::params::ssl_fail_if_no_peer_cert,
   $ssl_versions               = $rabbitmq::params::ssl_versions,
+  $ssl_ciphers                = $rabbitmq::params::ssl_ciphers,
   $stomp_ensure               = $rabbitmq::params::stomp_ensure,
   $ldap_auth                  = $rabbitmq::params::ldap_auth,
   $ldap_server                = $rabbitmq::params::ldap_server,
@@ -112,6 +113,7 @@ class rabbitmq(
   validate_string($ssl_cacert)
   validate_string($ssl_cert)
   validate_string($ssl_key)
+  validate_array($ssl_ciphers)
   if ! is_integer($ssl_port) {
     validate_re($ssl_port, '\d+')
   }
