@@ -1,6 +1,9 @@
 % This file managed by Puppet
 % Template Path: <%= @module_name %>/templates/rabbitmq.config
 [
+<%- if @ssl and @ssl_versions -%>
+  {ssl, [{versions, [<%= @ssl_versions.sort.map { |v| "'#{v}'" }.join(', ') %>]}]},
+<%- end -%>
   {rabbit, [
 <% if @ldap_auth -%>
     {auth_backends, [rabbit_auth_backend_internal, rabbit_auth_backend_ldap]},
@@ -16,9 +19,6 @@
     {tcp_listeners, []},
 <%- end -%>
 <%- if @ssl -%>
-    <%- if @ssl_versions -%>
-      {ssl, [{versions, [<%= @ssl_versions.sort.map { |v| "'#{v}'" }.join(', ') %>]}]},
-    <%- end -%>
     {ssl_listeners, [<%= @ssl_port %>]},
     {ssl_options, [<%- if @ssl_cacert != 'UNSET' -%>{cacertfile,"<%= @ssl_cacert %>"},<%- end -%>
                     {certfile,"<%= @ssl_cert %>"},
@@ -26,7 +26,7 @@
                     {verify,<%= @ssl_verify %>},
                     {fail_if_no_peer_cert,<%= @ssl_fail_if_no_peer_cert %>}
                     <%- if @ssl_versions -%>
-                      ,{ssl, [{versions, [<%= @ssl_versions.sort.map { |v| "'#{v}'" }.join(', ') %>]}]}
+                      ,{versions, [<%= @ssl_versions.sort.map { |v| "'#{v}'" }.join(', ') %>]}
                     <% end -%>]},
 <%- end -%>
 <% if @config_variables -%>
@@ -49,7 +49,10 @@
       {ssl, true},
       {ssl_opts, [<%- if @ssl_cacert != 'UNSET' -%>{cacertfile, "<%= @ssl_cacert %>"},<%- end -%>
                   {certfile, "<%= @ssl_cert %>"},
-                  {keyfile, "<%= @ssl_key %>"}]}
+                  {keyfile, "<%= @ssl_key %>"}
+                   <%- if @ssl_versions -%>
+                     ,{versions, [<%= @ssl_versions.sort.map { |v| "'#{v}'" }.join(', ') %>]}
+                   <% end -%>]}
 <%- else -%>
       {port, <%= @management_port %>}
 <%- end -%>
