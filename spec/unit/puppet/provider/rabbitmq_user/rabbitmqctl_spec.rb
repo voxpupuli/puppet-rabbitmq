@@ -194,4 +194,22 @@ EOT
     @provider.create
   end
 
+  it 'should not return the administrator tag in tags for admins' do
+    @resource[:tags] = []
+    @resource[:admin]  = true
+    @provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
+foo [administrator]
+EOT
+    @provider.tags.should == []
+  end
+
+  it 'should return the administrator tag for non-admins' do
+    # this should not happen though.
+    @resource[:tags] = []
+    @resource[:admin]  = :false
+    @provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
+foo [administrator]
+EOT
+    @provider.tags.should == ["administrator"]
+  end
 end

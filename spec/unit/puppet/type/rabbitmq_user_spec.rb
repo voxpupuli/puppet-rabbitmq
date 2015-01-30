@@ -39,4 +39,14 @@ describe Puppet::Type.type(:rabbitmq_user) do
       @user[:admin] = 'yes'
     }.to raise_error(Puppet::Error, /Invalid value/)
   end
+  it 'should not accept tags with spaces' do
+    expect {
+      @user[:tags] = ['policy maker']
+    }.to raise_error(Puppet::Error, /Invalid tag/)
+  end
+  it 'should not accept the administrator tag' do
+    expect {
+      @user[:tags] = ['administrator']
+    }.to raise_error(Puppet::Error, /must use admin property/)
+  end
 end

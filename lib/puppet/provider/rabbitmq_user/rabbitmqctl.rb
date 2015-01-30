@@ -30,7 +30,7 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl, :parent => Puppet::Provi
     if resource[:admin] == :true
       make_user_admin()
     end
-    if !resource[:tags].nil?
+    if ! resource[:tags].empty?
       set_user_tags(resource[:tags])
     end
   end
@@ -67,7 +67,12 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl, :parent => Puppet::Provi
 
 
   def tags
-    get_user_tags.entries.sort
+    tags = get_user_tags
+    # do not expose the administrator tag for admins
+    if resource[:admin] == :true
+      tags.delete('administrator')
+    end
+    tags.entries.sort
   end
 
 
