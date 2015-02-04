@@ -33,6 +33,12 @@ class rabbitmq::config {
   $ssl_fail_if_no_peer_cert   = $rabbitmq::ssl_fail_if_no_peer_cert
   $ssl_versions               = $rabbitmq::ssl_versions
   $stomp_port                 = $rabbitmq::stomp_port
+  $ldap_auth                  = $rabbitmq::ldap_auth
+  $ldap_server                = $rabbitmq::ldap_server
+  $ldap_user_dn_pattern       = $rabbitmq::ldap_user_dn_pattern
+  $ldap_use_ssl               = $rabbitmq::ldap_use_ssl
+  $ldap_port                  = $rabbitmq::ldap_port
+  $ldap_log                   = $rabbitmq::ldap_log
   $wipe_db_on_cookie_change   = $rabbitmq::wipe_db_on_cookie_change
   $config_variables           = $rabbitmq::config_variables
   $config_kernel_variables    = $rabbitmq::config_kernel_variables
