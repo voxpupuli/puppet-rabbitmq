@@ -44,9 +44,11 @@ class rabbitmq(
   $ldap_auth                  = $rabbitmq::params::ldap_auth,
   $ldap_server                = $rabbitmq::params::ldap_server,
   $ldap_user_dn_pattern       = $rabbitmq::params::ldap_user_dn_pattern,
+  $ldap_other_bind            = $rabbitmq::params::ldap_other_bind,
   $ldap_use_ssl               = $rabbitmq::params::ldap_use_ssl,
   $ldap_port                  = $rabbitmq::params::ldap_port,
   $ldap_log                   = $rabbitmq::params::ldap_log,
+  $ldap_config_variables      = $rabbitmq::params::ldap_config_variables,
   $stomp_port                 = $rabbitmq::params::stomp_port,
   $version                    = $rabbitmq::params::version,
   $wipe_db_on_cookie_change   = $rabbitmq::params::wipe_db_on_cookie_change,
@@ -103,6 +105,8 @@ class rabbitmq(
   validate_bool($ldap_auth)
   validate_string($ldap_server)
   validate_string($ldap_user_dn_pattern)
+  validate_string($ldap_other_bind)
+  validate_hash($ldap_config_variables)
   validate_bool($ldap_use_ssl)
   validate_re($ldap_port, '\d+')
   validate_bool($ldap_log)
