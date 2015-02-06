@@ -15,7 +15,6 @@ Puppet::Type.type(:rabbitmq_erlang_cookie).provide(:ruby) do
 
   def content=(value)
     if resource[:force] == :true # Danger!
-      puppet('resource', 'service', resource[:service_name], 'ensure=stopped')
       FileUtils.rm_rf('/var/lib/rabbitmq/mnesia')
       File.open(resource[:path], 'w') do |cookie|
         cookie.chmod(0400)
