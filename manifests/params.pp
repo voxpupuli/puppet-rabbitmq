@@ -78,9 +78,11 @@ class rabbitmq::params {
   $ldap_auth                  = false
   $ldap_server                = 'ldap'
   $ldap_user_dn_pattern       = 'cn=username,ou=People,dc=example,dc=com'
+  $ldap_other_bind            = 'anon'
   $ldap_use_ssl               = false
   $ldap_port                  = '389'
   $ldap_log                   = false
+  $ldap_config_variables      = {}
   $stomp_port                 = '6163'
   $wipe_db_on_cookie_change   = false
   $cluster_partition_handling = 'ignore'
