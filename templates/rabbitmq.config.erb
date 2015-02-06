@@ -71,11 +71,16 @@
 <%- if @ldap_auth -%>,
 % Configure the LDAP authentication plugin
   {rabbitmq_auth_backend_ldap, [
-    {other_bind, anon},
+    {other_bind, <%= @ldap_other_bind %>},
     {servers, ["<%= @ldap_server %>"]},
     {user_dn_pattern, "<%= @ldap_user_dn_pattern %>"},
     {use_ssl, <%= @ldap_use_ssl %>},
     {port, <%= @ldap_port %>},
+<% if @ldap_config_variables -%>
+<%- @ldap_config_variables.keys.sort.each do |key| -%>
+    {<%= key %>, <%= @ldap_config_variables[key] %>},
+<%- end -%>
+<%- end -%>
     {log, <%= @ldap_log %>}
   ]}
 <%- end -%>
