@@ -459,6 +459,16 @@ describe 'rabbitmq' do
         end
       end
 
+      describe 'interfaces option with no ssl' do
+        let(:params) {
+          { :interface => '0.0.0.0',
+        } }
+
+        it 'should set ssl options to specified values' do
+          should contain_file('rabbitmq.config').with_content(%r{tcp_listeners, \[\{"0.0.0.0", 5672\}\]})
+        end
+      end
+
       describe 'ssl options' do
         let(:params) {
           { :ssl => true,
@@ -484,6 +494,27 @@ describe 'rabbitmq' do
         end
       end
 
+
+      describe 'ssl options with ssl_interfaces' do
+        let(:params) {
+          { :ssl => true,
+            :ssl_port => 3141,
+            :ssl_interface => '0.0.0.0',
+            :ssl_cacert => '/path/to/cacert',
+            :ssl_cert => '/path/to/cert',
+            :ssl_key => '/path/to/key'
+        } }
+
+        it 'should set ssl options to specified values' do
+          should contain_file('rabbitmq.config').with_content(%r{ssl_listeners, \[\{"0.0.0.0", 3141\}\]})
+          should contain_file('rabbitmq.config').with_content(%r{ssl_options, \[\{cacertfile,"/path/to/cacert"})
+          should contain_file('rabbitmq.config').with_content(%r{certfile,"/path/to/cert"})
+          should contain_file('rabbitmq.config').with_content(%r{keyfile,"/path/to/key})
+        end
+      end
+
+
+
       describe 'ssl options with ssl_only' do
         let(:params) {
           { :ssl => true,
@@ -497,6 +528,26 @@ describe 'rabbitmq' do
         it 'should set ssl options to specified values' do
           should contain_file('rabbitmq.config').with_content(%r{tcp_listeners, \[\]})
           should contain_file('rabbitmq.config').with_content(%r{ssl_listeners, \[3141\]})
+          should contain_file('rabbitmq.config').with_content(%r{ssl_options, \[\{cacertfile,"/path/to/cacert"})
+          should contain_file('rabbitmq.config').with_content(%r{certfile,"/path/to/cert"})
+          should contain_file('rabbitmq.config').with_content(%r{keyfile,"/path/to/key})
+        end
+      end
+
+      describe 'ssl options with ssl_only and ssl_interfaces' do
+        let(:params) {
+          { :ssl => true,
+            :ssl_only => true,
+            :ssl_port => 3141,
+            :ssl_interface => '0.0.0.0',
+            :ssl_cacert => '/path/to/cacert',
+            :ssl_cert => '/path/to/cert',
+            :ssl_key => '/path/to/key'
+        } }
+
+        it 'should set ssl options to specified values' do
+          should contain_file('rabbitmq.config').with_content(%r{tcp_listeners, \[\]})
+          should contain_file('rabbitmq.config').with_content(%r{ssl_listeners, \[\{"0.0.0.0", 3141\}\]})
           should contain_file('rabbitmq.config').with_content(%r{ssl_options, \[\{cacertfile,"/path/to/cacert"})
           should contain_file('rabbitmq.config').with_content(%r{certfile,"/path/to/cert"})
           should contain_file('rabbitmq.config').with_content(%r{keyfile,"/path/to/key})
