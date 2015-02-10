@@ -17,9 +17,15 @@
 <%- end -%>
 <%- if @ssl_only -%>
     {tcp_listeners, []},
+<%- elsif @interface != 'UNSET' -%>
+    {tcp_listeners, [{"<%= @interface%>", <%= @port %>}]},
 <%- end -%>
 <%- if @ssl -%>
+  <%- if @ssl_interface != 'UNSET' -%>
+    {ssl_listeners, [{"<%= @ssl_interface%>", <%= @ssl_port %>}]},
+  <%- else -%>
     {ssl_listeners, [<%= @ssl_port %>]},
+  <%- end -%>
     {ssl_options, [<%- if @ssl_cacert != 'UNSET' -%>{cacertfile,"<%= @ssl_cacert %>"},<%- end -%>
                     {certfile,"<%= @ssl_cert %>"},
                     {keyfile,"<%= @ssl_key %>"},

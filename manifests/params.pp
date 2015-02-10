@@ -59,6 +59,7 @@ class rabbitmq::params {
   $env_config                 = 'rabbitmq/rabbitmq-env.conf.erb'
   $env_config_path            = '/etc/rabbitmq/rabbitmq-env.conf'
   $erlang_cookie              = undef
+  $interface                  = 'UNSET'
   $node_ip_address            = 'UNSET'
   $plugin_dir                 = "/usr/lib/rabbitmq/lib/rabbitmq_server-${version}/plugins"
   $port                       = '5672'
@@ -69,6 +70,7 @@ class rabbitmq::params {
   $ssl_cert                   = 'UNSET'
   $ssl_key                    = 'UNSET'
   $ssl_port                   = '5671'
+  $ssl_interface              = 'UNSET'
   $ssl_management_port        = '15671'
   $ssl_stomp_port             = '6164'
   $ssl_verify                 = 'verify_none'
