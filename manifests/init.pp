@@ -25,6 +25,9 @@ class rabbitmq(
   $repos_ensure               = $rabbitmq::params::repos_ensure,
   $manage_repos               = $rabbitmq::params::manage_repos,
   $plugin_dir                 = $rabbitmq::params::plugin_dir,
+  $rabbitmq_user              = $rabbitmq::params::rabbitmq_user,
+  $rabbitmq_group             = $rabbitmq::params::rabbitmq_group,
+  $rabbitmq_home              = $rabbitmq::params::rabbitmq_home,
   $port                       = $rabbitmq::params::port,
   $tcp_keepalive              = $rabbitmq::params::tcp_keepalive,
   $service_ensure             = $rabbitmq::params::service_ensure,
@@ -183,6 +186,7 @@ class rabbitmq(
     }
 
     Class['::rabbitmq::service'] -> Class['::rabbitmq::install::rabbitmqadmin']
+    Class['::rabbitmq::install::rabbitmqadmin'] -> Rabbitmq_exchange<| |>
   }
 
   if $stomp_ensure {
@@ -212,6 +216,5 @@ class rabbitmq(
 
   # Make sure the various providers have their requirements in place.
   Class['::rabbitmq::install'] -> Rabbitmq_plugin<| |>
-  Class['::rabbitmq::install::rabbitmqadmin'] -> Rabbitmq_exchange<| |>
 
 }
