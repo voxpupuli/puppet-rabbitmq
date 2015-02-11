@@ -8,13 +8,15 @@ class rabbitmq::install::rabbitmqadmin {
     $management_port = $rabbitmq::management_port
   }
 
+  $management_hostname = $rabbitmq::management_hostname
+
   $default_user = $rabbitmq::default_user
   $default_pass = $rabbitmq::default_pass
   $protocol = $rabbitmq::ssl ? { false => 'http', default => 'https' }
 
   staging::file { 'rabbitmqadmin':
     target      => '/var/lib/rabbitmq/rabbitmqadmin',
-    source      => "${protocol}://${default_user}:${default_pass}@localhost:${management_port}/cli/rabbitmqadmin",
+    source      => "${protocol}://${default_user}:${default_pass}@${management_hostname}:${management_port}/cli/rabbitmqadmin",
     curl_option => '-k --noproxy localhost --retry 30 --retry-delay 6',
     timeout     => '180',
     wget_option => '--no-proxy',
