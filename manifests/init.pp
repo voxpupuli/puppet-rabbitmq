@@ -15,6 +15,7 @@ class rabbitmq(
   $erlang_cookie              = $rabbitmq::params::erlang_cookie,
   $interface                  = $rabbitmq::params::interface,
   $management_port            = $rabbitmq::params::management_port,
+  $management_ssl             = $rabbitmq::params::management_ssl,
   $node_ip_address            = $rabbitmq::params::node_ip_address,
   $package_apt_pin            = $rabbitmq::params::package_apt_pin,
   $package_ensure             = $rabbitmq::params::package_ensure,
