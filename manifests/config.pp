@@ -18,6 +18,8 @@ class rabbitmq::config {
   $management_port            = $rabbitmq::management_port
   $node_ip_address            = $rabbitmq::node_ip_address
   $plugin_dir                 = $rabbitmq::plugin_dir
+  $rabbitmq_user              = $rabbitmq::rabbitmq_user
+  $rabbitmq_group             = $rabbitmq::rabbitmq_group
   $rabbitmq_home              = $rabbitmq::rabbitmq_home
   $port                       = $rabbitmq::port
   $tcp_keepalive              = $rabbitmq::tcp_keepalive
@@ -102,11 +104,14 @@ class rabbitmq::config {
       fail('You must set the $erlang_cookie value in order to configure clustering.')
     } else {
       rabbitmq_erlang_cookie { "${rabbitmq_home}/.erlang.cookie":
-        content      => $erlang_cookie,
-        force        => $wipe_db_on_cookie_change,
-        service_name => $service_name,
-        before       => File['rabbitmq.config'],
-        notify       => Class['rabbitmq::service'],
+        content        => $erlang_cookie,
+        force          => $wipe_db_on_cookie_change,
+        rabbitmq_user  => $rabbitmq_user,
+        rabbitmq_group => $rabbitmq_group,
+        rabbitmq_home  => $rabbitmq_home,
+        service_name   => $service_name,
+        before         => File['rabbitmq.config'],
+        notify         => Class['rabbitmq::service'],
       }
     }
   }

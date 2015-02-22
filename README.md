@@ -381,6 +381,18 @@ repository otherwise.
 
 Boolean to determine if we should DESTROY AND DELETE the RabbitMQ database.
 
+####`rabbitmq_user`
+
+String: OS dependent, default defined in param.pp. The system user the rabbitmq daemon runs as.
+
+####`rabbitmq_group`
+
+String: OS dependent, default defined in param.pp. The system group the rabbitmq daemon runs as.
+
+####`rabbitmq_home`
+
+String: OS dependent. default defined in param.pp. The home directory of the rabbitmq deamon.
+
 ##Native Types
 
 ### rabbitmq\_user
@@ -493,9 +505,9 @@ rabbitmq_plugin {'rabbitmq_stomp':
 This is essentially a private type used by the rabbitmq::config class
 to manage the erlang cookie. It replaces the rabbitmq_erlang_cookie fact
 from earlier versions of this module. It manages the content of the cookie
-usually located at /var/lib/rabbitmq/.erlang.cookie, which includes
+usually located at "${rabbitmq_home}/.erlang.cookie", which includes
 stopping the rabbitmq service and wiping out the database at
-/var/lib/rabbitmq/mnesia if the user agrees to it. We don't recommend using
+"${rabbitmq_home}/mnesia" if the user agrees to it. We don't recommend using
 this type directly.
 
 ##Limitations
