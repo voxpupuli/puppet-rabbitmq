@@ -483,7 +483,10 @@ describe 'rabbitmq' do
             %r{ssl_listeners, \[3141\]}
           )
           should contain_file('rabbitmq.config').with_content(
-            %r{ssl_options, \[\{cacertfile,"/path/to/cacert"}
+            %r{ssl_options, \[}
+          )
+          should contain_file('rabbitmq.config').with_content(
+            %r{cacertfile,"/path/to/cacert"}
           )
           should contain_file('rabbitmq.config').with_content(
             %r{certfile,"/path/to/cert"}
@@ -507,7 +510,7 @@ describe 'rabbitmq' do
 
         it 'should set ssl options to specified values' do
           should contain_file('rabbitmq.config').with_content(%r{ssl_listeners, \[\{"0.0.0.0", 3141\}\]})
-          should contain_file('rabbitmq.config').with_content(%r{ssl_options, \[\{cacertfile,"/path/to/cacert"})
+          should contain_file('rabbitmq.config').with_content(%r{cacertfile,"/path/to/cacert"})
           should contain_file('rabbitmq.config').with_content(%r{certfile,"/path/to/cert"})
           should contain_file('rabbitmq.config').with_content(%r{keyfile,"/path/to/key})
         end
@@ -528,7 +531,8 @@ describe 'rabbitmq' do
         it 'should set ssl options to specified values' do
           should contain_file('rabbitmq.config').with_content(%r{tcp_listeners, \[\]})
           should contain_file('rabbitmq.config').with_content(%r{ssl_listeners, \[3141\]})
-          should contain_file('rabbitmq.config').with_content(%r{ssl_options, \[\{cacertfile,"/path/to/cacert"})
+          should contain_file('rabbitmq.config').with_content(%r{ssl_options, \[})
+          should contain_file('rabbitmq.config').with_content(%r{cacertfile,"/path/to/cacert"})
           should contain_file('rabbitmq.config').with_content(%r{certfile,"/path/to/cert"})
           should contain_file('rabbitmq.config').with_content(%r{keyfile,"/path/to/key})
         end
@@ -548,7 +552,7 @@ describe 'rabbitmq' do
         it 'should set ssl options to specified values' do
           should contain_file('rabbitmq.config').with_content(%r{tcp_listeners, \[\]})
           should contain_file('rabbitmq.config').with_content(%r{ssl_listeners, \[\{"0.0.0.0", 3141\}\]})
-          should contain_file('rabbitmq.config').with_content(%r{ssl_options, \[\{cacertfile,"/path/to/cacert"})
+          should contain_file('rabbitmq.config').with_content(%r{cacertfile,"/path/to/cacert"})
           should contain_file('rabbitmq.config').with_content(%r{certfile,"/path/to/cert"})
           should contain_file('rabbitmq.config').with_content(%r{keyfile,"/path/to/key})
         end
@@ -566,7 +570,8 @@ describe 'rabbitmq' do
 
         it 'should set ssl options to specified values' do
           should contain_file('rabbitmq.config').with_content(%r{ssl_listeners, \[3141\]})
-          should contain_file('rabbitmq.config').with_content(%r{ssl_options, \[\{cacertfile,"/path/to/cacert"})
+          should contain_file('rabbitmq.config').with_content(%r{ssl_options, \[})
+          should contain_file('rabbitmq.config').with_content(%r{cacertfile,"/path/to/cacert"})
           should contain_file('rabbitmq.config').with_content(%r{certfile,"/path/to/cert"})
           should contain_file('rabbitmq.config').with_content(%r{keyfile,"/path/to/key})
           should contain_file('rabbitmq.config').with_content(%r{ssl, \[\{versions, \['tlsv1.1', 'tlsv1.2'\]\}\]})
