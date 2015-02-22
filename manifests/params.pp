@@ -40,7 +40,7 @@ class rabbitmq::params {
   #install
   $admin_enable               = true
   $management_port            = '15672'
-  $package_apt_pin            = ''
+  $package_apt_pin            = undef
   $package_gpg_key            = 'http://www.rabbitmq.com/rabbitmq-signing-key-public.asc'
   $repos_ensure               = true
   $manage_repos               = undef
