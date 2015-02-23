@@ -25,38 +25,28 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, :parent => Puppet:
 
   def self.all_vhosts
     vhosts = []
-    parse_command(
-      self.run_with_retries {
-        rabbitmqctl('list_vhosts')
-      }
-    ).collect do |vhost|
-        vhosts.push(vhost)
+    self.run_with_retries {
+      rabbitmqctl('-q', 'list_vhosts')
+    }.split(/\n/).each do |vhost|
+      vhosts.push(vhost)
     end
     vhosts
   end
 
   def self.all_exchanges(vhost)
     exchanges = []
-    parse_command(
-      self.run_with_retries {
-        rabbitmqctl('list_exchanges', '-p', vhost, 'name', 'type')
-      }
-    )
-  end
-
-  def self.parse_command(cmd_output)
-    # first line is:
-    # Listing exchanges/vhosts ...
-    # while the last line is
-    # ...done.
-    #
-    cmd_output.split(/\n/)[1..-2]
+    self.run_with_retries {
+      rabbitmqctl('-q', 'list_exchanges', '-p', vhost, 'name', 'type')
+    }.split(/\n/).each do |exchange|
+      exchanges.push(exchange)
+    end
+    exchanges
   end
 
   def self.instances
     resources = []
     all_vhosts.each do |vhost|
-        all_exchanges(vhost).collect do |line|
+        all_exchanges(vhost).each do |line|
             name, type = line.split()
             if type.nil?
                 # if name is empty, it will wrongly get the type's value.

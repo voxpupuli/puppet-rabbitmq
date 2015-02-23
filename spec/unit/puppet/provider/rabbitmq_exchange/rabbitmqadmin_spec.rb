@@ -14,13 +14,10 @@ describe provider_class do
   end
 
   it 'should return instances' do
-    provider_class.expects(:rabbitmqctl).with('list_vhosts').returns <<-EOT
-Listing vhosts ...
+    provider_class.expects(:rabbitmqctl).with('-q', 'list_vhosts').returns <<-EOT
 /
-...done.
 EOT
-    provider_class.expects(:rabbitmqctl).with('list_exchanges', '-p', '/', 'name', 'type').returns <<-EOT
-Listing exchanges ...
+    provider_class.expects(:rabbitmqctl).with('-q', 'list_exchanges', '-p', '/', 'name', 'type').returns <<-EOT
         direct
 	amq.direct      direct
 	amq.fanout      fanout
@@ -29,7 +26,6 @@ Listing exchanges ...
 	amq.rabbitmq.log        topic
 	amq.rabbitmq.trace      topic
 	amq.topic       topic
-	...done.
 EOT
     instances = provider_class.instances
     instances.size.should == 8

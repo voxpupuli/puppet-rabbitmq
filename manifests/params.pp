@@ -10,6 +10,10 @@ class rabbitmq::params {
       $package_name     = 'rabbitmq'
       $service_name     = 'rabbitmq'
       $version          = '3.1.3-1'
+      $rabbitmq_user    = 'rabbitmq'
+      $rabbitmq_group   = 'rabbitmq'
+      $rabbitmq_home    = '/var/lib/rabbitmq'
+      $plugin_dir       = "/usr/lib/rabbitmq/lib/rabbitmq_server-${version}/plugins"
     }
     'Debian': {
       $package_ensure   = 'installed'
@@ -17,6 +21,20 @@ class rabbitmq::params {
       $service_name     = 'rabbitmq-server'
       $package_provider = 'apt'
       $version          = '3.1.5'
+      $rabbitmq_user    = 'rabbitmq'
+      $rabbitmq_group   = 'rabbitmq'
+      $rabbitmq_home    = '/var/lib/rabbitmq'
+      $plugin_dir       = "/usr/lib/rabbitmq/lib/rabbitmq_server-${version}/plugins"
+    }
+    'OpenBSD': {
+      $package_ensure   = 'installed'
+      $package_name     = 'rabbitmq'
+      $service_name     = 'rabbitmq'
+      $version          = '3.4.2'
+      $rabbitmq_user    = '_rabbitmq'
+      $rabbitmq_group   = '_rabbitmq'
+      $rabbitmq_home    = '/var/rabbitmq'
+      $plugin_dir       = '/usr/local/lib/rabbitmq/plugins'
     }
     'RedHat': {
       $package_ensure   = 'installed'
@@ -24,6 +42,10 @@ class rabbitmq::params {
       $service_name     = 'rabbitmq-server'
       $package_provider = 'rpm'
       $version          = '3.1.5-1'
+      $rabbitmq_user    = 'rabbitmq'
+      $rabbitmq_group   = 'rabbitmq'
+      $rabbitmq_home    = '/var/lib/rabbitmq'
+      $plugin_dir       = "/usr/lib/rabbitmq/lib/rabbitmq_server-${version}/plugins"
     }
     'SUSE': {
       $package_ensure   = 'installed'
@@ -31,6 +53,10 @@ class rabbitmq::params {
       $service_name     = 'rabbitmq-server'
       $package_provider = 'zypper'
       $version          = '3.1.5-1'
+      $rabbitmq_user    = 'rabbitmq'
+      $rabbitmq_group   = 'rabbitmq'
+      $rabbitmq_home    = '/var/lib/rabbitmq'
+      $plugin_dir       = "/usr/lib/rabbitmq/lib/rabbitmq_server-${version}/plugins"
     }
     default: {
       fail("The ${module_name} module is not supported on an ${::osfamily} based system.")
@@ -61,7 +87,6 @@ class rabbitmq::params {
   $erlang_cookie              = undef
   $interface                  = 'UNSET'
   $node_ip_address            = 'UNSET'
-  $plugin_dir                 = "/usr/lib/rabbitmq/lib/rabbitmq_server-${version}/plugins"
   $port                       = '5672'
   $tcp_keepalive              = false
   $ssl                        = false

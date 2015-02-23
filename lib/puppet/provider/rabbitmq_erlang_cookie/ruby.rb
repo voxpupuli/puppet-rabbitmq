@@ -16,12 +16,12 @@ Puppet::Type.type(:rabbitmq_erlang_cookie).provide(:ruby) do
   def content=(value)
     if resource[:force] == :true # Danger!
       puppet('resource', 'service', resource[:service_name], 'ensure=stopped')
-      FileUtils.rm_rf('/var/lib/rabbitmq/mnesia')
+      FileUtils.rm_rf(resource[:rabbitmq_home] + File::PATH_SEPARATOR + 'mnesia')
       File.open(resource[:path], 'w') do |cookie|
         cookie.chmod(0400)
         cookie.write(value)
       end
-      FileUtils.chown('rabbitmq', 'rabbitmq', resource[:path])
+      FileUtils.chown(resource[:rabbitmq_user], resource[:rabbitmq_group], resource[:path])
     else
       fail("The current erlang cookie needs to change. In order to do this the RabbitMQ database needs to be wiped.  Please set force => true to allow this to happen automatically.")
     end

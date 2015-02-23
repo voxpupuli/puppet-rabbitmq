@@ -16,6 +16,18 @@ Puppet::Type.newtype(:rabbitmq_erlang_cookie) do
     newvalues(:true, :false)
   end
 
+  newparam(:rabbitmq_user) do
+    defaultto('rabbitmq')
+  end
+
+  newparam(:rabbitmq_group) do
+    defaultto('rabbitmq')
+  end
+
+  newparam(:rabbitmq_home) do
+    defaultto('/var/lib/rabbitmq')
+  end
+
   newparam(:service_name) do
     newvalues(/^\S+$/)
   end

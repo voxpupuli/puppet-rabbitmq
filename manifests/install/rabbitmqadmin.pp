@@ -13,7 +13,7 @@ class rabbitmq::install::rabbitmqadmin {
   $protocol = $rabbitmq::ssl ? { false => 'http', default => 'https' }
 
   staging::file { 'rabbitmqadmin':
-    target      => '/var/lib/rabbitmq/rabbitmqadmin',
+    target      => "${rabbitmq::rabbitmq_home}/rabbitmqadmin",
     source      => "${protocol}://${default_user}:${default_pass}@localhost:${management_port}/cli/rabbitmqadmin",
     curl_option => '-k --noproxy localhost --retry 30 --retry-delay 6',
     timeout     => '180',
@@ -26,8 +26,8 @@ class rabbitmq::install::rabbitmqadmin {
 
   file { '/usr/local/bin/rabbitmqadmin':
     owner   => 'root',
-    group   => 'root',
-    source  => '/var/lib/rabbitmq/rabbitmqadmin',
+    group   => '0',
+    source  => "${rabbitmq::rabbitmq_home}/rabbitmqadmin",
     mode    => '0755',
     require => Staging::File['rabbitmqadmin'],
   }
