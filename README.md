@@ -239,6 +239,14 @@ LDAP server to use for auth.
 
 User DN pattern for LDAP auth.
 
+####`ldap_other_bind`
+
+How to bind to the LDAP server. Defaults to 'anon'.
+
+####`ldap_config_variables`
+
+Hash of other LDAP config variables.
+
 ####`ldap_use_ssl`
 
 Boolean, set to true to use SSL for the LDAP server.

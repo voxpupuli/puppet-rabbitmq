@@ -404,13 +404,15 @@ describe 'rabbitmq' do
 
       describe 'configuring ldap authentication' do
         let :params do
-          { :config_stomp         => true,
-            :ldap_auth            => true,
-            :ldap_server          => 'ldap.example.com',
-            :ldap_user_dn_pattern => 'ou=users,dc=example,dc=com',
-            :ldap_use_ssl         => false,
-            :ldap_port            => '389',
-            :ldap_log             => true
+          { :config_stomp          => true,
+            :ldap_auth             => true,
+            :ldap_server           => 'ldap.example.com',
+            :ldap_user_dn_pattern  => 'ou=users,dc=example,dc=com',
+            :ldap_other_bind       => 'as_user',
+            :ldap_use_ssl          => false,
+            :ldap_port             => '389',
+            :ldap_log              => true,
+            :ldap_config_variables => { 'foo' => 'bar' }
           }
         end
 
@@ -419,10 +421,10 @@ describe 'rabbitmq' do
         it 'should contain ldap parameters' do
           verify_contents(subject, 'rabbitmq.config',
                           ['[', '  {rabbit, [', '    {auth_backends, [rabbit_auth_backend_internal, rabbit_auth_backend_ldap]},', '  ]}',
-                            '  {rabbitmq_auth_backend_ldap, [', '    {other_bind, anon},',
+                            '  {rabbitmq_auth_backend_ldap, [', '    {other_bind, as_user},',
                             '    {servers, ["ldap.example.com"]},',
                             '    {user_dn_pattern, "ou=users,dc=example,dc=com"},', '    {use_ssl, false},',
-                            '    {port, 389},', '    {log, true}'])
+                            '    {port, 389},', '    {foo, bar},', '    {log, true}'])
         end
       end
 
@@ -432,9 +434,11 @@ describe 'rabbitmq' do
             :ldap_auth            => true,
             :ldap_server          => 'ldap.example.com',
             :ldap_user_dn_pattern => 'ou=users,dc=example,dc=com',
+            :ldap_other_bind      => 'as_user',
             :ldap_use_ssl         => false,
             :ldap_port            => '389',
-            :ldap_log             => true
+            :ldap_log             => true,
+            :ldap_config_variables => { 'foo' => 'bar' }
           }
         end
 
@@ -443,10 +447,10 @@ describe 'rabbitmq' do
         it 'should contain ldap parameters' do
           verify_contents(subject, 'rabbitmq.config',
                           ['[', '  {rabbit, [', '    {auth_backends, [rabbit_auth_backend_internal, rabbit_auth_backend_ldap]},', '  ]}',
-                            '  {rabbitmq_auth_backend_ldap, [', '    {other_bind, anon},',
+                            '  {rabbitmq_auth_backend_ldap, [', '    {other_bind, as_user},',
                             '    {servers, ["ldap.example.com"]},',
                             '    {user_dn_pattern, "ou=users,dc=example,dc=com"},', '    {use_ssl, false},',
-                            '    {port, 389},', '    {log, true}'])
+                            '    {port, 389},', '    {foo, bar},', '    {log, true}'])
         end
       end
 
