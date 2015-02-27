@@ -21,6 +21,26 @@ Puppet::Type.newtype(:rabbitmq_exchange) do
     newvalues(/^\S+$/)
   end
 
+  newparam(:durable) do
+    desc 'Exchange durability to be set *on creation*'
+    newvalues(/^\S+$/)
+  end
+
+  newparam(:auto_delete) do
+    desc 'Exchange auto delete option to be set *on creation*'
+    newvalues(/^\S+$/)
+  end
+
+  newparam(:internal) do
+    desc 'Exchange internal option to be set *on creation*'
+    newvalues(/^\S+$/)
+  end
+
+  newparam(:arguments) do
+    desc 'Exchange arguments example: {"hash-header": "message-distribution-hash"}'
+    defaultto {}
+  end
+
   newparam(:user) do
     desc 'The user to use to connect to rabbitmq'
     defaultto('guest')

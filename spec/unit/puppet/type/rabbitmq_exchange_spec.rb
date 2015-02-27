@@ -4,7 +4,10 @@ describe Puppet::Type.type(:rabbitmq_exchange) do
   before :each do
     @exchange = Puppet::Type.type(:rabbitmq_exchange).new(
       :name => 'foo@bar',
-      :type => :topic
+      :type => :topic,
+      :internal => false,
+      :auto_delete => false,
+      :durable => true
     )
   end
   it 'should accept an exchange name' do
