@@ -21,14 +21,16 @@ describe 'rabbitmq policy on a vhost:' do
         ensure => present,
       } ->
 
-      rabbitmq_policy { 'ha-all@myhost':
-        pattern    => '.*',
-        priority   => 0,
+      rabbitmq_policy { 'ha-exactly@myhost':
+        pattern    => 'ha_.*',
+        priority   => 1,
         applyto    => 'all',
-        definition => {
-          'ha-mode'      => 'all',
-          'ha-sync-mode' => 'automatic',
-        },
+        # Workaround for Puppet interpreting numbers as strings
+        definition => parsejson('{
+          "ha-mode":"exactly",
+          "ha-params":2,
+          "ha-sync-mode":"automatic"
+        }'),
       }
       EOS
 
@@ -37,8 +39,17 @@ describe 'rabbitmq policy on a vhost:' do
     end
 
     it 'should have the policy' do
-      shell('rabbitmqctl list_policies -p myhost') do |r|
-        expect(r.stdout).to match(/myhost.*ha-all.*ha-sync-mode/)
+      shell('rabbitmqctl -q list_policies -p myhost') do |r|
+        vhost, name, pattern, definition, priority = r.stdout.split
+        expect(vhost).to eq('myhost')
+        expect(name).to eq('ha-exactly')
+        expect(pattern).to eq('ha_.*')
+        expect(JSON.parse(definition)).to eq({
+          'ha-mode' => 'exactly',
+          'ha-params' => 2,
+          'ha-sync-mode' => 'automatic',
+        })
+        expect(priority.to_i).to eq(1)
         expect(r.exit_code).to be_zero
       end
     end

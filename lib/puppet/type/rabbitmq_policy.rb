@@ -64,13 +64,8 @@ Puppet::Type.newtype(:rabbitmq_policy) do
   end
 
   def validate_definition(definition)
-    unless [Hash].include?(definition.class)
+    unless definition.is_a?(Hash)
       raise ArgumentError, "Invalid definition"
-    end
-    definition.each do |k,v|
-      unless [String].include?(v.class)
-        raise ArgumentError, "Invalid definition"
-      end
     end
   end
 end

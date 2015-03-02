@@ -5,10 +5,11 @@ describe Puppet::Type.type(:rabbitmq_policy) do
 
   before do
     @policy = Puppet::Type.type(:rabbitmq_policy).new(
-      :name       => 'ha-all@/',
+      :name       => 'ha-exactly@/',
       :pattern    => '.*',
       :definition => {
-        'ha-mode' => 'all'
+        'ha-mode' => 'exactly',
+        'ha-params' => 2,
       })
   end
 
@@ -67,10 +68,6 @@ describe Puppet::Type.type(:rabbitmq_policy) do
   it 'should not accept invalid hash for definition' do
     expect {
       @policy[:definition] = 'ha-mode'
-    }.to raise_error(Puppet::Error, /Invalid definition/)
-
-    expect {
-      @policy[:definition] = {'ha-mode' => ['a', 'b']}
     }.to raise_error(Puppet::Error, /Invalid definition/)
   end
 
