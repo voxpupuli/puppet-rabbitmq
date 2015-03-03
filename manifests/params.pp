@@ -117,5 +117,5 @@ class rabbitmq::params {
   $environment_variables      = {}
   $config_variables           = {}
   $config_kernel_variables    = {}
-  $file_limit                 = 16384
+  $file_limit                 = '16384'
 }
