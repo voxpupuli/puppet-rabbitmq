@@ -94,7 +94,7 @@ class rabbitmq(
   validate_re($stomp_port, '\d+')
   validate_bool($wipe_db_on_cookie_change)
   validate_bool($tcp_keepalive)
-  validate_re($file_limit, '\d+')
+  validate_re($file_limit, '^(\d+|-1|unlimited|infinity)$')
   # Validate service parameters.
   validate_re($service_ensure, '^(running|stopped)$')
   validate_bool($service_manage)
