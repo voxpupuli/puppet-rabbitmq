@@ -222,7 +222,11 @@ RabbitMQ Environment Variables in rabbitmq_env.config
 The erlang cookie to use for clustering - must be the same between all nodes.
 This value has no default and must be set explicitly if using clustering.
 
-###`key_content`
+####`file_limit`
+
+Set rabbitmq file ulimit. Defaults to 16384. Only available on systems with `$::osfamily == 'Debian'`
+
+####`key_content`
 
 Uses content method for Debian OS family. Should be a template for apt::source
 class. Overrides `package_gpg_key` behavior, if enabled. Undefined by default.
