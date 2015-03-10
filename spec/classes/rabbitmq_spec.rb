@@ -132,10 +132,39 @@ describe 'rabbitmq' do
   end
 
   context 'on Debian' do
-    let(:params) {{ :manage_repos => false, :repos_ensure => false }}
     let(:facts) {{ :osfamily => 'Debian', :lsbdistid => 'Debian', :lsbdistcodename => 'squeeze' }}
-    it 'does ensure rabbitmq apt::source is absent when manage_repos is false and repos_ensure is false' do
-      should_not contain_apt__source('rabbitmq')
+    context 'with manage_repos => false and repos_ensure => false' do
+      let(:params) {{ :manage_repos => false, :repos_ensure => false }}
+      it 'does ensure rabbitmq apt::source is absent when manage_repos is false and repos_ensure is false' do
+        should_not contain_apt__source('rabbitmq')
+      end
+    end
+
+    context 'with file_limit => unlimited' do
+      let(:params) {{ :file_limit => 'unlimited' }}
+      it { should contain_file('/etc/default/rabbitmq-server').with_content(/ulimit -n unlimited/) }
+    end
+
+    context 'with file_limit => infinity' do
+      let(:params) {{ :file_limit => 'infinity' }}
+      it { should contain_file('/etc/default/rabbitmq-server').with_content(/ulimit -n infinity/) }
+    end
+
+    context 'with file_limit => -1' do
+      let(:params) {{ :file_limit => -1 }}
+      it { should contain_file('/etc/default/rabbitmq-server').with_content(/ulimit -n -1/) }
+    end
+
+    context 'with file_limit => \'1234\'' do
+      let(:params) {{ :file_limit => '1234' }}
+      it { should contain_file('/etc/default/rabbitmq-server').with_content(/ulimit -n 1234/) }
+    end
+
+    context 'with file_limit => foo' do
+      let(:params) {{ :file_limit => 'foo' }}
+      it 'does not compile' do
+        expect{subject}.to raise_error(/\$file_limit must be an integer, 'unlimited', or 'infinity'/)
+      end
     end
   end
 
@@ -231,8 +260,7 @@ describe 'rabbitmq' do
       it { should contain_class('rabbitmq::config') }
       it { should contain_class('rabbitmq::service') }
 
-
-      context 'with admin_enable set to true' do
+     context 'with admin_enable set to true' do
         let(:params) {{ :admin_enable => true }}
         context 'with service_manage set to true' do
           it 'we enable the admin interface by default' do
