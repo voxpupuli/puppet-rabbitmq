@@ -66,6 +66,7 @@ class rabbitmq::params {
   #install
   $admin_enable               = true
   $management_port            = '15672'
+  $management_address         = 'UNSET'
   $package_apt_pin            = ''
   $package_gpg_key            = 'http://www.rabbitmq.com/rabbitmq-signing-key-public.asc'
   $repos_ensure               = true
@@ -82,6 +83,7 @@ class rabbitmq::params {
   $default_user               = 'guest'
   $default_pass               = 'guest'
   $delete_guest_user          = false
+  $enable_management_ssl      = false
   $env_config                 = 'rabbitmq/rabbitmq-env.conf.erb'
   $env_config_path            = '/etc/rabbitmq/rabbitmq-env.conf'
   $erlang_cookie              = undef

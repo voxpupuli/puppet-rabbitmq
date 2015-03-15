@@ -205,6 +205,10 @@ Password to set for the `default_user` in rabbitmq.config.
 
 Boolean to decide if we should delete the default guest user.
 
+####`enable_management_ssl`
+
+Boolean to decide if the rabbitmq_management plugin should use ssl. Defaults to `false`.
+
 ####`env_config`
 
 The template file to use for rabbitmq_env.config.
@@ -271,6 +275,10 @@ Boolean, whether or not to manage package repositories.
 ####`management_port`
 
 The port for the RabbitMQ management interface.
+
+####`management_address`
+
+The address for the RabbitMQ management interface. Defaults to bind to all interfaces
 
 ####`node_ip_address`
 

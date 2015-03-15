@@ -10,10 +10,12 @@ class rabbitmq(
   $default_user               = $rabbitmq::params::default_user,
   $default_pass               = $rabbitmq::params::default_pass,
   $delete_guest_user          = $rabbitmq::params::delete_guest_user,
+  $enable_management_ssl      = $rabbitmq::params::enable_management_ssl,
   $env_config                 = $rabbitmq::params::env_config,
   $env_config_path            = $rabbitmq::params::env_config_path,
   $erlang_cookie              = $rabbitmq::params::erlang_cookie,
   $interface                  = $rabbitmq::params::interface,
+  $management_address         = $rabbitmq::params::management_address,
   $management_port            = $rabbitmq::params::management_port,
   $node_ip_address            = $rabbitmq::params::node_ip_address,
   $package_apt_pin            = $rabbitmq::params::package_apt_pin,
@@ -104,6 +106,9 @@ class rabbitmq(
   if ! is_integer($file_limit) {
     validate_re($file_limit, '^(unlimited|infinity)$', '$file_limit must be an integer, \'unlimited\', or \'infinity\'.')
   }
+  validate_bool($enable_management_ssl)
+  validate_string($management_address)
+
   # Validate service parameters.
   validate_re($service_ensure, '^(running|stopped)$')
   validate_bool($service_manage)
@@ -147,7 +152,11 @@ class rabbitmq(
   if $ssl_versions {
     if $ssl {
       validate_array($ssl_versions)
-    } else {
+    }
+    elsif $enable_management_ssl {
+      validate_array($ssl_versions)
+    }
+    else {
       fail('$ssl_versions requires that $ssl => true')
     }
   }
