@@ -29,12 +29,12 @@ EOT
   end
 
   it 'should call rabbitmqadmin to create' do
-    @provider.expects(:rabbitmqadmin).with('declare', 'queue', '--vhost=/', '--user=guest', '--password=guest', 'name=test', 'durable=true', 'auto_delete=false', 'arguments={}')
+    @provider.expects(:rabbitmqadmin).with('declare', 'queue', '--vhost=/', '--user=guest', '--password=guest', '-c', '/etc/rabbitmq/rabbitmqadmin.conf', 'name=test', 'durable=true', 'auto_delete=false', 'arguments={}')
     @provider.create
   end
 
   it 'should call rabbitmqadmin to destroy' do
-    @provider.expects(:rabbitmqadmin).with('delete', 'queue', '--vhost=/', '--user=guest', '--password=guest', 'name=test')
+    @provider.expects(:rabbitmqadmin).with('delete', 'queue', '--vhost=/', '--user=guest', '--password=guest', '-c', '/etc/rabbitmq/rabbitmqadmin.conf', 'name=test')
     @provider.destroy
   end
 
@@ -53,7 +53,7 @@ EOT
     end
 
     it 'should call rabbitmqadmin to create' do
-      @provider.expects(:rabbitmqadmin).with('declare', 'queue', '--vhost=/', '--user=colin', '--password=secret', 'name=test', 'durable=true', 'auto_delete=false', 'arguments={}')
+      @provider.expects(:rabbitmqadmin).with('declare', 'queue', '--vhost=/', '--user=colin', '--password=secret', '-c', '/etc/rabbitmq/rabbitmqadmin.conf', 'name=test', 'durable=true', 'auto_delete=false', 'arguments={}')
       @provider.create
     end
   end
