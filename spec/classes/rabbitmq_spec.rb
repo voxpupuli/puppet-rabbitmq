@@ -810,10 +810,11 @@ rabbitmq hard nofile 1234
           should contain_file('rabbitmq.config').with_content(%r{listener, \[})
           should contain_file('rabbitmq.config').with_content(%r{port, 5926\}})
           should contain_file('rabbitmq.config').with_content(%r{ssl, true\}})
-          should contain_file('rabbitmq.config').with_content(%r{ssl_opts, \[\{cacertfile, "/path/to/cacert"\},})
+          should contain_file('rabbitmq.config').with_content(%r{ssl_opts, \[})
+          should contain_file('rabbitmq.config').with_content(%r{cacertfile, "/path/to/cacert"\},})
           should contain_file('rabbitmq.config').with_content(%r{certfile, "/path/to/cert"\},})
           should contain_file('rabbitmq.config').with_content(%r{keyfile, "/path/to/key"\}})
-          should contain_file('rabbitmq.config').with_content(%r{,\{versions, \['tlsv1.1', 'tlsv1.2'\]\}[\r\n ]*\]\}})
+          should contain_file('rabbitmq.config').with_content(%r{,\{versions, \['tlsv1.1', 'tlsv1.2'\]\}})
         end
       end
 
@@ -832,9 +833,10 @@ rabbitmq hard nofile 1234
           should contain_file('rabbitmq.config').with_content(%r{listener, \[})
           should contain_file('rabbitmq.config').with_content(%r{port, 3141\}})
           should contain_file('rabbitmq.config').with_content(%r{ssl, true\}})
-          should contain_file('rabbitmq.config').with_content(%r{ssl_opts, \[\{cacertfile, "/path/to/cacert"\},})
+          should contain_file('rabbitmq.config').with_content(%r{ssl_opts, \[})
+          should contain_file('rabbitmq.config').with_content(%r{cacertfile, "/path/to/cacert"\},})
           should contain_file('rabbitmq.config').with_content(%r{certfile, "/path/to/cert"\},})
-          should contain_file('rabbitmq.config').with_content(%r{keyfile, "/path/to/key"\}[\r\n ]*\]\}})
+          should contain_file('rabbitmq.config').with_content(%r{keyfile, "/path/to/key"\}})
         end
       end
 
@@ -867,9 +869,10 @@ rabbitmq hard nofile 1234
           should contain_file('rabbitmq.config').with_content(%r{listener, \[})
           should contain_file('rabbitmq.config').with_content(%r{port, 3141\},})
           should contain_file('rabbitmq.config').with_content(%r{ssl, true\},})
-          should contain_file('rabbitmq.config').with_content(%r{ssl_opts, \[\{cacertfile, "/path/to/cacert"\},})
+          should contain_file('rabbitmq.config').with_content(%r{ssl_opts, \[})
+          should contain_file('rabbitmq.config').with_content(%r{cacertfile, "/path/to/cacert"\},})
           should contain_file('rabbitmq.config').with_content(%r{certfile, "/path/to/cert"\},})
-          should contain_file('rabbitmq.config').with_content(%r{keyfile, "/path/to/key"\}[\r\n ]*\]\}})
+          should contain_file('rabbitmq.config').with_content(%r{keyfile, "/path/to/key"\}})
         end
       end
 
