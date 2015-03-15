@@ -164,9 +164,9 @@ describe 'rabbitmq class with 2.8.1:' do
     describe file('/var/lib/rabbitmq/rabbitmqadmin') do
       it { should be_file }
     end
-
-    describe command('rabbitmqadmin --help') do
-      it { should return_exit_status 0 }
+    
+    describe command('/usr/local/bin/rabbitmqadmin --help') do
+      its(:exit_status) { should eq 0 }
     end
 
   end
@@ -204,8 +204,8 @@ describe 'rabbitmq class with 2.8.1:' do
       it { should be_file }
     end
 
-    describe command('rabbitmqadmin --help') do
-      it { should return_exit_status 0 }
+    describe command('/usr/local/bin/rabbitmqadmin --help') do
+      its(:exit_status) { should eq 0 }
     end
 
   end
