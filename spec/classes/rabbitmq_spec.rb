@@ -6,7 +6,7 @@ describe 'rabbitmq' do
     let(:facts) {{ :osfamily => 'Unsupported' }}
 
     it 'we fail' do
-      expect { subject }.to raise_error(/not supported on an Unsupported/)
+      expect { catalogue }.to raise_error(Puppet::Error, /not supported on an Unsupported/)
     end
   end
 
@@ -163,7 +163,7 @@ describe 'rabbitmq' do
     context 'with file_limit => foo' do
       let(:params) {{ :file_limit => 'foo' }}
       it 'does not compile' do
-        expect{subject}.to raise_error(/\$file_limit must be an integer, 'unlimited', or 'infinity'/)
+        expect { catalogue }.to raise_error(Puppet::Error, /\$file_limit must be an integer, 'unlimited', or 'infinity'/)
       end
     end
   end
@@ -315,7 +315,7 @@ describe 'rabbitmq' do
 
         describe 'with defaults' do
           it 'fails' do
-            expect{subject}.to raise_error(/^You must set the \$erlang_cookie value/)
+            expect { catalogue }.to raise_error(Puppet::Error, /^You must set the \$erlang_cookie value/)
           end
         end
 
@@ -447,7 +447,7 @@ describe 'rabbitmq' do
         it { should contain_rabbitmq_plugin('rabbitmq_auth_backend_ldap') }
 
         it 'should contain ldap parameters' do
-          verify_contents(subject, 'rabbitmq.config',
+          verify_contents(catalogue, 'rabbitmq.config',
                           ['[', '  {rabbit, [', '    {auth_backends, [rabbit_auth_backend_internal, rabbit_auth_backend_ldap]},', '  ]}',
                             '  {rabbitmq_auth_backend_ldap, [', '    {other_bind, as_user},',
                             '    {servers, ["ldap.example.com"]},',
@@ -473,7 +473,7 @@ describe 'rabbitmq' do
         it { should contain_rabbitmq_plugin('rabbitmq_auth_backend_ldap') }
 
         it 'should contain ldap parameters' do
-          verify_contents(subject, 'rabbitmq.config',
+          verify_contents(catalogue, 'rabbitmq.config',
                           ['[', '  {rabbit, [', '    {auth_backends, [rabbit_auth_backend_internal, rabbit_auth_backend_ldap]},', '  ]}',
                             '  {rabbitmq_auth_backend_ldap, [', '    {other_bind, as_user},',
                             '    {servers, ["ldap.example.com"]},',
@@ -622,7 +622,7 @@ describe 'rabbitmq' do
         } }
 
         it 'fails' do
-          expect{subject}.to raise_error(/is not an Array/)
+          expect { catalogue }.to raise_error(Puppet::Error, /is not an Array/)
         end
       end
 
@@ -637,7 +637,7 @@ describe 'rabbitmq' do
         } }
 
         it 'fails' do
-          expect{subject}.to raise_error(/^\$ssl_versions requires that \$ssl => true/)
+          expect { catalogue }.to raise_error(Puppet::Error, /^\$ssl_versions requires that \$ssl => true/)
         end
       end
 
