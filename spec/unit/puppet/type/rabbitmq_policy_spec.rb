@@ -93,6 +93,7 @@ describe Puppet::Type.type(:rabbitmq_policy) do
     definition = {'ha-mode' => 'exactly', 'ha-params' => '2'}
     @policy[:definition] = definition
     @policy[:definition]['ha-params'].should be_a(Fixnum)
+    @policy[:definition]['ha-params'].should == 2
   end
 
   it 'should not accept non-numeric ha-params for ha-mode exactly' do
@@ -106,6 +107,7 @@ describe Puppet::Type.type(:rabbitmq_policy) do
     definition = {'expires' => '1800000'}
     @policy[:definition] = definition
     @policy[:definition]['expires'].should be_a(Fixnum)
+    @policy[:definition]['expires'].should == 1800000
   end
 
   it 'should not accept non-numeric expires value' do
