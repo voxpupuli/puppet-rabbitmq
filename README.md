@@ -444,7 +444,10 @@ rabbitmq_vhost { 'myhost':
 rabbitmq_exchange { 'myexchange@myhost':
   user     => 'dan',
   password => 'bar',
-  type     => 'topic',
+  type     => 'x-consistent-hash',
+  arguments   => {
+    hash-header => 'message-distribution-hash'
+  },
   ensure   => present,
 }
 ```

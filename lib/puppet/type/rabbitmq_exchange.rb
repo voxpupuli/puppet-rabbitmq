@@ -21,6 +21,11 @@ Puppet::Type.newtype(:rabbitmq_exchange) do
     newvalues(/^\S+$/)
   end
 
+  newparam(:arguments) do
+    desc 'Exchange arguments example: {"hash-header": "message-distribution-hash"}'
+    defaultto {}
+  end
+
   newparam(:user) do
     desc 'The user to use to connect to rabbitmq'
     defaultto('guest')
