@@ -15,6 +15,7 @@ class rabbitmq::config {
   $env_config                 = $rabbitmq::env_config
   $env_config_path            = $rabbitmq::env_config_path
   $erlang_cookie              = $rabbitmq::erlang_cookie
+  $interface                  = $rabbitmq::interface
   $management_port            = $rabbitmq::management_port
   $node_ip_address            = $rabbitmq::node_ip_address
   $plugin_dir                 = $rabbitmq::plugin_dir
@@ -30,6 +31,7 @@ class rabbitmq::config {
   $ssl_cert                   = $rabbitmq::ssl_cert
   $ssl_key                    = $rabbitmq::ssl_key
   $ssl_port                   = $rabbitmq::ssl_port
+  $ssl_interface              = $rabbitmq::ssl_interface
   $ssl_management_port        = $rabbitmq::ssl_management_port
   $ssl_stomp_port             = $rabbitmq::ssl_stomp_port
   $ssl_verify                 = $rabbitmq::ssl_verify
@@ -39,13 +41,16 @@ class rabbitmq::config {
   $ldap_auth                  = $rabbitmq::ldap_auth
   $ldap_server                = $rabbitmq::ldap_server
   $ldap_user_dn_pattern       = $rabbitmq::ldap_user_dn_pattern
+  $ldap_other_bind            = $rabbitmq::ldap_other_bind
   $ldap_use_ssl               = $rabbitmq::ldap_use_ssl
   $ldap_port                  = $rabbitmq::ldap_port
   $ldap_log                   = $rabbitmq::ldap_log
+  $ldap_config_variables      = $rabbitmq::ldap_config_variables
   $wipe_db_on_cookie_change   = $rabbitmq::wipe_db_on_cookie_change
   $config_variables           = $rabbitmq::config_variables
   $config_kernel_variables    = $rabbitmq::config_kernel_variables
   $cluster_partition_handling = $rabbitmq::cluster_partition_handling
+  $file_limit                 = $rabbitmq::file_limit
   $default_env_variables      =  {
     'NODE_PORT'        => $port,
     'NODE_IP_ADDRESS'  => $node_ip_address
