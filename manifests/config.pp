@@ -29,6 +29,7 @@ class rabbitmq::config {
   $ssl_only                   = $rabbitmq::ssl_only
   $ssl_cacert                 = $rabbitmq::ssl_cacert
   $ssl_cert                   = $rabbitmq::ssl_cert
+  $ssl_interface              = $rabbitmq::ssl_interface
   $ssl_key                    = $rabbitmq::ssl_key
   $ssl_port                   = $rabbitmq::ssl_port
   $ssl_interface              = $rabbitmq::ssl_interface
