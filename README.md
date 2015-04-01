@@ -446,6 +446,12 @@ rabbitmq_exchange { 'myexchange@myhost':
   password => 'bar',
   type     => 'topic',
   ensure   => present,
+  internal => false,
+  auto_delete => false,
+  durable => true,
+  arguments => {
+    hash-header => 'message-distribution-hash'
+  }
 }
 ```
 

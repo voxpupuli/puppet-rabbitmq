@@ -36,7 +36,7 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, :parent => Puppet:
   def self.all_exchanges(vhost)
     exchanges = []
     self.run_with_retries {
-      rabbitmqctl('-q', 'list_exchanges', '-p', vhost, 'name', 'type')
+      rabbitmqctl('-q', 'list_exchanges', '-p', vhost, 'name', 'type', 'internal', 'durable', 'auto_delete', 'arguments')
     }.split(/\n/).each do |exchange|
       exchanges.push(exchange)
     end
@@ -47,17 +47,30 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, :parent => Puppet:
     resources = []
     all_vhosts.each do |vhost|
         all_exchanges(vhost).each do |line|
-            name, type = line.split()
+            name, type, internal, durable, auto_delete, arguments = line.split()
             if type.nil?
                 # if name is empty, it will wrongly get the type's value.
                 # This way type will get the correct value
                 type = name
                 name = ''
             end
+            # Convert output of arguments from the rabbitmqctl command to a json string.
+            if !arguments.nil?
+              arguments = arguments.gsub(/^\[(.*)\]$/, "").gsub(/\{("(?:.|\\")*?"),/, '{\1:').gsub(/\},\{/, ",")
+              if arguments == ""
+                arguments = '{}'
+              end
+            else
+              arguments = '{}'
+            end
             exchange = {
               :type   => type,
               :ensure => :present,
+              :internal => internal,
+              :durable => durable,
+              :auto_delete => auto_delete,
               :name   => "%s@%s" % [name, vhost],
+              :arguments => JSON.parse(arguments),
             }
             resources << new(exchange) if exchange[:type]
         end
@@ -81,7 +94,11 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, :parent => Puppet:
   def create
     vhost_opt = should_vhost ? "--vhost=#{should_vhost}" : ''
     name = resource[:name].split('@')[0]
-    rabbitmqadmin('declare', 'exchange', vhost_opt, "--user=#{resource[:user]}", "--password=#{resource[:password]}", "name=#{name}", "type=#{resource[:type]}", '-c', '/etc/rabbitmq/rabbitmqadmin.conf')
+    arguments = resource[:arguments]
+    if arguments.nil?
+      arguments = {}
+    end
+    rabbitmqadmin('declare', 'exchange', vhost_opt, "--user=#{resource[:user]}", "--password=#{resource[:password]}", "name=#{name}", "type=#{resource[:type]}", "internal=#{resource[:internal]}", "durable=#{resource[:durable]}", "auto_delete=#{resource[:auto_delete]}", "arguments=#{arguments.to_json}", '-c', '/etc/rabbitmq/rabbitmqadmin.conf')
     @property_hash[:ensure] = :present
   end
 
