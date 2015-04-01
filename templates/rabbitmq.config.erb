@@ -37,6 +37,11 @@
                    <%- if @ssl_versions -%>
                    ,{versions, [<%= @ssl_versions.sort.map { |v| "'#{v}'" }.join(', ') %>]}
                    <%- end -%>
+                   <%- if @ssl_ciphers and @ssl_ciphers.size > 0 -%>
+                   ,{ciphers,[
+                     <%= @ssl_ciphers.sort.map{|k| "{#{k}}"}.join(",\n                     ") %>
+                   ]}
+                   <%- end -%>
                   ]},
 <%- end -%>
 <% if @config_variables -%>
@@ -62,7 +67,13 @@
                   {keyfile, "<%= @ssl_key %>"}
                    <%- if @ssl_versions -%>
                      ,{versions, [<%= @ssl_versions.sort.map { |v| "'#{v}'" }.join(', ') %>]}
-                   <% end -%>]}
+                   <%- end -%>
+                  <%- if @ssl_ciphers and @ssl_ciphers.size > 0 -%>
+                  ,{ciphers,[
+                      <%= @ssl_ciphers.sort.map{|k| "{#{k}}"}.join(",\n                      ") %>
+                  ]}
+                  <%- end -%>
+                 ]}
 <%- else -%>
       {port, <%= @management_port %>}
 <%- end -%>

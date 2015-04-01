@@ -641,6 +641,21 @@ describe 'rabbitmq' do
         end
       end
 
+      describe 'ssl options with ssl ciphers' do
+        let(:params) {
+          { :ssl => true,
+            :ssl_port => 3141,
+            :ssl_cacert => '/path/to/cacert',
+            :ssl_cert => '/path/to/cert',
+            :ssl_key => '/path/to/key',
+            :ssl_ciphers => ['ecdhe_rsa,aes_256_cbc,sha', 'dhe_rsa,aes_256_cbc,sha']
+        } }
+
+        it 'should set ssl ciphers to specified values' do
+          should contain_file('rabbitmq.config').with_content(%r{ciphers,\[[[:space:]]+{dhe_rsa,aes_256_cbc,sha},[[:space:]]+{ecdhe_rsa,aes_256_cbc,sha}[[:space:]]+\]})
+        end
+      end
+
       describe 'ssl admin options with specific ssl versions' do
         let(:params) {
           { :ssl => true,
