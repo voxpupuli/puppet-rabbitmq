@@ -315,7 +315,7 @@ describe 'rabbitmq' do
 
         describe 'with defaults' do
           it 'fails' do
-            expect { catalogue }.to raise_error(Puppet::Error, /^You must set the \$erlang_cookie value/)
+            expect { catalogue }.to raise_error(Puppet::Error, /You must set the \$erlang_cookie value/)
           end
         end
 
@@ -637,7 +637,7 @@ describe 'rabbitmq' do
         } }
 
         it 'fails' do
-          expect { catalogue }.to raise_error(Puppet::Error, /^\$ssl_versions requires that \$ssl => true/)
+          expect { catalogue }.to raise_error(Puppet::Error, /\$ssl_versions requires that \$ssl => true/)
         end
       end
 
