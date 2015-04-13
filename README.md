@@ -224,7 +224,8 @@ This value has no default and must be set explicitly if using clustering.
 
 ####`file_limit`
 
-Set rabbitmq file ulimit. Defaults to 16384. Only available on systems with `$::osfamily == 'Debian'`
+Set rabbitmq file ulimit. Defaults to 16384. Only available on systems with
+`$::osfamily == 'Debian'` or `$::osfamily == 'RedHat'`.
 
 ####`key_content`
 
