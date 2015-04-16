@@ -28,12 +28,12 @@ EOT
   end
   
   it 'should call rabbitmqadmin to create' do
-    @provider.expects(:rabbitmqadmin).with('declare', 'binding', '--vhost=/', '--user=guest', '--password=guest', 'source=source', 'destination=target', 'arguments={}', 'routing_key=blablub', 'destination_type=queue')
+    @provider.expects(:rabbitmqadmin).with('declare', 'binding', '--vhost=/', '--user=guest', '--password=guest', '-c', '/etc/rabbitmq/rabbitmqadmin.conf', 'source=source', 'destination=target', 'arguments={}', 'routing_key=blablub', 'destination_type=queue')
     @provider.create
   end
 
   it 'should call rabbitmqadmin to destroy' do
-    @provider.expects(:rabbitmqadmin).with('delete', 'binding', '--vhost=/', '--user=guest', '--password=guest', 'source=source', 'destination_type=queue', 'destination=target')
+    @provider.expects(:rabbitmqadmin).with('delete', 'binding', '--vhost=/', '--user=guest', '--password=guest', '-c', '/etc/rabbitmq/rabbitmqadmin.conf', 'source=source', 'destination_type=queue', 'destination=target')
     @provider.destroy
   end
 
@@ -52,7 +52,7 @@ EOT
     end
 
     it 'should call rabbitmqadmin to create' do
-      @provider.expects(:rabbitmqadmin).with('declare', 'binding', '--vhost=/', '--user=colin', '--password=secret', 'source=source', 'destination=test2', 'arguments={}', 'routing_key=blablubd', 'destination_type=queue')
+      @provider.expects(:rabbitmqadmin).with('declare', 'binding', '--vhost=/', '--user=colin', '--password=secret', '-c', '/etc/rabbitmq/rabbitmqadmin.conf', 'source=source', 'destination=test2', 'arguments={}', 'routing_key=blablubd', 'destination_type=queue')
       @provider.create
     end
   end
