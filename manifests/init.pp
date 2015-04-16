@@ -200,10 +200,9 @@ class rabbitmq(
     include '::rabbitmq::install::rabbitmqadmin'
 
     rabbitmq_plugin { 'rabbitmq_management':
-      ensure   => present,
-      require  => Class['rabbitmq::install'],
-      notify   => Class['rabbitmq::service'],
-      provider => 'rabbitmqplugins'
+      ensure  => present,
+      require => Class['rabbitmq::install'],
+      notify  => Class['rabbitmq::service'],
     }
 
     Class['::rabbitmq::service'] -> Class['::rabbitmq::install::rabbitmqadmin']
@@ -212,19 +211,17 @@ class rabbitmq(
 
   if $stomp_ensure {
     rabbitmq_plugin { 'rabbitmq_stomp':
-      ensure   => present,
-      require  => Class['rabbitmq::install'],
-      notify   => Class['rabbitmq::service'],
-      provider => 'rabbitmqplugins'
+      ensure  => present,
+      require => Class['rabbitmq::install'],
+      notify  => Class['rabbitmq::service'],
     }
   }
 
   if ($ldap_auth) {
     rabbitmq_plugin { 'rabbitmq_auth_backend_ldap':
-      ensure   => present,
-      require  => Class['rabbitmq::install'],
-      notify   => Class['rabbitmq::service'],
-      provider => 'rabbitmqplugins',
+      ensure  => present,
+      require => Class['rabbitmq::install'],
+      notify  => Class['rabbitmq::service'],
     }
   }
 
