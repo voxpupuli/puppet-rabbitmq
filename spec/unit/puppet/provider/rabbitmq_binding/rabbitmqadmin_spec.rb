@@ -33,7 +33,7 @@ EOT
   end
 
   it 'should call rabbitmqadmin to destroy' do
-    @provider.expects(:rabbitmqadmin).with('delete', 'binding', '--vhost=/', '--user=guest', '--password=guest', '-c', '/etc/rabbitmq/rabbitmqadmin.conf', 'source=source', 'destination_type=queue', 'destination=target')
+    @provider.expects(:rabbitmqadmin).with('delete', 'binding', '--vhost=/', '--user=guest', '--password=guest', '-c', '/etc/rabbitmq/rabbitmqadmin.conf', 'source=source', 'destination_type=queue', 'destination=target', 'properties_key=blablub')
     @provider.destroy
   end
 
