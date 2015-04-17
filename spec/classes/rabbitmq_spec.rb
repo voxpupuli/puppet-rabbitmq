@@ -248,6 +248,144 @@ describe 'rabbitmq' do
     end
   end
 
+  context 'on RedHat 7.0 or more' do
+    let(:facts) {{ :osfamily => 'RedHat', :operatingsystemmajrelease => '7' }}
+
+    it { should contain_file('/etc/systemd/system/rabbitmq-server.service.d').with(
+      'ensure' => 'directory',
+      'owner'  => '0',
+      'group'  => '0',
+      'mode'   => '0755'
+    ) }
+
+    it { should contain_exec('rabbitmq-systemd-reload').with(
+      'command'     => '/usr/bin/systemctl daemon-reload',
+      'notify'      => 'Class[Rabbitmq::Service]',
+      'refreshonly' => true
+    ) }
+    context 'with file_limit => unlimited' do
+      let(:params) {{ :file_limit => 'unlimited' }}
+      it { should contain_file('/etc/systemd/system/rabbitmq-server.service.d/limits.conf').with(
+        'owner'   => '0',
+        'group'   => '0',
+        'mode'    => '0644',
+        'notify'  => 'Exec[rabbitmq-systemd-reload]',
+        'content' => '[Service]
+LimitNOFILE=unlimited
+'
+      ) }
+    end
+
+    context 'with file_limit => infinity' do
+      let(:params) {{ :file_limit => 'infinity' }}
+      it { should contain_file('/etc/systemd/system/rabbitmq-server.service.d/limits.conf').with(
+        'owner'   => '0',
+        'group'   => '0',
+        'mode'    => '0644',
+        'notify'  => 'Exec[rabbitmq-systemd-reload]',
+        'content' => '[Service]
+LimitNOFILE=infinity
+'
+      ) }
+    end
+
+    context 'with file_limit => -1' do
+      let(:params) {{ :file_limit => -1 }}
+      it { should contain_file('/etc/systemd/system/rabbitmq-server.service.d/limits.conf').with(
+        'owner'   => '0',
+        'group'   => '0',
+        'mode'    => '0644',
+        'notify'  => 'Exec[rabbitmq-systemd-reload]',
+        'content' => '[Service]
+LimitNOFILE=-1
+'
+      ) }
+    end
+
+    context 'with file_limit => \'1234\'' do
+      let(:params) {{ :file_limit => '1234' }}
+      it { should contain_file('/etc/systemd/system/rabbitmq-server.service.d/limits.conf').with(
+        'owner'   => '0',
+        'group'   => '0',
+        'mode'    => '0644',
+        'notify'  => 'Exec[rabbitmq-systemd-reload]',
+        'content' => '[Service]
+LimitNOFILE=1234
+'
+      ) }
+    end
+
+    context 'with file_limit => foo' do
+      let(:params) {{ :file_limit => 'foo' }}
+      it 'does not compile' do
+        expect { catalogue }.to raise_error(Puppet::Error, /\$file_limit must be an integer, 'unlimited', or 'infinity'/)
+      end
+    end
+  end
+
+  context 'on RedHat before 7.0' do
+    let(:facts) {{ :osfamily => 'RedHat', :operatingsystemmajrelease => '6' }}
+
+    context 'with file_limit => unlimited' do
+      let(:params) {{ :file_limit => 'unlimited' }}
+      it { should contain_file('/etc/security/limits.d/rabbitmq-server.conf').with(
+        'owner'   => '0',
+        'group'   => '0',
+        'mode'    => '0644',
+        'notify'  => 'Class[Rabbitmq::Service]',
+        'content' => 'rabbitmq soft nofile unlimited
+rabbitmq hard nofile unlimited
+'
+      ) }
+    end
+
+    context 'with file_limit => infinity' do
+      let(:params) {{ :file_limit => 'infinity' }}
+      it { should contain_file('/etc/security/limits.d/rabbitmq-server.conf').with(
+        'owner'   => '0',
+        'group'   => '0',
+        'mode'    => '0644',
+        'notify'  => 'Class[Rabbitmq::Service]',
+        'content' => 'rabbitmq soft nofile infinity
+rabbitmq hard nofile infinity
+'
+      ) }
+    end
+
+    context 'with file_limit => -1' do
+      let(:params) {{ :file_limit => -1 }}
+      it { should contain_file('/etc/security/limits.d/rabbitmq-server.conf').with(
+        'owner'   => '0',
+        'group'   => '0',
+        'mode'    => '0644',
+        'notify'  => 'Class[Rabbitmq::Service]',
+        'content' => 'rabbitmq soft nofile -1
+rabbitmq hard nofile -1
+'
+      ) }
+    end
+
+    context 'with file_limit => \'1234\'' do
+      let(:params) {{ :file_limit => '1234' }}
+      it { should contain_file('/etc/security/limits.d/rabbitmq-server.conf').with(
+        'owner'   => '0',
+        'group'   => '0',
+        'mode'    => '0644',
+        'notify'  => 'Class[Rabbitmq::Service]',
+        'content' => 'rabbitmq soft nofile 1234
+rabbitmq hard nofile 1234
+'
+      ) }
+    end
+
+    context 'with file_limit => foo' do
+      let(:params) {{ :file_limit => 'foo' }}
+      it 'does not compile' do
+        expect { catalogue }.to raise_error(Puppet::Error, /\$file_limit must be an integer, 'unlimited', or 'infinity'/)
+      end
+    end
+  end
+
   ['Debian', 'RedHat', 'SUSE', 'Archlinux'].each do |distro|
     context "on #{distro}" do
       let(:facts) {{
