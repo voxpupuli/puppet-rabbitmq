@@ -88,4 +88,32 @@ describe Puppet::Type.type(:rabbitmq_policy) do
       }.to raise_error(Puppet::Error, /Invalid value/)
     end
   end
+
+  it 'should accept and convert ha-params for ha-mode exactly' do
+    definition = {'ha-mode' => 'exactly', 'ha-params' => '2'}
+    @policy[:definition] = definition
+    @policy[:definition]['ha-params'].should be_a(Fixnum)
+    @policy[:definition]['ha-params'].should == 2
+  end
+
+  it 'should not accept non-numeric ha-params for ha-mode exactly' do
+    definition = {'ha-mode' => 'exactly', 'ha-params' => 'nonnumeric'}
+    expect {
+      @policy[:definition] = definition
+    }.to raise_error(Puppet::Error, /Invalid ha-params.*nonnumeric.*exactly/)
+  end
+
+  it 'should accept and convert the expires value' do
+    definition = {'expires' => '1800000'}
+    @policy[:definition] = definition
+    @policy[:definition]['expires'].should be_a(Fixnum)
+    @policy[:definition]['expires'].should == 1800000
+  end
+
+  it 'should not accept non-numeric expires value' do
+    definition = {'expires' => 'future'}
+    expect {
+      @policy[:definition] = definition
+    }.to raise_error(Puppet::Error, /Invalid expires value.*future/)
+  end
 end

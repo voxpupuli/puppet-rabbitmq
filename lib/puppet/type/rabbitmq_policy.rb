@@ -43,6 +43,9 @@ Puppet::Type.newtype(:rabbitmq_policy) do
     validate do |value|
       resource.validate_definition(value)
     end
+    munge do |value|
+      resource.munge_definition(value)
+    end
   end
 
   newproperty(:priority) do
@@ -72,5 +75,27 @@ Puppet::Type.newtype(:rabbitmq_policy) do
         raise ArgumentError, "Invalid definition"
       end
     end
+    if definition['ha-mode'] == 'exactly'
+      ha_params = definition['ha-params']
+      unless ha_params.to_i.to_s == ha_params
+        raise ArgumentError, "Invalid ha-params '#{ha_params}' for ha-mode 'exactly'"
+      end
+    end
+    if definition.key? 'expires'
+      expires_val = definition['expires']
+      unless expires_val.to_i.to_s == expires_val
+        raise ArgumentError, "Invalid expires value '#{expires_val}'"
+      end
+    end
+  end
+
+  def munge_definition(definition)
+    if definition['ha-mode'] == 'exactly'
+      definition['ha-params'] = definition['ha-params'].to_i
+    end
+    if definition.key? 'expires'
+      definition['expires'] = definition['expires'].to_i
+    end
+    definition
   end
 end
