@@ -63,8 +63,15 @@ class { '::rabbitmq':
 Or such as offline installation from intranet or local mirrors:
 
 ```puppet
+# using key_content to specify key
 class { '::rabbitmq':
    key_content      => template('openstack/rabbit.pub.key'),
+   package_gpg_key  => false,
+}
+
+# specifying a file containing key material
+class { '::rabbitmq':
+   key_content      => undef,
    package_gpg_key  => '/tmp/rabbit.pub.key',
 }
 ```
