@@ -574,6 +574,10 @@ For Debian systems:
       ensure => 'latest',
     }
 
+This module also depends on the excellent nanliu/staging module on the Forge:
+
+    puppet module install nanliu-staging
+
 ### Downgrade Issues
 
 Be advised that there were configuration file syntax and other changes made between RabbitMQ
