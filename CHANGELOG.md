@@ -1,3 +1,29 @@
+## 2015-04-28 - Version 5.2.0
+###Summary
+This release adds several new features for expanded configuration, support for SSL Ciphers, several bugfixes, and improved tests.
+
+####Features
+- New parameters to class `rabbitmq`
+  - `ssl_ciphers`
+- New parameters to class `rabbitmq::config`
+  - `interface`
+  - `ssl_interface`
+- New parameters to type `rabbitmq_exchange`
+  - `internal`
+  - `auto_delete`
+  - `durable`
+- Adds syncing with Modulesync
+- Adds support for SSL Ciphers
+- Adds `file_limit` support for RedHat platforms
+
+####Bugfixes
+- Will not create `rabbitmqadmin.conf` if admin is disabled
+- Fixes `check_password`
+- Fix to allow bindings and queues to be created when non-default management port is being used by rabbitmq. (MODULES-1856)
+- `rabbitmq_policy` converts known parameters to integers
+- Updates apt key for full fingerprint compliance.
+- Adds a missing `routing_key` param to rabbitmqadmin absent binding call.
+
 ## 2015-03-10 - Version 5.1.0
 ###Summary
 This release adds several features for greater flexibility in configuration of rabbitmq, includes a number of bug fixes, and bumps the minimum required version of puppetlabs-stdlib to 3.0.0.
