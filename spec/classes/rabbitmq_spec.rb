@@ -252,10 +252,11 @@ describe 'rabbitmq' do
     let(:facts) {{ :osfamily => 'RedHat', :operatingsystemmajrelease => '7' }}
 
     it { should contain_file('/etc/systemd/system/rabbitmq-server.service.d').with(
-      'ensure' => 'directory',
-      'owner'  => '0',
-      'group'  => '0',
-      'mode'   => '0755'
+      'ensure'                  => 'directory',
+      'owner'                   => '0',
+      'group'                   => '0',
+      'mode'                    => '0755',
+      'selinux_ignore_defaults' => true
     ) }
 
     it { should contain_exec('rabbitmq-systemd-reload').with(

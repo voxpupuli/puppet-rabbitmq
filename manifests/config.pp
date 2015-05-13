@@ -120,10 +120,11 @@ class rabbitmq::config {
     'RedHat': {
       if versioncmp($::operatingsystemmajrelease, '7') >= 0 {
         file { '/etc/systemd/system/rabbitmq-server.service.d':
-          ensure => directory,
-          owner  => '0',
-          group  => '0',
-          mode   => '0755',
+          ensure                  => directory,
+          owner                   => '0',
+          group                   => '0',
+          mode                    => '0755',
+          selinux_ignore_defaults => true,
         } ->
         file { '/etc/systemd/system/rabbitmq-server.service.d/limits.conf':
           content => template('rabbitmq/rabbitmq-server.service.d/limits.conf'),
