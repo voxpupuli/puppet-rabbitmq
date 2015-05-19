@@ -442,7 +442,7 @@ rabbitmq_user { 'dan':
 query all current vhosts: `$ puppet resource rabbitmq_vhost`
 
 ```puppet
-rabbitmq_vhost { 'myhost':
+rabbitmq_vhost { 'myvhost':
   ensure => present,
 }
 ```
@@ -450,7 +450,7 @@ rabbitmq_vhost { 'myhost':
 ### rabbitmq\_exchange
 
 ```puppet
-rabbitmq_exchange { 'myexchange@myhost':
+rabbitmq_exchange { 'myexchange@myvhost':
   user     => 'dan',
   password => 'bar',
   type     => 'topic',
@@ -467,7 +467,7 @@ rabbitmq_exchange { 'myexchange@myhost':
 ### rabbitmq\_queue
 
 ```puppet
-rabbitmq_queue { 'myqueue@myhost':
+rabbitmq_queue { 'myqueue@myvhost':
   user        => 'dan',
   password    => 'bar',
   durable     => true,
@@ -483,7 +483,7 @@ rabbitmq_queue { 'myqueue@myhost':
 ### rabbitmq\_binding
 
 ```puppet
-rabbitmq_binding { 'myexchange@myqueue@myhost':
+rabbitmq_binding { 'myexchange@myqueue@myvhost':
   user             => 'dan',
   password         => 'bar',
   destination_type => 'queue',
@@ -496,7 +496,7 @@ rabbitmq_binding { 'myexchange@myqueue@myhost':
 ### rabbitmq\_user\_permissions
 
 ```puppet
-rabbitmq_user_permissions { 'dan@myhost':
+rabbitmq_user_permissions { 'dan@myvhost':
   configure_permission => '.*',
   read_permission      => '.*',
   write_permission     => '.*',
@@ -506,7 +506,7 @@ rabbitmq_user_permissions { 'dan@myhost':
 ### rabbitmq\_policy
 
 ```puppet
-rabbitmq_policy { 'ha-all@myhost':
+rabbitmq_policy { 'ha-all@myvhost':
   pattern    => '.*',
   priority   => 0,
   applyto    => 'all',
