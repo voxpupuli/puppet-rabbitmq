@@ -11,6 +11,8 @@ class rabbitmq::repo::apt(
   $key_content = undef,
   ) {
 
+  include ::apt
+
   $pin = $rabbitmq::package_apt_pin
 
   Class['rabbitmq::repo::apt'] -> Package<| title == 'rabbitmq-server' |>
@@ -21,14 +23,19 @@ class rabbitmq::repo::apt(
   }
 
   apt::source { 'rabbitmq':
-    ensure      => $ensure_source,
-    location    => $location,
-    release     => $release,
-    repos       => $repos,
-    include_src => $include_src,
-    key         => $key,
-    key_source  => $key_source,
-    key_content => $key_content,
+    ensure   => $ensure_source,
+    location => $location,
+    release  => $release,
+    repos    => $repos,
+    key      => {
+      'id'      => $key,
+      'source'  => $key_source,
+      'content' => $key_content,
+    },
+    include  => {
+      'src' => $include_src,
+      'deb' => true,
+    },
   }
 
   if $pin != '' {
