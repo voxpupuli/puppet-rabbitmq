@@ -1,3 +1,14 @@
+## 2015-05-26 - Version 5.2.1
+###Summary
+This release includes a fix for idempotency between puppet runs, as well as Readme updates
+
+####Features
+- Readme updates
+- Testing updates
+
+####Bugfixes
+- Ensure idempotency between Puppet runs
+
 ## 2015-04-28 - Version 5.2.0
 ###Summary
 This release adds several new features for expanded configuration, support for SSL Ciphers, several bugfixes, and improved tests.
