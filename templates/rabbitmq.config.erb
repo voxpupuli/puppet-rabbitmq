@@ -12,9 +12,17 @@
     {cluster_nodes, {[<%= @cluster_nodes.map { |n| "\'rabbit@#{n}\'" }.join(', ') %>], <%= @cluster_node_type %>}},
     {cluster_partition_handling, <%= @cluster_partition_handling %>},
 <% end -%>
-<%- if @tcp_keepalive -%>
-    {tcp_listen_options, [{keepalive, true}]},
-<%- end -%>
+    {tcp_listen_options,
+         [binary,
+         <%- if @tcp_keepalive -%>
+         {keepalive,     true},
+         <%- end -%>
+         {packet,        raw},
+         {reuseaddr,     true},
+         {backlog,       128},
+         {nodelay,       true},
+         {exit_on_close, false}]
+    },
 <%- if @ssl_only -%>
     {tcp_listeners, []},
 <%- elsif @interface != 'UNSET' -%>

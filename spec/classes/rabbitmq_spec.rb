@@ -923,14 +923,14 @@ rabbitmq hard nofile 1234
         let(:params) {{ :tcp_keepalive => true }}
         it 'should set tcp_listen_options keepalive true' do
           should contain_file('rabbitmq.config') \
-            .with_content(/\{tcp_listen_options, \[\{keepalive, true\}\]\},/)
+            .with_content(/\{keepalive,     true\}/)
         end
       end
 
       describe 'tcp_keepalive disabled (default)' do
         it 'should not set tcp_listen_options' do
           should contain_file('rabbitmq.config') \
-            .without_content(/\{tcp_listen_options, \[\{keepalive, true\}\]\},/)
+            .without_content(/\{keepalive,     true\}/)
         end
       end
 
