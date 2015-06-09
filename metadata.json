@@ -1,6 +1,6 @@
 {
   "name": "puppetlabs-rabbitmq",
-  "version": "5.2.1",
+  "version": "5.2.2",
   "author": "puppetlabs",
   "summary": "Installs, configures, and manages RabbitMQ.",
   "license": "Apache-2.0",
