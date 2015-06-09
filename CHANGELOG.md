@@ -1,3 +1,12 @@
+## 2015-06-09 - Version 5.2.2
+### Summary
+This is a bugfix to allow the rabbitmq\_exchange type's internal/durable/auto\_delete attributes work when they are not explicitly passed.
+
+### Bugfixes
+- Fix rabbitmq\_exchange create when internal/durable/auto\_delete are not specified
+- Start unit testing on puppet 4
+- Add default value to tcp\_listen\_options
+
 ## 2015-05-26 - Version 5.2.1
 ###Summary
 This release includes a fix for idempotency between puppet runs, as well as Readme updates
