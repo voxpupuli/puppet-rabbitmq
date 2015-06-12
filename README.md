@@ -550,6 +550,10 @@ The module has been tested on:
 
 Testing on other platforms has been light and cannot be guaranteed.
 
+### Apt module compatibility
+
+While this module supports both 1.x and 2.x versions of the puppetlabs-apt module, it does not support puppetlabs-apt 2.0.0 or 2.0.1.
+
 ### Module dependencies
 
 If running CentOS/RHEL, and using the yum provider, ensure the epel repo is present.
