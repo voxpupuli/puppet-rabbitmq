@@ -20,6 +20,19 @@ class rabbitmq::repo::apt(
     default => 'present',
   }
 
+  # if key_content is defined then key_source must be set to undef (not false)
+  # or vice versa, the apt_key provider will translate false as a string
+  if ($key_content)
+  {
+    $aux_key_content = $key_content
+    $aux_key_source = undef
+  }
+  else
+  {
+    $aux_key_content = undef
+    $aux_key_source = $key_source
+  }
+
   apt::source { 'rabbitmq':
     ensure      => $ensure_source,
     location    => $location,
@@ -27,8 +40,8 @@ class rabbitmq::repo::apt(
     repos       => $repos,
     include_src => $include_src,
     key         => $key,
-    key_source  => $key_source,
-    key_content => $key_content,
+    key_source  => $aux_key_source,
+    key_content => $aux_key_content,
   }
 
   if $pin != '' {

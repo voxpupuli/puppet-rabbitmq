@@ -70,7 +70,6 @@ class rabbitmq(
   # Validate install parameters.
   validate_re($package_apt_pin, '^(|\d+)$')
   validate_string($package_ensure)
-  validate_string($package_gpg_key)
   validate_string($package_name)
   validate_string($package_provider)
   validate_bool($repos_ensure)
@@ -136,6 +135,32 @@ class rabbitmq(
   validate_hash($config_variables)
   validate_hash($config_kernel_variables)
 
+  if ($::osfamily == 'Debian')
+  {
+    # ensure package_gpg_key is set to boolean false or string
+    if ($package_gpg_key) {
+      validate_string($package_gpg_key)
+    } else {
+      validate_bool($package_gpg_key)
+
+      if ($key_content == '')
+      {
+        fail('key_content must be a non-empty string containing gpg key')
+      }
+      else
+      {
+        validate_string($key_content)
+      }
+    }
+
+    # apt_key only allows key_content or package_gpg_key to be set
+    if ($key_content and $package_gpg_key)
+    {
+      fail(inline_template('package_gpg_key and key_content are ',
+        'mutually exclusive, set one to false'))
+    }
+  }
+
   if $ssl_only and ! $ssl {
     fail('$ssl_only => true requires that $ssl => true')
   }
@@ -186,9 +211,19 @@ class rabbitmq(
       'RedHat', 'SUSE':
         { include '::rabbitmq::repo::rhel' }
       'Debian': {
-        class { '::rabbitmq::repo::apt' :
-          key_source  => $package_gpg_key,
-          key_content => $key_content,
+        if ($package_gpg_key)
+        {
+            class { '::rabbitmq::repo::apt' :
+              key_source  => $package_gpg_key,
+              key_content => false,
+            }
+        }
+        else
+        {
+            class { '::rabbitmq::repo::apt' :
+              key_source  => false,
+              key_content => $key_content,
+            }
         }
       }
       default:
