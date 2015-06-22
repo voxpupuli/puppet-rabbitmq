@@ -1,3 +1,7 @@
+## 2015-06-23 - Version 5.2.3
+### Summary
+This is a patch release that updates the dependency requirements in the metadata.
+
 ## 2015-06-09 - Version 5.2.2
 ### Summary
 This is a bugfix to allow the rabbitmq\_exchange type's internal/durable/auto\_delete attributes work when they are not explicitly passed.
