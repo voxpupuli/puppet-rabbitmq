@@ -64,6 +64,17 @@ class rabbitmq(
   $config_variables           = $rabbitmq::params::config_variables,
   $config_kernel_variables    = $rabbitmq::params::config_kernel_variables,
   $key_content                = undef,
+                                                                                
+  ### START Hiera Lookups ###                                                   
+  $rabbitmq_users             = {},
+  $rabbitmq_queues            = {},
+  $rabbitmq_users_permissions = {},
+  $rabbitmq_vhosts            = {},
+  $rabbitmq_exchanges         = {},
+  $rabbitmq_bindings          = {},
+  $rabbitmq_policies          = {},
+  $rabbitmq_plugins           = {},
+  ### END Hiera Lookups ###  
 ) inherits rabbitmq::params {
 
   validate_bool($admin_enable)
@@ -224,6 +235,16 @@ class rabbitmq(
       notify  => Class['rabbitmq::service'],
     }
   }
+
+  # Create resources from hiera lookups                                         
+  create_resources('rabbitmq_user', $rabbitmq_users)
+  create_resources('rabbitmq_vhost', $rabbitmq_vhosts)
+  create_resources('rabbitmq_queue', $rabbitmq_queues)
+  create_resources('rabbitmq_user_permissions', $rabbitmq_users_permissions)
+  create_resources('rabbitmq_exchange', $rabbitmq_exchanges)
+  create_resources('rabbitmq_binding', $rabbitmq_bindings)
+  create_resources('rabbitmq_policy', $rabbitmq_policies)
+  create_resources('rabbitmq_plugin', $rabbitmq_plugins)
 
   anchor { 'rabbitmq::begin': }
   anchor { 'rabbitmq::end': }
