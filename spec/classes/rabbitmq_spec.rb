@@ -150,8 +150,8 @@ describe 'rabbitmq' do
       it { should contain_file('/etc/default/rabbitmq-server').with_content(/ulimit -n infinity/) }
     end
 
-    context 'with file_limit => -1' do
-      let(:params) {{ :file_limit => -1 }}
+    context 'with file_limit => \'-1\'' do
+      let(:params) {{ :file_limit => '-1' }}
       it { should contain_file('/etc/default/rabbitmq-server').with_content(/ulimit -n -1/) }
     end
 
@@ -160,10 +160,17 @@ describe 'rabbitmq' do
       it { should contain_file('/etc/default/rabbitmq-server').with_content(/ulimit -n 1234/) }
     end
 
-    context 'with file_limit => foo' do
+    context 'with file_limit => \'-42\'' do
+      let(:params) {{ :file_limit => '-42' }}
+      it 'does not compile' do
+        expect { catalogue }.to raise_error(Puppet::Error, /\$file_limit must be a positive integer, '-1', 'unlimited', or 'infinity'/)
+      end
+    end
+
+    context 'with file_limit => \'foo\'' do
       let(:params) {{ :file_limit => 'foo' }}
       it 'does not compile' do
-        expect { catalogue }.to raise_error(Puppet::Error, /\$file_limit must be an integer, 'unlimited', or 'infinity'/)
+        expect { catalogue }.to raise_error(Puppet::Error, /\$file_limit must be a positive integer, '-1', 'unlimited', or 'infinity'/)
       end
     end
   end
@@ -264,7 +271,7 @@ describe 'rabbitmq' do
       'notify'      => 'Class[Rabbitmq::Service]',
       'refreshonly' => true
     ) }
-    context 'with file_limit => unlimited' do
+    context 'with file_limit => \'unlimited\'' do
       let(:params) {{ :file_limit => 'unlimited' }}
       it { should contain_file('/etc/systemd/system/rabbitmq-server.service.d/limits.conf').with(
         'owner'   => '0',
@@ -277,7 +284,7 @@ LimitNOFILE=unlimited
       ) }
     end
 
-    context 'with file_limit => infinity' do
+    context 'with file_limit => \'infinity\'' do
       let(:params) {{ :file_limit => 'infinity' }}
       it { should contain_file('/etc/systemd/system/rabbitmq-server.service.d/limits.conf').with(
         'owner'   => '0',
@@ -290,8 +297,8 @@ LimitNOFILE=infinity
       ) }
     end
 
-    context 'with file_limit => -1' do
-      let(:params) {{ :file_limit => -1 }}
+    context 'with file_limit => \'-1\'' do
+      let(:params) {{ :file_limit => '-1' }}
       it { should contain_file('/etc/systemd/system/rabbitmq-server.service.d/limits.conf').with(
         'owner'   => '0',
         'group'   => '0',
@@ -316,10 +323,17 @@ LimitNOFILE=1234
       ) }
     end
 
-    context 'with file_limit => foo' do
+    context 'with file_limit => \'-42\'' do
+      let(:params) {{ :file_limit => '-42' }}
+      it 'does not compile' do
+        expect { catalogue }.to raise_error(Puppet::Error, /\$file_limit must be a positive integer, '-1', 'unlimited', or 'infinity'/)
+      end
+    end
+
+    context 'with file_limit => \'foo\'' do
       let(:params) {{ :file_limit => 'foo' }}
       it 'does not compile' do
-        expect { catalogue }.to raise_error(Puppet::Error, /\$file_limit must be an integer, 'unlimited', or 'infinity'/)
+        expect { catalogue }.to raise_error(Puppet::Error, /\$file_limit must be a positive integer, '-1', 'unlimited', or 'infinity'/)
       end
     end
   end
@@ -327,7 +341,7 @@ LimitNOFILE=1234
   context 'on RedHat before 7.0' do
     let(:facts) {{ :osfamily => 'RedHat', :operatingsystemmajrelease => '6' }}
 
-    context 'with file_limit => unlimited' do
+    context 'with file_limit => \'unlimited\'' do
       let(:params) {{ :file_limit => 'unlimited' }}
       it { should contain_file('/etc/security/limits.d/rabbitmq-server.conf').with(
         'owner'   => '0',
@@ -340,7 +354,7 @@ rabbitmq hard nofile unlimited
       ) }
     end
 
-    context 'with file_limit => infinity' do
+    context 'with file_limit => \'infinity\'' do
       let(:params) {{ :file_limit => 'infinity' }}
       it { should contain_file('/etc/security/limits.d/rabbitmq-server.conf').with(
         'owner'   => '0',
@@ -353,8 +367,8 @@ rabbitmq hard nofile infinity
       ) }
     end
 
-    context 'with file_limit => -1' do
-      let(:params) {{ :file_limit => -1 }}
+    context 'with file_limit => \'-1\'' do
+      let(:params) {{ :file_limit => '-1' }}
       it { should contain_file('/etc/security/limits.d/rabbitmq-server.conf').with(
         'owner'   => '0',
         'group'   => '0',
@@ -379,10 +393,17 @@ rabbitmq hard nofile 1234
       ) }
     end
 
-    context 'with file_limit => foo' do
+    context 'with file_limit => \'-42\'' do
+      let(:params) {{ :file_limit => '-42' }}
+      it 'does not compile' do
+        expect { catalogue }.to raise_error(Puppet::Error, /\$file_limit must be a positive integer, '-1', 'unlimited', or 'infinity'/)
+      end
+    end
+
+    context 'with file_limit => \'foo\'' do
       let(:params) {{ :file_limit => 'foo' }}
       it 'does not compile' do
-        expect { catalogue }.to raise_error(Puppet::Error, /\$file_limit must be an integer, 'unlimited', or 'infinity'/)
+        expect { catalogue }.to raise_error(Puppet::Error, /\$file_limit must be a positive integer, '-1', 'unlimited', or 'infinity'/)
       end
     end
   end
