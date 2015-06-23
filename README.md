@@ -221,6 +221,8 @@ RabbitMQ Environment Variables in rabbitmq_env.config
 
 The erlang cookie to use for clustering - must be the same between all nodes.
 This value has no default and must be set explicitly if using clustering.
+If you run Pacemaker and you don't want to use RabbitMQ buildin cluster, you can
+set config_cluster to 'False' and set 'erlang_cookie'.
 
 ####`file_limit`
 

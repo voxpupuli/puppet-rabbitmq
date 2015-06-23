@@ -492,6 +492,25 @@ rabbitmq hard nofile 1234
           end
         end
 
+        describe 'with erlang_cookie set but without config_cluster' do
+          let(:params) {{
+            :config_cluster           => false,
+            :erlang_cookie            => 'TESTCOOKIE',
+          }}
+          it 'contains the rabbitmq_erlang_cookie' do
+            should contain_rabbitmq_erlang_cookie('/var/lib/rabbitmq/.erlang.cookie')
+          end
+        end
+
+        describe 'without erlang_cookie and without config_cluster' do
+          let(:params) {{
+            :config_cluster           => false,
+          }}
+          it 'contains the rabbitmq_erlang_cookie' do
+            should_not contain_rabbitmq_erlang_cookie('/var/lib/rabbitmq/.erlang.cookie')
+          end
+        end
+
         describe 'and sets appropriate configuration' do
           let(:params) {{
             :config_cluster           => true,
