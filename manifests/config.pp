@@ -16,6 +16,7 @@ class rabbitmq::config {
   $env_config_path            = $rabbitmq::env_config_path
   $erlang_cookie              = $rabbitmq::erlang_cookie
   $interface                  = $rabbitmq::interface
+  $management_address         = $rabbitmq::management_address
   $management_port            = $rabbitmq::management_port
   $node_ip_address            = $rabbitmq::node_ip_address
   $plugin_dir                 = $rabbitmq::plugin_dir
@@ -32,6 +33,7 @@ class rabbitmq::config {
   $ssl_key                    = $rabbitmq::ssl_key
   $ssl_port                   = $rabbitmq::ssl_port
   $ssl_interface              = $rabbitmq::ssl_interface
+  $enable_management_ssl      = $rabbitmq::enable_management_ssl
   $ssl_management_port        = $rabbitmq::ssl_management_port
   $ssl_stomp_port             = $rabbitmq::ssl_stomp_port
   $ssl_verify                 = $rabbitmq::ssl_verify

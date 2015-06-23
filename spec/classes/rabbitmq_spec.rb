@@ -797,7 +797,7 @@ rabbitmq hard nofile 1234
 
       describe 'ssl admin options with specific ssl versions' do
         let(:params) {
-          { :ssl => true,
+          { :enable_management_ssl  => true,
             :ssl_management_port => 5926,
             :ssl_cacert => '/path/to/cacert',
             :ssl_cert => '/path/to/cert',
@@ -820,7 +820,7 @@ rabbitmq hard nofile 1234
 
       describe 'ssl admin options' do
         let(:params) {
-          { :ssl => true,
+          { :enable_management_ssl  => true,
             :ssl_management_port => 3141,
             :ssl_cacert => '/path/to/cacert',
             :ssl_cert => '/path/to/cert',
@@ -841,7 +841,7 @@ rabbitmq hard nofile 1234
 
       describe 'admin without ssl' do
         let(:params) {
-          { :ssl => false,
+          { :enable_management_ssl  => false,
             :management_port => 3141,
             :admin_enable => true
         } }
@@ -855,7 +855,7 @@ rabbitmq hard nofile 1234
 
       describe 'ssl admin options' do
         let(:params) {
-          { :ssl => true,
+          { :enable_management_ssl  => true,
             :ssl_management_port => 3141,
             :ssl_cacert => '/path/to/cacert',
             :ssl_cert => '/path/to/cert',
@@ -876,7 +876,7 @@ rabbitmq hard nofile 1234
 
       describe 'admin without ssl' do
         let(:params) {
-          { :ssl => false,
+          { :enable_management_ssl  => false,
             :management_port => 3141,
             :admin_enable => true
         } }
@@ -886,6 +886,46 @@ rabbitmq hard nofile 1234
             .with_content(/\{rabbitmq_management, \[/) \
             .with_content(/\{listener, \[/) \
             .with_content(/\{port, 3141\}/)
+        end
+      end
+
+      describe 'admin without ssl and specific port set' do
+        let(:params) {
+          { :enable_management_ssl  => false,
+            :management_port => 3141,
+            :admin_enable => true,
+            :management_address => '192.168.1.1'
+        } }
+
+        it 'should set rabbitmq_management port option to specified values' do
+          should contain_file('rabbitmq.config').with_content(%r{rabbitmq_management, \[})
+          should contain_file('rabbitmq.config').with_content(%r{listener, \[})
+          should contain_file('rabbitmq.config').with_content(%r{ip, "192.168.1.1"\}})
+          should contain_file('rabbitmq.config').with_content(%r{port, 3141\}})
+        end
+      end
+
+      describe 'admin ssl admin options and specific port set' do
+        let(:params) {
+          { :enable_management_ssl  => true,
+            :ssl_management_port => 3141,
+            :management_address => '192.168.1.1',
+            :ssl_cacert => '/path/to/cacert',
+            :ssl_cert => '/path/to/cert',
+            :ssl_key => '/path/to/key',
+            :admin_enable => true
+        } }
+
+        it 'should set rabbitmq_management ssl options to specified values' do
+          should contain_file('rabbitmq.config').with_content(%r{rabbitmq_management, \[})
+          should contain_file('rabbitmq.config').with_content(%r{listener, \[})
+          should contain_file('rabbitmq.config').with_content(%r{ip, "192.168.1.1"\}})
+          should contain_file('rabbitmq.config').with_content(%r{port, 3141\},})
+          should contain_file('rabbitmq.config').with_content(%r{ssl, true\},})
+          should contain_file('rabbitmq.config').with_content(%r{ssl_opts, \[})
+          should contain_file('rabbitmq.config').with_content(%r{cacertfile, "/path/to/cacert"\},})
+          should contain_file('rabbitmq.config').with_content(%r{certfile, "/path/to/cert"\},})
+          should contain_file('rabbitmq.config').with_content(%r{keyfile, "/path/to/key"\}})
         end
       end
 
