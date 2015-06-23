@@ -680,6 +680,79 @@ rabbitmq hard nofile 1234
         end
       end
 
+      describe 'ssl options and mangament_ssl false' do
+        let(:params) {
+          { :ssl => true,
+            :ssl_port => 3141,
+            :ssl_cacert => '/path/to/cacert',
+            :ssl_cert => '/path/to/cert',
+            :ssl_key => '/path/to/key',
+            :management_ssl => false,
+            :management_port => 13142
+        } }
+
+        it 'should set ssl options to specified values' do
+          should contain_file('rabbitmq.config').with_content(
+            %r{ssl_listeners, \[3141\]}
+          )
+          should contain_file('rabbitmq.config').with_content(
+            %r{ssl_options, \[}
+          )
+          should contain_file('rabbitmq.config').with_content(
+            %r{cacertfile,"/path/to/cacert"}
+          )
+          should contain_file('rabbitmq.config').with_content(
+            %r{certfile,"/path/to/cert"}
+          )
+          should contain_file('rabbitmq.config').with_content(
+            %r{keyfile,"/path/to/key"}
+          )
+        end
+        it 'should set non ssl port for management port' do
+          should contain_file('rabbitmq.config').with_content(
+            %r{port, 13142}
+          )
+        end
+      end
+
+        describe 'ssl options and mangament_ssl true' do
+        let(:params) {
+          { :ssl => true,
+            :ssl_port => 3141,
+            :ssl_cacert => '/path/to/cacert',
+            :ssl_cert => '/path/to/cert',
+            :ssl_key => '/path/to/key',
+            :management_ssl => true,
+            :ssl_management_port => 13141
+        } }
+
+        it 'should set ssl options to specified values' do
+          should contain_file('rabbitmq.config').with_content(
+            %r{ssl_listeners, \[3141\]}
+          )
+          should contain_file('rabbitmq.config').with_content(
+            %r{ssl_opts, }
+          )
+          should contain_file('rabbitmq.config').with_content(
+            %r{ssl_options, \[}
+          )
+          should contain_file('rabbitmq.config').with_content(
+            %r{cacertfile,"/path/to/cacert"}
+          )
+          should contain_file('rabbitmq.config').with_content(
+            %r{certfile,"/path/to/cert"}
+          )
+          should contain_file('rabbitmq.config').with_content(
+            %r{keyfile,"/path/to/key"}
+          )
+        end
+        it 'should set ssl managment port to specified values' do 
+          should contain_file('rabbitmq.config').with_content(
+            %r{port, 13141}
+          )
+        end
+      end
+
       describe 'ssl options' do
         let(:params) {
           { :ssl => true,
