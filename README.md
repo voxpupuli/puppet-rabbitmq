@@ -272,6 +272,12 @@ Boolean, whether or not to manage package repositories.
 
 The port for the RabbitMQ management interface.
 
+####`management_ssl`
+
+Switch management back to no ssl mode if ssl is enabled.
+Has only a effect if ssl => true.
+Default is true.
+
 ####`node_ip_address`
 
 The value of NODE_IP_ADDRESS in rabbitmq_env.config
