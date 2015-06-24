@@ -26,9 +26,9 @@ class rabbitmq::repo::apt(
     release  => $release,
     repos    => $repos,
     include  => {
-      'src'  => $include_src,
+      'src' => $include_src,
     },
-    key       => {
+    key      => {
       id      => $key,
       source  => $key_source,
       content => $key_content,
