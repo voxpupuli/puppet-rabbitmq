@@ -3,13 +3,13 @@ require 'puppet/type/rabbitmq_binding'
 describe Puppet::Type.type(:rabbitmq_binding) do
   before :each do
     @binding = Puppet::Type.type(:rabbitmq_binding).new(
-      :name => 'foo@blub@bar',
+      :name => '#@foo@blub@bar',
       :destination_type => :queue
     )
   end
   it 'should accept an queue name' do
-    @binding[:name] = 'dan@dude@pl'
-    @binding[:name].should == 'dan@dude@pl'
+    @binding[:name] = '#@dan@dude@pl'
+    @binding[:name].should == '#@dan@dude@pl'
   end
   it 'should require a name' do
     expect {

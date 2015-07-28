@@ -48,11 +48,10 @@ describe 'rabbitmq binding:' do
         ensure      => present,
       } ->
 
-      rabbitmq_binding { 'exchange1@queue1@host1':
+      rabbitmq_binding { '#@exchange1@queue1@host1':
         user             => 'dan',
         password         => 'bar',
         destination_type => 'queue',
-        routing_key      => '#',
         ensure           => present,
       }
       
@@ -124,11 +123,10 @@ describe 'rabbitmq binding:' do
         ensure      => present,
       } ->
 
-      rabbitmq_binding { 'exchange2@queue2@host2':
+      rabbitmq_binding { '#@exchange2@queue2@host2':
         user             => 'dan',
         password         => 'bar',
         destination_type => 'queue',
-        routing_key      => '#',
         ensure           => present,
       }
      
