@@ -96,6 +96,9 @@ Puppet::Type.newtype(:rabbitmq_policy) do
     if definition.key? 'expires'
       definition['expires'] = definition['expires'].to_i
     end
+    if definition.key? 'max-length'
+      definition['max-length'] = definition['max-length'].to_i
+    end
     definition
   end
 end
