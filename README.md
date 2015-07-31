@@ -131,6 +131,19 @@ class { 'rabbitmq':
 }
 ```
 
+Setting up a cluster that comes up on its own, but isn't restarted automatically
+on configuration changes, so that a controlled restart can be done:
+
+```puppet
+class { 'rabbitmq':
+  config_cluster           => true,
+  cluster_nodes            => ['rabbit1', 'rabbit2'],
+  erlang_cookie            => 'A_SECRET_COOKIE_STRING',
+  service_notify           => false,
+  wipe_db_on_cookie_change => true,
+}
+```
+
 ##Reference
 
 ##Classes
@@ -334,6 +347,10 @@ Determines if the service is managed.
 ####`service_name`
 
 The name of the service to manage.
+
+####`service_notify`
+
+Determines if the service is notifed on configuration file changes.
 
 ####`ssl`
 
