@@ -34,6 +34,7 @@ class rabbitmq(
   $service_ensure             = $rabbitmq::params::service_ensure,
   $service_manage             = $rabbitmq::params::service_manage,
   $service_name               = $rabbitmq::params::service_name,
+  $service_notify             = $rabbitmq::params::service_notify,
   $ssl                        = $rabbitmq::params::ssl,
   $ssl_only                   = $rabbitmq::params::ssl_only,
   $ssl_cacert                 = $rabbitmq::params::ssl_cacert,
@@ -107,6 +108,7 @@ class rabbitmq(
   validate_re($service_ensure, '^(running|stopped)$')
   validate_bool($service_manage)
   validate_string($service_name)
+  validate_bool($service_notify)
   validate_bool($ssl)
   validate_bool($ssl_only)
   validate_string($ssl_cacert)
@@ -227,9 +229,15 @@ class rabbitmq(
   anchor { 'rabbitmq::begin': }
   anchor { 'rabbitmq::end': }
 
-  Anchor['rabbitmq::begin'] -> Class['::rabbitmq::install']
-    -> Class['::rabbitmq::config'] ~> Class['::rabbitmq::service']
-    -> Class['::rabbitmq::management'] -> Anchor['rabbitmq::end']
+  if $service_notify {
+    Anchor['rabbitmq::begin'] -> Class['::rabbitmq::install']
+      -> Class['::rabbitmq::config'] ~> Class['::rabbitmq::service']
+      -> Class['::rabbitmq::management'] -> Anchor['rabbitmq::end']
+  } else {
+    Anchor['rabbitmq::begin'] -> Class['::rabbitmq::install']
+      -> Class['::rabbitmq::config'] -> Class['::rabbitmq::service']
+      -> Class['::rabbitmq::management'] -> Anchor['rabbitmq::end']
+  }
 
   # Make sure the various providers have their requirements in place.
   Class['::rabbitmq::install'] -> Rabbitmq_plugin<| |>

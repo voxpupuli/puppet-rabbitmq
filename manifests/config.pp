@@ -26,6 +26,7 @@ class rabbitmq::config {
   $port                       = $rabbitmq::port
   $tcp_keepalive              = $rabbitmq::tcp_keepalive
   $service_name               = $rabbitmq::service_name
+  $service_notify             = $rabbitmq::service_notify
   $ssl                        = $rabbitmq::ssl
   $ssl_only                   = $rabbitmq::ssl_only
   $ssl_cacert                 = $rabbitmq::ssl_cacert
@@ -82,7 +83,7 @@ class rabbitmq::config {
     owner   => '0',
     group   => '0',
     mode    => '0644',
-    notify  => Class['rabbitmq::service'],
+    before  => Class['rabbitmq::service'],
   }
 
   file { 'rabbitmq-env.config':
@@ -92,7 +93,7 @@ class rabbitmq::config {
     owner   => '0',
     group   => '0',
     mode    => '0644',
-    notify  => Class['rabbitmq::service'],
+    before  => Class['rabbitmq::service'],
   }
 
   if $admin_enable {
@@ -115,7 +116,7 @@ class rabbitmq::config {
         mode    => '0644',
         owner   => '0',
         group   => '0',
-        notify  => Class['rabbitmq::service'],
+        before  => Class['rabbitmq::service'],
       }
     }
     'RedHat': {
@@ -136,7 +137,7 @@ class rabbitmq::config {
         }
         exec { 'rabbitmq-systemd-reload':
           command     => '/usr/bin/systemctl daemon-reload',
-          notify      => Class['Rabbitmq::Service'],
+          before      => Class['Rabbitmq::Service'],
           refreshonly => true,
         }
       } else {
@@ -145,11 +146,30 @@ class rabbitmq::config {
           owner   => '0',
           group   => '0',
           mode    => '0644',
-          notify  => Class['Rabbitmq::Service'],
+          before  => Class['Rabbitmq::Service'],
         }
       }
     }
     default: {
+    }
+  }
+
+  if $service_notify {
+    File['rabbitmq.config'] ~> Class['rabbitmq::service']
+    File['rabbitmq-env.config'] ~> Class['rabbitmq::service']
+    case $::osfamily {
+      'Debian': {
+        File['/etc/default/rabbitmq-server'] ~> Class['rabbitmq::service']
+      }
+      'RedHat': {
+        if versioncmp($::operatingsystemmajrelease, '7') >= 0 {
+          Exec['rabbitmq-systemd-reload'] ~> Class['rabbitmq::service']
+        } else {
+          File['/etc/security/limits.d/rabbitmq-server.conf'] ~> Class['rabbitmq::service']
+        }
+      }
+      default: {
+      }
     }
   }
 
@@ -163,8 +183,10 @@ class rabbitmq::config {
       rabbitmq_group => $rabbitmq_group,
       rabbitmq_home  => $rabbitmq_home,
       service_name   => $service_name,
-      before         => File['rabbitmq.config'],
-      notify         => Class['rabbitmq::service'],
+      before         => [File['rabbitmq.config'],Class['rabbitmq::service']],
+    }
+    if $service_notify {
+      Rabbitmq_erlang_cookie["${rabbitmq_home}/.erlang.cookie"] ~> Class['rabbitmq::service']
     }
   }
 }
