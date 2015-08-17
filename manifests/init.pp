@@ -33,6 +33,7 @@ class rabbitmq(
   $rabbitmq_home              = $rabbitmq::params::rabbitmq_home,
   $port                       = $rabbitmq::params::port,
   $tcp_keepalive              = $rabbitmq::params::tcp_keepalive,
+  $heartbeat                  = $rabbitmq::params::heartbeat,
   $service_ensure             = $rabbitmq::params::service_ensure,
   $service_manage             = $rabbitmq::params::service_manage,
   $service_name               = $rabbitmq::params::service_name,
@@ -146,6 +147,10 @@ class rabbitmq(
   validate_hash($config_variables)
   validate_hash($config_kernel_variables)
   validate_hash($config_management_variables)
+
+  if $heartbeat {
+    validate_integer($heartbeat)
+  }
 
   if $auth_backends {
     validate_array($auth_backends)

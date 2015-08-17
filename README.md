@@ -259,6 +259,11 @@ set config_cluster to 'False' and set 'erlang_cookie'.
 Set rabbitmq file ulimit. Defaults to 16384. Only available on systems with
 `$::osfamily == 'Debian'` or `$::osfamily == 'RedHat'`.
 
+####`heartbeat`
+
+Set the heartbeat timeout interval, default is unset which uses the builtin server
+defaultsof 60 seconds. Setting this to `0` will disable heartbeats.
+
 ####`key_content`
 
 Uses content method for Debian OS family. Should be a template for apt::source
