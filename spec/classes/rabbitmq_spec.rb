@@ -1195,6 +1195,23 @@ LimitNOFILE=1234
         end
       end
 
+      describe 'rabbitmq-heartbeat options' do
+        let(:params) {{ :heartbeat => 60 }}
+        it 'should set heartbeat paramter in config file' do
+          should contain_file('rabbitmq.config') \
+            .with_content(/\{heartbeat, 60\}/)
+        end
+      end
+
+      describe 'non-integer rabbitmq-heartbeat options' do
+        let(:params) {{ :heartbeat => 'string' }}
+        it 'should raise a validation error' do
+          expect {
+            should contain_file('rabbitmq.config')
+          }.to raise_error(Puppet::Error, /Expected first argument to be an Integer/)
+        end
+      end
+
       context 'delete_guest_user' do
         describe 'should do nothing by default' do
           it { should_not contain_rabbitmq_user('guest') }

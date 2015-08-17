@@ -27,6 +27,7 @@ class rabbitmq::config {
   $rabbitmq_home              = $rabbitmq::rabbitmq_home
   $port                       = $rabbitmq::port
   $tcp_keepalive              = $rabbitmq::tcp_keepalive
+  $heartbeat                  = $rabbitmq::heartbeat
   $service_name               = $rabbitmq::service_name
   $ssl                        = $rabbitmq::ssl
   $ssl_only                   = $rabbitmq::ssl_only
