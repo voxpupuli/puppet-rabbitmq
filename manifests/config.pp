@@ -139,14 +139,13 @@ class rabbitmq::config {
           notify      => Class['Rabbitmq::Service'],
           refreshonly => true,
         }
-      } else {
-        file { '/etc/security/limits.d/rabbitmq-server.conf':
-          content => template('rabbitmq/limits.conf'),
-          owner   => '0',
-          group   => '0',
-          mode    => '0644',
-          notify  => Class['Rabbitmq::Service'],
-        }
+      }
+      file { '/etc/security/limits.d/rabbitmq-server.conf':
+        content => template('rabbitmq/limits.conf'),
+        owner   => '0',
+        group   => '0',
+        mode    => '0644',
+        notify  => Class['Rabbitmq::Service'],
       }
     }
     default: {
