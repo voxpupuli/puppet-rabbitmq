@@ -57,6 +57,7 @@ class rabbitmq(
   $ldap_log                   = $rabbitmq::params::ldap_log,
   $ldap_config_variables      = $rabbitmq::params::ldap_config_variables,
   $stomp_port                 = $rabbitmq::params::stomp_port,
+  $stomp_ssl_only             = $rabbitmq::params::stomp_ssl_only,
   $version                    = $rabbitmq::params::version,
   $wipe_db_on_cookie_change   = $rabbitmq::params::wipe_db_on_cookie_change,
   $cluster_partition_handling = $rabbitmq::params::cluster_partition_handling,
@@ -123,6 +124,7 @@ class rabbitmq(
     validate_re($ssl_stomp_port, '\d+')
   }
   validate_bool($stomp_ensure)
+  validate_bool($stomp_ssl_only)
   validate_bool($ldap_auth)
   validate_string($ldap_server)
   validate_string($ldap_user_dn_pattern)
@@ -141,6 +143,10 @@ class rabbitmq(
 
   if $config_stomp and $ssl_stomp_port and ! $ssl {
     warning('$ssl_stomp_port requires that $ssl => true and will be ignored')
+  }
+
+  if $config_stomp and $stomp_ssl_only and ! $ssl_stomp_port  {
+    fail('$stomp_ssl_only requires that $ssl_stomp_port be set')
   }
 
   if $ssl_versions {

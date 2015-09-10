@@ -40,6 +40,7 @@ class rabbitmq::config {
   $ssl_versions               = $rabbitmq::ssl_versions
   $ssl_ciphers                = $rabbitmq::ssl_ciphers
   $stomp_port                 = $rabbitmq::stomp_port
+  $stomp_ssl_only             = $rabbitmq::stomp_ssl_only
   $ldap_auth                  = $rabbitmq::ldap_auth
   $ldap_server                = $rabbitmq::ldap_server
   $ldap_user_dn_pattern       = $rabbitmq::ldap_user_dn_pattern
