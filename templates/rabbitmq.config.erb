@@ -94,8 +94,13 @@
 <% if @config_stomp -%>,
 % Configure the Stomp Plugin listening port
   {rabbitmq_stomp, [
+  <%- if @stomp_ssl_only -%>
+    {tcp_listeners, []}
+  <%- else -%>
     {tcp_listeners, [<%= @stomp_port %>]}
-  <%- if @ssl && @ssl_stomp_port -%>,
+  <%- end -%>
+  <%- if @ssl && @ssl_stomp_port -%>
+    ,
     {ssl_listeners, [<%= @ssl_stomp_port %>]}
   <%- end -%>
   ]}

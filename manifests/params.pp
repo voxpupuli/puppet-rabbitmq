@@ -113,6 +113,7 @@ class rabbitmq::params {
   $ldap_log                   = false
   $ldap_config_variables      = {}
   $stomp_port                 = '61613'
+  $stomp_ssl_only             = false
   $wipe_db_on_cookie_change   = false
   $cluster_partition_handling = 'ignore'
   $environment_variables      = {}

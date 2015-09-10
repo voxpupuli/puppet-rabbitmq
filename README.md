@@ -390,6 +390,11 @@ Functionality can be tested with cipherscan or similar tool: https://github.com/
 
 The port to use for Stomp.
 
+####`stomp_ssl_only`
+
+Configures STOMP to only use SSL.  No cleartext STOMP TCP listeners will be created.
+Requires setting ssl_stomp_port also.
+
 ####`stomp_ensure`
 
 Boolean to install the stomp plugin.
