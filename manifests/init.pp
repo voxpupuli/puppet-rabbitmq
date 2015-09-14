@@ -195,33 +195,30 @@ class rabbitmq(
     }
   }
 
-  if $admin_enable and $service_manage {
+  $admin_ensure = $admin_enable and $service_manage
+
+  if $admin_ensure {
     include '::rabbitmq::install::rabbitmqadmin'
-
-    rabbitmq_plugin { 'rabbitmq_management':
-      ensure  => present,
-      require => Class['rabbitmq::install'],
-      notify  => Class['rabbitmq::service'],
-    }
-
     Class['::rabbitmq::service'] -> Class['::rabbitmq::install::rabbitmqadmin']
     Class['::rabbitmq::install::rabbitmqadmin'] -> Rabbitmq_exchange<| |>
   }
 
-  if $stomp_ensure {
-    rabbitmq_plugin { 'rabbitmq_stomp':
-      ensure  => present,
-      require => Class['rabbitmq::install'],
-      notify  => Class['rabbitmq::service'],
-    }
+  rabbitmq_plugin { 'rabbitmq_management':
+    ensure  => convert_to_ensurable($admin_ensure),
+    require => Class['rabbitmq::install'],
+    notify  => Class['rabbitmq::service'],
   }
 
-  if ($ldap_auth) {
-    rabbitmq_plugin { 'rabbitmq_auth_backend_ldap':
-      ensure  => present,
-      require => Class['rabbitmq::install'],
-      notify  => Class['rabbitmq::service'],
-    }
+  rabbitmq_plugin { 'rabbitmq_stomp':
+    ensure  => convert_to_ensurable($stomp_ensure),
+    require => Class['rabbitmq::install'],
+    notify  => Class['rabbitmq::service'],
+  }
+
+  rabbitmq_plugin { 'rabbitmq_auth_backend_ldap':
+    ensure  => convert_to_ensurable($ldap_auth),
+    require => Class['rabbitmq::install'],
+    notify  => Class['rabbitmq::service'],
   }
 
   anchor { 'rabbitmq::begin': }
