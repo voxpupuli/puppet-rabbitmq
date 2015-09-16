@@ -402,12 +402,13 @@ LimitNOFILE=1234
       it { should contain_class('rabbitmq::config') }
       it { should contain_class('rabbitmq::service') }
 
-     context 'with admin_enable set to true' do
+      context 'with admin_enable set to true' do
         let(:params) {{ :admin_enable => true }}
         context 'with service_manage set to true' do
           it 'we enable the admin interface by default' do
             should contain_class('rabbitmq::install::rabbitmqadmin')
             should contain_rabbitmq_plugin('rabbitmq_management').with(
+              'ensure'  => 'present',
               'require' => 'Class[Rabbitmq::Install]',
               'notify'  => 'Class[Rabbitmq::Service]'
             )
@@ -431,7 +432,11 @@ LimitNOFILE=1234
           let(:params) {{ :admin_enable => true, :service_manage => false }}
           it 'should do nothing' do
             should_not contain_class('rabbitmq::install::rabbitmqadmin')
-            should_not contain_rabbitmq_plugin('rabbitmq_management')
+            should contain_rabbitmq_plugin('rabbitmq_management').with(
+              'ensure'  => 'absent',
+              'require' => 'Class[Rabbitmq::Install]',
+              'notify'  => 'Class[Rabbitmq::Service]'
+            )
           end
         end
       end
@@ -728,7 +733,7 @@ LimitNOFILE=1234
             %r{keyfile,"/path/to/key"}
           )
         end
-        it 'should set ssl managment port to specified values' do 
+        it 'should set ssl managment port to specified values' do
           should contain_file('rabbitmq.config').with_content(
             %r{port, 13141}
           )
@@ -1056,6 +1061,149 @@ LimitNOFILE=1234
               'ensure'   => 'absent',
               'provider' => 'rabbitmqctl'
             )
+          end
+        end
+      end
+
+      ##
+      ## Message Queue Telemetry Transport (MQTT) Plugin
+      ##
+      context 'running the rabbitmq_mqtt plugin' do
+        context 'with mqtt_ensure set to true' do
+          let(:params) {{ :mqtt_ensure => true }}
+          it 'it should ensure the plugin is present' do
+            should contain_rabbitmq_plugin('rabbitmq_mqtt').with(
+              'ensure'  => 'present',
+              'require' => 'Class[Rabbitmq::Install]',
+              'notify'  => 'Class[Rabbitmq::Service]'
+            )
+          end
+        end
+        context 'with mqtt_ensure set to false' do
+          let(:params) {{ :mqtt_ensure => false }}
+          it 'it should ensure the plugin is absent' do
+            should contain_rabbitmq_plugin('rabbitmq_mqtt').with(
+              'ensure'  => 'absent',
+              'require' => 'Class[Rabbitmq::Install]',
+              'notify'  => 'Class[Rabbitmq::Service]'
+            )
+          end
+        end
+        context 'with config_mqtt set to true' do
+          let(:params) {{
+            :config_mqtt           => true,
+            :mqtt_allow_anonymous  => true,
+            :mqtt_default_user     => 'TESTUSER',
+            :mqtt_default_pass     => 'TESTPASSWORD',
+            :mqtt_default_vhost    => '/VTEST',
+            :mqtt_default_exchange => 'default.topic',
+            :mqtt_subscription_ttl => 150000,
+            :mqtt_prefetch         => 95,
+            :mqtt_ssl_cert_login   => true
+          }}
+          it 'it should specify rabbitmq_mqtt parameters in rabbitmq.config' do
+            should contain_file('rabbitmq.config').with_content(/rabbitmq_mqtt/)
+          end
+          it 'it should specify the rabbitmq_mqtt default_user parameter in rabbitmq.config' do
+            should contain_file('rabbitmq.config').with_content(/rabbitmq_mqtt.*default_user, <<"TESTUSER">>/m)
+          end
+          it 'it should specify the rabbitmq_mqtt default_pass parameter in rabbitmq.config' do
+            should contain_file('rabbitmq.config').with_content(/rabbitmq_mqtt.*default_pass, <<"TESTPASSWORD">>/m)
+          end
+          it 'it should specify the rabbitmq_mqtt allow_anonymous parameter in rabbitmq.config' do
+            should contain_file('rabbitmq.config').with_content(/rabbitmq_mqtt.*allow_anonymous, true/m)
+          end
+          it 'it should specify the rabbitmq_mqtt vhost parameter in rabbitmq.config' do
+            should contain_file('rabbitmq.config').with_content(/rabbitmq_mqtt.*vhost, <<"\/VTEST">>/m)
+          end
+          it 'it should specify the rabbitmq_mqtt exchange parameter in rabbitmq.config' do
+            should contain_file('rabbitmq.config').with_content(/rabbitmq_mqtt.*exchange, <<"default.topic">>/m)
+          end
+          it 'it should specify the rabbitmq_mqtt subscription_ttl parameter in rabbitmq.config' do
+            should contain_file('rabbitmq.config').with_content(/rabbitmq_mqtt.*subscription_ttl, 150000/m)
+          end
+          it 'it should specify the rabbitmq_mqtt prefetch parameter in rabbitmq.config' do
+            should contain_file('rabbitmq.config').with_content(/rabbitmq_mqtt.*prefetch, 95/m)
+          end
+          it 'it should specify the rabbitmq_mqtt ssl_cert_login parameter in rabbitmq.config' do
+            should contain_file('rabbitmq.config').with_content(/rabbitmq_mqtt.*ssl_cert_login, true/m)
+          end
+        end
+        context 'with config_mqtt set to false' do
+          let(:params) {{ :config_mqtt => false }}
+          it 'it should not specify rabbitmq_mqtt parameters in rabbitmq.config' do
+            should contain_file('rabbitmq.config').without_content(/rabbitmq_mqtt/)
+          end
+        end
+        context 'when ssl_only is enabled' do
+          let(:params) {{
+            :config_mqtt   => true,
+            :ssl           => true,
+            :ssl_only      => true,
+            :mqtt_ssl_port => '8883'
+          }}
+          it 'should specify empty listeners for rabbitmq_mqtt in the rabbitmq.config' do
+            should contain_file('rabbitmq.config').with_content(/rabbitmq_mqtt.*listeners, \[\]/m)
+          end
+        end
+        context 'when ssl_only is disabled' do
+          context 'when the interface is specified' do
+            let(:params) {{
+              :config_mqtt => true,
+              :ssl         => false,
+              :ssl_only    => false,
+              :interface   => '127.0.0.1',
+              :mqtt_port   => '1883'
+            }}
+            it 'should specify interface bound listeners for rabbitmq_mqtt in the rabbitmq.config' do
+              should contain_file('rabbitmq.config').with_content(/rabbitmq_mqtt.*listeners, \[\{"127.0.0.1", 1883\}\]/m)
+            end
+          end
+          context 'when the ssl_interface is not specified' do
+            let(:params) {{
+              :config_mqtt => true,
+              :ssl         => false,
+              :ssl_only    => false,
+              :interface   => 'UNSET',
+              :mqtt_port   => '1884'
+            }}
+            it 'should specify interface free listeners for rabbitmq_mqtt in the rabbitmq.config' do
+              should contain_file('rabbitmq.config').with_content(/rabbitmq_mqtt.*listeners, \[1884\]/m)
+            end
+          end
+        end
+        context 'when ssl is disabled' do
+          let(:params) {{
+            :config_mqtt   => true,
+            :ssl           => false,
+            :mqtt_ssl_port => '8883'
+          }}
+          it 'should specify empty ssl_listeners for rabbitmq_mqtt in the rabbitmq.config' do
+            should contain_file('rabbitmq.config').with_content(/rabbitmq_mqtt.*ssl_listeners, \[\]/m)
+          end
+        end
+        context 'when ssl is enabled' do
+          context 'when the ssl_interface is specified' do
+            let(:params) {{
+              :config_mqtt   => true,
+              :ssl           => true,
+              :ssl_interface => '127.0.0.1',
+              :mqtt_ssl_port => '8883'
+            }}
+            it 'should specify interface bound ssl_listeners for rabbitmq_mqtt in the rabbitmq.config' do
+              should contain_file('rabbitmq.config').with_content(/rabbitmq_mqtt.*ssl_listeners, \[\{"127.0.0.1", 8883\}\]/m)
+            end
+          end
+          context 'when the ssl_interface is not specified' do
+            let(:params) {{
+              :config_mqtt   => true,
+              :ssl           => true,
+              :ssl_interface => 'UNSET',
+              :mqtt_ssl_port => '8884'
+            }}
+            it 'should specify interface free ssl_listeners for rabbitmq_mqtt in the rabbitmq.config' do
+              should contain_file('rabbitmq.config').with_content(/rabbitmq_mqtt.*ssl_listeners, \[8884\]/m)
+            end
           end
         end
       end

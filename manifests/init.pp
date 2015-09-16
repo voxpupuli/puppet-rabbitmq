@@ -7,6 +7,7 @@ class rabbitmq(
   $config_cluster             = $rabbitmq::params::config_cluster,
   $config_path                = $rabbitmq::params::config_path,
   $config_stomp               = $rabbitmq::params::config_stomp,
+  $config_mqtt                = $rabbitmq::params::config_mqtt,
   $default_user               = $rabbitmq::params::default_user,
   $default_pass               = $rabbitmq::params::default_pass,
   $delete_guest_user          = $rabbitmq::params::delete_guest_user,
@@ -66,6 +67,18 @@ class rabbitmq(
   $config_variables           = $rabbitmq::params::config_variables,
   $config_kernel_variables    = $rabbitmq::params::config_kernel_variables,
   $key_content                = undef,
+  $mqtt_ensure                = $rabbitmq::params::mqtt_ensure,
+  $mqtt_port                  = $rabbitmq::params::mqtt_port,
+  $mqtt_ssl_port              = $rabbitmq::params::mqtt_ssl_port,
+  $mqtt_allow_anonymous       = $rabbitmq::params::mqtt_allow_anonymous,
+  $mqtt_default_user          = $rabbitmq::params::mqtt_default_user,
+  $mqtt_default_pass          = $rabbitmq::params::mqtt_default_pass,
+  $mqtt_default_vhost         = $rabbitmq::params::mqtt_default_vhost,
+  $mqtt_default_exchange      = $rabbitmq::params::mqtt_default_exchange,
+  $mqtt_subscription_ttl      = $rabbitmq::params::mqtt_subscription_ttl,
+  $mqtt_prefetch              = $rabbitmq::params::mqtt_prefetch,
+  $mqtt_ssl_cert_login        = $rabbitmq::params::mqtt_ssl_cert_login,
+
 ) inherits rabbitmq::params {
 
   validate_bool($admin_enable)
@@ -84,6 +97,7 @@ class rabbitmq(
   validate_absolute_path($config_path)
   validate_bool($config_cluster)
   validate_bool($config_stomp)
+  validate_bool($config_mqtt)
   validate_string($default_user)
   validate_string($default_pass)
   validate_bool($delete_guest_user)
@@ -136,6 +150,22 @@ class rabbitmq(
   validate_hash($environment_variables)
   validate_hash($config_variables)
   validate_hash($config_kernel_variables)
+
+  validate_bool($mqtt_ensure)
+  if ! is_integer($mqtt_port) {
+    validate_re($mqtt_port, '\d+')
+  }
+  if ! is_integer($mqtt_ssl_port) {
+    validate_re($mqtt_ssl_port, '\d+')
+  }
+  validate_bool($mqtt_allow_anonymous)
+  validate_string($mqtt_default_user)
+  validate_string($mqtt_default_pass)
+  validate_string($mqtt_default_vhost)
+  validate_string($mqtt_default_exchange)
+  validate_re($mqtt_subscription_ttl, '\d+')
+  validate_re($mqtt_prefetch, '\d+')
+  validate_bool($mqtt_ssl_cert_login)
 
   if $ssl_only and ! $ssl {
     fail('$ssl_only => true requires that $ssl => true')
@@ -201,33 +231,36 @@ class rabbitmq(
     }
   }
 
-  if $admin_enable and $service_manage {
+  $admin_ensure = $admin_enable and $service_manage
+
+  if $admin_ensure {
     include '::rabbitmq::install::rabbitmqadmin'
-
-    rabbitmq_plugin { 'rabbitmq_management':
-      ensure  => present,
-      require => Class['rabbitmq::install'],
-      notify  => Class['rabbitmq::service'],
-    }
-
     Class['::rabbitmq::service'] -> Class['::rabbitmq::install::rabbitmqadmin']
     Class['::rabbitmq::install::rabbitmqadmin'] -> Rabbitmq_exchange<| |>
   }
 
-  if $stomp_ensure {
-    rabbitmq_plugin { 'rabbitmq_stomp':
-      ensure  => present,
-      require => Class['rabbitmq::install'],
-      notify  => Class['rabbitmq::service'],
-    }
+  rabbitmq_plugin { 'rabbitmq_management':
+    ensure  => convert_to_ensurable($admin_ensure),
+    require => Class['rabbitmq::install'],
+    notify  => Class['rabbitmq::service'],
   }
 
-  if ($ldap_auth) {
-    rabbitmq_plugin { 'rabbitmq_auth_backend_ldap':
-      ensure  => present,
-      require => Class['rabbitmq::install'],
-      notify  => Class['rabbitmq::service'],
-    }
+  rabbitmq_plugin { 'rabbitmq_stomp':
+    ensure  => convert_to_ensurable($stomp_ensure),
+    require => Class['rabbitmq::install'],
+    notify  => Class['rabbitmq::service'],
+  }
+
+  rabbitmq_plugin { 'rabbitmq_mqtt':
+    ensure  => convert_to_ensurable($mqtt_ensure),
+    require => Class['rabbitmq::install'],
+    notify  => Class['rabbitmq::service'],
+  }
+
+  rabbitmq_plugin { 'rabbitmq_auth_backend_ldap':
+    ensure  => convert_to_ensurable($ldap_auth),
+    require => Class['rabbitmq::install'],
+    notify  => Class['rabbitmq::service'],
   }
 
   anchor { 'rabbitmq::begin': }

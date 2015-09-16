@@ -121,5 +121,45 @@
     {log, <%= @ldap_log %>}
   ]}
 <%- end -%>
+<% if @config_mqtt -%>,
+% Configure the Message Queue Telemetry Transport Plugin
+  {rabbitmq_mqtt, [
+    {default_user, <<"<%= @mqtt_default_user %>">>},
+    {default_pass, <<"<%= @mqtt_default_pass %>">>},
+    {allow_anonymous, <%= @mqtt_allow_anonymous %>},
+    {vhost, <<"<%= @mqtt_default_vhost %>">>},
+    {exchange, <<"<%= @mqtt_default_exchange %>">>},
+    {subscription_ttl, <%= @mqtt_subscription_ttl %>},
+    {prefetch, <%= @mqtt_prefetch %>},
+  <%- if @mqtt_ssl_cert_login -%>
+    {ssl_cert_login, <%= @mqtt_ssl_cert_login %>},
+  <%- end -%>
+  <%- if @ssl && @ssl_interface != 'UNSET' -%>
+    {ssl_listeners, [{"<%= @ssl_interface %>", <%= @mqtt_ssl_port %>}]},
+  <%- elsif @ssl -%>
+    {ssl_listeners, [<%= @mqtt_ssl_port %>]},
+  <%- else -%>
+    {ssl_listeners, []},
+  <%- end -%>
+  <%- if @ssl_only -%>
+    {tcp_listeners, []},
+  <%- elsif @interface != 'UNSET' -%>
+    {tcp_listeners, [{"<%= @interface %>", <%= @mqtt_port %>}]},
+  <%- else -%>
+    {tcp_listeners, [<%= @mqtt_port %>]},
+  <%- end -%>
+    {tcp_listen_options,
+         [binary,
+         <%- if @tcp_keepalive -%>
+         {keepalive, true},
+         <%- end -%>
+         {packet, raw},
+         {reuseaddr, true},
+         {backlog, 128},
+         {nodelay, true},
+         {exit_on_close, false}
+    ]}
+  ]}
+<% end -%>
 ].
 % EOF

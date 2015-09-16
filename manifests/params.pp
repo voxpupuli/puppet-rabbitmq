@@ -80,6 +80,7 @@ class rabbitmq::params {
   $config_cluster             = false
   $config_path                = '/etc/rabbitmq/rabbitmq.config'
   $config_stomp               = false
+  $config_mqtt                = false
   $default_user               = 'guest'
   $default_pass               = 'guest'
   $delete_guest_user          = false
@@ -120,4 +121,15 @@ class rabbitmq::params {
   $config_variables           = {}
   $config_kernel_variables    = {}
   $file_limit                 = '16384'
+  $mqtt_ensure                = false
+  $mqtt_port                  = '1883'
+  $mqtt_ssl_port              = '8883'
+  $mqtt_allow_anonymous       = false
+  $mqtt_default_user          = 'guest'
+  $mqtt_default_pass          = 'guest'
+  $mqtt_default_vhost         = "/"
+  $mqtt_default_exchange      = "amq.topic"
+  $mqtt_subscription_ttl      = 1800000
+  $mqtt_prefetch              = 10
+  $mqtt_ssl_cert_login        = false
 }
