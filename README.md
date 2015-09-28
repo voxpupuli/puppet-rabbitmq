@@ -541,6 +541,28 @@ rabbitmq_plugin {'rabbitmq_stomp':
 }
 ```
 
+### rabbitmq\_parameter
+
+```puppet
+  rabbitmq_parameter { 'documentumShovel@/':
+    component_name => '',
+    value          => {
+        'src-uri'    => 'amqp://',
+        'src-queue'  => 'my-queue',
+        'dest-uri'   => 'amqp://remote-server',
+        'dest-queue' => 'another-queue',
+    },
+  }
+
+  rabbitmq_parameter { 'documentumFed@/':
+    component_name => 'federation-upstream',
+    value          => {
+        'uri'    => 'amqp://myserver',
+        'expires' => '360000',
+    },
+  }
+```
+
 ### rabbitmq\_erlang\_cookie
 
 This is essentially a private type used by the rabbitmq::config class
