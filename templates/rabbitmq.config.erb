@@ -28,6 +28,7 @@
 <%- elsif @interface != 'UNSET' -%>
     {tcp_listeners, [{"<%= @interface%>", <%= @port %>}]},
 <%- end -%>
+{heartbeat, <%= @heartbeat %>}
 <%- if @ssl -%>
   <%- if @ssl_interface != 'UNSET' -%>
     {ssl_listeners, [{"<%= @ssl_interface%>", <%= @ssl_port %>}]},
