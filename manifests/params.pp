@@ -98,7 +98,7 @@ class rabbitmq::params {
   $ssl_port                   = '5671'
   $ssl_interface              = 'UNSET'
   $ssl_management_port        = '15671'
-  $ssl_stomp_port             = '61614'
+  $ssl_stomp_port             = '6164'
   $ssl_verify                 = 'verify_none'
   $ssl_fail_if_no_peer_cert   = false
   $ssl_versions               = undef
@@ -112,7 +112,7 @@ class rabbitmq::params {
   $ldap_port                  = '389'
   $ldap_log                   = false
   $ldap_config_variables      = {}
-  $stomp_port                 = '61613'
+  $stomp_port                 = '6163'
   $stomp_ssl_only             = false
   $wipe_db_on_cookie_change   = false
   $cluster_partition_handling = 'ignore'
