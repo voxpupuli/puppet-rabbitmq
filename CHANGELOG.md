@@ -1,4 +1,4 @@
-## 2015-10-07 - Version 5.3.0
+## 2015-10-07 - Version 5.3.1
 ### Summary
 Adds a new resource type and a few ssl management parameters
 
@@ -12,6 +12,10 @@ Adds a new resource type and a few ssl management parameters
 - Fix mnesia dir not getting wiped
 - Fix message-ttl and max-length integer conversion in rabbitmq\_policy
 - Allow managing erlang cookie without config\_cluster
+
+## 2015-05-26 - Version 5.3.0 [YANKED]
+### Summary
+This is a deleted release. It did not follow semver.
 
 ## 2015-06-23 - Version 5.2.3
 ### Summary
