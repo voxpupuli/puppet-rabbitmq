@@ -160,6 +160,11 @@ describe 'rabbitmq' do
       it { should contain_file('/etc/default/rabbitmq-server').with_content(/ulimit -n 1234/) }
     end
 
+    context 'with file_limit => 1234' do
+      let(:params) {{ :file_limit => 1234 }}
+      it { should contain_file('/etc/default/rabbitmq-server').with_content(/ulimit -n 1234/) }
+    end
+
     context 'with file_limit => \'-42\'' do
       let(:params) {{ :file_limit => '-42' }}
       it 'does not compile' do
