@@ -4,7 +4,7 @@ Puppet::Type.type(:rabbitmq_erlang_cookie).provide(:ruby) do
 
   defaultfor :feature => :posix
   has_command(:puppet, 'puppet') do
-    environment :PATH => '/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin'
+  #  environment :PATH => '/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin'
   end
 
   def exists?
