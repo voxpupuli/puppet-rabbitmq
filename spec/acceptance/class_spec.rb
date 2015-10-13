@@ -3,17 +3,21 @@ require 'spec_helper_acceptance'
 describe 'rabbitmq class:' do
   case fact('osfamily')
   when 'RedHat'
-    package_name = 'rabbitmq-server'
-    service_name = 'rabbitmq-server'
+    package_name  = 'rabbitmq-server'
+    service_name  = 'rabbitmq-server'
+    rabbitmq_user = 'rabbitmq'
   when 'SUSE'
-    package_name = 'rabbitmq-server'
-    service_name = 'rabbitmq-server'
+    package_name  = 'rabbitmq-server'
+    service_name  = 'rabbitmq-server'
+    rabbitmq_user = 'rabbitmq'
   when 'Debian'
-    package_name = 'rabbitmq-server'
-    service_name = 'rabbitmq-server'
+    package_name  = 'rabbitmq-server'
+    service_name  = 'rabbitmq-server'
+    rabbitmq_user = 'rabbitmq'
   when 'Archlinux'
-    package_name = 'rabbitmq'
-    service_name = 'rabbitmq'
+    package_name  = 'rabbitmq'
+    service_name  = 'rabbitmq'
+    rabbitmq_user = 'rabbitmq'
   end
 
   context "default class inclusion" do
@@ -32,12 +36,18 @@ describe 'rabbitmq class:' do
     end
 
     describe package(package_name) do
-      it { should be_installed }      
+      it { should be_installed }
     end
 
     describe service(service_name) do
       it { should be_enabled }
       it { should be_running }
+    end
+    it 'should have run as rabbitmq_user' do
+      shell('ps haxo user,cmd | egrep -v "su |grep " | egrep "rabbit|epmd|beam"') do |r|
+        expect(r.stdout).to match(/^#{rabbitmq_user}.*/)
+        expect(r.exit_code).to be_zero
+      end
     end
   end
 
