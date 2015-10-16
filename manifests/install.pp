@@ -19,12 +19,13 @@ class rabbitmq::install {
       source  => $package_source,
     }
   }
+
   if $rabbitmq::environment_variables['MNESIA_BASE'] {
     file { $rabbitmq::environment_variables['MNESIA_BASE']:
       ensure  => 'directory',
       owner   => 'root',
       group   => 'rabbitmq',
-      mode    => 775,
+      mode    => 0775,
       require => Package['rabbitmq-server'],
     }
   }
