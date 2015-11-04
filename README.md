@@ -151,7 +151,7 @@ Boolean, if enabled sets up the management interface/plugin for RabbitMQ.
 
 ####`cluster_node_type`
 
-Choose between disk and ram nodes.
+Choose between disc and ram nodes.
 
 ####`cluster_nodes`
 
