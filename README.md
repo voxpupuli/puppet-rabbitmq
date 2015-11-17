@@ -1,6 +1,6 @@
-#rabbitmq
+# rabbitmq
 
-####Table of Contents
+#### Table of Contents
 
 1. [Overview](#overview)
 2. [Module Description - What the module does and why it is useful](#module-description)
@@ -14,39 +14,39 @@
    * [RedHat module dependencies](#redhat-module-dependecies)
 6. [Development - Guide for contributing to the module](#development)
 
-##Overview
+## Overview
 
 This module manages RabbitMQ (www.rabbitmq.com)
 
-##Module Description
+## Module Description
 The rabbitmq module sets up rabbitmq and has a number of providers to manage
 everything from vhosts to exchanges after setup.
 
 This module has been tested against 2.7.1 and is known to not support
 all features against earlier versions.
 
-##Setup
+## Setup
 
-###What rabbitmq affects
+### What rabbitmq affects
 
 * rabbitmq repository files.
 * rabbitmq package.
 * rabbitmq configuration file.
 * rabbitmq service.
 
-###Beginning with rabbitmq
+### Beginning with rabbitmq
 
 
 ```puppet
 include '::rabbitmq'
 ```
 
-##Usage
+## Usage
 
 All options and configuration can be done through interacting with the parameters
 on the main rabbitmq class.  These are documented below.
 
-##rabbitmq class
+## rabbitmq class
 
 To begin with the rabbitmq class controls the installation of rabbitmq.  In here
 you can control many parameters relating to the package and service, such as
@@ -131,9 +131,9 @@ class { 'rabbitmq':
 }
 ```
 
-##Reference
+## Reference
 
-##Classes
+## Classes
 
 * rabbitmq: Main class for installation and service management.
 * rabbitmq::config: Main class for rabbitmq configuration/management.
@@ -143,7 +143,7 @@ class { 'rabbitmq':
 * rabbitmq::repo::apt: Handles apt repo for Debian systems.
 * rabbitmq::repo::rhel: Handles rpm repo for Redhat systems.
 
-###Parameters
+### Parameters
 
 ####`admin_enable`
 
@@ -428,13 +428,13 @@ String: OS dependent, default defined in param.pp. The system group the rabbitmq
 
 String: OS dependent. default defined in param.pp. The home directory of the rabbitmq deamon.
 
-##Native Types
+## Native Types
 
 ### rabbitmq\_user
 
 query all current users: `$ puppet resource rabbitmq_user`
 
-```
+```puppet
 rabbitmq_user { 'dan':
   admin    => true,
   password => 'bar',
@@ -573,7 +573,7 @@ stopping the rabbitmq service and wiping out the database at
 "${rabbitmq_home}/mnesia" if the user agrees to it. We don't recommend using
 this type directly.
 
-##Limitations
+## Limitations
 
 This module has been built on and tested against Puppet 3.x.
 
@@ -629,7 +629,7 @@ any and all messages stored to disk.
 Failure to do this will result in RabbitMQ failing to start with a cryptic error message about
 "init terminating in do_boot", containing "rabbit_upgrade,maybe_upgrade_mnesia".
 
-##Development
+## Development
 
 Puppet Labs modules on the Puppet Forge are open projects, and community
 contributions are essential for keeping them great. We can’t access the
