@@ -1128,7 +1128,7 @@ LimitNOFILE=1234
       should contain_package('rabbitmq-server').with(
         'ensure'   => 'installed',
         'name'     => 'rabbitmq-server',
-        'provider' => 'rpm',
+        'provider' => 'yum',
         'source'   => 'http://www.rabbitmq.com/releases/rabbitmq-server/v3.2.3/rabbitmq-server-3.2.3-1.noarch.rpm'
       )
     end

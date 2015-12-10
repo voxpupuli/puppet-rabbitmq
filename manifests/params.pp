@@ -40,7 +40,7 @@ class rabbitmq::params {
       $package_ensure   = 'installed'
       $package_name     = 'rabbitmq-server'
       $service_name     = 'rabbitmq-server'
-      $package_provider = 'rpm'
+      $package_provider = 'yum'
       $version          = '3.1.5-1'
       $rabbitmq_user    = 'rabbitmq'
       $rabbitmq_group   = 'rabbitmq'
