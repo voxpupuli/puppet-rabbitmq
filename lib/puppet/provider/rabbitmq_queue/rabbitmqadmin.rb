@@ -76,6 +76,7 @@ Puppet::Type.type(:rabbitmq_queue).provide(:rabbitmqadmin) do
   end
 
   def create
+    etc_dir = Facter[:operatingsystem].value != "FreeBSD" ? "/etc" : "/usr/local/etc"
     vhost_opt = should_vhost ? "--vhost=#{should_vhost}" : ''
     name = resource[:name].rpartition('@').first
     arguments = resource[:arguments]
@@ -88,7 +89,7 @@ Puppet::Type.type(:rabbitmq_queue).provide(:rabbitmqadmin) do
       "--user=#{resource[:user]}",
       "--password=#{resource[:password]}",
       '-c',
-      '/etc/rabbitmq/rabbitmqadmin.conf',
+      "#{etc_dir}/rabbitmq/rabbitmqadmin.conf",
       "name=#{name}",
       "durable=#{resource[:durable]}",
       "auto_delete=#{resource[:auto_delete]}",
@@ -98,9 +99,10 @@ Puppet::Type.type(:rabbitmq_queue).provide(:rabbitmqadmin) do
   end
 
   def destroy
+    etc_dir = Facter[:operatingsystem].value != "FreeBSD" ? "/etc" : "/usr/local/etc"
     vhost_opt = should_vhost ? "--vhost=#{should_vhost}" : ''
     name = resource[:name].rpartition('@').first
-    rabbitmqadmin('delete', 'queue', vhost_opt, "--user=#{resource[:user]}", "--password=#{resource[:password]}", '-c', '/etc/rabbitmq/rabbitmqadmin.conf', "name=#{name}")
+    rabbitmqadmin('delete', 'queue', vhost_opt, "--user=#{resource[:user]}", "--password=#{resource[:password]}", '-c', "#{etc_dir}/rabbitmq/rabbitmqadmin.conf", "name=#{name}")
     @property_hash[:ensure] = :absent
   end
 
