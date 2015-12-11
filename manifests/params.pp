@@ -62,7 +62,6 @@ class rabbitmq::params {
       $package_ensure   = 'installed'
       $package_name     = 'rabbitmq'
       $service_name     = 'rabbitmq'
-      $package_provider = 'pkg'
       $version          = '3.5.6'
       $rabbitmq_user    = 'rabbitmq'
       $rabbitmq_group   = 'rabbitmq'
