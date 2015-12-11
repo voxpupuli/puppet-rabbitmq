@@ -68,6 +68,7 @@ class rabbitmq::config {
     default: {
       $etc_dir = '/etc'
     }
+  }
 
   file { "${etc_dir}/rabbitmq":
     ensure => directory,
