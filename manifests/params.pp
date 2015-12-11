@@ -78,8 +78,8 @@ class rabbitmq::params {
     'FreeBSD': {
       $admin_enable           = false
       $repos_ensure           = false
-      $config_path            = "/usr/local/etc/rabbitmq/rabbitmq.config"
-      $env_config_path        = "/usr/local/etc/rabbitmq/rabbitmq-env.conf"
+      $config_path            = '/usr/local/etc/rabbitmq/rabbitmq.config'
+      $env_config_path        = '/usr/local/etc/rabbitmq/rabbitmq-env.conf'
     }
     default: {
       $admin_enable           = true
