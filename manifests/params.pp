@@ -58,6 +58,16 @@ class rabbitmq::params {
       $rabbitmq_home    = '/var/lib/rabbitmq'
       $plugin_dir       = "/usr/lib/rabbitmq/lib/rabbitmq_server-${version}/plugins"
     }
+      $package_ensure   = 'installed'
+      $package_name     = 'rabbitmq'
+      $service_name     = 'rabbitmq'
+      $package_provider = 'pkg'
+      $version          = '3.5.6'
+      $rabbitmq_user    = 'rabbitmq'
+      $rabbitmq_group   = 'rabbitmq'
+      $rabbitmq_home    = '/var/db/rabbitmq'
+      $plugin_dir       = "/usr/local/lib/erlang/lib/rabbitmq_server-${version}/plugins"
+    }
     default: {
       fail("The ${module_name} module is not supported on an ${::osfamily} based system.")
     }
@@ -77,8 +87,8 @@ class rabbitmq::params {
   $cluster_node_type          = 'disc'
   $cluster_nodes              = []
   $config                     = 'rabbitmq/rabbitmq.config.erb'
-  $config_cluster             = false
   $config_path                = '/etc/rabbitmq/rabbitmq.config'
+  $config_cluster             = false
   $config_stomp               = false
   $default_user               = 'guest'
   $default_pass               = 'guest'
@@ -120,4 +130,12 @@ class rabbitmq::params {
   $config_variables           = {}
   $config_kernel_variables    = {}
   $file_limit                 = '16384'
+  case $::osfamily {
+    'FreeBSD': {
+      $admin_enable           = false
+      $repos_ensure           = false
+      $config_path            = "/usr/local${config_path}"
+      $env_config_path        = "/usr/local${env_config_path}"
+    }
+  }
 }
