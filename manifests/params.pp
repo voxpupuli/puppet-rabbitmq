@@ -58,6 +58,7 @@ class rabbitmq::params {
       $rabbitmq_home    = '/var/lib/rabbitmq'
       $plugin_dir       = "/usr/lib/rabbitmq/lib/rabbitmq_server-${version}/plugins"
     }
+    'FreeBSD': {
       $package_ensure   = 'installed'
       $package_name     = 'rabbitmq'
       $service_name     = 'rabbitmq'
