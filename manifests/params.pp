@@ -75,12 +75,24 @@ class rabbitmq::params {
   }
 
   #install
-  $admin_enable               = true
+  case $::osfamily {
+    'FreeBSD': {
+      $admin_enable           = false
+      $repos_ensure           = false
+      $config_path            = "/usr/local/etc/rabbitmq/rabbitmq.config"
+      $env_config_path        = "/usr/local/etc/rabbitmq/rabbitmq-env.conf"
+    }
+    default: {
+      $admin_enable           = true
+      $repos_ensure           = true
+      $config_path            = '/etc/rabbitmq/rabbitmq.config'
+      $env_config_path        = '/etc/rabbitmq/rabbitmq-env.conf'
+    }
+  }
   $management_port            = '15672'
   $management_ssl             = true
   $package_apt_pin            = ''
   $package_gpg_key            = 'http://www.rabbitmq.com/rabbitmq-signing-key-public.asc'
-  $repos_ensure               = true
   $manage_repos               = undef
   $service_ensure             = 'running'
   $service_manage             = true
@@ -88,14 +100,12 @@ class rabbitmq::params {
   $cluster_node_type          = 'disc'
   $cluster_nodes              = []
   $config                     = 'rabbitmq/rabbitmq.config.erb'
-  $config_path                = '/etc/rabbitmq/rabbitmq.config'
   $config_cluster             = false
   $config_stomp               = false
   $default_user               = 'guest'
   $default_pass               = 'guest'
   $delete_guest_user          = false
   $env_config                 = 'rabbitmq/rabbitmq-env.conf.erb'
-  $env_config_path            = '/etc/rabbitmq/rabbitmq-env.conf'
   $erlang_cookie              = undef
   $interface                  = 'UNSET'
   $node_ip_address            = 'UNSET'
@@ -131,12 +141,4 @@ class rabbitmq::params {
   $config_variables           = {}
   $config_kernel_variables    = {}
   $file_limit                 = '16384'
-  case $::osfamily {
-    'FreeBSD': {
-      $admin_enable           = false
-      $repos_ensure           = false
-      $config_path            = "/usr/local${config_path}"
-      $env_config_path        = "/usr/local${env_config_path}"
-    }
-  }
 }
