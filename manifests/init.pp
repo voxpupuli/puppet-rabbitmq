@@ -103,7 +103,9 @@ class rabbitmq(
   }
   validate_bool($wipe_db_on_cookie_change)
   validate_bool($tcp_keepalive)
-  validate_re($file_limit, '^(\d+|-1|unlimited|infinity)$', '$file_limit must be a positive integer, \'-1\', \'unlimited\', or \'infinity\'.')
+  # using sprintf for conversion to string, because "${file_limit}" doesn't
+  # pass lint, despite being nicer
+  validate_re(sprintf('%s', $file_limit), '^(\d+|-1|unlimited|infinity)$', '$file_limit must be a positive integer, \'-1\', \'unlimited\', or \'infinity\'.')
   # Validate service parameters.
   validate_re($service_ensure, '^(running|stopped)$')
   validate_bool($service_manage)
