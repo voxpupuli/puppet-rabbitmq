@@ -5,6 +5,7 @@ class rabbitmq::install {
   $package_ensure   = $rabbitmq::package_ensure
   $package_name     = $rabbitmq::package_name
   $package_provider = $rabbitmq::package_provider
+  $package_require  = $rabbitmq::package_require
   $package_source   = $rabbitmq::real_package_source
 
   package { 'rabbitmq-server':
@@ -12,6 +13,7 @@ class rabbitmq::install {
     name     => $package_name,
     provider => $package_provider,
     notify   => Class['rabbitmq::service'],
+    require  => $package_require,
   }
 
   if $package_source {

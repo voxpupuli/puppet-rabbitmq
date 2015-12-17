@@ -197,9 +197,12 @@ class rabbitmq(
           key_source  => $package_gpg_key,
           key_content => $key_content,
         }
+        $package_require = Class['apt::update']
       }
       default:
-        { }
+        {
+          $package_require = undef
+        }
     }
   }
 
