@@ -190,8 +190,9 @@ class rabbitmq(
 
   if $manage_repos != false {
     case $::osfamily {
-      'RedHat', 'SUSE':
-        { include '::rabbitmq::repo::rhel' }
+      'RedHat', 'SUSE': {
+          include '::rabbitmq::repo::rhel'
+      }
       'Debian': {
         class { '::rabbitmq::repo::apt' :
           key_source  => $package_gpg_key,
@@ -199,10 +200,9 @@ class rabbitmq(
         }
         $package_require = Class['apt::update']
       }
-      default:
-        {
-          $package_require = undef
-        }
+      default: {
+        $package_require = undef
+      }
     }
   }
 
