@@ -38,6 +38,7 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, :parent => Puppet:
     self.run_with_retries {
       rabbitmqctl('-q', 'list_exchanges', '-p', vhost, 'name', 'type', 'internal', 'durable', 'auto_delete', 'arguments')
     }.split(/\n/).each do |exchange|
+      next if exchange =~ /^federation:/
       exchanges.push(exchange)
     end
     exchanges
