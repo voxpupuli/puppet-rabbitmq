@@ -32,10 +32,11 @@ class rabbitmq::repo::apt(
   }
 
   if $pin != '' {
-    validate_re($pin, '\d\d\d')
+    validate_re($pin, '\d{1,4}')
     apt::pin { 'rabbitmq':
-      packages => 'rabbitmq-server',
+      packages => '*',
       priority => $pin,
+      origin   => 'www.rabbitmq.com',
     }
   }
 }
