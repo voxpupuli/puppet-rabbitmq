@@ -72,7 +72,7 @@ Puppet::Type.newtype(:rabbitmq_policy) do
     end
     definition.each do |k,v|
       unless [String].include?(v.class)
-        raise ArgumentError, "Invalid definition"
+        raise ArgumentError, "Invalid definition, value #{v} is not a string"
       end
     end
     if definition['ha-mode'] == 'exactly'
