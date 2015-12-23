@@ -13,11 +13,6 @@ describe Puppet::Type.type(:rabbitmq_user) do
     @user[:password] = 'foo'
     @user[:password].should == 'foo'
   end
-  it 'should require a password' do
-    expect {
-      Puppet::Type.type(:rabbitmq_user).new(:name => 'foo')
-    }.to raise_error(/must set password/)
-  end
   it 'should require a name' do
     expect {
       Puppet::Type.type(:rabbitmq_user).new({})
@@ -48,5 +43,13 @@ describe Puppet::Type.type(:rabbitmq_user) do
     expect {
       @user[:tags] = ['administrator']
     }.to raise_error(Puppet::Error, /must use admin property/)
+  end
+
+  # We cannot require a password, as it would make it impossible to
+  # construct the .instances list when purging (or just listing the RAL)
+  it 'should require a password' do
+    expect {
+      Puppet::Type.type(:rabbitmq_user).new(:name => 'foo')
+    }.to_not raise_error
   end
 end
