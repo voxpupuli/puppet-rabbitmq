@@ -425,6 +425,7 @@ LimitNOFILE=1234
           it 'we enable the admin interface by default' do
             should contain_class('rabbitmq::install::rabbitmqadmin')
             should contain_rabbitmq_plugin('rabbitmq_management').with(
+              'ensure'  => 'present',
               'require' => 'Class[Rabbitmq::Install]',
               'notify'  => 'Class[Rabbitmq::Service]'
             )
@@ -448,7 +449,11 @@ LimitNOFILE=1234
           let(:params) {{ :admin_enable => true, :service_manage => false }}
           it 'should do nothing' do
             should_not contain_class('rabbitmq::install::rabbitmqadmin')
-            should_not contain_rabbitmq_plugin('rabbitmq_management')
+            should contain_rabbitmq_plugin('rabbitmq_management').with(
+              'ensure'  => 'absent',
+              'require' => 'Class[Rabbitmq::Install]',
+              'notify'  => 'Class[Rabbitmq::Service]'
+            )
           end
         end
       end
@@ -744,7 +749,7 @@ LimitNOFILE=1234
             %r{keyfile,"/path/to/key"}
           )
         end
-        it 'should set ssl managment port to specified values' do 
+        it 'should set ssl managment port to specified values' do
           should contain_file('rabbitmq.config').with_content(
             %r{port, 13141}
           )
