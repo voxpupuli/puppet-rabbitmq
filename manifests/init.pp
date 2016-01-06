@@ -65,6 +65,7 @@ class rabbitmq(
   $environment_variables      = $rabbitmq::params::environment_variables,
   $config_variables           = $rabbitmq::params::config_variables,
   $config_kernel_variables    = $rabbitmq::params::config_kernel_variables,
+  $auth_backends              = $rabbitmq::params::auth_backends,
   $key_content                = undef,
 ) inherits rabbitmq::params {
 
@@ -138,6 +139,10 @@ class rabbitmq(
   validate_hash($environment_variables)
   validate_hash($config_variables)
   validate_hash($config_kernel_variables)
+  
+  if $auth_backends {
+    validate_array($auth_backends)
+  }
 
   if $ssl_only and ! $ssl {
     fail('$ssl_only => true requires that $ssl => true')

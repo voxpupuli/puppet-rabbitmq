@@ -149,6 +149,13 @@ class { 'rabbitmq':
 
 Boolean, if enabled sets up the management interface/plugin for RabbitMQ.
 
+####`auth_backends`
+
+An array specifying authorization/authentication backend to use. Syntax:
+single quotes should be placed around array entries, ex. ['{foo, baz}', 'baz']
+Defaults to [rabbit_auth_backend_internal], and if using LDAP defaults to
+[rabbit_auth_backend_internal, rabbit_auth_backend_ldap].
+
 ####`cluster_node_type`
 
 Choose between disc and ram nodes.
