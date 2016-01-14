@@ -697,7 +697,7 @@ LimitNOFILE=1234
           end
 
           it "should generate correct configuration" do
-            verify_contents(subject, 'rabbitmq.config', [
+            verify_contents(catalogue, 'rabbitmq.config', [
 '  {rabbitmq_shovel,',
 '    [{shovels,[',
 '      {shovel_first,[{sources,[{broker,"amqp://"}]},',
@@ -708,7 +708,7 @@ LimitNOFILE=1234
 '        {queue,<<"source_two">>}]}',
 '    ]}]}' ])
           end
-        end 
+        end
       end
 
       describe 'default_user and default_pass set' do
@@ -796,7 +796,7 @@ LimitNOFILE=1234
             %r{keyfile,"/path/to/key"}
           )
         end
-        it 'should set ssl managment port to specified values' do 
+        it 'should set ssl managment port to specified values' do
           should contain_file('rabbitmq.config').with_content(
             %r{port, 13141}
           )
