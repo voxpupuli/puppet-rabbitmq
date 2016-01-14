@@ -189,6 +189,14 @@ The path to write the RabbitMQ configuration file to.
 
 Boolean to enable or disable stomp.
 
+####`config_shovel`
+
+Boolean to enable or disable shovel.
+
+####`config_shovel_statics`
+
+Hash of static shovel configurations
+
 ####`config_variables`
 
 To set config variables in rabbitmq.config

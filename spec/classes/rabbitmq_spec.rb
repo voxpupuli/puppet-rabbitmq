@@ -659,6 +659,58 @@ LimitNOFILE=1234
         end
       end
 
+      describe 'configuring shovel plugin' do
+        let :params do
+          {
+            :config_shovel => true
+          }
+        end
+
+        it { should contain_rabbitmq_plugin('rabbitmq_shovel') }
+
+        it { should contain_rabbitmq_plugin('rabbitmq_shovel_management') }
+
+        describe 'with admin_enable false' do
+          let :params do
+            {
+              :config_shovel => true,
+              :admin_enable  => false
+            }
+          end
+
+          it { should_not contain_rabbitmq_plugin('rabbitmq_shovel_management') }
+        end
+
+        describe 'with static shovels' do
+          let :params do
+            {
+              :config_shovel => true,
+              :config_shovel_statics => {
+                'shovel_first' => %q({sources,[{broker,"amqp://"}]},
+        {destinations,[{broker,"amqp://site1.example.com"}]},
+        {queue,<<"source_one">>}),
+                'shovel_second' => %q({sources,[{broker,"amqp://"}]},
+        {destinations,[{broker,"amqp://site2.example.com"}]},
+        {queue,<<"source_two">>})
+              }
+            }
+          end
+
+          it "should generate correct configuration" do
+            verify_contents(catalogue, 'rabbitmq.config', [
+'  {rabbitmq_shovel,',
+'    [{shovels,[',
+'      {shovel_first,[{sources,[{broker,"amqp://"}]},',
+'        {destinations,[{broker,"amqp://site1.example.com"}]},',
+'        {queue,<<"source_one">>}]},',
+'      {shovel_second,[{sources,[{broker,"amqp://"}]},',
+'        {destinations,[{broker,"amqp://site2.example.com"}]},',
+'        {queue,<<"source_two">>}]}',
+'    ]}]}' ])
+          end
+        end
+      end
+
       describe 'default_user and default_pass set' do
         let(:params) {{ :default_user => 'foo', :default_pass => 'bar' }}
         it 'should set default_user and default_pass to specified values' do
@@ -744,7 +796,7 @@ LimitNOFILE=1234
             %r{keyfile,"/path/to/key"}
           )
         end
-        it 'should set ssl managment port to specified values' do 
+        it 'should set ssl managment port to specified values' do
           should contain_file('rabbitmq.config').with_content(
             %r{port, 13141}
           )
