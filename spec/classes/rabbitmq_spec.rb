@@ -1223,7 +1223,7 @@ LimitNOFILE=1234
           'release'     => 'testing',
           'repos'       => 'main',
           'include_src' => false,
-          'key'         => 'F78372A06FF50C80464FC1B4F7B8CEA6056E8E56'
+          'key'         => '0xF78372A06FF50C80464FC1B4F7B8CEA6056E8E56'
         ) }
       end
     end
@@ -1237,7 +1237,7 @@ LimitNOFILE=1234
           'release'     => 'testing',
           'repos'       => 'main',
           'include_src' => false,
-          'key'         => 'F78372A06FF50C80464FC1B4F7B8CEA6056E8E56'
+          'key'         => '0xF78372A06FF50C80464FC1B4F7B8CEA6056E8E56'
         ) }
 
         it { should contain_apt__pin('rabbitmq').with(
