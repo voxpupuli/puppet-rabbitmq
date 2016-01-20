@@ -5,7 +5,9 @@
   {ssl, [{versions, [<%= @ssl_versions.sort.map { |v| "'#{v}'" }.join(', ') %>]}]},
 <%- end -%>
   {rabbit, [
-<% if @ldap_auth -%>
+<% if @auth_backends -%>
+    {auth_backends, [<%= @auth_backends.map { |v| "#{v}" }.join(', ') %>]},
+<% elsif @ldap_auth -%>
     {auth_backends, [rabbit_auth_backend_internal, rabbit_auth_backend_ldap]},
 <% end -%>
 <% if @config_cluster -%>
