@@ -66,6 +66,11 @@
     <%= @config_kernel_variables.sort.map{|k,v| "{#{k}, #{v}}"}.join(",\n    ") %>
   ]}
 <%- end -%>
+<% if @config_management_variables -%>,
+  {rabbitmq_management, [
+    <%= @config_management_variables.sort.map{|k,v| "{#{k}, #{v}}"}.join(",\n    ") %>
+  ]}
+<%- end -%>
 <%- if @admin_enable -%>,
   {rabbitmq_management, [
     {listener, [

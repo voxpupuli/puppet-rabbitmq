@@ -117,6 +117,17 @@ class { 'rabbitmq':
 }
 ```
 
+To change Management Plugin Config Variables in rabbitmq.config, use the parameters
+`config_management_variables` e.g.:
+
+```puppet
+class { 'rabbitmq':
+  config_management_variables  => {
+    'rates_mode' => 'basic',
+  }
+}
+```
+
 ### Clustering
 To use RabbitMQ clustering facilities, use the rabbitmq parameters
 `config_cluster`, `cluster_nodes`, and `cluster_node_type`, e.g.:
@@ -191,6 +202,10 @@ the queue. You can read more about it
 ####`config_path`
 
 The path to write the RabbitMQ configuration file to.
+
+####`config_management_variables`
+
+Hash of configuration variables for the [Management Plugin](https://www.rabbitmq.com/management.html).
 
 ####`config_stomp`
 
