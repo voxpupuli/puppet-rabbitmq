@@ -284,6 +284,7 @@ Boolean, set to true to log LDAP auth.
 ####`manage_repos`
 
 Boolean, whether or not to manage package repositories.
+DEPRECATED. Please use repos_ensure instead
 
 ####`management_port`
 
@@ -341,6 +342,10 @@ The RabbitMQ port.
 ####`service_ensure`
 
 The state of the service.
+
+####`repos_ensure`
+
+Boolean, determines the ensure state of the external repository.
 
 ####`service_manage`
 
@@ -598,6 +603,7 @@ The module has been tested on:
 * Debian 6/7
 * CentOS 5/6
 * Ubuntu 12.04/14.04
+* FreeBSD 10.2
 
 Testing on other platforms has been light and cannot be guaranteed.
 
@@ -632,6 +638,18 @@ For Debian systems:
 This module also depends on the excellent nanliu/staging module on the Forge:
 
     puppet module install nanliu-staging
+
+If running FreeBSD, be aware the default RabbitMQ package doesn't include the rabbitmadmin
+script by default.
+Because of this, that fuctionality will be set to off by thefault (admin_enable).
+If you requiere this functionaluty, compile and package you own package using the port:
+
+cd /usr/ports/net/rabbitmq
+make config ( set ADMIN=on )
+make install
+pkg create rabbitmq
+
+Now, use the $package_source module parameter to install RabbitMQ using your own package.
 
 ### Downgrade Issues
 

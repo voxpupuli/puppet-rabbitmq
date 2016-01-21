@@ -78,6 +78,7 @@ Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin) do
   end
 
   def create
+    etc_dir = Facter[:operatingsystem].value != "FreeBSD" ? "/etc" : "/usr/local/etc"
     vhost_opt = should_vhost ? "--vhost=#{should_vhost}" : ''
     name = resource[:name].split('@').first
     destination = resource[:name].split('@')[1]
@@ -91,7 +92,7 @@ Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin) do
       "--user=#{resource[:user]}",
       "--password=#{resource[:password]}",
       '-c',
-      '/etc/rabbitmq/rabbitmqadmin.conf',
+      "#{etc_dir}/rabbitmq/rabbitmqadmin.conf",
       "source=#{name}",
       "destination=#{destination}",
       "arguments=#{arguments.to_json}",
@@ -102,10 +103,11 @@ Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin) do
   end
 
   def destroy
+    etc_dir = Facter[:operatingsystem].value != "FreeBSD" ? "/etc" : "/usr/local/etc"
     vhost_opt = should_vhost ? "--vhost=#{should_vhost}" : ''
     name = resource[:name].split('@').first
     destination = resource[:name].split('@')[1]
-    rabbitmqadmin('delete', 'binding', vhost_opt, "--user=#{resource[:user]}", "--password=#{resource[:password]}", '-c', '/etc/rabbitmq/rabbitmqadmin.conf', "source=#{name}", "destination_type=#{resource[:destination_type]}", "destination=#{destination}", "properties_key=#{resource[:routing_key]}")
+    rabbitmqadmin('delete', 'binding', vhost_opt, "--user=#{resource[:user]}", "--password=#{resource[:password]}", '-c', "#{etc_dir}/rabbitmq/rabbitmqadmin.conf", "source=#{name}", "destination_type=#{resource[:destination_type]}", "destination=#{destination}", "properties_key=#{resource[:routing_key]}")
     @property_hash[:ensure] = :absent
   end
 

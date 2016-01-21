@@ -93,6 +93,7 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, :parent => Puppet:
   end
 
   def create
+    etc_dir = Facter[:operatingsystem].value != "FreeBSD" ? "/etc" : "/usr/local/etc"
     vhost_opt = should_vhost ? "--vhost=#{should_vhost}" : ''
     name = resource[:name].split('@')[0]
     arguments = resource[:arguments]
@@ -103,15 +104,16 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, :parent => Puppet:
     cmd << "internal=#{resource[:internal]}" if resource[:internal]
     cmd << "durable=#{resource[:durable]}" if resource[:durable]
     cmd << "auto_delete=#{resource[:auto_delete]}" if resource[:auto_delete]
-    cmd += ["arguments=#{arguments.to_json}", '-c', '/etc/rabbitmq/rabbitmqadmin.conf']
+    cmd += ["arguments=#{arguments.to_json}", '-c', "#{etc_dir}/rabbitmq/rabbitmqadmin.conf"]
     rabbitmqadmin(*cmd)
     @property_hash[:ensure] = :present
   end
 
   def destroy
+    etc_dir = Facter[:operatingsystem].value != "FreeBSD" ? "/etc" : "/usr/local/etc"
     vhost_opt = should_vhost ? "--vhost=#{should_vhost}" : ''
     name = resource[:name].split('@')[0]
-    rabbitmqadmin('delete', 'exchange', vhost_opt, "--user=#{resource[:user]}", "--password=#{resource[:password]}", "name=#{name}", '-c', '/etc/rabbitmq/rabbitmqadmin.conf')
+    rabbitmqadmin('delete', 'exchange', vhost_opt, "--user=#{resource[:user]}", "--password=#{resource[:password]}", "name=#{name}", '-c', "#{etc_dir}/rabbitmq/rabbitmqadmin.conf")
     @property_hash[:ensure] = :absent
   end
 

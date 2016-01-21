@@ -64,15 +64,23 @@ class rabbitmq::config {
 
   # Handle env variables.
   $environment_variables = merge($default_env_variables, $rabbitmq::environment_variables)
+  case $::osfamily {
+    'FreeBSD': {
+      $etc_dir = '/usr/local/etc'
+    }
+    default: {
+      $etc_dir = '/etc'
+    }
+  }
 
-  file { '/etc/rabbitmq':
+  file { "${etc_dir}/rabbitmq":
     ensure => directory,
     owner  => '0',
     group  => '0',
     mode   => '0644',
   }
 
-  file { '/etc/rabbitmq/ssl':
+  file { "${etc_dir}/rabbitmq/ssl":
     ensure => directory,
     owner  => '0',
     group  => '0',
@@ -102,12 +110,12 @@ class rabbitmq::config {
   if $admin_enable {
     file { 'rabbitmqadmin.conf':
       ensure  => file,
-      path    => '/etc/rabbitmq/rabbitmqadmin.conf',
+      path    => "${etc_dir}/rabbitmq/rabbitmqadmin.conf",
       content => template('rabbitmq/rabbitmqadmin.conf.erb'),
       owner   => '0',
       group   => '0',
       mode    => '0644',
-      require => File['/etc/rabbitmq'],
+      require => File["${etc_dir}/rabbitmq"],
     }
   }
 
