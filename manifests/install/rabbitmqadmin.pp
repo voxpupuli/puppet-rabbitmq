@@ -16,7 +16,7 @@ class rabbitmq::install::rabbitmqadmin {
   staging::file { 'rabbitmqadmin':
     target      => "${rabbitmq::rabbitmq_home}/rabbitmqadmin",
     source      => "${protocol}://${default_user}:${default_pass}@localhost:${management_port}/cli/rabbitmqadmin",
-    curl_option => '-k --noproxy localhost --retry 30 --retry-delay 6',
+    curl_option => '-k --tlsv1.1 --noproxy localhost --retry 30 --retry-delay 6',
     timeout     => '180',
     wget_option => '--no-proxy',
     require     => [
