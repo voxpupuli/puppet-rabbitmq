@@ -407,7 +407,7 @@ StartLimitBurst=3
     end
    context 'with restart_params=on-failure' do
       let(:params) {{ :file_limit => '1234',
-                      :restart_params => 'on-failure',
+                      :restart_param => 'on-failure',
                       :start_limit_interval => '30s',
                       :start_limit_burst => '5' }}
       it { should contain_file('/etc/systemd/system/rabbitmq-server.service.d/limits.conf').with(
