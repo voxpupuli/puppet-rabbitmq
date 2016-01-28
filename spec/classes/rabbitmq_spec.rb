@@ -351,6 +351,9 @@ rabbitmq hard nofile 1234
         'notify'  => 'Exec[rabbitmq-systemd-reload]',
         'content' => '[Service]
 LimitNOFILE=unlimited
+Restart=no
+StartLimitInterval=60s
+StartLimitBurst=3
 '
       ) }
     end
@@ -364,6 +367,9 @@ LimitNOFILE=unlimited
         'notify'  => 'Exec[rabbitmq-systemd-reload]',
         'content' => '[Service]
 LimitNOFILE=infinity
+Restart=no
+StartLimitInterval=60s
+StartLimitBurst=3
 '
       ) }
     end
@@ -377,6 +383,9 @@ LimitNOFILE=infinity
         'notify'  => 'Exec[rabbitmq-systemd-reload]',
         'content' => '[Service]
 LimitNOFILE=-1
+Restart=no
+StartLimitInterval=60s
+StartLimitBurst=3
 '
       ) }
     end
@@ -390,9 +399,30 @@ LimitNOFILE=-1
         'notify'  => 'Exec[rabbitmq-systemd-reload]',
         'content' => '[Service]
 LimitNOFILE=1234
+Restart=no
+StartLimitInterval=60s
+StartLimitBurst=3
 '
       ) }
     end
+   context 'with restart_params=on-failure' do
+      let(:params) {{ :file_limit => '1234',
+                      :restart_param => 'on-failure',
+                      :start_limit_interval => '30s',
+                      :start_limit_burst => '5' }}
+      it { should contain_file('/etc/systemd/system/rabbitmq-server.service.d/limits.conf').with(
+        'owner'   => '0',
+        'group'   => '0',
+        'mode'    => '0644',
+        'notify'  => 'Exec[rabbitmq-systemd-reload]',
+        'content' => '[Service]
+LimitNOFILE=1234
+Restart=on-failure
+StartLimitInterval=30s
+StartLimitBurst=5
+'
+     )}
+   end
   end
 
   ['Debian', 'RedHat', 'SUSE', 'Archlinux'].each do |distro|
@@ -658,7 +688,7 @@ LimitNOFILE=1234
                             '    {port, 389},', '    {foo, bar},', '    {log, true}'])
         end
       end
-      
+
       describe 'configuring auth_backends' do
         let :params do
           { :auth_backends   => ['{baz, foo}', 'bar'] }
@@ -1158,7 +1188,7 @@ LimitNOFILE=1234
         end
       end
 
-      describe 'config_management_variables' do                                                                                              
+      describe 'config_management_variables' do
         let(:params) {{ :config_management_variables => {
             'rates_mode'      => 'none',
         }}}

@@ -124,4 +124,7 @@ class rabbitmq::params {
   $config_management_variables = {}
   $auth_backends              = undef
   $file_limit                 = '16384'
+  $start_limit_interval       = '60s'
+  $start_limit_burst          = '3'
+  $restart_param              = 'no'
 }
