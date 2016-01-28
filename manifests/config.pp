@@ -58,6 +58,9 @@ class rabbitmq::config {
   $auth_backends              = $rabbitmq::auth_backends
   $cluster_partition_handling = $rabbitmq::cluster_partition_handling
   $file_limit                 = $rabbitmq::file_limit
+  $restart_param              = $rabbitmq::restart_param
+  $start_limit_interval       = $rabbitmq::start_limit_interval
+  $start_limit_burst          = $rabbitmq::start_limit_burst
   $default_env_variables      =  {
     'NODE_PORT'        => $port,
     'NODE_IP_ADDRESS'  => $node_ip_address
