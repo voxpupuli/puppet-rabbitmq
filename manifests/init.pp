@@ -64,6 +64,9 @@ class rabbitmq(
   $wipe_db_on_cookie_change   = $rabbitmq::params::wipe_db_on_cookie_change,
   $cluster_partition_handling = $rabbitmq::params::cluster_partition_handling,
   $file_limit                 = $rabbitmq::params::file_limit,
+  $restart_param              = $rabbitmq::params::restart_param,
+  $start_limit_interval       = $rabbitmq::params::start_limit_interval,
+  $start_limit_burst          = $rabbitmq::params::start_limit_burst,
   $environment_variables      = $rabbitmq::params::environment_variables,
   $config_variables           = $rabbitmq::params::config_variables,
   $config_kernel_variables    = $rabbitmq::params::config_kernel_variables,
@@ -109,6 +112,9 @@ class rabbitmq(
   }
   validate_bool($wipe_db_on_cookie_change)
   validate_bool($tcp_keepalive)
+  validate_string($restart_param)
+  validate_string($start_limit_interval)
+  validate_string($start_limit_burst)
   # using sprintf for conversion to string, because "${file_limit}" doesn't
   # pass lint, despite being nicer
   validate_re(sprintf('%s', $file_limit), '^(\d+|-1|unlimited|infinity)$', '$file_limit must be a positive integer, \'-1\', \'unlimited\', or \'infinity\'.')
@@ -145,7 +151,7 @@ class rabbitmq(
   validate_hash($config_variables)
   validate_hash($config_kernel_variables)
   validate_hash($config_management_variables)
-  
+
   if $auth_backends {
     validate_array($auth_backends)
   }
