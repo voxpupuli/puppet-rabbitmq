@@ -124,4 +124,5 @@ class rabbitmq::params {
   $config_management_variables = {}
   $auth_backends              = undef
   $file_limit                 = '16384'
+  $heartbeat                  = '60'
 }
