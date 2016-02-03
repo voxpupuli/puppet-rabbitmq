@@ -12,10 +12,11 @@ class rabbitmq::install::rabbitmqadmin {
 
   $default_user = $rabbitmq::default_user
   $default_pass = $rabbitmq::default_pass
+  $node_ip_address = $rabbitmq::node_ip_address
 
   staging::file { 'rabbitmqadmin':
     target      => "${rabbitmq::rabbitmq_home}/rabbitmqadmin",
-    source      => "${protocol}://${default_user}:${default_pass}@localhost:${management_port}/cli/rabbitmqadmin",
+    source      => "${protocol}://${default_user}:${default_pass}@${node_ip_address}:${management_port}/cli/rabbitmqadmin",
     curl_option => '-k --noproxy localhost --retry 30 --retry-delay 6',
     timeout     => '180',
     wget_option => '--no-proxy',
