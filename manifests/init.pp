@@ -70,6 +70,7 @@ class rabbitmq(
   $config_management_variables = $rabbitmq::config_management_variables,
   $auth_backends              = $rabbitmq::params::auth_backends,
   $key_content                = undef,
+  $heartbeat                  = $rabbitmq::params::heartbeat,
 ) inherits rabbitmq::params {
 
   validate_bool($admin_enable)
