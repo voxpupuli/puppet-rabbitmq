@@ -92,6 +92,7 @@ class rabbitmq::params {
   $node_ip_address             = 'UNSET'
   $port                        = '5672'
   $tcp_keepalive               = false
+  $heartbeat                   = undef
   $ssl                         = false
   $ssl_only                    = false
   $ssl_cacert                  = 'UNSET'

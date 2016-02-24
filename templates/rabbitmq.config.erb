@@ -5,6 +5,9 @@
   {ssl, [{versions, [<%= @ssl_versions.sort.map { |v| "'#{v}'" }.join(', ') %>]}]},
 <%- end -%>
   {rabbit, [
+<%- if @heartbeat -%>
+    {heartbeat, <%=@heartbeat%>},
+<% end -%>
 <% if @auth_backends -%>
     {auth_backends, [<%= @auth_backends.map { |v| "#{v}" }.join(', ') %>]},
 <% elsif @ldap_auth -%>
