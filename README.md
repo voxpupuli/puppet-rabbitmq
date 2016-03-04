@@ -1,6 +1,6 @@
-#rabbitmq
+# rabbitmq
 
-####Table of Contents
+#### Table of Contents
 
 1. [Overview](#overview)
 2. [Module Description - What the module does and why it is useful](#module-description)
@@ -14,39 +14,39 @@
    * [RedHat module dependencies](#redhat-module-dependecies)
 6. [Development - Guide for contributing to the module](#development)
 
-##Overview
+## Overview
 
 This module manages RabbitMQ (www.rabbitmq.com)
 
-##Module Description
+## Module Description
 The rabbitmq module sets up rabbitmq and has a number of providers to manage
 everything from vhosts to exchanges after setup.
 
 This module has been tested against 2.7.1 and is known to not support
 all features against earlier versions.
 
-##Setup
+## Setup
 
-###What rabbitmq affects
+### What rabbitmq affects
 
 * rabbitmq repository files.
 * rabbitmq package.
 * rabbitmq configuration file.
 * rabbitmq service.
 
-###Beginning with rabbitmq
+### Beginning with rabbitmq
 
 
 ```puppet
 include '::rabbitmq'
 ```
 
-##Usage
+## Usage
 
 All options and configuration can be done through interacting with the parameters
 on the main rabbitmq class.  These are documented below.
 
-##rabbitmq class
+## rabbitmq class
 
 To begin with the rabbitmq class controls the installation of rabbitmq.  In here
 you can control many parameters relating to the package and service, such as
@@ -117,6 +117,17 @@ class { 'rabbitmq':
 }
 ```
 
+To change Management Plugin Config Variables in rabbitmq.config, use the parameters
+`config_management_variables` e.g.:
+
+```puppet
+class { 'rabbitmq':
+  config_management_variables  => {
+    'rates_mode' => 'basic',
+  }
+}
+```
+
 ### Clustering
 To use RabbitMQ clustering facilities, use the rabbitmq parameters
 `config_cluster`, `cluster_nodes`, and `cluster_node_type`, e.g.:
@@ -131,9 +142,9 @@ class { 'rabbitmq':
 }
 ```
 
-##Reference
+## Reference
 
-##Classes
+## Classes
 
 * rabbitmq: Main class for installation and service management.
 * rabbitmq::config: Main class for rabbitmq configuration/management.
@@ -143,15 +154,22 @@ class { 'rabbitmq':
 * rabbitmq::repo::apt: Handles apt repo for Debian systems.
 * rabbitmq::repo::rhel: Handles rpm repo for Redhat systems.
 
-###Parameters
+### Parameters
 
 ####`admin_enable`
 
 Boolean, if enabled sets up the management interface/plugin for RabbitMQ.
 
+####`auth_backends`
+
+An array specifying authorization/authentication backend to use. Syntax:
+single quotes should be placed around array entries, ex. ['{foo, baz}', 'baz']
+Defaults to [rabbit_auth_backend_internal], and if using LDAP defaults to
+[rabbit_auth_backend_internal, rabbit_auth_backend_ldap].
+
 ####`cluster_node_type`
 
-Choose between disk and ram nodes.
+Choose between disc and ram nodes.
 
 ####`cluster_nodes`
 
@@ -185,9 +203,21 @@ the queue. You can read more about it
 
 The path to write the RabbitMQ configuration file to.
 
+####`config_management_variables`
+
+Hash of configuration variables for the [Management Plugin](https://www.rabbitmq.com/management.html).
+
 ####`config_stomp`
 
 Boolean to enable or disable stomp.
+
+####`config_shovel`
+
+Boolean to enable or disable shovel.
+
+####`config_shovel_statics`
+
+Hash of static shovel configurations
 
 ####`config_variables`
 
@@ -228,6 +258,11 @@ set config_cluster to 'False' and set 'erlang_cookie'.
 
 Set rabbitmq file ulimit. Defaults to 16384. Only available on systems with
 `$::osfamily == 'Debian'` or `$::osfamily == 'RedHat'`.
+
+####`heartbeat`
+
+Set the heartbeat timeout interval, default is unset which uses the builtin server
+defaultsof 60 seconds. Setting this to `0` will disable heartbeats.
 
 ####`key_content`
 
@@ -276,7 +311,7 @@ The port for the RabbitMQ management interface.
 
 ####`management_ssl`
 
-Enable/Disable SSL for the maangement port.
+Enable/Disable SSL for the management port.
 Has an effect only if ssl => true.
 Default is true.
 Valid values are true or false.
@@ -390,6 +425,11 @@ Functionality can be tested with cipherscan or similar tool: https://github.com/
 
 The port to use for Stomp.
 
+####`stomp_ssl_only`
+
+Configures STOMP to only use SSL.  No cleartext STOMP TCP listeners will be created.
+Requires setting ssl_stomp_port also.
+
 ####`stomp_ensure`
 
 Boolean to install the stomp plugin.
@@ -423,13 +463,13 @@ String: OS dependent, default defined in param.pp. The system group the rabbitmq
 
 String: OS dependent. default defined in param.pp. The home directory of the rabbitmq deamon.
 
-##Native Types
+## Native Types
 
 ### rabbitmq\_user
 
 query all current users: `$ puppet resource rabbitmq_user`
 
-```
+```puppet
 rabbitmq_user { 'dan':
   admin    => true,
   password => 'bar',
@@ -535,6 +575,28 @@ rabbitmq_plugin {'rabbitmq_stomp':
 }
 ```
 
+### rabbitmq\_parameter
+
+```puppet
+  rabbitmq_parameter { 'documentumShovel@/':
+    component_name => '',
+    value          => {
+        'src-uri'    => 'amqp://',
+        'src-queue'  => 'my-queue',
+        'dest-uri'   => 'amqp://remote-server',
+        'dest-queue' => 'another-queue',
+    },
+  }
+
+  rabbitmq_parameter { 'documentumFed@/':
+    component_name => 'federation-upstream',
+    value          => {
+        'uri'    => 'amqp://myserver',
+        'expires' => '360000',
+    },
+  }
+```
+
 ### rabbitmq\_erlang\_cookie
 
 This is essentially a private type used by the rabbitmq::config class
@@ -545,7 +607,7 @@ stopping the rabbitmq service and wiping out the database at
 "${rabbitmq_home}/mnesia" if the user agrees to it. We don't recommend using
 this type directly.
 
-##Limitations
+## Limitations
 
 This module has been built on and tested against Puppet 3.x.
 
@@ -601,7 +663,7 @@ any and all messages stored to disk.
 Failure to do this will result in RabbitMQ failing to start with a cryptic error message about
 "init terminating in do_boot", containing "rabbit_upgrade,maybe_upgrade_mnesia".
 
-##Development
+## Development
 
 Puppet Labs modules on the Puppet Forge are open projects, and community
 contributions are essential for keeping them great. We can’t access the

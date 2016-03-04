@@ -7,6 +7,8 @@ class rabbitmq(
   $config_cluster             = $rabbitmq::params::config_cluster,
   $config_path                = $rabbitmq::params::config_path,
   $config_stomp               = $rabbitmq::params::config_stomp,
+  $config_shovel              = $rabbitmq::params::config_shovel,
+  $config_shovel_statics      = $rabbitmq::params::config_shovel_statics,
   $default_user               = $rabbitmq::params::default_user,
   $default_pass               = $rabbitmq::params::default_pass,
   $delete_guest_user          = $rabbitmq::params::delete_guest_user,
@@ -31,6 +33,7 @@ class rabbitmq(
   $rabbitmq_home              = $rabbitmq::params::rabbitmq_home,
   $port                       = $rabbitmq::params::port,
   $tcp_keepalive              = $rabbitmq::params::tcp_keepalive,
+  $heartbeat                  = $rabbitmq::params::heartbeat,
   $service_ensure             = $rabbitmq::params::service_ensure,
   $service_manage             = $rabbitmq::params::service_manage,
   $service_name               = $rabbitmq::params::service_name,
@@ -57,6 +60,7 @@ class rabbitmq(
   $ldap_log                   = $rabbitmq::params::ldap_log,
   $ldap_config_variables      = $rabbitmq::params::ldap_config_variables,
   $stomp_port                 = $rabbitmq::params::stomp_port,
+  $stomp_ssl_only             = $rabbitmq::params::stomp_ssl_only,
   $version                    = $rabbitmq::params::version,
   $wipe_db_on_cookie_change   = $rabbitmq::params::wipe_db_on_cookie_change,
   $cluster_partition_handling = $rabbitmq::params::cluster_partition_handling,
@@ -64,6 +68,8 @@ class rabbitmq(
   $environment_variables      = $rabbitmq::params::environment_variables,
   $config_variables           = $rabbitmq::params::config_variables,
   $config_kernel_variables    = $rabbitmq::params::config_kernel_variables,
+  $config_management_variables = $rabbitmq::config_management_variables,
+  $auth_backends              = $rabbitmq::params::auth_backends,
   $key_content                = undef,
 ) inherits rabbitmq::params {
 
@@ -83,6 +89,8 @@ class rabbitmq(
   validate_absolute_path($config_path)
   validate_bool($config_cluster)
   validate_bool($config_stomp)
+  validate_bool($config_shovel)
+  validate_hash($config_shovel_statics)
   validate_string($default_user)
   validate_string($default_pass)
   validate_bool($delete_guest_user)
@@ -102,7 +110,10 @@ class rabbitmq(
   }
   validate_bool($wipe_db_on_cookie_change)
   validate_bool($tcp_keepalive)
-  validate_re($file_limit, '^(\d+|-1|unlimited|infinity)$', '$file_limit must be a positive integer, \'-1\', \'unlimited\', or \'infinity\'.')
+  # using sprintf for conversion to string, because "${file_limit}" doesn't
+  # pass lint, despite being nicer
+  validate_re(sprintf('%s', $file_limit),
+              '^(\d+|-1|unlimited|infinity)$', '$file_limit must be a positive integer, \'-1\', \'unlimited\', or \'infinity\'.')
   # Validate service parameters.
   validate_re($service_ensure, '^(running|stopped)$')
   validate_bool($service_manage)
@@ -123,6 +134,7 @@ class rabbitmq(
     validate_re($ssl_stomp_port, '\d+')
   }
   validate_bool($stomp_ensure)
+  validate_bool($stomp_ssl_only)
   validate_bool($ldap_auth)
   validate_string($ldap_server)
   validate_string($ldap_user_dn_pattern)
@@ -134,6 +146,15 @@ class rabbitmq(
   validate_hash($environment_variables)
   validate_hash($config_variables)
   validate_hash($config_kernel_variables)
+  validate_hash($config_management_variables)
+
+  if $heartbeat {
+    validate_integer($heartbeat)
+  }
+
+  if $auth_backends {
+    validate_array($auth_backends)
+  }
 
   if $ssl_only and ! $ssl {
     fail('$ssl_only => true requires that $ssl => true')
@@ -141,6 +162,10 @@ class rabbitmq(
 
   if $config_stomp and $ssl_stomp_port and ! $ssl {
     warning('$ssl_stomp_port requires that $ssl => true and will be ignored')
+  }
+
+  if $config_stomp and $stomp_ssl_only and ! $ssl_stomp_port  {
+    fail('$stomp_ssl_only requires that $ssl_stomp_port be set')
   }
 
   if $ssl_versions {
@@ -182,16 +207,19 @@ class rabbitmq(
 
   if $manage_repos != false {
     case $::osfamily {
-      'RedHat', 'SUSE':
-        { include '::rabbitmq::repo::rhel' }
+      'RedHat', 'SUSE': {
+          include '::rabbitmq::repo::rhel'
+      }
       'Debian': {
         class { '::rabbitmq::repo::apt' :
           key_source  => $package_gpg_key,
           key_content => $key_content,
         }
+        $package_require = Class['apt::update']
       }
-      default:
-        { }
+      default: {
+        $package_require = undef
+      }
     }
   }
 
@@ -199,9 +227,10 @@ class rabbitmq(
     include '::rabbitmq::install::rabbitmqadmin'
 
     rabbitmq_plugin { 'rabbitmq_management':
-      ensure  => present,
-      require => Class['rabbitmq::install'],
-      notify  => Class['rabbitmq::service'],
+      ensure   => present,
+      require  => Class['rabbitmq::install'],
+      notify   => Class['rabbitmq::service'],
+      provider => 'rabbitmqplugins',
     }
 
     Class['::rabbitmq::service'] -> Class['::rabbitmq::install::rabbitmqadmin']
@@ -224,6 +253,27 @@ class rabbitmq(
     }
   }
 
+  if ($config_shovel) {
+    rabbitmq_plugin { 'rabbitmq_shovel':
+      ensure   => present,
+      require  => Class['rabbitmq::install'],
+      notify   => Class['rabbitmq::service'],
+      provider => 'rabbitmqplugins',
+    }
+
+    if ($admin_enable) {
+      rabbitmq_plugin { 'rabbitmq_shovel_management':
+        ensure   => present,
+        require  => Class['rabbitmq::install'],
+        notify   => Class['rabbitmq::service'],
+        provider => 'rabbitmqplugins',
+      }
+    }
+  }
+
+  # Anchor this as per #8040 - this ensures that classes won't float off and
+  # mess everything up.  You can read about this at:
+  # http://docs.puppetlabs.com/puppet/2.7/reference/lang_containment.html#known-issues
   anchor { 'rabbitmq::begin': }
   anchor { 'rabbitmq::end': }
 

@@ -5,7 +5,12 @@
   {ssl, [{versions, [<%= @ssl_versions.sort.map { |v| "'#{v}'" }.join(', ') %>]}]},
 <%- end -%>
   {rabbit, [
-<% if @ldap_auth -%>
+<%- if @heartbeat -%>
+    {heartbeat, <%=@heartbeat%>},
+<% end -%>
+<% if @auth_backends -%>
+    {auth_backends, [<%= @auth_backends.map { |v| "#{v}" }.join(', ') %>]},
+<% elsif @ldap_auth -%>
     {auth_backends, [rabbit_auth_backend_internal, rabbit_auth_backend_ldap]},
 <% end -%>
 <% if @config_cluster -%>
@@ -64,6 +69,11 @@
     <%= @config_kernel_variables.sort.map{|k,v| "{#{k}, #{v}}"}.join(",\n    ") %>
   ]}
 <%- end -%>
+<% if @config_management_variables -%>,
+  {rabbitmq_management, [
+    <%= @config_management_variables.sort.map{|k,v| "{#{k}, #{v}}"}.join(",\n    ") %>
+  ]}
+<%- end -%>
 <%- if @admin_enable -%>,
   {rabbitmq_management, [
     {listener, [
@@ -94,8 +104,13 @@
 <% if @config_stomp -%>,
 % Configure the Stomp Plugin listening port
   {rabbitmq_stomp, [
+  <%- if @stomp_ssl_only -%>
+    {tcp_listeners, []}
+  <%- else -%>
     {tcp_listeners, [<%= @stomp_port %>]}
-  <%- if @ssl && @ssl_stomp_port -%>,
+  <%- end -%>
+  <%- if @ssl && @ssl_stomp_port -%>
+    ,
     {ssl_listeners, [<%= @ssl_stomp_port %>]}
   <%- end -%>
   ]}
@@ -115,6 +130,12 @@
 <%- end -%>
     {log, <%= @ldap_log %>}
   ]}
+<%- end -%>
+<%- if @config_shovel and not @config_shovel_statics.empty? -%>,
+  {rabbitmq_shovel,
+    [{shovels,[
+      <%= @config_shovel_statics.sort.map{|k,v| "{#{k},[#{v}]}"}.join(",\n      ") %>
+    ]}]}
 <%- end -%>
 ].
 % EOF
