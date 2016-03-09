@@ -12,6 +12,7 @@ describe 'rabbitmq' do
 
   context 'on Debian' do
     with_debian_facts
+    let(:params) {{ :repos_ensure => true }}
     it 'includes rabbitmq::repo::apt' do
       should contain_class('rabbitmq::repo::apt')
     end
@@ -37,7 +38,7 @@ describe 'rabbitmq' do
   end
 
   context 'on Debian' do
-    let(:params) {{ :manage_repos => true }}
+    let(:params) {{ :manage_repos => true, :repos_ensure => true }}
     with_debian_facts
 
     it 'includes rabbitmq::repo::apt' do
@@ -182,6 +183,7 @@ describe 'rabbitmq' do
 
   context 'on Redhat' do
     with_redhat_facts
+    let(:params) {{ :repos_ensure => true }}
     it 'includes rabbitmq::repo::rhel' do
       should contain_class('rabbitmq::repo::rhel')
       should contain_exec('rpm --import https://www.rabbitmq.com/rabbitmq-signing-key-public.asc')
@@ -282,9 +284,9 @@ rabbitmq hard nofile 1234
   end
 
   context 'on Redhat' do
-    let(:params) {{ :manage_repos => true }}
+    let(:params) {{ :manage_repos => true, :repos_ensure => true }}
     with_redhat_facts
-    it 'does import repo public key when manage_repos is true' do
+    it 'does import repo public key when manage_repos and repos_ensure are true' do
       should contain_class('rabbitmq::repo::rhel')
       should contain_exec('rpm --import https://www.rabbitmq.com/rabbitmq-signing-key-public.asc')
     end
@@ -1419,7 +1421,8 @@ LimitNOFILE=1234
     describe "repo management on #{distro}" do
       describe 'imports the key' do
         let(:facts) { osfacts }
-        let(:params) {{ :package_gpg_key => 'https://www.rabbitmq.com/rabbitmq-signing-key-public.asc' }}
+        let(:params) {{ :package_gpg_key => 'https://www.rabbitmq.com/rabbitmq-signing-key-public.asc',
+                        :manage_repos => true, :repos_ensure => true }}
 
         it { should contain_exec("rpm --import #{params[:package_gpg_key]}").with(
           'path' => ['/bin','/usr/bin','/sbin','/usr/sbin']
