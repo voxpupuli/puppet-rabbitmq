@@ -39,6 +39,7 @@ Puppet::Type.type(:rabbitmq_queue).provide(:rabbitmqadmin) do
     resources = []
     all_vhosts.each do |vhost|
       all_queues(vhost).collect do |line|
+        next if line =~ /^federation:/
         name, durable, auto_delete, arguments = line.split()
         # Convert output of arguments from the rabbitmqctl command to a json string.
         if !arguments.nil?
