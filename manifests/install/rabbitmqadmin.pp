@@ -15,17 +15,17 @@ class rabbitmq::install::rabbitmqadmin {
   $node_ip_address = $rabbitmq::node_ip_address
 
   if is_ipv6_address($node_ip_address) {
-    $curl_prefix  = '-k --noproxy -g -6'
+    $curl_prefix  = '-g -6'
     $sanitized_ip = join(enclose_ipv6(any2array($node_ip_address)), ',')
   } else {
-    $curl_prefix  = '-k --noproxy'
+    $curl_prefix  = ''
     $sanitized_ip = $node_ip_address
   }
 
   staging::file { 'rabbitmqadmin':
     target      => "${rabbitmq::rabbitmq_home}/rabbitmqadmin",
     source      => "${protocol}://${default_user}:${default_pass}@${sanitized_ip}:${management_port}/cli/rabbitmqadmin",
-    curl_option => "${curl_prefix} ${sanitized_ip} --retry 30 --retry-delay 6",
+    curl_option => "-k --noproxy ${node_ip_address} ${curl_prefix} --retry 30 --retry-delay 6",
     timeout     => '180',
     wget_option => '--no-proxy',
     require     => [

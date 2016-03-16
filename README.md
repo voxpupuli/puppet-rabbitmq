@@ -318,7 +318,8 @@ Valid values are true or false.
 
 ####`node_ip_address`
 
-The value of NODE_IP_ADDRESS in rabbitmq_env.config
+The value of NODE_IP_ADDRESS in rabbitmq_env.config and of the
+rabbitmq_management server if it is enabled.
 
 ####`package_ensure`
 
