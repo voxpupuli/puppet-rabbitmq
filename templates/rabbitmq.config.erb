@@ -98,7 +98,7 @@
 <%- else -%>
       {port, <%= @management_port %>}
 <%- end -%>
-<%- if @node_ip_address -%>
+<%- if @node_ip_address != 'UNSET' -%>
       ,{ip, "<%= @node_ip_address %>"}
 <%- end -%>
     ]}
