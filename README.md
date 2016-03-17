@@ -650,9 +650,9 @@ For Debian systems:
       ensure => 'latest',
     }
 
-This module also depends on the excellent voxpupuli/staging module on the Forge:
+This module also depends on the excellent puppet/staging module on the Forge:
 
-    puppet module install voxpupuli-staging
+    puppet module install puppet-staging
 
 ### Downgrade Issues
 
