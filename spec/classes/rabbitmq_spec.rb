@@ -431,7 +431,7 @@ LimitNOFILE=1234
             should contain_staging__file('rabbitmqadmin').with_source("http://guest:guest@1.1.1.1:15672/cli/rabbitmqadmin")
           end
         end
-        context 'with default $node_ip_address (UNSET) and service_manage set to true' do
+        context 'with default $node_ip_address="UNSET" and service_manage set to true' do
           let(:params) {{ :admin_enable => true, :node_ip_address => 'UNSET' }}
           it 'we enable the admin interface by default' do
             should contain_class('rabbitmq::install::rabbitmqadmin')
@@ -442,7 +442,7 @@ LimitNOFILE=1234
             should contain_staging__file('rabbitmqadmin').with_source("http://guest:guest@127.0.0.1:15672/cli/rabbitmqadmin")
           end
         end
-        context 'with service_manage set to true, node_ip_address = 'UNSET', and default user/pass specified' do
+        context 'with service_manage set to true, node_ip_address = "UNSET", and default user/pass specified' do
           let(:params) {{ :admin_enable => true, :default_user => 'foobar', :default_pass => 'hunter2', :node_ip_address => 'UNSET' }}
           it 'we use the correct URL to rabbitmqadmin' do
             should contain_staging__file('rabbitmqadmin').with(
