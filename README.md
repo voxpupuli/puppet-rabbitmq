@@ -652,7 +652,7 @@ For Debian systems:
 
 This module also depends on the excellent puppet/staging module on the Forge:
 
-    puppet module install nanliu-staging
+    puppet module install puppet-staging
 
 ### Downgrade Issues
 
