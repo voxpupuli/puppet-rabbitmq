@@ -223,6 +223,15 @@ class rabbitmq(
     }
   }
 
+  # Start epmd as rabbitmq so it doesn't run as root when installing plugins 
+  exec { 'epmd_daemon':
+    command => 'epmd -daemon',
+    path    => '/bin:/sbin:/usr/bin:/usr/sbin',
+    user    => $rabbitmq_user,
+    group   => $rabbitmq_group,
+    unless  => 'pgrep epmd',
+  }
+
   if $admin_enable and $service_manage {
     include '::rabbitmq::install::rabbitmqadmin'
 
@@ -282,6 +291,7 @@ class rabbitmq(
     -> Class['::rabbitmq::management'] -> Anchor['rabbitmq::end']
 
   # Make sure the various providers have their requirements in place.
-  Class['::rabbitmq::install'] -> Rabbitmq_plugin<| |>
+  Class['::rabbitmq::install'] -> Exec['epmd_daemon']
+    -> Rabbitmq_plugin<| |>
 
 }
