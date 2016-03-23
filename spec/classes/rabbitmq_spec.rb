@@ -1228,6 +1228,23 @@ LimitNOFILE=1234
         end
       end
 
+      describe 'handshake_timeout option' do
+        let(:params) {{ :handshake_timeout => 10000 }}
+        it 'should set handshake_timeout opt in config file' do
+          should contain_file('rabbitmq.config') \
+            .with_content(/\{handshake_timeout, 10000\}/)
+        end
+      end
+
+      describe 'non-integer handshake_timeout option' do
+        let(:params) {{ :handshake_timeout => 'str10' }}
+        it 'should raise a validation error' do
+          expect {
+            should contain_file('rabbitmq.config')
+          }.to raise_error(Puppet::Error, /Expected first argument to be an Integer/)
+        end
+      end
+
       context 'delete_guest_user' do
         describe 'should do nothing by default' do
           it { should_not contain_rabbitmq_user('guest') }

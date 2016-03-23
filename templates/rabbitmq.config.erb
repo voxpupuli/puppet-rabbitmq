@@ -8,6 +8,9 @@
 <%- if @heartbeat -%>
     {heartbeat, <%=@heartbeat%>},
 <% end -%>
+<%- if @handshake_timeout -%>
+    {handshake_timeout, <%= @handshake_timeout %>},
+<% end -%>
 <% if @auth_backends -%>
     {auth_backends, [<%= @auth_backends.map { |v| "#{v}" }.join(', ') %>]},
 <% elsif @ldap_auth -%>

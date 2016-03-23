@@ -34,6 +34,7 @@ class rabbitmq(
   $port                       = $rabbitmq::params::port,
   $tcp_keepalive              = $rabbitmq::params::tcp_keepalive,
   $heartbeat                  = $rabbitmq::params::heartbeat,
+  $handshake_timeout          = $rabbitmq::params::handshake_timeout,
   $service_ensure             = $rabbitmq::params::service_ensure,
   $service_manage             = $rabbitmq::params::service_manage,
   $service_name               = $rabbitmq::params::service_name,
@@ -150,6 +151,10 @@ class rabbitmq(
 
   if $heartbeat {
     validate_integer($heartbeat)
+  }
+
+  if $handshake_timeout {
+    validate_integer($handshake_timeout)
   }
 
   if $auth_backends {

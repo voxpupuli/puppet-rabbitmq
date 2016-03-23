@@ -93,6 +93,7 @@ class rabbitmq::params {
   $port                        = '5672'
   $tcp_keepalive               = false
   $heartbeat                   = undef
+  $handshake_timeout           = undef
   $ssl                         = false
   $ssl_only                    = false
   $ssl_cacert                  = 'UNSET'

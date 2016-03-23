@@ -264,6 +264,11 @@ Set rabbitmq file ulimit. Defaults to 16384. Only available on systems with
 Set the heartbeat timeout interval, default is unset which uses the builtin server
 defaultsof 60 seconds. Setting this to `0` will disable heartbeats.
 
+####`handshake_timeout`
+
+Set the connection handshake timeout, maximum time for AMQP handshake, in milliseconds.
+Default is unset which uses the builtin server defaults of 10 seconds.
+
 ####`key_content`
 
 Uses content method for Debian OS family. Should be a template for apt::source

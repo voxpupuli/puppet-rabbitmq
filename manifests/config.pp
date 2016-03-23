@@ -28,6 +28,7 @@ class rabbitmq::config {
   $port                       = $rabbitmq::port
   $tcp_keepalive              = $rabbitmq::tcp_keepalive
   $heartbeat                  = $rabbitmq::heartbeat
+  $handshake_timeout          = $rabbitmq::handshake_timeout
   $service_name               = $rabbitmq::service_name
   $ssl                        = $rabbitmq::ssl
   $ssl_only                   = $rabbitmq::ssl_only
