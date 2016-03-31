@@ -1,6 +1,7 @@
 # Main rabbitmq class
 class rabbitmq(
   $admin_enable               = $rabbitmq::params::admin_enable,
+  $admin_config               = $rabbitmq::params::admin_config,
   $cluster_node_type          = $rabbitmq::params::cluster_node_type,
   $cluster_nodes              = $rabbitmq::params::cluster_nodes,
   $config                     = $rabbitmq::params::config,

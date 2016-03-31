@@ -59,6 +59,7 @@ class rabbitmq::config {
   $auth_backends              = $rabbitmq::auth_backends
   $cluster_partition_handling = $rabbitmq::cluster_partition_handling
   $file_limit                 = $rabbitmq::file_limit
+  $admin_config               = $rabbitmq::admin_config
   $default_env_variables      =  {
     'NODE_PORT'        => $port,
     'NODE_IP_ADDRESS'  => $node_ip_address
@@ -105,7 +106,7 @@ class rabbitmq::config {
     file { 'rabbitmqadmin.conf':
       ensure  => file,
       path    => '/etc/rabbitmq/rabbitmqadmin.conf',
-      content => template('rabbitmq/rabbitmqadmin.conf.erb'),
+      content => template($admin_config),
       owner   => '0',
       group   => '0',
       mode    => '0644',
