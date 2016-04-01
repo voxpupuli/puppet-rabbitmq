@@ -223,52 +223,46 @@ class rabbitmq(
     }
   }
 
-  if $admin_enable and $service_manage {
+  $admin_ensure = $admin_enable and $service_manage
+
+  if $admin_ensure {
     include '::rabbitmq::install::rabbitmqadmin'
-
-    rabbitmq_plugin { 'rabbitmq_management':
-      ensure   => present,
-      require  => Class['rabbitmq::install'],
-      notify   => Class['rabbitmq::service'],
-      provider => 'rabbitmqplugins',
-    }
-
     Class['::rabbitmq::service'] -> Class['::rabbitmq::install::rabbitmqadmin']
     Class['::rabbitmq::install::rabbitmqadmin'] -> Rabbitmq_exchange<| |>
   }
 
-  if $stomp_ensure {
-    rabbitmq_plugin { 'rabbitmq_stomp':
-      ensure  => present,
-      require => Class['rabbitmq::install'],
-      notify  => Class['rabbitmq::service'],
-    }
+  rabbitmq_plugin { 'rabbitmq_management':
+    ensure   => bool2str($admin_ensure, 'present', 'absent'),
+    require  => Class['rabbitmq::install'],
+    notify   => Class['rabbitmq::service'],
+    provider => 'rabbitmqplugins',
   }
 
-  if ($ldap_auth) {
-    rabbitmq_plugin { 'rabbitmq_auth_backend_ldap':
-      ensure  => present,
-      require => Class['rabbitmq::install'],
-      notify  => Class['rabbitmq::service'],
-    }
+  rabbitmq_plugin { 'rabbitmq_stomp':
+    ensure  => bool2str($stomp_ensure, 'present', 'absent'),
+    require => Class['rabbitmq::install'],
+    notify  => Class['rabbitmq::service'],
   }
 
-  if ($config_shovel) {
-    rabbitmq_plugin { 'rabbitmq_shovel':
-      ensure   => present,
-      require  => Class['rabbitmq::install'],
-      notify   => Class['rabbitmq::service'],
-      provider => 'rabbitmqplugins',
-    }
+  rabbitmq_plugin { 'rabbitmq_auth_backend_ldap':
+    ensure  => bool2str($ldap_auth, 'present', 'absent'),
+    require => Class['rabbitmq::install'],
+    notify  => Class['rabbitmq::service'],
+  }
 
-    if ($admin_enable) {
-      rabbitmq_plugin { 'rabbitmq_shovel_management':
-        ensure   => present,
-        require  => Class['rabbitmq::install'],
-        notify   => Class['rabbitmq::service'],
-        provider => 'rabbitmqplugins',
-      }
-    }
+  rabbitmq_plugin { 'rabbitmq_shovel':
+    ensure   => bool2str($config_shovel, 'present', 'absent'),
+    require  => Class['rabbitmq::install'],
+    notify   => Class['rabbitmq::service'],
+    provider => 'rabbitmqplugins',
+  }
+
+  $config_shovel_management = $admin_enable and $config_shovel
+  rabbitmq_plugin { 'rabbitmq_shovel_management':
+    ensure   => bool2str($config_shovel_management, 'present', 'absent'),
+    require  => Class['rabbitmq::install'],
+    notify   => Class['rabbitmq::service'],
+    provider => 'rabbitmqplugins',
   }
 
   # Anchor this as per #8040 - this ensures that classes won't float off and

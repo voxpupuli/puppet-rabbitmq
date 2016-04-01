@@ -425,6 +425,7 @@ LimitNOFILE=1234
           it 'we enable the admin interface by default' do
             should contain_class('rabbitmq::install::rabbitmqadmin')
             should contain_rabbitmq_plugin('rabbitmq_management').with(
+              'ensure'  => 'present',
               'require' => 'Class[Rabbitmq::Install]',
               'notify'  => 'Class[Rabbitmq::Service]'
             )
@@ -464,7 +465,11 @@ LimitNOFILE=1234
           let(:params) {{ :admin_enable => true, :service_manage => false }}
           it 'should do nothing' do
             should_not contain_class('rabbitmq::install::rabbitmqadmin')
-            should_not contain_rabbitmq_plugin('rabbitmq_management')
+            should contain_rabbitmq_plugin('rabbitmq_management').with(
+              'ensure'  => 'absent',
+              'require' => 'Class[Rabbitmq::Install]',
+              'notify'  => 'Class[Rabbitmq::Service]'
+            )
           end
         end
       end
@@ -715,7 +720,11 @@ LimitNOFILE=1234
             }
           end
 
-          it { should_not contain_rabbitmq_plugin('rabbitmq_shovel_management') }
+          it { should contain_rabbitmq_plugin('rabbitmq_shovel_management').with(
+              'ensure'  => 'absent',
+              'require' => 'Class[Rabbitmq::Install]',
+              'notify'  => 'Class[Rabbitmq::Service]'
+            ) }
         end
 
         describe 'with static shovels' do
@@ -767,7 +776,11 @@ LimitNOFILE=1234
             }
           end
 
-          it { should_not contain_rabbitmq_plugin('rabbitmq_shovel_management') }
+          it { should contain_rabbitmq_plugin('rabbitmq_shovel_management').with(
+              'ensure'  => 'absent',
+              'require' => 'Class[Rabbitmq::Install]',
+              'notify'  => 'Class[Rabbitmq::Service]'
+            ) }
         end
 
         describe 'with static shovels' do
