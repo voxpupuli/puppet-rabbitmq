@@ -720,7 +720,11 @@ LimitNOFILE=1234
             }
           end
 
-          it { should_not contain_rabbitmq_plugin('rabbitmq_shovel_management') }
+          it { should contain_rabbitmq_plugin('rabbitmq_shovel_management').with(
+              'ensure'  => 'absent',
+              'require' => 'Class[Rabbitmq::Install]',
+              'notify'  => 'Class[Rabbitmq::Service]'
+            ) }
         end
 
         describe 'with static shovels' do
@@ -772,7 +776,11 @@ LimitNOFILE=1234
             }
           end
 
-          it { should_not contain_rabbitmq_plugin('rabbitmq_shovel_management') }
+          it { should contain_rabbitmq_plugin('rabbitmq_shovel_management').with(
+              'ensure'  => 'absent',
+              'require' => 'Class[Rabbitmq::Install]',
+              'notify'  => 'Class[Rabbitmq::Service]'
+            ) }
         end
 
         describe 'with static shovels' do
