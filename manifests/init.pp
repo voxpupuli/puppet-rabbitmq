@@ -252,7 +252,6 @@ class rabbitmq(
 
   rabbitmq_plugin { 'rabbitmq_shovel':
     ensure   => bool2str($config_shovel, 'present', 'absent'),
-    ensure   => present,
     require  => Class['rabbitmq::install'],
     notify   => Class['rabbitmq::service'],
     provider => 'rabbitmqplugins',
@@ -261,7 +260,6 @@ class rabbitmq(
   $config_shovel_management = $admin_enable and $config_shovel
   rabbitmq_plugin { 'rabbitmq_shovel_management':
     ensure   => bool2str($config_shovel_management, 'present', 'absent'),
-    ensure   => present,
     require  => Class['rabbitmq::install'],
     notify   => Class['rabbitmq::service'],
     provider => 'rabbitmqplugins',
