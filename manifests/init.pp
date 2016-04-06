@@ -11,6 +11,7 @@ class rabbitmq(
   $config_shovel_statics      = $rabbitmq::params::config_shovel_statics,
   $default_user               = $rabbitmq::params::default_user,
   $default_pass               = $rabbitmq::params::default_pass,
+  $default_vhost              = $rabbitmq::params::default_vhost,
   $delete_guest_user          = $rabbitmq::params::delete_guest_user,
   $env_config                 = $rabbitmq::params::env_config,
   $env_config_path            = $rabbitmq::params::env_config_path,

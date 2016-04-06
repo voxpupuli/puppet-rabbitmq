@@ -84,6 +84,7 @@ class rabbitmq::params {
   $config_shovel_statics       = {}
   $default_user                = 'guest'
   $default_pass                = 'guest'
+  $default_vhost               = undef
   $delete_guest_user           = false
   $env_config                  = 'rabbitmq/rabbitmq-env.conf.erb'
   $env_config_path             = '/etc/rabbitmq/rabbitmq-env.conf'
