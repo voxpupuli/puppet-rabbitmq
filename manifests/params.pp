@@ -125,6 +125,7 @@ class rabbitmq::params {
   $config_variables            = {}
   $config_kernel_variables     = {}
   $config_management_variables = {}
+  $config_additional_variables = {}
   $auth_backends               = undef
   $file_limit                  = '16384'
 }

@@ -1205,6 +1205,16 @@ LimitNOFILE=1234
         end
       end
 
+      describe 'config_additional_variables' do
+        let(:params) {{ :config_additional_variables => {
+            'autocluster'     => '[{consul_service, "rabbit"},{cluster_name, "rabbit"}]',
+        }}}
+        it 'should set config variables' do
+          should contain_file('rabbitmq.config') \
+            .with_content(/\{autocluster, \[\{consul_service, "rabbit"\},\{cluster_name, "rabbit"\}\]\}/)
+        end
+      end
+
       describe 'tcp_keepalive enabled' do
         let(:params) {{ :tcp_keepalive => true }}
         it 'should set tcp_listen_options keepalive true' do

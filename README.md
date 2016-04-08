@@ -128,6 +128,26 @@ class { 'rabbitmq':
 }
 ```
 
+### Additional Variables Configurable in rabbitmq.config
+To change Additional Config Variables in rabbitmq.config, use the parameter
+`config_additional_variables` e.g.:
+
+```puppet
+class { 'rabbitmq':
+  config_additional_variables => {
+    'autocluster' => '[{consul_service, "rabbit"},{cluster_name, "rabbit"}]',
+    'foo' => '[{bar, "baz"}]'
+  }
+}
+```
+This will result in the following config appended to the config file:
+```
+% Additional config
+  {autocluster, [{consul_service, "rabbit"},{cluster_name, "rabbit"}]},
+  {foo, [{bar, "baz"}]}
+```
+(This is required for the [autocluster plugin](https://github.com/aweber/rabbitmq-autocluster)
+
 ### Clustering
 To use RabbitMQ clustering facilities, use the rabbitmq parameters
 `config_cluster`, `cluster_nodes`, and `cluster_node_type`, e.g.:

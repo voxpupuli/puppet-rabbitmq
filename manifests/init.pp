@@ -69,6 +69,7 @@ class rabbitmq(
   $config_variables           = $rabbitmq::params::config_variables,
   $config_kernel_variables    = $rabbitmq::params::config_kernel_variables,
   $config_management_variables = $rabbitmq::params::config_management_variables,
+  $config_additional_variables = $rabbitmq::params::config_additional_variables,
   $auth_backends              = $rabbitmq::params::auth_backends,
   $key_content                = undef,
 ) inherits rabbitmq::params {
@@ -147,6 +148,7 @@ class rabbitmq(
   validate_hash($config_variables)
   validate_hash($config_kernel_variables)
   validate_hash($config_management_variables)
+  validate_hash($config_additional_variables)
 
   if $heartbeat {
     validate_integer($heartbeat)
