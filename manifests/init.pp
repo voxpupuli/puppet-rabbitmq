@@ -68,7 +68,7 @@ class rabbitmq(
   $environment_variables      = $rabbitmq::params::environment_variables,
   $config_variables           = $rabbitmq::params::config_variables,
   $config_kernel_variables    = $rabbitmq::params::config_kernel_variables,
-  $config_management_variables = $rabbitmq::config_management_variables,
+  $config_management_variables = $rabbitmq::params::config_management_variables,
   $auth_backends              = $rabbitmq::params::auth_backends,
   $key_content                = undef,
 ) inherits rabbitmq::params {
@@ -196,11 +196,6 @@ class rabbitmq(
     $real_package_source = $package_source
   }
 
-  include '::rabbitmq::install'
-  include '::rabbitmq::config'
-  include '::rabbitmq::service'
-  include '::rabbitmq::management'
-
   if $manage_repos != undef {
     warning('$manage_repos is now deprecated. Please use $repos_ensure instead')
   }
@@ -209,6 +204,7 @@ class rabbitmq(
     case $::osfamily {
       'RedHat', 'SUSE': {
           include '::rabbitmq::repo::rhel'
+          $package_require = undef
       }
       'Debian': {
         class { '::rabbitmq::repo::apt' :
@@ -221,7 +217,14 @@ class rabbitmq(
         $package_require = undef
       }
     }
+  } else {
+    $package_require = undef
   }
+
+  include '::rabbitmq::install'
+  include '::rabbitmq::config'
+  include '::rabbitmq::service'
+  include '::rabbitmq::management'
 
   if $admin_enable and $service_manage {
     include '::rabbitmq::install::rabbitmqadmin'
