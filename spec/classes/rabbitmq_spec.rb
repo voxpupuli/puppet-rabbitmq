@@ -448,7 +448,7 @@ LimitNOFILE=1234
           it 'we use the correct URL to rabbitmqadmin' do
             should contain_staging__file('rabbitmqadmin').with(
               :source      => 'http://foobar:hunter2@127.0.0.1:15672/cli/rabbitmqadmin',
-              :curl_option => '-k --noproxy 127.0.0.1  --retry 30 --retry-delay 6',
+              :curl_option => '-k  --retry 30 --retry-delay 6',
             )
           end
         end
@@ -457,7 +457,7 @@ LimitNOFILE=1234
           it 'we use the correct URL to rabbitmqadmin' do
             should contain_staging__file('rabbitmqadmin').with(
               :source      => 'http://foobar:hunter2@1.1.1.1:15672/cli/rabbitmqadmin',
-              :curl_option => '-k --noproxy 1.1.1.1  --retry 30 --retry-delay 6',
+              :curl_option => '-k --noproxy 1.1.1.1 --retry 30 --retry-delay 6',
             )
           end
         end
@@ -467,7 +467,7 @@ LimitNOFILE=1234
           it 'we use the correct URL to rabbitmqadmin' do
             should contain_staging__file('rabbitmqadmin').with(
               :source      => 'http://guest:guest@1.1.1.1:55672/cli/rabbitmqadmin',
-              :curl_option => '-k --noproxy 1.1.1.1  --retry 30 --retry-delay 6',
+              :curl_option => '-k --noproxy 1.1.1.1 --retry 30 --retry-delay 6',
             )
           end
         end
