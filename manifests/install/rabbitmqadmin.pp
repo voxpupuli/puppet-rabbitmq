@@ -15,6 +15,7 @@ class rabbitmq::install::rabbitmqadmin {
 
   if $rabbitmq::node_ip_address == 'UNSET' {
     # Pull from localhost if we don't have an explicit bind address
+    $curl_prefix = ''
     $sanitized_ip = '127.0.0.1'
   } elsif is_ipv6_address($node_ip_address) {
     $curl_prefix  = "--noproxy ${node_ip_address} -g -6"
