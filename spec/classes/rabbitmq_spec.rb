@@ -1348,6 +1348,17 @@ LimitNOFILE=1234
     end
   end
 
+  context "on OpenBSD" do
+    with_openbsd_facts
+    it 'installs the rabbitmq package' do
+      should contain_package('rabbitmq-server').with(
+        'ensure'   => 'installed',
+        'name'     => 'rabbitmq',
+        'provider' => 'openbsd'
+      )
+    end
+  end
+
   describe 'repo management on Debian' do
     with_debian_facts
 
