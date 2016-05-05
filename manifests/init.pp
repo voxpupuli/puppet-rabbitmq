@@ -160,10 +160,6 @@ class rabbitmq(
     fail('$ssl_only => true requires that $ssl => true')
   }
 
-  if $config_stomp and $ssl_stomp_port and ! $ssl {
-    warning('$ssl_stomp_port requires that $ssl => true and will be ignored')
-  }
-
   if $config_stomp and $stomp_ssl_only and ! $ssl_stomp_port  {
     fail('$stomp_ssl_only requires that $ssl_stomp_port be set')
   }
