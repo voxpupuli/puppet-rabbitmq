@@ -1,4 +1,0 @@
-# the rabbitmq tests currently require a dev version of stdlib, but do not properly configure it
----
-.travis.yml:
-  docker_sets: []
