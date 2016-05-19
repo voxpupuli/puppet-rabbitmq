@@ -15,6 +15,7 @@ class rabbitmq::params {
       $rabbitmq_group   = 'rabbitmq'
       $rabbitmq_home    = '/var/lib/rabbitmq'
       $plugin_dir       = "/usr/lib/rabbitmq/lib/rabbitmq_server-${version}/plugins"
+      $service_provider = undef
     }
     'Debian': {
       $package_ensure   = 'installed'
@@ -26,6 +27,7 @@ class rabbitmq::params {
       $rabbitmq_group   = 'rabbitmq'
       $rabbitmq_home    = '/var/lib/rabbitmq'
       $plugin_dir       = "/usr/lib/rabbitmq/lib/rabbitmq_server-${version}/plugins"
+      $service_provider = undef
     }
     'OpenBSD': {
       $package_ensure   = 'installed'
@@ -37,6 +39,7 @@ class rabbitmq::params {
       $rabbitmq_group   = '_rabbitmq'
       $rabbitmq_home    = '/var/rabbitmq'
       $plugin_dir       = '/usr/local/lib/rabbitmq/plugins'
+      $service_provider = undef
     }
     'RedHat': {
       $package_ensure   = 'installed'
@@ -48,6 +51,7 @@ class rabbitmq::params {
       $rabbitmq_group   = 'rabbitmq'
       $rabbitmq_home    = '/var/lib/rabbitmq'
       $plugin_dir       = "/usr/lib/rabbitmq/lib/rabbitmq_server-${version}/plugins"
+      $service_provider = 'redhat'
     }
     'SUSE': {
       $package_ensure   = 'installed'
@@ -59,6 +63,7 @@ class rabbitmq::params {
       $rabbitmq_group   = 'rabbitmq'
       $rabbitmq_home    = '/var/lib/rabbitmq'
       $plugin_dir       = "/usr/lib/rabbitmq/lib/rabbitmq_server-${version}/plugins"
+      $service_provider = undef
     }
     default: {
       fail("The ${module_name} module is not supported on an ${::osfamily} based system.")
@@ -69,7 +74,7 @@ class rabbitmq::params {
   $admin_enable                = true
   $management_port             = '15672'
   $management_ssl              = true
-  $package_apt_pin             = ''
+  $package_apt_pin             = '' # lint:ignore:empty_string_assignment
   $package_gpg_key             = 'https://www.rabbitmq.com/rabbitmq-signing-key-public.asc'
   $repos_ensure                = true
   $manage_repos                = undef

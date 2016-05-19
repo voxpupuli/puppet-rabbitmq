@@ -11,9 +11,10 @@
 # Sample Usage:
 #
 class rabbitmq::service(
-  $service_ensure = $rabbitmq::service_ensure,
-  $service_manage = $rabbitmq::service_manage,
-  $service_name   = $rabbitmq::service_name,
+  $service_ensure   = $rabbitmq::service_ensure,
+  $service_manage   = $rabbitmq::service_manage,
+  $service_name     = $rabbitmq::service_name,
+  $service_provider = $rabbitmq::params::service_provider,
 ) inherits rabbitmq {
 
   validate_re($service_ensure, '^(running|stopped)$')
@@ -34,6 +35,7 @@ class rabbitmq::service(
       hasstatus  => true,
       hasrestart => true,
       name       => $service_name,
+      provider   => $service_provider,
     }
   }
 
