@@ -330,7 +330,7 @@ be changed to latest.
 
 RPM package GPG key to import. Uses source method. Should be a URL for Debian/RedHat
 OS family, or a file name for RedHat OS family.
-Set to http://www.rabbitmq.com/rabbitmq-signing-key-public.asc by default.
+Set to http://www.rabbitmq.com/rabbitmq-release-signing-key.asc by default.
 Note, that `key_content`, if specified, would override this parameter for Debian OS family.
 
 ####`package_name`
