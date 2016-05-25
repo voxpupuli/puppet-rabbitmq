@@ -7,7 +7,7 @@ class rabbitmq::repo::apt(
   $repos        = 'main',
   $include_src  = false,
   $key          = 'F78372A06FF50C80464FC1B4F7B8CEA6056E8E56',
-  $key_source   = 'http://www.rabbitmq.com/rabbitmq-signing-key-public.asc',
+  $key_source   = 'https://www.rabbitmq.com/rabbitmq-release-signing-key.asc',
   $key_content  = undef,
   $architecture = undef,
   ) {
