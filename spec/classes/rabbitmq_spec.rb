@@ -187,6 +187,10 @@ describe 'rabbitmq' do
       should contain_exec('rpm --import https://www.rabbitmq.com/rabbitmq-signing-key-public.asc')
     end
 
+    it 'should set service provider to redhat' do
+      should contain_service('rabbitmq-server').with_provider('redhat')
+    end
+
     context 'with file_limit => \'unlimited\'' do
       let(:params) {{ :file_limit => 'unlimited' }}
       it { should contain_file('/etc/security/limits.d/rabbitmq-server.conf').with(
