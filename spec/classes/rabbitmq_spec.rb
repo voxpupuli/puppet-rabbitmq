@@ -179,7 +179,7 @@ describe 'rabbitmq' do
     let(:facts) {{ :osfamily => 'RedHat' }}
     it 'includes rabbitmq::repo::rhel' do
       should contain_class('rabbitmq::repo::rhel')
-      should contain_exec('rpm --import http://www.rabbitmq.com/rabbitmq-signing-key-public.asc')
+      should contain_exec('rpm --import https://www.rabbitmq.com/rabbitmq-release-signing-key.asc')
     end
 
     context 'with file_limit => \'unlimited\'' do
@@ -254,7 +254,7 @@ rabbitmq hard nofile 1234
     let(:facts) {{ :osfamily => 'RedHat' }}
     it 'does not import repo public key when repos_ensure is false' do
       should contain_class('rabbitmq::repo::rhel')
-      should_not contain_exec('rpm --import http://www.rabbitmq.com/rabbitmq-signing-key-public.asc')
+      should_not contain_exec('rpm --import https://www.rabbitmq.com/rabbitmq-release-signing-key.asc')
     end
   end
 
@@ -263,7 +263,7 @@ rabbitmq hard nofile 1234
     let(:facts) {{ :osfamily => 'RedHat' }}
     it 'does import repo public key when repos_ensure is true' do
       should contain_class('rabbitmq::repo::rhel')
-      should contain_exec('rpm --import http://www.rabbitmq.com/rabbitmq-signing-key-public.asc')
+      should contain_exec('rpm --import https://www.rabbitmq.com/rabbitmq-release-signing-key.asc')
     end
   end
 
@@ -272,7 +272,7 @@ rabbitmq hard nofile 1234
     let(:facts) {{ :osfamily => 'RedHat' }}
     it 'does not import repo public key when manage_repos is false' do
       should_not contain_class('rabbitmq::repo::rhel')
-      should_not contain_exec('rpm --import http://www.rabbitmq.com/rabbitmq-signing-key-public.asc')
+      should_not contain_exec('rpm --import https://www.rabbitmq.com/rabbitmq-release-signing-key.asc')
     end
   end
 
@@ -281,7 +281,7 @@ rabbitmq hard nofile 1234
     let(:facts) {{ :osfamily => 'RedHat' }}
     it 'does import repo public key when manage_repos is true' do
       should contain_class('rabbitmq::repo::rhel')
-      should contain_exec('rpm --import http://www.rabbitmq.com/rabbitmq-signing-key-public.asc')
+      should contain_exec('rpm --import https://www.rabbitmq.com/rabbitmq-release-signing-key.asc')
     end
   end
 
@@ -290,7 +290,7 @@ rabbitmq hard nofile 1234
     let(:facts) {{ :osfamily => 'RedHat' }}
     it 'does not import repo public key when manage_repos is false and repos_ensure is true' do
       should_not contain_class('rabbitmq::repo::rhel')
-      should_not contain_exec('rpm --import http://www.rabbitmq.com/rabbitmq-signing-key-public.asc')
+      should_not contain_exec('rpm --import https://www.rabbitmq.com/rabbitmq-release-signing-key.asc')
     end
   end
 
@@ -299,7 +299,7 @@ rabbitmq hard nofile 1234
     let(:facts) {{ :osfamily => 'RedHat' }}
     it 'does import repo public key when manage_repos is true and repos_ensure is true' do
       should contain_class('rabbitmq::repo::rhel')
-      should contain_exec('rpm --import http://www.rabbitmq.com/rabbitmq-signing-key-public.asc')
+      should contain_exec('rpm --import https://www.rabbitmq.com/rabbitmq-release-signing-key.asc')
     end
   end
 
@@ -308,7 +308,7 @@ rabbitmq hard nofile 1234
     let(:facts) {{ :osfamily => 'RedHat' }}
     it 'does not import repo public key when manage_repos is false and repos_ensure is false' do
       should_not contain_class('rabbitmq::repo::rhel')
-      should_not contain_exec('rpm --import http://www.rabbitmq.com/rabbitmq-signing-key-public.asc')
+      should_not contain_exec('rpm --import https://www.rabbitmq.com/rabbitmq-release-signing-key.asc')
     end
   end
 
@@ -317,7 +317,7 @@ rabbitmq hard nofile 1234
     let(:facts) {{ :osfamily => 'RedHat' }}
     it 'does not import repo public key when manage_repos is true and repos_ensure is false' do
       should contain_class('rabbitmq::repo::rhel')
-      should_not contain_exec('rpm --import http://www.rabbitmq.com/rabbitmq-signing-key-public.asc')
+      should_not contain_exec('rpm --import https://www.rabbitmq.com/rabbitmq-release-signing-key.asc')
     end
   end
 
@@ -1155,7 +1155,7 @@ LimitNOFILE=1234
           'release'     => 'testing',
           'repos'       => 'main',
           'include_src' => false,
-          'key'         => 'F78372A06FF50C80464FC1B4F7B8CEA6056E8E56'
+          'key'         => '0A9AF2115F4687BD29803A206B73A36E6026DFCA'
         ) }
       end
     end
@@ -1169,7 +1169,7 @@ LimitNOFILE=1234
           'release'     => 'testing',
           'repos'       => 'main',
           'include_src' => false,
-          'key'         => 'F78372A06FF50C80464FC1B4F7B8CEA6056E8E56'
+          'key'         => '0A9AF2115F4687BD29803A206B73A36E6026DFCA'
         ) }
 
         it { should contain_apt__pin('rabbitmq').with(
@@ -1185,7 +1185,7 @@ LimitNOFILE=1234
     describe "repo management on #{distro}" do
       describe 'imports the key' do
         let(:facts) {{ :osfamily => distro }}
-        let(:params) {{ :package_gpg_key => 'http://www.rabbitmq.com/rabbitmq-signing-key-public.asc' }}
+        let(:params) {{ :package_gpg_key => 'https://www.rabbitmq.com/rabbitmq-release-signing-key.asc' }}
 
         it { should contain_exec("rpm --import #{params[:package_gpg_key]}").with(
           'path' => ['/bin','/usr/bin','/sbin','/usr/sbin']
