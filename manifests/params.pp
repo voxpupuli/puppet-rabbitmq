@@ -112,6 +112,7 @@ class rabbitmq::params {
   $ldap_port                  = '389'
   $ldap_log                   = false
   $ldap_config_variables      = {}
+  $loopback_users             = undef
   $stomp_port                 = '6163'
   $stomp_ssl_only             = false
   $wipe_db_on_cookie_change   = false
