@@ -30,7 +30,7 @@ class rabbitmq::install::rabbitmqadmin {
     source      => "${protocol}://${default_user}:${default_pass}@${sanitized_ip}:${management_port}/cli/rabbitmqadmin",
     curl_option => "-k ${curl_prefix} --retry 30 --retry-delay 6",
     timeout     => '180',
-    wget_option => '--no-proxy',
+    wget_option => '--no-proxy --no-check-certificate',
     require     => [
       Class['rabbitmq::service'],
       Rabbitmq_plugin['rabbitmq_management']
