@@ -10,7 +10,7 @@ class rabbitmq::repo::rhel {
 
     exec { "rpm --import ${package_gpg_key}":
       path   => ['/bin','/usr/bin','/sbin','/usr/sbin'],
-      unless => 'rpm -q gpg-pubkey-056e8e56-468e43f2 2>/dev/null',
+      unless => 'rpm -q gpg-pubkey-6026dfca-573adfde 2>/dev/null',
     }
   }
 }
