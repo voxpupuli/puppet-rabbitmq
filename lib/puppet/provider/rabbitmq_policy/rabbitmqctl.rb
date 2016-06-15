@@ -18,12 +18,18 @@ Puppet::Type.type(:rabbitmq_policy).provide(:rabbitmqctl, :parent => Puppet::Pro
         # 1 2      3?  4  5                                            6
         # / ha-all all .* {"ha-mode":"all","ha-sync-mode":"automatic"} 0
         if line =~ /^(\S+)\s+(\S+)\s+(all|exchanges|queues)?\s*(\S+)\s+(\S+)\s+(\d+)$/
-          applyto = $3 || 'all'
-          @policies[vhost][$2] = {
+          n          = $2
+          applyto    = $3 || 'all'
+          priority   = $6
+          definition = JSON.parse($5)
+          # be aware that the gsub will reset the captures
+          # from the regexp above
+          pattern    = $4.to_s.gsub(/\\\\/, '\\')
+          @policies[vhost][n] = {
             :applyto    => applyto,
-            :pattern    => $4,
-            :definition => JSON.parse($5),
-            :priority   => $6}
+            :pattern    => pattern,
+            :definition => definition,
+            :priority   => priority}
         else
           raise Puppet::Error, "cannot parse line from list_policies:#{line}"
         end
