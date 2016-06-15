@@ -30,15 +30,31 @@ describe 'rabbitmq policy on a vhost:' do
           'ha-sync-mode' => 'automatic',
         },
       }
+
+      rabbitmq_policy { 'eu-federation@myhost':
+        pattern    => '^eu\\.',
+        priority   => 0,
+        applyto    => 'all',
+        definition => {
+          'federation-upstream-set' => 'all',
+        },
+      }
       EOS
 
       apply_manifest(pp, :catch_failures => true)
       apply_manifest(pp, :catch_changes => true)
+
+
+      # Apply twice to ensure no changes the second time.
+      apply_manifest(pp, :catch_failures => true)
+      expect(apply_manifest(pp, :catch_changes => true).exit_code).to be_zero
+
     end
 
     it 'should have the policy' do
       shell('rabbitmqctl list_policies -p myhost') do |r|
         expect(r.stdout).to match(/myhost.*ha-all.*ha-sync-mode/)
+        expect(r.stdout).to match(/myhost.*eu-federation/)
         expect(r.exit_code).to be_zero
       end
     end
