@@ -65,6 +65,9 @@ class rabbitmq(
   $wipe_db_on_cookie_change   = $rabbitmq::params::wipe_db_on_cookie_change,
   $cluster_partition_handling = $rabbitmq::params::cluster_partition_handling,
   $file_limit                 = $rabbitmq::params::file_limit,
+  $restart_param              = $rabbitmq::params::restart_param,
+  $start_limit_interval       = $rabbitmq::params::start_limit_interval,
+  $start_limit_burst          = $rabbitmq::params::start_limit_burst,
   $environment_variables      = $rabbitmq::params::environment_variables,
   $config_variables           = $rabbitmq::params::config_variables,
   $config_kernel_variables    = $rabbitmq::params::config_kernel_variables,
@@ -109,6 +112,9 @@ class rabbitmq(
   if ! is_integer($stomp_port) {
     validate_re($stomp_port, '\d+')
   }
+  validate_string($restart_param)
+  validate_string($start_limit_interval)
+  validate_string($start_limit_burst)
   validate_bool($wipe_db_on_cookie_change)
   validate_bool($tcp_keepalive)
   # using sprintf for conversion to string, because "${file_limit}" doesn't

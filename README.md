@@ -379,6 +379,12 @@ Location of RabbitMQ plugins.
 
 The RabbitMQ port.
 
+####`restart_param`
+
+Only available on systems with `$::osfamily == 'RedHat'`. Systemd variable
+that specifies application's restart tendency. Default is 'no'.
+Use with start_limit_interval and start_limit_burst to control restart attempts.
+
 ####`service_ensure`
 
 The state of the service.
@@ -441,6 +447,14 @@ Support only a given list of SSL ciphers. Example: `['dhe_rsa,aes_256_cbc,sha','
 Supported ciphers in your install can be listed with:
  rabbitmqctl eval 'ssl:cipher_suites().'
 Functionality can be tested with cipherscan or similar tool: https://github.com/jvehent/cipherscan.git
+
+####`start_limit_burst`
+
+Only available on systems with `$::osfamily == 'RedHat'`. Systemd variable, default '3'.
+
+####`start_limit_interval`
+
+Only available on systems with `$::osfamily == 'RedHat'`. Systemd variable that, default '60s'
 
 ####`stomp_port`
 
