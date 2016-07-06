@@ -27,6 +27,9 @@ class rabbitmq::config {
   $rabbitmq_home              = $rabbitmq::rabbitmq_home
   $port                       = $rabbitmq::port
   $tcp_keepalive              = $rabbitmq::tcp_keepalive
+  $tcp_backlog                = $rabbitmq::tcp_backlog
+  $tcp_sndbuf                 = $rabbitmq::tcp_sndbuf
+  $tcp_recbuf                 = $rabbitmq::tcp_recbuf
   $heartbeat                  = $rabbitmq::heartbeat
   $service_name               = $rabbitmq::service_name
   $ssl                        = $rabbitmq::ssl
@@ -60,6 +63,7 @@ class rabbitmq::config {
   $auth_backends              = $rabbitmq::auth_backends
   $cluster_partition_handling = $rabbitmq::cluster_partition_handling
   $file_limit                 = $rabbitmq::file_limit
+  $collect_statistics_interval = $rabbitmq::collect_statistics_interval
   $default_env_variables      =  {
     'NODE_PORT'        => $port,
     'NODE_IP_ADDRESS'  => $node_ip_address

@@ -94,6 +94,9 @@ class rabbitmq::params {
   $node_ip_address             = 'UNSET'
   $port                        = '5672'
   $tcp_keepalive               = false
+  $tcp_backlog                 = 128
+  $tcp_sndbuf                  = false
+  $tcp_recbuf                  = false
   $heartbeat                   = undef
   $ssl                         = false
   $ssl_only                    = false
@@ -128,4 +131,5 @@ class rabbitmq::params {
   $config_additional_variables = {}
   $auth_backends               = undef
   $file_limit                  = '16384'
+  $collect_statistics_interval = false
 }

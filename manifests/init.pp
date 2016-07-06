@@ -33,6 +33,9 @@ class rabbitmq(
   $rabbitmq_home              = $rabbitmq::params::rabbitmq_home,
   $port                       = $rabbitmq::params::port,
   $tcp_keepalive              = $rabbitmq::params::tcp_keepalive,
+  $tcp_backlog                = $rabbitmq::params::tcp_backlog,
+  $tcp_sndbuf                 = $rabbitmq::params::tcp_sndbuf,
+  $tcp_recbuf                 = $rabbitmq::params::tcp_recbuf,
   $heartbeat                  = $rabbitmq::params::heartbeat,
   $service_ensure             = $rabbitmq::params::service_ensure,
   $service_manage             = $rabbitmq::params::service_manage,
@@ -72,6 +75,7 @@ class rabbitmq(
   $config_additional_variables = $rabbitmq::params::config_additional_variables,
   $auth_backends              = $rabbitmq::params::auth_backends,
   $key_content                = undef,
+  $collect_statistics_interval = $rabbitmq::params::collect_statistics_interval,
 ) inherits rabbitmq::params {
 
   validate_bool($admin_enable)
@@ -111,6 +115,16 @@ class rabbitmq(
   }
   validate_bool($wipe_db_on_cookie_change)
   validate_bool($tcp_keepalive)
+  if $tcp_backlog {
+    validate_integer($tcp_backlog)
+  }
+  if $tcp_sndbuf {
+    validate_integer($tcp_sndbuf)
+  }
+  if $tcp_recbuf {
+    validate_integer($tcp_recbuf)
+  }
+
   # using sprintf for conversion to string, because "${file_limit}" doesn't
   # pass lint, despite being nicer
   validate_re(sprintf('%s', $file_limit),
@@ -149,6 +163,10 @@ class rabbitmq(
   validate_hash($config_kernel_variables)
   validate_hash($config_management_variables)
   validate_hash($config_additional_variables)
+
+  if $collect_statistics_interval {
+    validate_integer($collect_statistics_interval)
+  }
 
   if $heartbeat {
     validate_integer($heartbeat)
