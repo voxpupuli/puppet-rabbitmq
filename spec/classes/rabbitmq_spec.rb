@@ -1232,6 +1232,60 @@ LimitNOFILE=1234
         end
       end
 
+      describe 'tcp_backlog with default value' do
+        it 'should set tcp_listen_options backlog to 128' do
+          should contain_file('rabbitmq.config') \
+            .with_content(/\{backlog,       128\}/)
+        end
+      end
+
+      describe 'tcp_backlog with non-default value' do
+        let(:params) do
+          { :tcp_backlog => 256 }
+        end
+
+        it 'should set tcp_listen_options backlog to 256' do
+          should contain_file('rabbitmq.config') \
+            .with_content(/\{backlog,       256\}/)
+        end
+      end
+
+      describe 'tcp_sndbuf with default value' do
+        it 'should not set tcp_listen_options sndbuf' do
+          should contain_file('rabbitmq.config') \
+            .without_content(/sndbuf/)
+        end
+      end
+
+      describe 'tcp_sndbuf with non-default value' do
+        let(:params) do
+          { :tcp_sndbuf => 128 }
+        end
+
+        it 'should set tcp_listen_options sndbuf to 128' do
+          should contain_file('rabbitmq.config') \
+            .with_content(/\{sndbuf,       128\}/)
+        end
+      end
+
+      describe 'tcp_recbuf with default value' do
+        it 'should not set tcp_listen_options recbuf' do
+          should contain_file('rabbitmq.config') \
+            .without_content(/recbuf/)
+        end
+      end
+
+      describe 'tcp_recbuf with non-default value' do
+        let(:params) do
+          { :tcp_recbuf => 128 }
+        end
+
+        it 'should set tcp_listen_options recbuf to 128' do
+          should contain_file('rabbitmq.config') \
+            .with_content(/\{recbuf,       128\}/)
+        end
+      end
+
       describe 'rabbitmq-heartbeat options' do
         let(:params) {{ :heartbeat => 60 }}
         it 'should set heartbeat paramter in config file' do

@@ -24,10 +24,21 @@
          <%- end -%>
          {packet,        raw},
          {reuseaddr,     true},
-         {backlog,       128},
+         <%- if @tcp_backlog -%>
+         {backlog,       <%= @tcp_backlog %>},
+         <%- end -%>
+         <%- if @tcp_sndbuf -%>
+         {sndbuf,       <%= @tcp_sndbuf %>},
+         <%- end -%>
+         <%- if @tcp_recbuf -%>
+         {recbuf,       <%= @tcp_recbuf %>},
+         <%- end -%>
          {nodelay,       true},
          {exit_on_close, false}]
     },
+<%- if @collect_statistics_interval -%>
+    {collect_statistics_interval, <%= @collect_statistics_interval %>},
+<%- end -%>
 <%- if @ssl_only -%>
     {tcp_listeners, []},
 <%- elsif @interface != 'UNSET' -%>
