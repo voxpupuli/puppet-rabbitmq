@@ -107,7 +107,7 @@ Puppet::Type.newtype(:rabbitmq_policy) do
     end
     if definition.key? 'ha-sync-batch-size'
       ha_sync_batch_size_val = definition['ha-sync-batch-size']
-      unless ha_sync_batch_size_val.to_i.tos == ha_sync_batch_size_val
+      unless ha_sync_batch_size_val.to_i.to_s == ha_sync_batch_size_val
         raise ArgumentErro, "Invalid ha-sync-batch-size value '#{ha_sync_batch_size_val}'"
       end
     end
