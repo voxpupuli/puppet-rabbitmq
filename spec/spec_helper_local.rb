@@ -1,11 +1,19 @@
+RSpec.shared_context "default facts" do
+  let(:facts) { { :puppetversion => Puppet.version, } }
+end
+
+RSpec.configure do |rspec|
+  rspec.include_context "default facts"
+end
+
 def with_debian_facts
   let :facts do
-    {
-      :lsbdistid        => 'Debian',
+    super().merge({
       :lsbdistcodename  => 'squeeze',
+      :lsbdistid        => 'Debian',
       :osfamily         => 'Debian',
-      :staging_http_get => ''
-    }
+      :staging_http_get => '',
+    })
   end
 end
 
@@ -14,20 +22,20 @@ def with_openbsd_facts
   # operatingsystemrelease may contain X.X-current
   # or other prefixes
   let :facts do
-    {
-      :osfamily                  => 'OpenBSD',
+    super().merge({
       :kernelversion             => '5.9',
-      :staging_http_get          => ''
-    }
+      :osfamily                  => 'OpenBSD',
+      :staging_http_get          => '',
+    })
   end
 end
 
 def with_redhat_facts
   let :facts do
-    {
-      :osfamily                  => 'Redhat',
+    super().merge({
       :operatingsystemmajrelease => '7',
-      :staging_http_get          => ''
-    }
+      :osfamily                  => 'Redhat',
+      :staging_http_get          => '',
+    })
   end
 end

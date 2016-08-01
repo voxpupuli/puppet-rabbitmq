@@ -398,7 +398,8 @@ LimitNOFILE=1234
   ['Debian', 'RedHat', 'SUSE', 'Archlinux'].each do |distro|
     osfacts = {
       :osfamily         => distro,
-      :staging_http_get => ''
+      :staging_http_get => '',
+      :puppetversion    => Puppet.version,
     }
 
     case distro
