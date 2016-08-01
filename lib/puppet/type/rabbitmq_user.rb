@@ -21,11 +21,9 @@ Puppet::Type.newtype(:rabbitmq_user) do
   newproperty(:password) do
     desc 'User password to be set *on creation* and validated each run'
     def insync?(is)
-      provider.check_password
+      provider.check_password(should)
     end
-    def set(value)
-      provider.change_password
-    end
+
     def change_to_s(current, desired)
       "password has been changed"
     end
@@ -51,30 +49,18 @@ Puppet::Type.newtype(:rabbitmq_user) do
         raise ArgumentError, "Invalid tag: #{value.inspect}"
       end
 
-      if value == "administrator"
+      if value == 'administrator'
         raise ArgumentError, "must use admin property instead of administrator tag"
       end
     end
     defaultto []
 
     def insync?(is)
-      self.is_to_s(is) == self.should_to_s
+      is.sort == should.sort
     end
 
-    def is_to_s(currentvalue = @is)
-      if currentvalue
-        "[#{currentvalue.sort.join(', ')}]"
-      else
-        '[]'
-      end
-    end
-
-    def should_to_s(newvalue = @should)
-      if newvalue
-        "[#{newvalue.sort.join(', ')}]"
-      else
-        '[]'
-      end
+    def should_to_s(value)
+      Array(value)
     end
 
   end
