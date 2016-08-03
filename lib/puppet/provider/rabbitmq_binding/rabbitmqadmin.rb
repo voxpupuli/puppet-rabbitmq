@@ -38,6 +38,7 @@ Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin) do
   def self.instances
     resources = []
     all_vhosts.each do |vhost|
+      vhost_bindings = {}
       all_bindings(vhost).collect do |line|
         source_name, destination_name, destination_type, routing_key, arguments = line.split(/\t/)
         # Convert output of arguments from the rabbitmqctl command to a json string.
@@ -49,23 +50,32 @@ Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin) do
         else
           arguments = '{}'
         end
-        if (source_name != '')
-          if not binding[:name]
-            routing_key = [routing_key]
-            binding = {
-              :destination_type => destination_type,
-              :routing_key      => routing_key,
-              :arguments        => JSON.parse(arguments),
-              :ensure           => :present,
-              :name             => "%s@%s@%s" % [source_name, destination_name, vhost],
-            }
+
+        unless(source_name.empty?)
+          name = "%s@%s@%s" % [source_name, destination_name, vhost]
+          if not vhost_bindings[name]
+            vhost_bindings[name] = []
+            vhost_bindings[name] = [source_name, destination_name, destination_type, [routing_key], arguments]
           else
-            # If we already have the binding once, just append to the routing_key
-            binding[:name][:routing_key].push(routing_key)
+            vhost_bindings[name][3].push(routing_key)
           end
-          resources << new(binding) if binding[:name]
         end
+
       end
+
+      vhost_bindings.each do |name, values|
+        values[3].sort!
+        source_name, destination_name, destination_type, routing_key, arguments = values
+        binding = {
+          :destination_type => destination_type,
+          :routing_key      => routing_key,
+          :arguments        => JSON.parse(arguments),
+          :ensure           => :present,
+          :name             => name,
+        }
+        resources << new(binding) if binding[:name]
+      end
+
     end
     resources
   end

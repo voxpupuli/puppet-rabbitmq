@@ -25,14 +25,19 @@ Puppet::Type.newtype(:rabbitmq_binding) do
   newparam(:routing_key, :array_matching => :all) do
     desc 'binding routing_key'
 
-    validate do |values|
+    munge do |value|
       # Unlike what you'd expect from docs on array_matching, a string
       # isn't forced into list context here.
-      values = [values] unless values.is_a?(Array)
-      values = values.uniq
-      values.each do |value|
-        unless value =~ /^\S*$/
-          raise ArgumentError, "Invalid routing_key '#{value}'"
+      if not value.is_a?(Array)
+        value = [value]
+      end
+      Puppet.debug(value)
+      value.uniq!
+      value.sort!
+
+      value.each do |v|
+        unless v =~ /^\S*$/
+          raise ArgumentError, "Invalid routing_key '#{v}'"
         end
       end
     end
