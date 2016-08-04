@@ -22,7 +22,7 @@ describe 'rabbitmq binding:' do
         password => 'bar',
         tags     => ['monitoring', 'tag1'],
       } ->
-      
+
       rabbitmq_user_permissions { 'dan@host1':
         configure_permission => '.*',
         read_permission      => '.*',
@@ -34,6 +34,13 @@ describe 'rabbitmq binding:' do
       } ->
 
       rabbitmq_exchange { 'exchange1@host1':
+        user     => 'dan',
+        password => 'bar',
+        type     => 'topic',
+        ensure   => present,
+      } ->
+
+      rabbitmq_exchange { 'exchange2@host1':
         user     => 'dan',
         password => 'bar',
         type     => 'topic',
@@ -55,16 +62,26 @@ describe 'rabbitmq binding:' do
         routing_key      => '#',
         ensure           => present,
       }
-      
+
+      rabbitmq_binding { 'exchange2@queue1@host1':
+        user             => 'dan',
+        password         => 'bar',
+        destination_type => 'queue',
+        routing_key      => ['routingkey1', 'routingkey2'],
+        ensure           => present,
+      }
+
       EOS
 
       apply_manifest(pp, :catch_failures => true)
       apply_manifest(pp, :catch_changes => true)
     end
 
-    it 'should have the binding' do
+    it 'should have the bindings' do
       shell('rabbitmqctl list_bindings -q -p host1') do |r|
         expect(r.stdout).to match(/exchange1\sexchange\squeue1\squeue\s#/)
+        expect(r.stdout).to match(/exchange2\sexchange\squeue1\squeue\sroutingkey1/)
+        expect(r.stdout).to match(/exchange2\sexchange\squeue1\squeue\sroutingkey2/)
         expect(r.exit_code).to be_zero
       end
     end
@@ -77,7 +94,7 @@ describe 'rabbitmq binding:' do
     end
 
   end
-  
+
   context "create binding and queue resources when rabbit using a non-default management port" do
     it 'should run successfully' do
       pp = <<-EOS
@@ -131,7 +148,7 @@ describe 'rabbitmq binding:' do
         routing_key      => '#',
         ensure           => present,
       }
-     
+
       EOS
 
       apply_manifest(pp, :catch_failures => true)
