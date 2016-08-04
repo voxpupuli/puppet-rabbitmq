@@ -38,6 +38,7 @@ Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin) do
   def self.instances
     resources = []
     all_vhosts.each do |vhost|
+      vhost_bindings = {}
       all_bindings(vhost).collect do |line|
         source_name, destination_name, destination_type, routing_key, arguments = line.split(/\t/)
         # Convert output of arguments from the rabbitmqctl command to a json string.
@@ -49,17 +50,32 @@ Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin) do
         else
           arguments = '{}'
         end
-        if (source_name != '')
-          binding = {
-            :destination_type => destination_type,
-            :routing_key      => routing_key,
-            :arguments        => JSON.parse(arguments),
-            :ensure           => :present,
-            :name             => "%s@%s@%s" % [source_name, destination_name, vhost],
-          }
-          resources << new(binding) if binding[:name]
+
+        unless(source_name.empty?)
+          name = "%s@%s@%s" % [source_name, destination_name, vhost]
+          if not vhost_bindings[name]
+            vhost_bindings[name] = []
+            vhost_bindings[name] = [source_name, destination_name, destination_type, [routing_key], arguments]
+          else
+            vhost_bindings[name][3].push(routing_key)
+          end
         end
+
       end
+
+      vhost_bindings.each do |name, values|
+        values[3].sort!
+        source_name, destination_name, destination_type, routing_key, arguments = values
+        binding = {
+          :destination_type => destination_type,
+          :routing_key      => routing_key,
+          :arguments        => JSON.parse(arguments),
+          :ensure           => :present,
+          :name             => name,
+        }
+        resources << new(binding) if binding[:name]
+      end
+
     end
     resources
   end
@@ -85,19 +101,22 @@ Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin) do
     if arguments.nil?
       arguments = {}
     end
-    rabbitmqadmin('declare',
-      'binding',
-      vhost_opt,
-      "--user=#{resource[:user]}",
-      "--password=#{resource[:password]}",
-      '-c',
-      '/etc/rabbitmq/rabbitmqadmin.conf',
-      "source=#{name}",
-      "destination=#{destination}",
-      "arguments=#{arguments.to_json}",
-      "routing_key=#{resource[:routing_key]}",
-      "destination_type=#{resource[:destination_type]}"
-    )
+    # Accommodate multiple bindings with different routing keys
+    for routing_key in resource[:routing_key]
+      rabbitmqadmin('declare',
+        'binding',
+        vhost_opt,
+        "--user=#{resource[:user]}",
+        "--password=#{resource[:password]}",
+        '-c',
+        '/etc/rabbitmq/rabbitmqadmin.conf',
+        "source=#{name}",
+        "destination=#{destination}",
+        "arguments=#{arguments.to_json}",
+        "routing_key=#{routing_key}",
+        "destination_type=#{resource[:destination_type]}"
+      )
+    end
     @property_hash[:ensure] = :present
   end
 
@@ -105,7 +124,13 @@ Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin) do
     vhost_opt = should_vhost ? "--vhost=#{should_vhost}" : ''
     name = resource[:name].split('@').first
     destination = resource[:name].split('@')[1]
-    rabbitmqadmin('delete', 'binding', vhost_opt, "--user=#{resource[:user]}", "--password=#{resource[:password]}", '-c', '/etc/rabbitmq/rabbitmqadmin.conf', "source=#{name}", "destination_type=#{resource[:destination_type]}", "destination=#{destination}", "properties_key=#{resource[:routing_key]}")
+    # This is not really ideal; since you still can't have duplicate
+    # resources, you could ensure that the binding with one or more
+    # routing keys is absent, but you couldn't ensure that one routing
+    # key is present but others absent for the same binding name.
+    for routing_key in resource[:routing_key]
+      rabbitmqadmin('delete', 'binding', vhost_opt, "--user=#{resource[:user]}", "--password=#{resource[:password]}", '-c', '/etc/rabbitmq/rabbitmqadmin.conf', "source=#{name}", "destination_type=#{resource[:destination_type]}", "destination=#{destination}", "properties_key=#{routing_key}")
+    end
     @property_hash[:ensure] = :absent
   end
 

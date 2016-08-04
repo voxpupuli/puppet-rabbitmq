@@ -56,4 +56,25 @@ EOT
       @provider.create
     end
   end
+
+  context 'more than one routing key' do
+    before :each do
+      @resource = Puppet::Type::Rabbitmq_binding.new(
+        {:name => 'source@test2@/',
+         :destination_type => :queue,
+         :routing_key => ['foobar', 'widget', 'blablubg'],
+         :arguments => {},
+        }
+      )
+      @provider = provider_class.new(@resource)
+    end
+
+    it 'should call rabbitmqadmin to create' do
+      ['foobar', 'widget', 'blablubg'].each do |routing_key|
+        @provider.expects(:rabbitmqadmin).with('declare', 'binding', '--vhost=/', '--user=guest', '--password=guest', '-c', '/etc/rabbitmq/rabbitmqadmin.conf', 'source=source', 'destination=test2', 'arguments={}', 'routing_key=' + routing_key , 'destination_type=queue')
+      end
+      @provider.create
+    end
+  end
+
 end
