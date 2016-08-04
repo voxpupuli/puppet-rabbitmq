@@ -71,7 +71,7 @@ EOT
 
     it 'should call rabbitmqadmin to create' do
       ['foobar', 'widget', 'blablubg'].each do |routing_key|
-        @provider.expects(:rabbitmqadmin).with('declare', 'binding', '--vhost=/', '--user=guest', '--password=guest', '-c', '/etc/rabbitmq/rabbitmqadmin.conf', 'source=source', 'destination=target', 'arguments={}', "routing_key=${routing_key}", 'destination_type=queue')
+        @provider.expects(:rabbitmqadmin).with('declare', 'binding', '--vhost=/', '--user=guest', '--password=guest', '-c', '/etc/rabbitmq/rabbitmqadmin.conf', 'source=source', 'destination=test2', 'arguments={}', 'routing_key=' + routing_key , 'destination_type=queue')
       end
       @provider.create
     end
