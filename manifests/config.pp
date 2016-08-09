@@ -22,7 +22,6 @@ class rabbitmq::config {
   $management_ssl              = $rabbitmq::management_ssl
   $management_hostname         = $rabbitmq::management_hostname
   $node_ip_address             = $rabbitmq::node_ip_address
-  $plugin_dir                  = $rabbitmq::plugin_dir
   $rabbitmq_user               = $rabbitmq::rabbitmq_user
   $rabbitmq_group              = $rabbitmq::rabbitmq_group
   $rabbitmq_home               = $rabbitmq::rabbitmq_home
@@ -118,8 +117,11 @@ class rabbitmq::config {
   }
 
   # Get ranch (socket acceptor pool) availability,
-  # use init class variable for that since version from the fact comes too late.
-  $ranch = versioncmp($rabbitmq::version, '3.6') >= 0
+  # Now that we have to rely on the fact, this may cause some chicken / egg
+  # or idempotency problems
+  if $::rabbitmq_version {
+    $ranch = versioncmp($::rabbitmq_version, '3.6') >= 0
+  }
 
   file { '/etc/rabbitmq':
     ensure => directory,

@@ -11,7 +11,7 @@ describe 'rabbitmq binding:' do
       }
       class { '::rabbitmq':
         service_manage    => true,
-        port              => '5672',
+        port              => 5672,
         delete_guest_user => true,
         admin_enable      => true,
       } ->
@@ -87,7 +87,7 @@ describe 'rabbitmq binding:' do
       }
       class { '::rabbitmq':
         service_manage    => true,
-        port              => '5672',
+        port              => 5672,
         delete_guest_user => true,
         admin_enable      => true,
       } ->
@@ -170,8 +170,8 @@ describe 'rabbitmq binding:' do
       }
       class { '::rabbitmq':
         service_manage    => true,
-        port              => '5672',
-        management_port   => '11111',
+        port              => 5672,
+        management_port   => 11111,
         delete_guest_user => true,
         admin_enable      => true,
       } ->

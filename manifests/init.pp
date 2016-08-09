@@ -33,15 +33,13 @@ class rabbitmq(
   String $package_ensure                         = $rabbitmq::params::package_ensure,
   String $package_gpg_key                        = $rabbitmq::params::package_gpg_key,
   String $package_name                           = $rabbitmq::params::package_name,
-  Optional[String] $package_provider             = $rabbitmq::params::package_provider,
-  $package_source                                = undef,
+  Optional[String] $package_source               = undef,
   Boolean $repos_ensure                          = $rabbitmq::params::repos_ensure,
   $manage_repos                                  = undef,
-  Stdlib::Absolutepath $plugin_dir               = $rabbitmq::params::plugin_dir,
   $rabbitmq_user                                 = $rabbitmq::params::rabbitmq_user,
   $rabbitmq_group                                = $rabbitmq::params::rabbitmq_group,
   $rabbitmq_home                                 = $rabbitmq::params::rabbitmq_home,
-  $port                                          = $rabbitmq::params::port,
+  Integer $port                                  = $rabbitmq::params::port,
   Boolean $tcp_keepalive                         = $rabbitmq::params::tcp_keepalive,
   Integer $tcp_backlog                           = $rabbitmq::params::tcp_backlog,
   Optional[Integer] $tcp_sndbuf                  = undef,
@@ -59,8 +57,8 @@ class rabbitmq(
   Optional[String] $ssl_cert_password            = undef,
   $ssl_port                                      = $rabbitmq::params::ssl_port,
   Optional[String] $ssl_interface                = undef,
-  $ssl_management_port                           = $rabbitmq::params::ssl_management_port,
-  $ssl_stomp_port                                = $rabbitmq::params::ssl_stomp_port,
+  Integer $ssl_management_port                   = $rabbitmq::params::ssl_management_port,
+  Integer $ssl_stomp_port                                = $rabbitmq::params::ssl_stomp_port,
   $ssl_verify                                    = $rabbitmq::params::ssl_verify,
   $ssl_fail_if_no_peer_cert                      = $rabbitmq::params::ssl_fail_if_no_peer_cert,
   Optional[Array] $ssl_versions                  = undef,
@@ -74,12 +72,12 @@ class rabbitmq(
   $ldap_port                                     = $rabbitmq::params::ldap_port,
   Boolean $ldap_log                              = $rabbitmq::params::ldap_log,
   Hash $ldap_config_variables                    = $rabbitmq::params::ldap_config_variables,
-  $stomp_port                                    = $rabbitmq::params::stomp_port,
+  Integer $stomp_port                            = $rabbitmq::params::stomp_port,
   Boolean $stomp_ssl_only                        = $rabbitmq::params::stomp_ssl_only,
-  $version                                       = $rabbitmq::params::version,
+  Optional[String] $version                      = undef,
   Boolean $wipe_db_on_cookie_change              = $rabbitmq::params::wipe_db_on_cookie_change,
   $cluster_partition_handling                    = $rabbitmq::params::cluster_partition_handling,
-  $file_limit                                    = $rabbitmq::params::file_limit,
+  Variant[Integer, String] $file_limit           = $rabbitmq::params::file_limit,
   Hash $environment_variables                    = $rabbitmq::params::environment_variables,
   Hash $config_variables                         = $rabbitmq::params::config_variables,
   Hash $config_kernel_variables                  = $rabbitmq::params::config_kernel_variables,
@@ -95,32 +93,11 @@ class rabbitmq(
 
   # Validate install parameters.
   validate_re($package_apt_pin, '^(|\d+)$')
-  validate_re($version, '^\d+\.\d+\.\d+(-\d+)*$') # Allow 3 digits and optional -n postfix.
-  # Validate config parameters.
-  if ! is_integer($management_port) {
-    validate_re($management_port, '\d+')
-  }
-  if $port and ! is_integer($port) {
-    validate_re($port, '\d+')
-  }
-  if ! is_integer($stomp_port) {
-    validate_re($stomp_port, '\d+')
-  }
 
   # using sprintf for conversion to string, because "${file_limit}" doesn't
   # pass lint, despite being nicer
   validate_re(sprintf('%s', $file_limit),
               '^(\d+|-1|unlimited|infinity)$', '$file_limit must be a positive integer, \'-1\', \'unlimited\', or \'infinity\'.')
-  if ! is_integer($ssl_port) {
-    validate_re($ssl_port, '\d+')
-  }
-  if ! is_integer($ssl_management_port) {
-    validate_re($ssl_management_port, '\d+')
-  }
-  if ! is_integer($ssl_stomp_port) {
-    validate_re($ssl_stomp_port, '\d+')
-  }
-  validate_re($ldap_port, '\d+')
 
   if $ssl_only and ! $ssl {
     fail('$ssl_only => true requires that $ssl => true')
@@ -136,53 +113,34 @@ class rabbitmq(
     }
   }
 
-  # This needs to happen here instead of params.pp because
-  # $package_source needs to override the constructed value in params.pp
-  if $package_source { # $package_source was specified by user so use that one
-    $real_package_source = $package_source
-  # NOTE(bogdando) do not enforce the source value for yum provider #MODULES-1631
-  } elsif $package_provider != 'yum' {
-    # package_source was not specified, so construct it, unless the provider is 'yum'
-    case $::osfamily {
-      'RedHat', 'SUSE': {
-        $base_version   = regsubst($version,'^(.*)-\d$','\1')
-        $real_package_source = "http://www.rabbitmq.com/releases/rabbitmq-server/v${base_version}/rabbitmq-server-${version}.noarch.rpm"
-      }
-      'OpenBSD': {
-        # We just use the default OpenBSD package from a mirror
-        $real_package_source = undef
-      }
-      default: { # Archlinux and Debian
-        $real_package_source = undef
-      }
-    }
-  } else { # for yum provider, use the source as is
-    $real_package_source = $package_source
+  if $package_source != undef {
+    warning('$package_source is now deprecated. Please use yum installation or handle outside of this module.')
   }
 
   if $manage_repos != undef {
-    warning('$manage_repos is now deprecated. Please use $repos_ensure instead')
+    warning('$manage_repos is now deprecated. Please use $repos_ensure instead.')
   }
 
-  if $manage_repos != false {
+  if $version != undef {
+    warning('$version is now deprecated, and will not have any effect. If you need to pin to a particular version, use $package_ensure')
+  }
+
+  if $repos_ensure {
     case $::osfamily {
-      'RedHat', 'SUSE': {
-          include '::rabbitmq::repo::rhel'
-          $package_require = undef
+      'RedHat': {
+        class { '::rabbitmq::repo::rhel':
+          key_source  => $package_gpg_key,
+        }
       }
       'Debian': {
         class { '::rabbitmq::repo::apt' :
           key_source  => $package_gpg_key,
           key_content => $key_content,
         }
-        $package_require = Class['apt::update']
       }
       default: {
-        $package_require = undef
       }
     }
-  } else {
-    $package_require = undef
   }
 
   include '::rabbitmq::install'
