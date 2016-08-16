@@ -30,7 +30,11 @@ class rabbitmq::repo::apt(
     release      => $release,
     repos        => $repos,
     include      => { 'src' => $include_src },
-    key          => { 'id' => $key, 'source' => $key_source, 'content' =>  $key_content },
+    key          => {
+      'id'      => $key,
+      'source'  => $key_source,
+      'content' =>  $key_content
+    },
     architecture => $architecture,
   }
 
