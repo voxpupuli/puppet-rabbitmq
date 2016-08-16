@@ -25,12 +25,12 @@ class rabbitmq::repo::apt(
   }
 
   apt::source { 'rabbitmq':
-    ensure      => $ensure_source,
-    location    => $location,
-    release     => $release,
-    repos       => $repos,
-    include     => { 'src' => $include_src },
-    key         => { 'id' => $key, 'source' => $key_source, 'content' =>  $key_content },
+    ensure       => $ensure_source,
+    location     => $location,
+    release      => $release,
+    repos        => $repos,
+    include      => { 'src' => $include_src },
+    key          => { 'id' => $key, 'source' => $key_source, 'content' =>  $key_content },
     architecture => $architecture,
   }
 
