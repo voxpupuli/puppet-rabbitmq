@@ -5,3 +5,6 @@ port = <%= @ssl_management_port %>
 <% else -%>
 port = <%= @management_port %>
 <% end -%>
+<% if @management_hostname %>
+hostname = <%= @management_hostname %>
+<% end -%>

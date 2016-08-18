@@ -67,6 +67,7 @@ class rabbitmq::params {
 
   #install
   $admin_enable                = true
+  $management_hostname         = undef
   $management_port             = '15672'
   $management_ssl              = true
   $package_apt_pin             = ''
