@@ -70,7 +70,7 @@ class rabbitmq::params {
   $management_port             = '15672'
   $management_ssl              = true
   $package_apt_pin             = ''
-  $package_gpg_key             = 'https://www.rabbitmq.com/rabbitmq-signing-key-public.asc'
+  $package_gpg_key             = 'https://www.rabbitmq.com/rabbitmq-release-signing-key.asc'
   $repos_ensure                = true
   $manage_repos                = undef
   $service_ensure              = 'running'
@@ -94,6 +94,9 @@ class rabbitmq::params {
   $node_ip_address             = 'UNSET'
   $port                        = '5672'
   $tcp_keepalive               = false
+  $tcp_backlog                 = 128
+  $tcp_sndbuf                  = false
+  $tcp_recbuf                  = false
   $heartbeat                   = undef
   $ssl                         = false
   $ssl_only                    = false
@@ -125,6 +128,8 @@ class rabbitmq::params {
   $config_variables            = {}
   $config_kernel_variables     = {}
   $config_management_variables = {}
+  $config_additional_variables = {}
   $auth_backends               = undef
   $file_limit                  = '16384'
+  $collect_statistics_interval = false
 }
