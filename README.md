@@ -333,6 +333,10 @@ Boolean, set to true to log LDAP auth.
 
 Boolean, whether or not to manage package repositories.
 
+####`management_hostname`
+
+The hostname for the RabbitMQ management interface.
+
 ####`management_port`
 
 The port for the RabbitMQ management interface.
