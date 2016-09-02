@@ -128,6 +128,26 @@ class { 'rabbitmq':
 }
 ```
 
+### Additional Variables Configurable in rabbitmq.config
+To change Additional Config Variables in rabbitmq.config, use the parameter
+`config_additional_variables` e.g.:
+
+```puppet
+class { 'rabbitmq':
+  config_additional_variables => {
+    'autocluster' => '[{consul_service, "rabbit"},{cluster_name, "rabbit"}]',
+    'foo' => '[{bar, "baz"}]'
+  }
+}
+```
+This will result in the following config appended to the config file:
+```
+% Additional config
+  {autocluster, [{consul_service, "rabbit"},{cluster_name, "rabbit"}]},
+  {foo, [{bar, "baz"}]}
+```
+(This is required for the [autocluster plugin](https://github.com/aweber/rabbitmq-autocluster)
+
 ### Clustering
 To use RabbitMQ clustering facilities, use the rabbitmq parameters
 `config_cluster`, `cluster_nodes`, and `cluster_node_type`, e.g.:
@@ -179,9 +199,17 @@ An array of nodes for clustering.
 
 Value to set for `cluster_partition_handling` RabbitMQ configuration variable.
 
+####`collect_statistics_interval`
+
+Integer, set the collect_statistics_interval in rabbitmq.config
+
 ####`config`
 
 The file to use as the rabbitmq.config template.
+
+####`config_additional_variables`
+
+String, dditional config variables in rabbitmq.config
 
 ####`config_cluster`
 
@@ -318,7 +346,8 @@ Valid values are true or false.
 
 ####`node_ip_address`
 
-The value of NODE_IP_ADDRESS in rabbitmq_env.config
+The value of NODE_IP_ADDRESS in rabbitmq_env.config and of the
+rabbitmq_management server if it is enabled.
 
 ####`package_ensure`
 
@@ -434,9 +463,21 @@ Requires setting ssl_stomp_port also.
 
 Boolean to install the stomp plugin.
 
+####`tcp_backlog`
+
+Integer, the size of the backlog on TCP connections.
+
 ####`tcp_keepalive`
 
 Boolean to enable TCP connection keepalive for RabbitMQ service.
+
+####`tcp_recbuf`
+
+Integer, corresponds to recbuf in RabbitMQ `tcp_listen_options`
+
+####`tcp_sndbuf`
+
+Integer, corresponds to sndbuf in RabbitMQ `tcp_listen_options`
 
 ####`version`
 
@@ -648,9 +689,9 @@ For Debian systems:
       ensure => 'latest',
     }
 
-This module also depends on the excellent nanliu/staging module on the Forge:
+This module also depends on the excellent puppet/staging module on the Forge:
 
-    puppet module install nanliu-staging
+    puppet module install puppet-staging
 
 ### Downgrade Issues
 

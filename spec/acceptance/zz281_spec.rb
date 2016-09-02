@@ -6,7 +6,7 @@ require 'spec_helper_acceptance'
 # These tests only apply to RedHat because 2.8.1 is not available in either the
 # distro or upstream repos for Debian/Ubuntu.
 #
-describe 'rabbitmq class with 2.8.1:' do
+describe 'rabbitmq class with 2.8.1:', :unless => (fact('osfamily') == 'RedHat') do
   if fact('osfamily') == 'RedHat'
     package_name     = 'rabbitmq-server'
     service_name     = 'rabbitmq-server'

@@ -56,7 +56,7 @@ Puppet::Type.newtype(:rabbitmq_parameter) do
       raise ArgumentError, "Invalid value"
     end
     value.each do |k,v|
-      unless [String].include?(v.class)
+      unless [String, TrueClass, FalseClass].include?(v.class)
         raise ArgumentError, "Invalid value"
       end
     end

@@ -33,6 +33,9 @@ class rabbitmq(
   $rabbitmq_home              = $rabbitmq::params::rabbitmq_home,
   $port                       = $rabbitmq::params::port,
   $tcp_keepalive              = $rabbitmq::params::tcp_keepalive,
+  $tcp_backlog                = $rabbitmq::params::tcp_backlog,
+  $tcp_sndbuf                 = $rabbitmq::params::tcp_sndbuf,
+  $tcp_recbuf                 = $rabbitmq::params::tcp_recbuf,
   $heartbeat                  = $rabbitmq::params::heartbeat,
   $service_ensure             = $rabbitmq::params::service_ensure,
   $service_manage             = $rabbitmq::params::service_manage,
@@ -68,9 +71,11 @@ class rabbitmq(
   $environment_variables      = $rabbitmq::params::environment_variables,
   $config_variables           = $rabbitmq::params::config_variables,
   $config_kernel_variables    = $rabbitmq::params::config_kernel_variables,
-  $config_management_variables = $rabbitmq::config_management_variables,
+  $config_management_variables = $rabbitmq::params::config_management_variables,
+  $config_additional_variables = $rabbitmq::params::config_additional_variables,
   $auth_backends              = $rabbitmq::params::auth_backends,
   $key_content                = undef,
+  $collect_statistics_interval = $rabbitmq::params::collect_statistics_interval,
 ) inherits rabbitmq::params {
 
   validate_bool($admin_enable)
@@ -110,6 +115,16 @@ class rabbitmq(
   }
   validate_bool($wipe_db_on_cookie_change)
   validate_bool($tcp_keepalive)
+  if $tcp_backlog {
+    validate_integer($tcp_backlog)
+  }
+  if $tcp_sndbuf {
+    validate_integer($tcp_sndbuf)
+  }
+  if $tcp_recbuf {
+    validate_integer($tcp_recbuf)
+  }
+
   # using sprintf for conversion to string, because "${file_limit}" doesn't
   # pass lint, despite being nicer
   validate_re(sprintf('%s', $file_limit),
@@ -147,6 +162,11 @@ class rabbitmq(
   validate_hash($config_variables)
   validate_hash($config_kernel_variables)
   validate_hash($config_management_variables)
+  validate_hash($config_additional_variables)
+
+  if $collect_statistics_interval {
+    validate_integer($collect_statistics_interval)
+  }
 
   if $heartbeat {
     validate_integer($heartbeat)
@@ -158,10 +178,6 @@ class rabbitmq(
 
   if $ssl_only and ! $ssl {
     fail('$ssl_only => true requires that $ssl => true')
-  }
-
-  if $config_stomp and $ssl_stomp_port and ! $ssl {
-    warning('$ssl_stomp_port requires that $ssl => true and will be ignored')
   }
 
   if $config_stomp and $stomp_ssl_only and ! $ssl_stomp_port  {
@@ -188,6 +204,10 @@ class rabbitmq(
         $base_version   = regsubst($version,'^(.*)-\d$','\1')
         $real_package_source = "http://www.rabbitmq.com/releases/rabbitmq-server/v${base_version}/rabbitmq-server-${version}.noarch.rpm"
       }
+      'OpenBSD': {
+        # We just use the default OpenBSD package from a mirror
+        $real_package_source = undef
+      }
       default: { # Archlinux and Debian
         $real_package_source = ''
       }
@@ -195,11 +215,6 @@ class rabbitmq(
   } else { # for yum provider, use the source as is
     $real_package_source = $package_source
   }
-
-  include '::rabbitmq::install'
-  include '::rabbitmq::config'
-  include '::rabbitmq::service'
-  include '::rabbitmq::management'
 
   if $manage_repos != undef {
     warning('$manage_repos is now deprecated. Please use $repos_ensure instead')
@@ -209,6 +224,7 @@ class rabbitmq(
     case $::osfamily {
       'RedHat', 'SUSE': {
           include '::rabbitmq::repo::rhel'
+          $package_require = undef
       }
       'Debian': {
         class { '::rabbitmq::repo::apt' :
@@ -221,7 +237,14 @@ class rabbitmq(
         $package_require = undef
       }
     }
+  } else {
+    $package_require = undef
   }
+
+  include '::rabbitmq::install'
+  include '::rabbitmq::config'
+  include '::rabbitmq::service'
+  include '::rabbitmq::management'
 
   if $admin_enable and $service_manage {
     include '::rabbitmq::install::rabbitmqadmin'

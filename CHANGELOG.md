@@ -1,3 +1,57 @@
+## Version 5.5.0
+### Summary
+Adds some exciting new features (listed below) for a long awaited release!
+
+### Features
+- Updates GPG signing key
+- Now add additional config variables with the `config_additional_variable` parameter!
+- Configure your management plugin with the new `collect_statistics_interval` parameter!
+- Enjoy more robust tuning of your TCP configuration with:
+  - `tcp_backlog`
+  - `tcp_sndbuf`
+  - `tcp_recbuf`
+
+### Bugfixes
+- MODULES-3740 - RabbitMQ template missing important config parameter
+
+## Version 5.4.0
+### Summary
+Adds several new parameters, features, and lots of bugfixes
+
+#### Features
+- Adds configuration for rabbitmq_shovel plugin including static shovels
+- (MODULE-2040) Add configuration of `auth_backends`
+- Adds the `config_management_variables` parameter
+- Adds `heartbeat` parameter
+- Adds `rabbitmq_version` fact
+- Adds ipv6 support to `rabbitmqadmin`
+- MODULES-3148: Allow shards-per-node for rabbitmq_policy definition to be integer
+- Adds `rabbitmq_nodename` fact
+- Allow passing architecture to `apt::source`
+
+#### Bugfixes
+- MODULES-2252 - fix "Command execution expired" issue
+- Fixes an issue with Puppet 4+ when run from a cron job
+- Updates RedHat to use yum instead of rpm
+- Fixes the `$file_limit` parameter to allow integers
+- MODULES-2252 - fix "Could not prefetch rabbitmq_exchange provider 'rabbitmqadmin': 757: unexpected token at 'fanout'" issue
+- Improves error message when policy definition value is not a string
+- MODULES-2645 add apt::update requirement for Debian
+- Fixes pinning for apt on Debian based distros
+- Updates install.pp to ensure that mnesia_base directory exists
+- Fixes rabbitmqadmin url
+- Updates default `$package_gpg_key` to https
+- Fixes `curl --noproxy` command to set host dynamically
+- Ignore system umask when generating enabled_plugins file
+- Fix to skip federated queues in the output
+- Updates module dependencies to use `puppet-staging` instead of `nanliu-staging`
+- Fixes bug where `rabbitmq_management` block is created twice
+- Fixes `rabbitmq_parameter` type check for `add-forward-headers` to require boolean.
+- Fixes an issue when `$node_ip_address` is 'UNSET'
+- Fixes package installation on OpenBSD
+- Fixes bug that shows new user password changes on noop runs
+- (MODULES-3295) Allow ssl => false without warning
+
 ## 2015-10-07 - Version 5.3.1
 ### Summary
 Adds a new resource type and a few ssl management parameters
