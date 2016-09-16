@@ -1425,8 +1425,12 @@ LimitNOFILE=1234
           'location'    => 'http://www.rabbitmq.com/debian/',
           'release'     => 'testing',
           'repos'       => 'main',
-          'include_src' => false,
-          'key'         => '0A9AF2115F4687BD29803A206B73A36E6026DFCA'
+          'include'     => {
+              'src'     => false
+          },
+          'key'         => {
+              'id'      => '0A9AF2115F4687BD29803A206B73A36E6026DFCA'
+          }
         ) }
       end
     end
@@ -1439,8 +1443,12 @@ LimitNOFILE=1234
           'location'    => 'http://www.rabbitmq.com/debian/',
           'release'     => 'testing',
           'repos'       => 'main',
-          'include_src' => false,
-          'key'         => '0A9AF2115F4687BD29803A206B73A36E6026DFCA'
+          'include'     => {
+              'src'     => false
+          },
+          'key'         => {
+              'id'      => '0A9AF2115F4687BD29803A206B73A36E6026DFCA'
+          }
         ) }
 
         it { should contain_apt__pin('rabbitmq').with(
