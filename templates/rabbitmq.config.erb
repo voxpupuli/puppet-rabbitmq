@@ -98,6 +98,7 @@
 <%- if  !@config_management_variables.empty? -%>,<%-end-%>
     {listener, [
 <%- if @ssl && @management_ssl -%>
+      {ip, "<%= @management_ip %>"},
       {port, <%= @ssl_management_port %>},
       {ssl, true},
       {ssl_opts, [<%- if @ssl_cacert != 'UNSET' %>
@@ -116,10 +117,8 @@
                   <%- end -%>
                  ]}
 <%- else -%>
+      {ip, "<%= @management_ip %>"},
       {port, <%= @management_port %>}
-<%- end -%>
-<%- if @node_ip_address != 'UNSET' -%>
-      ,{ip, "<%= @node_ip_address %>"}
 <%- end -%>
     ]}
 <%- end -%>

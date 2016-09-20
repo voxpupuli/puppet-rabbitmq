@@ -16,6 +16,7 @@ class rabbitmq(
   Stdlib::Absolutepath $env_config_path          = $rabbitmq::params::env_config_path,
   Optional[String] $erlang_cookie                = $rabbitmq::params::erlang_cookie,
   $interface                                     = $rabbitmq::params::interface,
+  $management_ip                                 = $rabbitmq::params::management_ip,
   $management_port                               = $rabbitmq::params::management_port,
   $management_ssl                                = $rabbitmq::params::management_ssl,
   Optional[String] $management_hostname          = $rabbitmq::params::management_hostname,
