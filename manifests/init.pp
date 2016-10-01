@@ -211,7 +211,7 @@ class rabbitmq(
         $real_package_source = undef
       }
       default: { # Archlinux and Debian
-        $real_package_source = ''
+        $real_package_source = undef
       }
     }
   } else { # for yum provider, use the source as is
