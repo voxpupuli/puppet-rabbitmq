@@ -1,6 +1,9 @@
 fixtures:
+  forge_modules:
+    stdlib:
+      repo: "puppetlabs/stdlib"
+      ref: "4.12.0"
   repositories:
-    "stdlib": "git://github.com/puppetlabs/puppetlabs-stdlib.git"
     "apt": "git://github.com/puppetlabs/puppetlabs-apt.git"
     "staging": "git://github.com/voxpupuli/puppet-staging.git"
     "erlang:": "git://github.com/garethr/garethr-erlang.git"
