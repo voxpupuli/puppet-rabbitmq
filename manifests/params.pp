@@ -5,6 +5,14 @@
 class rabbitmq::params {
 
   case $::osfamily {
+    'Archlinux': {
+      $package_ensure   = 'installed'
+      $package_name     = 'rabbitmq'
+      $service_name     = 'rabbitmq'
+      $rabbitmq_user    = 'rabbitmq'
+      $rabbitmq_group   = 'rabbitmq'
+      $rabbitmq_home    = '/var/lib/rabbitmq'
+    }
     'Debian': {
       $package_ensure   = 'installed'
       $package_name     = 'rabbitmq-server'
