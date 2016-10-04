@@ -52,6 +52,10 @@ class rabbitmq(
   $ssl_stomp_port             = $rabbitmq::params::ssl_stomp_port,
   $ssl_verify                 = $rabbitmq::params::ssl_verify,
   $ssl_fail_if_no_peer_cert   = $rabbitmq::params::ssl_fail_if_no_peer_cert,
+  $ssl_secure_renegotiate     = $rabbitmq::params::ssl_secure_renegotiate,
+  $ssl_reuse_sessions         = $rabbitmq::params::ssl_reuse_sessions,
+  $ssl_honor_cipher_order     = $rabbitmq::params::ssl_honor_cipher_order,
+  $ssl_dhfile                 = $rabbitmq::params::ssl_dhfile,
   $ssl_versions               = $rabbitmq::params::ssl_versions,
   $ssl_ciphers                = $rabbitmq::params::ssl_ciphers,
   $stomp_ensure               = $rabbitmq::params::stomp_ensure,
@@ -150,6 +154,10 @@ class rabbitmq(
   if ! is_integer($ssl_stomp_port) {
     validate_re($ssl_stomp_port, '\d+')
   }
+  validate_bool($ssl_secure_renegotiate)
+  validate_bool($ssl_reuse_sessions)
+  validate_bool($ssl_honor_cipher_order)
+  validate_string($ssl_dhfile)
   validate_bool($stomp_ensure)
   validate_bool($stomp_ssl_only)
   validate_bool($ldap_auth)

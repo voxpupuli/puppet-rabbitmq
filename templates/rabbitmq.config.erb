@@ -57,6 +57,12 @@
                    <%- end -%>
                    {certfile,"<%= @ssl_cert %>"},
                    {keyfile,"<%= @ssl_key %>"},
+                   <%- if @ssl_dhfile != 'UNSET' -%>
+                   {dhfile, "<%= @ssl_dhfile %>"},
+                   <%- end -%>
+                   {secure_renegotiate,<%= @ssl_secure_renegotiate %>},
+                   {reuse_sessions,<%= @ssl_reuse_sessions %>},
+                   {honor_cipher_order,<%= @ssl_honor_cipher_order %>},
                    {verify,<%= @ssl_verify %>},
                    {fail_if_no_peer_cert,<%= @ssl_fail_if_no_peer_cert %>}
                    <%- if @ssl_versions -%>
@@ -97,7 +103,13 @@
                   <%- end -%>
 
                   {certfile, "<%= @ssl_cert %>"},
-                  {keyfile, "<%= @ssl_key %>"}
+                  {keyfile, "<%= @ssl_key %>"},
+                  <%- if @ssl_dhfile != 'UNSET' -%>
+                  {dhfile, "<%= @ssl_dhfile %>"},
+                  <%- end -%>
+                  {secure_renegotiate,<%= @ssl_secure_renegotiate %>},
+                  {reuse_sessions,<%= @ssl_reuse_sessions %>},
+                  {honor_cipher_order,<%= @ssl_honor_cipher_order %>}
                    <%- if @ssl_versions -%>
                      ,{versions, [<%= @ssl_versions.sort.map { |v| "'#{v}'" }.join(', ') %>]}
                    <%- end -%>
