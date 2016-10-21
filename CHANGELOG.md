@@ -1,3 +1,11 @@
+## Version 5.6.0
+### Summary
+This is an unsupported Release. Add 2 features as listed below.
+
+### Features
+- Allow ha-sync-batch-size for rabbitmq_policy definition to be integer
+- Ability to set management_hostname in rabbitmqadmin.conf
+
 ## Version 5.5.0
 ### Summary
 Adds some exciting new features (listed below) for a long awaited release!
