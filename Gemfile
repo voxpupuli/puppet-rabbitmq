@@ -35,6 +35,7 @@ end
 group :system_tests do
   gem 'beaker', *location_from_env('BEAKER_VERSION', []) if RUBY_VERSION >= '2.3.0'
   gem 'beaker', *location_from_env('BEAKER_VERSION', ['< 3']) if RUBY_VERSION < '2.3.0'
+  gem 'beaker-pe' if RUBY_VERSION >= '2.3.0'
   gem 'beaker-rspec', *location_from_env('BEAKER_RSPEC_VERSION', ['>= 3.4'])
   gem 'serverspec'
   gem 'beaker-puppet_install_helper'
