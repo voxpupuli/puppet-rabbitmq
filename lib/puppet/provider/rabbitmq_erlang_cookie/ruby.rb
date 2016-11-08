@@ -12,7 +12,7 @@ Puppet::Type.type(:rabbitmq_erlang_cookie).provide(:ruby) do
 
   def content=(value)
     if resource[:force] == :true # Danger!
-      Puppet::Type.type(:service).new(:name => resource[:service_name], :ensure => 'stopped')
+      Puppet::Type.type(:service).new(:name => resource[:service_name]).provider.stop
       FileUtils.rm_rf(resource[:rabbitmq_home] + File::SEPARATOR + 'mnesia')
       File.open(resource[:path], 'w') do |cookie|
         cookie.chmod(0400)
