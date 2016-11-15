@@ -64,8 +64,8 @@ Or such as offline installation from intranet or local mirrors:
 
 ```puppet
 class { '::rabbitmq':
-   key_content      => template('openstack/rabbit.pub.key'),
-   package_gpg_key  => '/tmp/rabbit.pub.key',
+   key_content     => template('openstack/rabbit.pub.key'),
+   package_gpg_key => '/tmp/rabbit.pub.key',
 }
 ```
 
@@ -73,7 +73,7 @@ And this one will use external package key source for any (apt/rpm) package prov
 
 ```puppet
 class { '::rabbitmq':
-   package_gpg_key  => 'http://www.some_site.some_domain/some_key.pub.key',
+   package_gpg_key => 'http://www.some_site.some_domain/some_key.pub.key',
 }
 ```
 
@@ -82,10 +82,10 @@ To use RabbitMQ Environment Variables, use the parameters `environment_variables
 
 ```puppet
 class { 'rabbitmq':
-  port              => '5672',
-  environment_variables   => {
-    'NODENAME'     => 'node01',
-    'SERVICENAME'  => 'RabbitMQ'
+  port                  => '5672',
+  environment_variables => {
+    'NODENAME'    => 'node01',
+    'SERVICENAME' => 'RabbitMQ'
   }
 }
 ```
@@ -95,11 +95,11 @@ To change RabbitMQ Config Variables in rabbitmq.config, use the parameters `conf
 
 ```puppet
 class { 'rabbitmq':
-  port              => '5672',
-  config_variables   => {
-    'hipe_compile'  => true,
-    'frame_max'     => 131072,
-    'log_levels'    => "[{connection, info}]"
+  port             => '5672',
+  config_variables => {
+    'hipe_compile' => true,
+    'frame_max'    => 131072,
+    'log_levels'   => "[{connection, info}]"
   }
 }
 ```
@@ -109,8 +109,8 @@ To change Erlang Kernel Config Variables in rabbitmq.config, use the parameters
 
 ```puppet
 class { 'rabbitmq':
-  port              => '5672',
-  config_kernel_variables  => {
+  port                    => '5672',
+  config_kernel_variables => {
     'inet_dist_listen_min' => 9100,
     'inet_dist_listen_max' => 9105,
   }
@@ -122,7 +122,7 @@ To change Management Plugin Config Variables in rabbitmq.config, use the paramet
 
 ```puppet
 class { 'rabbitmq':
-  config_management_variables  => {
+  config_management_variables => {
     'rates_mode' => 'basic',
   }
 }
@@ -136,7 +136,7 @@ To change Additional Config Variables in rabbitmq.config, use the parameter
 class { 'rabbitmq':
   config_additional_variables => {
     'autocluster' => '[{consul_service, "rabbit"},{cluster_name, "rabbit"}]',
-    'foo' => '[{bar, "baz"}]'
+    'foo'         => '[{bar, "baz"}]'
   }
 }
 ```
@@ -545,14 +545,14 @@ rabbitmq_vhost { 'myvhost':
 
 ```puppet
 rabbitmq_exchange { 'myexchange@myvhost':
-  user     => 'dan',
-  password => 'bar',
-  type     => 'topic',
-  ensure   => present,
-  internal => false,
+  user        => 'dan',
+  password    => 'bar',
+  type        => 'topic',
+  ensure      => present,
+  internal    => false,
   auto_delete => false,
-  durable => true,
-  arguments => {
+  durable     => true,
+  arguments   => {
     hash-header => 'message-distribution-hash'
   }
 }
@@ -567,7 +567,7 @@ rabbitmq_queue { 'myqueue@myvhost':
   durable     => true,
   auto_delete => false,
   arguments   => {
-    x-message-ttl => 123,
+    x-message-ttl          => 123,
     x-dead-letter-exchange => 'other'
   },
   ensure      => present,
@@ -637,7 +637,7 @@ rabbitmq_plugin {'rabbitmq_stomp':
   rabbitmq_parameter { 'documentumFed@/':
     component_name => 'federation-upstream',
     value          => {
-        'uri'    => 'amqp://myserver',
+        'uri'     => 'amqp://myserver',
         'expires' => '360000',
     },
   }
