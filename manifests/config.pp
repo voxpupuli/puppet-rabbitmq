@@ -65,9 +65,14 @@ class rabbitmq::config {
   $cluster_partition_handling = $rabbitmq::cluster_partition_handling
   $file_limit                 = $rabbitmq::file_limit
   $collect_statistics_interval = $rabbitmq::collect_statistics_interval
-  $default_env_variables      =  {
-    'NODE_PORT'        => $port,
-    'NODE_IP_ADDRESS'  => $node_ip_address
+
+  if $ssl_only {
+    $default_env_variables = {}
+  } else {
+    $default_env_variables = {
+      'NODE_PORT'        => $port,
+      'NODE_IP_ADDRESS'  => $node_ip_address
+    }
   }
 
   # Handle env variables.
