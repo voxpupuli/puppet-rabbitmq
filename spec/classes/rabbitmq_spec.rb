@@ -873,10 +873,13 @@ LimitNOFILE=1234
           should contain_file('rabbitmq.config').with_content(
             %r{port, 13142}
           )
+          should contain_file('rabbitmqadmin.conf').with_content(
+            %r{port\s=\s13142}
+          )
         end
       end
 
-        describe 'ssl options and mangament_ssl true' do
+      describe 'ssl options and mangament_ssl true' do
         let(:params) {
           { :ssl => true,
             :ssl_port => 3141,
@@ -910,6 +913,23 @@ LimitNOFILE=1234
         it 'should set ssl managment port to specified values' do
           should contain_file('rabbitmq.config').with_content(
             %r{port, 13141}
+          )
+        end
+        it 'should set ssl options in the rabbitmqadmin.conf' do
+          should contain_file('rabbitmqadmin.conf').with_content(
+            %r{ssl_ca_cert_file\s=\s/path/to/cacert}
+          )
+          should contain_file('rabbitmqadmin.conf').with_content(
+            %r{ssl_cert_file\s=\s/path/to/cert}
+          )
+          should contain_file('rabbitmqadmin.conf').with_content(
+            %r{ssl_key_file\s=\s/path/to/key}
+          )
+          should contain_file('rabbitmqadmin.conf').with_content(
+            %r{hostname\s=\s}
+          )
+          should contain_file('rabbitmqadmin.conf').with_content(
+            %r{port\s=\s13141}
           )
         end
       end
