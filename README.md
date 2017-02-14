@@ -424,6 +424,10 @@ Cert to use for SSL.
 
 Key to use for SSL.
 
+####`ssl_depth`
+
+SSL verification depth.
+
 ####`ssl_management_port`
 
 SSL management port.

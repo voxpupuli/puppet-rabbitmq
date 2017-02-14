@@ -57,6 +57,9 @@
                    <%- end -%>
                    {certfile,"<%= @ssl_cert %>"},
                    {keyfile,"<%= @ssl_key %>"},
+                   <%- if @ssl_depth != 'UNSET' -%>
+                   {depth,<%= @ssl_depth %>},
+                   <%- end -%>
                    {verify,<%= @ssl_verify %>},
                    {fail_if_no_peer_cert,<%= @ssl_fail_if_no_peer_cert %>}
                    <%- if @ssl_versions -%>
