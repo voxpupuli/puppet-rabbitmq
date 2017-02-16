@@ -142,8 +142,8 @@ class rabbitmq(
   validate_string($ssl_cacert)
   validate_string($ssl_cert)
   validate_string($ssl_key)
-  validate_integer($ssl_depth, '\d+')
-  validate_string(ssl_cert_password)
+  validate_integer($ssl_depth)
+  validate_string($ssl_cert_password)
   validate_array($ssl_ciphers)
   if ! is_integer($ssl_port) {
     validate_re($ssl_port, '\d+')
