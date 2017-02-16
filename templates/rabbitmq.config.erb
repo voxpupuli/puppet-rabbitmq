@@ -57,6 +57,9 @@
                    <%- end -%>
                    {certfile,"<%= @ssl_cert %>"},
                    {keyfile,"<%= @ssl_key %>"},
+                   <%- if @ssl_cert_password != 'UNSET' -%>
+                   {password, "<%= @ssl_cert_password %>"},
+                   <%- end -%>
                    <%- if @ssl_depth != 'UNSET' -%>
                    {depth,<%= @ssl_depth %>},
                    <%- end -%>

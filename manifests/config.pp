@@ -39,6 +39,7 @@ class rabbitmq::config {
   $ssl_cert                   = $rabbitmq::ssl_cert
   $ssl_key                    = $rabbitmq::ssl_key
   $ssl_depth                  = $rabbitmq::ssl_depth
+  $ssl_cert_password          = $rabbitmq::ssl_cert_password
   $ssl_port                   = $rabbitmq::ssl_port
   $ssl_interface              = $rabbitmq::ssl_interface
   $ssl_management_port        = $rabbitmq::ssl_management_port

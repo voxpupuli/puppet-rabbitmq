@@ -424,6 +424,10 @@ Cert to use for SSL.
 
 Key to use for SSL.
 
+####`ssl_cert_password`
+
+Password used when generating CSR.
+
 ####`ssl_depth`
 
 SSL verification depth.
