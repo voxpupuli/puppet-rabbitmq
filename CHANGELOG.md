@@ -1,3 +1,27 @@
+## Version 5.6.0
+### Summary
+This is an unsupported Release. Add 2 features as listed below.
+
+### Features
+- Allow ha-sync-batch-size for rabbitmq_policy definition to be integer
+- Ability to set management_hostname in rabbitmqadmin.conf
+
+## Version 5.5.0
+### Summary
+Adds some exciting new features (listed below) for a long awaited release!
+
+### Features
+- Updates GPG signing key
+- Now add additional config variables with the `config_additional_variable` parameter!
+- Configure your management plugin with the new `collect_statistics_interval` parameter!
+- Enjoy more robust tuning of your TCP configuration with:
+  - `tcp_backlog`
+  - `tcp_sndbuf`
+  - `tcp_recbuf`
+
+### Bugfixes
+- MODULES-3740 - RabbitMQ template missing important config parameter
+
 ## Version 5.4.0
 ### Summary
 Adds several new parameters, features, and lots of bugfixes

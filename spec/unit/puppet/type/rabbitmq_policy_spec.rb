@@ -158,4 +158,18 @@ describe Puppet::Type.type(:rabbitmq_policy) do
       @policy[:definition] = definition
     }.to raise_error(Puppet::Error, /Invalid shards-per-node value.*future/)
   end
+    
+  it 'should accept and convert the ha-sync-batch-size value' do
+    definition = {'ha-sync-batch-size' => '1800000'}
+    @policy[:definition] = definition
+    @policy[:definition]['ha-sync-batch-size'].should be_a(Fixnum)
+    @policy[:definition]['ha-sync-batch-size'].should == 1800000
+  end
+  
+  it 'should not accept non-numeric ha-sync-batch-size value' do
+    definition = {'ha-sync-batch-size' => 'future'}
+    expect {
+      @policy[:definition] = definition
+    }.to raise_error(Puppet::Error, /Invalid ha-sync-batch-size value.*future/)
+  end
 end

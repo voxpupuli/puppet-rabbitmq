@@ -49,7 +49,7 @@ Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin) do
         else
           arguments = '{}'
         end
-        if (source_name != '')
+        unless(source_name.empty?)
           binding = {
             :destination_type => destination_type,
             :routing_key      => routing_key,

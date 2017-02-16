@@ -18,6 +18,7 @@ class rabbitmq(
   $interface                  = $rabbitmq::params::interface,
   $management_port            = $rabbitmq::params::management_port,
   $management_ssl             = $rabbitmq::params::management_ssl,
+  $management_hostname        = $rabbitmq::params::management_hostname,
   $node_ip_address            = $rabbitmq::params::node_ip_address,
   $package_apt_pin            = $rabbitmq::params::package_apt_pin,
   $package_ensure             = $rabbitmq::params::package_ensure,
@@ -33,6 +34,9 @@ class rabbitmq(
   $rabbitmq_home              = $rabbitmq::params::rabbitmq_home,
   $port                       = $rabbitmq::params::port,
   $tcp_keepalive              = $rabbitmq::params::tcp_keepalive,
+  $tcp_backlog                = $rabbitmq::params::tcp_backlog,
+  $tcp_sndbuf                 = $rabbitmq::params::tcp_sndbuf,
+  $tcp_recbuf                 = $rabbitmq::params::tcp_recbuf,
   $heartbeat                  = $rabbitmq::params::heartbeat,
   $service_ensure             = $rabbitmq::params::service_ensure,
   $service_manage             = $rabbitmq::params::service_manage,
@@ -69,8 +73,10 @@ class rabbitmq(
   $config_variables           = $rabbitmq::params::config_variables,
   $config_kernel_variables    = $rabbitmq::params::config_kernel_variables,
   $config_management_variables = $rabbitmq::params::config_management_variables,
+  $config_additional_variables = $rabbitmq::params::config_additional_variables,
   $auth_backends              = $rabbitmq::params::auth_backends,
   $key_content                = undef,
+  $collect_statistics_interval = $rabbitmq::params::collect_statistics_interval,
 ) inherits rabbitmq::params {
 
   validate_bool($admin_enable)
@@ -97,6 +103,7 @@ class rabbitmq(
   validate_string($env_config)
   validate_absolute_path($env_config_path)
   validate_string($erlang_cookie)
+  validate_string($management_hostname)
   if ! is_integer($management_port) {
     validate_re($management_port, '\d+')
   }
@@ -110,6 +117,16 @@ class rabbitmq(
   }
   validate_bool($wipe_db_on_cookie_change)
   validate_bool($tcp_keepalive)
+  if $tcp_backlog {
+    validate_integer($tcp_backlog)
+  }
+  if $tcp_sndbuf {
+    validate_integer($tcp_sndbuf)
+  }
+  if $tcp_recbuf {
+    validate_integer($tcp_recbuf)
+  }
+
   # using sprintf for conversion to string, because "${file_limit}" doesn't
   # pass lint, despite being nicer
   validate_re(sprintf('%s', $file_limit),
@@ -147,6 +164,11 @@ class rabbitmq(
   validate_hash($config_variables)
   validate_hash($config_kernel_variables)
   validate_hash($config_management_variables)
+  validate_hash($config_additional_variables)
+
+  if $collect_statistics_interval {
+    validate_integer($collect_statistics_interval)
+  }
 
   if $heartbeat {
     validate_integer($heartbeat)
@@ -189,7 +211,7 @@ class rabbitmq(
         $real_package_source = undef
       }
       default: { # Archlinux and Debian
-        $real_package_source = ''
+        $real_package_source = undef
       }
     }
   } else { # for yum provider, use the source as is

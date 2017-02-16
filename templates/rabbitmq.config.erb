@@ -26,10 +26,22 @@
          <%- if @tcp_keepalive -%>
          {keepalive,     true},
          <%- end -%>
-         {backlog,       128},
+         <%- if @tcp_backlog -%>
+         {backlog,       <%= @tcp_backlog %>},
+         <%- end -%>
+         <%- if @tcp_sndbuf -%>
+         {sndbuf,       <%= @tcp_sndbuf %>},
+         <%- end -%>
+         <%- if @tcp_recbuf -%>
+         {recbuf,       <%= @tcp_recbuf %>},
+         <%- end -%>
          {nodelay,       true},
+         {linger,        {true, 0}},
          {exit_on_close, false}
     ]},
+<%- if @collect_statistics_interval -%>
+    {collect_statistics_interval, <%= @collect_statistics_interval %>},
+<%- end -%>
 <%- if @ssl_only -%>
     {tcp_listeners, []},
 <%- elsif @interface != 'UNSET' -%>
@@ -142,6 +154,12 @@
     [{shovels,[
       <%= @config_shovel_statics.sort.map{|k,v| "{#{k},[#{v}]}"}.join(",\n      ") %>
     ]}]}
+<%- end -%>
+<%- if @config_additional_variables and not @config_additional_variables.empty? -%>,
+% Additional config
+<%- @config_additional_variables.keys.sort.each do |key| -%>
+  {<%= key %>, <%= @config_additional_variables[key] %>}<%- if key != @config_additional_variables.keys.sort.last %>,<% end %>
+<%- end -%>
 <%- end -%>
 ].
 % EOF
