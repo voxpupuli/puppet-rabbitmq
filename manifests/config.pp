@@ -73,6 +73,10 @@ class rabbitmq::config {
   # Handle env variables.
   $environment_variables = merge($default_env_variables, $rabbitmq::environment_variables)
 
+  # Get ranch (socket acceptor pool) availability,
+  # use init class variable for that since version from the fact comes too late.
+  $ranch = versioncmp($rabbitmq::version, '3.6') >= 0
+
   file { '/etc/rabbitmq':
     ensure => directory,
     owner  => '0',
