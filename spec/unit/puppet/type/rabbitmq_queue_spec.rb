@@ -1,6 +1,4 @@
-require 'puppet'
-require 'puppet/type/rabbitmq_queue'
-require 'json'
+require 'spec_helper'
 describe Puppet::Type.type(:rabbitmq_queue) do
   before :each do
     @queue = Puppet::Type.type(:rabbitmq_queue).new(

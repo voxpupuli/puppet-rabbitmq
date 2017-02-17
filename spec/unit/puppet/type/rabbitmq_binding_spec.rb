@@ -1,5 +1,4 @@
-require 'puppet'
-require 'puppet/type/rabbitmq_binding'
+require 'spec_helper'
 describe Puppet::Type.type(:rabbitmq_binding) do
   before :each do
     @binding = Puppet::Type.type(:rabbitmq_binding).new(
