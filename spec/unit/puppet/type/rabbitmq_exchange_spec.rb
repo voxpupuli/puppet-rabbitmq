@@ -1,5 +1,4 @@
-require 'puppet'
-require 'puppet/type/rabbitmq_exchange'
+require 'spec_helper'
 describe Puppet::Type.type(:rabbitmq_exchange) do
   before :each do
     @exchange = Puppet::Type.type(:rabbitmq_exchange).new(

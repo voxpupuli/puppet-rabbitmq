@@ -1,5 +1,4 @@
-require 'puppet'
-require 'puppet/type/rabbitmq_user_permissions'
+require 'spec_helper'
 describe Puppet::Type.type(:rabbitmq_user_permissions) do
   before :each do
     @perms = Puppet::Type.type(:rabbitmq_user_permissions).new(:name => 'foo@bar')

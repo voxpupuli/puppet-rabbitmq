@@ -1,6 +1,4 @@
-require 'puppet'
-require 'puppet/type/rabbitmq_policy'
-
+require 'spec_helper'
 describe Puppet::Type.type(:rabbitmq_policy) do
 
   before do
