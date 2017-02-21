@@ -46,6 +46,8 @@ class rabbitmq(
   $ssl_cacert                 = $rabbitmq::params::ssl_cacert,
   $ssl_cert                   = $rabbitmq::params::ssl_cert,
   $ssl_key                    = $rabbitmq::params::ssl_key,
+  $ssl_depth                  = $rabbitmq::params::ssl_depth,
+  $ssl_cert_password          = $rabbitmq::params::ssl_cert_password,
   $ssl_port                   = $rabbitmq::params::ssl_port,
   $ssl_interface              = $rabbitmq::params::ssl_interface,
   $ssl_management_port        = $rabbitmq::params::ssl_management_port,
@@ -140,6 +142,10 @@ class rabbitmq(
   validate_string($ssl_cacert)
   validate_string($ssl_cert)
   validate_string($ssl_key)
+  if $ssl_depth {
+    validate_integer($ssl_depth)
+  }
+  validate_string($ssl_cert_password)
   validate_array($ssl_ciphers)
   if ! is_integer($ssl_port) {
     validate_re($ssl_port, '\d+')
