@@ -29,7 +29,9 @@ describe 'rabbitmq' do
   end
 
   context 'on Debian' do
-    let(:params) {{ :manage_repos => false }}
+    let(:params) {{ :manage_repos => false,
+                    :rabbitmq_user => 'rabbitmq',
+                    :rabbitmq_group => 'rabbitmq' }}
     with_debian_facts
     it 'does ensure rabbitmq apt::source is absent when manage_repos is false' do
       should_not contain_apt__source('rabbitmq')
@@ -188,10 +190,12 @@ describe 'rabbitmq' do
     end
 
     context 'with file_limit => \'unlimited\'' do
-      let(:params) {{ :file_limit => 'unlimited' }}
+      let(:params) {{ :file_limit     => 'unlimited',
+                      :rabbitmq_user  => 'rabbitmq',
+                      :rabbitmq_group => 'rabbitmq' }}
       it { should contain_file('/etc/security/limits.d/rabbitmq-server.conf').with(
-        'owner'   => '0',
-        'group'   => '0',
+        'owner'   => 'rabbitmq',
+        'group'   => 'rabbitmq',
         'mode'    => '0644',
         'notify'  => 'Class[Rabbitmq::Service]',
         'content' => 'rabbitmq soft nofile unlimited
@@ -201,10 +205,12 @@ rabbitmq hard nofile unlimited
     end
 
     context 'with file_limit => \'infinity\'' do
-      let(:params) {{ :file_limit => 'infinity' }}
+      let(:params) {{ :file_limit     => 'infinity',
+                      :rabbitmq_user  => 'rabbitmq',
+                      :rabbitmq_group => 'rabbitmq' }}
       it { should contain_file('/etc/security/limits.d/rabbitmq-server.conf').with(
-        'owner'   => '0',
-        'group'   => '0',
+        'owner'   => 'rabbitmq',
+        'group'   => 'rabbitmq',
         'mode'    => '0644',
         'notify'  => 'Class[Rabbitmq::Service]',
         'content' => 'rabbitmq soft nofile infinity
@@ -214,10 +220,12 @@ rabbitmq hard nofile infinity
     end
 
     context 'with file_limit => \'-1\'' do
-      let(:params) {{ :file_limit => '-1' }}
+      let(:params) {{ :file_limit     => '-1',
+                      :rabbitmq_user  => 'rabbitmq',
+                      :rabbitmq_group => 'rabbitmq' }}
       it { should contain_file('/etc/security/limits.d/rabbitmq-server.conf').with(
-        'owner'   => '0',
-        'group'   => '0',
+        'owner'   => 'rabbitmq',
+        'group'   => 'rabbitmq',
         'mode'    => '0644',
         'notify'  => 'Class[Rabbitmq::Service]',
         'content' => 'rabbitmq soft nofile -1
@@ -227,10 +235,12 @@ rabbitmq hard nofile -1
     end
 
     context 'with file_limit => \'1234\'' do
-      let(:params) {{ :file_limit => '1234' }}
+      let(:params) {{ :file_limit     => '1234',
+                      :rabbitmq_user  => 'rabbitmq',
+                      :rabbitmq_group => 'rabbitmq' }}
       it { should contain_file('/etc/security/limits.d/rabbitmq-server.conf').with(
-        'owner'   => '0',
-        'group'   => '0',
+        'owner'   => 'rabbitmq',
+        'group'   => 'rabbitmq',
         'mode'    => '0644',
         'notify'  => 'Class[Rabbitmq::Service]',
         'content' => 'rabbitmq soft nofile 1234
@@ -327,12 +337,14 @@ rabbitmq hard nofile 1234
   end
 
   context 'on RedHat 7.0 or more' do
+    let(:params) {{ :rabbitmq_user => 'rabbitmq', :rabbitmq_group => 'rabbitmq' }}
+    with_redhat_facts
     with_redhat_facts
 
     it { should contain_file('/etc/systemd/system/rabbitmq-server.service.d').with(
       'ensure'                  => 'directory',
-      'owner'                   => '0',
-      'group'                   => '0',
+      'owner'                   => 'rabbitmq',
+      'group'                   => 'rabbitmq',
       'mode'                    => '0755',
       'selinux_ignore_defaults' => true
     ) }
@@ -343,10 +355,12 @@ rabbitmq hard nofile 1234
       'refreshonly' => true
     ) }
     context 'with file_limit => \'unlimited\'' do
-      let(:params) {{ :file_limit => 'unlimited' }}
+      let(:params) {{ :file_limit     => 'unlimited',
+                      :rabbitmq_user  => 'rabbitmq',
+                      :rabbitmq_group => 'rabbitmq' }}
       it { should contain_file('/etc/systemd/system/rabbitmq-server.service.d/limits.conf').with(
-        'owner'   => '0',
-        'group'   => '0',
+        'owner'   => 'rabbitmq',
+        'group'   => 'rabbitmq',
         'mode'    => '0644',
         'notify'  => 'Exec[rabbitmq-systemd-reload]',
         'content' => '[Service]
@@ -356,10 +370,12 @@ LimitNOFILE=unlimited
     end
 
     context 'with file_limit => \'infinity\'' do
-      let(:params) {{ :file_limit => 'infinity' }}
+      let(:params) {{ :file_limit     => 'infinity',
+                      :rabbitmq_user  => 'rabbitmq',
+                      :rabbitmq_group => 'rabbitmq' }}
       it { should contain_file('/etc/systemd/system/rabbitmq-server.service.d/limits.conf').with(
-        'owner'   => '0',
-        'group'   => '0',
+        'owner'   => 'rabbitmq',
+        'group'   => 'rabbitmq',
         'mode'    => '0644',
         'notify'  => 'Exec[rabbitmq-systemd-reload]',
         'content' => '[Service]
@@ -369,10 +385,12 @@ LimitNOFILE=infinity
     end
 
     context 'with file_limit => \'-1\'' do
-      let(:params) {{ :file_limit => '-1' }}
+      let(:params) {{ :file_limit     => '-1',
+                      :rabbitmq_user  => 'rabbitmq',
+                      :rabbitmq_group => 'rabbitmq' }}
       it { should contain_file('/etc/systemd/system/rabbitmq-server.service.d/limits.conf').with(
-        'owner'   => '0',
-        'group'   => '0',
+        'owner'   => 'rabbitmq',
+        'group'   => 'rabbitmq',
         'mode'    => '0644',
         'notify'  => 'Exec[rabbitmq-systemd-reload]',
         'content' => '[Service]
@@ -382,10 +400,12 @@ LimitNOFILE=-1
     end
 
     context 'with file_limit => \'1234\'' do
-      let(:params) {{ :file_limit => '1234' }}
+      let(:params) {{ :file_limit     => '1234',
+                      :rabbitmq_user  => 'rabbitmq',
+                      :rabbitmq_group => 'rabbitmq' }}
       it { should contain_file('/etc/systemd/system/rabbitmq-server.service.d/limits.conf').with(
-        'owner'   => '0',
-        'group'   => '0',
+        'owner'   => 'rabbitmq',
+        'group'   => 'rabbitmq',
         'mode'    => '0644',
         'notify'  => 'Exec[rabbitmq-systemd-reload]',
         'content' => '[Service]
