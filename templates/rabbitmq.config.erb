@@ -62,7 +62,7 @@
                    <%- if @ssl_cert_password != 'UNSET' -%>
                    {password, "<%= @ssl_cert_password %>"},
                    <%- end -%>
-                   <%- if @ssl_depth != 'UNSET' -%>
+                   <%- if @ssl_depth -%>
                    {depth,<%= @ssl_depth %>},
                    <%- end -%>
                    {verify,<%= @ssl_verify %>},
