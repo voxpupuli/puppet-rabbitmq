@@ -65,6 +65,7 @@ class rabbitmq(
   $ldap_port                  = $rabbitmq::params::ldap_port,
   $ldap_log                   = $rabbitmq::params::ldap_log,
   $ldap_config_variables      = $rabbitmq::params::ldap_config_variables,
+  $loopback_users             = $rabbitmq::params::loopback_users,
   $stomp_port                 = $rabbitmq::params::stomp_port,
   $stomp_ssl_only             = $rabbitmq::params::stomp_ssl_only,
   $version                    = $rabbitmq::params::version,
@@ -166,6 +167,11 @@ class rabbitmq(
   validate_bool($ldap_use_ssl)
   validate_re($ldap_port, '\d+')
   validate_bool($ldap_log)
+
+  if $loopback_users {
+    validate_array($loopback_users)
+  }
+
   validate_hash($environment_variables)
   validate_hash($config_variables)
   validate_hash($config_kernel_variables)

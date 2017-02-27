@@ -13,6 +13,9 @@
 <% elsif @ldap_auth -%>
     {auth_backends, [rabbit_auth_backend_internal, rabbit_auth_backend_ldap]},
 <% end -%>
+<% if @loopback_users and @loopback_users.size > 0 -%>
+    {loopback_users, [<%= @loopback_users.map { |u| "'#{u}'" }.join(', ') %>]},
+<% end -%>
 <% if @config_cluster -%>
     {cluster_nodes, {[<%= @cluster_nodes.map { |n| "\'rabbit@#{n}\'" }.join(', ') %>], <%= @cluster_node_type %>}},
     {cluster_partition_handling, <%= @cluster_partition_handling %>},
