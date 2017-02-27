@@ -1427,11 +1427,17 @@ LimitNOFILE=1234
       describe 'it sets up an apt::source' do
 
         it { should contain_apt__source('rabbitmq').with(
-          'location'    => 'http://www.rabbitmq.com/debian/',
-          'release'     => 'testing',
-          'repos'       => 'main',
-          'include_src' => false,
-          'key'         => '0A9AF2115F4687BD29803A206B73A36E6026DFCA'
+          'location' => 'http://www.rabbitmq.com/debian/',
+          'release'  => 'testing',
+          'repos'    => 'main',
+          'include'  => {
+            'src' => false,
+          },
+          'key'      => {
+            'id'      => '0A9AF2115F4687BD29803A206B73A36E6026DFCA',
+            'source'  => 'https://www.rabbitmq.com/rabbitmq-release-signing-key.asc',
+            'content' => 'undef',
+          }
         ) }
       end
     end
@@ -1441,11 +1447,17 @@ LimitNOFILE=1234
       describe 'it sets up an apt::source and pin' do
 
         it { should contain_apt__source('rabbitmq').with(
-          'location'    => 'http://www.rabbitmq.com/debian/',
-          'release'     => 'testing',
-          'repos'       => 'main',
-          'include_src' => false,
-          'key'         => '0A9AF2115F4687BD29803A206B73A36E6026DFCA'
+          'location' => 'http://www.rabbitmq.com/debian/',
+          'release'  => 'testing',
+          'repos'    => 'main',
+          'include'  => {
+            'src' => false,
+          },
+          'key'      => {
+            'id'      => '0A9AF2115F4687BD29803A206B73A36E6026DFCA',
+            'source'  => 'https://www.rabbitmq.com/rabbitmq-release-signing-key.asc',
+            'content' => 'undef',
+          }
         ) }
 
         it { should contain_apt__pin('rabbitmq').with(
