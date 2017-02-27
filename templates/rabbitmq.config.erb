@@ -83,7 +83,9 @@
 <%- end -%>
 <%- end -%>
     {default_user, <<"<%= @default_user %>">>},
-    {default_pass, <<"<%= @default_pass %>">>}
+    {default_pass, <<"<%= @default_pass %>">>}<% if @default_vhost -%>,
+    {default_vhost, <<"<%= @default_vhost %>">>}
+<%- end -%>
   ]}<% if @config_kernel_variables -%>,
   {kernel, [
     <%= @config_kernel_variables.sort.map{|k,v| "{#{k}, #{v}}"}.join(",\n    ") %>

@@ -831,6 +831,15 @@ LimitNOFILE=1234
         end
       end
 
+      describe 'default_vhost set' do
+        let(:params) {{ :default_vhost => '/foo' }}
+        it 'should set default_vhost if a value is specified' do
+          should contain_file('rabbitmq.config').with({
+            'content' => /,\n.*default_vhost, <<"\/foo">>/m,
+          })
+        end
+      end
+
       describe 'interfaces option with no ssl' do
         let(:params) {
           { :interface => '0.0.0.0',
