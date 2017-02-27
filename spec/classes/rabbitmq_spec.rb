@@ -981,6 +981,11 @@ LimitNOFILE=1234
           should contain_file('rabbitmq.config').with_content(%r{certfile,"/path/to/cert"})
           should contain_file('rabbitmq.config').with_content(%r{keyfile,"/path/to/key})
         end
+        it 'should not set TCP listener environment defaults' do
+          should contain_file('rabbitmq-env.config') \
+            .without_content(%r{NODE_PORT=}) \
+            .without_content(%r{NODE_IP_ADDRESS=})
+        end
       end
 
       describe 'ssl options with ssl_only and ssl_interfaces' do
