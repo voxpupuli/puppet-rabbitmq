@@ -1,152 +1,104 @@
 # Main rabbitmq class
 class rabbitmq(
-  $admin_enable               = $rabbitmq::params::admin_enable,
-  $cluster_node_type          = $rabbitmq::params::cluster_node_type,
-  $cluster_nodes              = $rabbitmq::params::cluster_nodes,
-  $config                     = $rabbitmq::params::config,
-  $config_cluster             = $rabbitmq::params::config_cluster,
-  $config_path                = $rabbitmq::params::config_path,
-  $config_stomp               = $rabbitmq::params::config_stomp,
-  $config_shovel              = $rabbitmq::params::config_shovel,
-  $config_shovel_statics      = $rabbitmq::params::config_shovel_statics,
-  $default_user               = $rabbitmq::params::default_user,
-  $default_pass               = $rabbitmq::params::default_pass,
-  $delete_guest_user          = $rabbitmq::params::delete_guest_user,
-  $env_config                 = $rabbitmq::params::env_config,
-  $env_config_path            = $rabbitmq::params::env_config_path,
-  $erlang_cookie              = $rabbitmq::params::erlang_cookie,
+  Boolean $admin_enable               = $rabbitmq::params::admin_enable,
+  Enum['ram', 'disk', 'disc'] $cluster_node_type          = $rabbitmq::params::cluster_node_type,
+  Array $cluster_nodes              = $rabbitmq::params::cluster_nodes,
+  String $config                     = $rabbitmq::params::config,
+  Boolean $config_cluster             = $rabbitmq::params::config_cluster,
+  Stdlib::Absolutepath $config_path                = $rabbitmq::params::config_path,
+  Boolean $config_stomp               = $rabbitmq::params::config_stomp,
+  Boolean $config_shovel              = $rabbitmq::params::config_shovel,
+  Hash $config_shovel_statics      = $rabbitmq::params::config_shovel_statics,
+  String $default_user               = $rabbitmq::params::default_user,
+  String $default_pass               = $rabbitmq::params::default_pass,
+  Boolean $delete_guest_user          = $rabbitmq::params::delete_guest_user,
+  String $env_config                 = $rabbitmq::params::env_config,
+  Stdlib::Absolutepath $env_config_path            = $rabbitmq::params::env_config_path,
+  Optional[String] $erlang_cookie              = $rabbitmq::params::erlang_cookie,
   $interface                  = $rabbitmq::params::interface,
   $management_port            = $rabbitmq::params::management_port,
   $management_ssl             = $rabbitmq::params::management_ssl,
-  $management_hostname        = $rabbitmq::params::management_hostname,
-  $node_ip_address            = $rabbitmq::params::node_ip_address,
+  Optional[String] $management_hostname        = $rabbitmq::params::management_hostname,
+  String $node_ip_address            = $rabbitmq::params::node_ip_address,
   $package_apt_pin            = $rabbitmq::params::package_apt_pin,
-  $package_ensure             = $rabbitmq::params::package_ensure,
-  $package_gpg_key            = $rabbitmq::params::package_gpg_key,
-  $package_name               = $rabbitmq::params::package_name,
-  $package_provider           = $rabbitmq::params::package_provider,
+  String $package_ensure             = $rabbitmq::params::package_ensure,
+  String $package_gpg_key            = $rabbitmq::params::package_gpg_key,
+  String $package_name               = $rabbitmq::params::package_name,
+  Optional[String] $package_provider           = $rabbitmq::params::package_provider,
   $package_source             = undef,
-  $repos_ensure               = $rabbitmq::params::repos_ensure,
+  Boolean $repos_ensure               = $rabbitmq::params::repos_ensure,
   $manage_repos               = $rabbitmq::params::manage_repos,
-  $plugin_dir                 = $rabbitmq::params::plugin_dir,
+  Stdlib::Absolutepath $plugin_dir                 = $rabbitmq::params::plugin_dir,
   $rabbitmq_user              = $rabbitmq::params::rabbitmq_user,
   $rabbitmq_group             = $rabbitmq::params::rabbitmq_group,
   $rabbitmq_home              = $rabbitmq::params::rabbitmq_home,
   $port                       = $rabbitmq::params::port,
-  $tcp_keepalive              = $rabbitmq::params::tcp_keepalive,
-  $tcp_backlog                = $rabbitmq::params::tcp_backlog,
-  $tcp_sndbuf                 = $rabbitmq::params::tcp_sndbuf,
-  $tcp_recbuf                 = $rabbitmq::params::tcp_recbuf,
-  $heartbeat                  = $rabbitmq::params::heartbeat,
-  $service_ensure             = $rabbitmq::params::service_ensure,
-  $service_manage             = $rabbitmq::params::service_manage,
-  $service_name               = $rabbitmq::params::service_name,
-  $ssl                        = $rabbitmq::params::ssl,
-  $ssl_only                   = $rabbitmq::params::ssl_only,
-  $ssl_cacert                 = $rabbitmq::params::ssl_cacert,
-  $ssl_cert                   = $rabbitmq::params::ssl_cert,
-  $ssl_key                    = $rabbitmq::params::ssl_key,
-  $ssl_depth                  = $rabbitmq::params::ssl_depth,
-  $ssl_cert_password          = $rabbitmq::params::ssl_cert_password,
+  Boolean $tcp_keepalive              = $rabbitmq::params::tcp_keepalive,
+  Integer $tcp_backlog                = $rabbitmq::params::tcp_backlog,
+  Optional[Integer] $tcp_sndbuf                 = $rabbitmq::params::tcp_sndbuf,
+  Optional[Integer] $tcp_recbuf                 = $rabbitmq::params::tcp_recbuf,
+  Optional[Integer] $heartbeat                  = $rabbitmq::params::heartbeat,
+  Enum['running', 'stopped'] $service_ensure             = $rabbitmq::params::service_ensure,
+  Boolean $service_manage             = $rabbitmq::params::service_manage,
+  String $service_name               = $rabbitmq::params::service_name,
+  Boolean $ssl                        = $rabbitmq::params::ssl,
+  Boolean $ssl_only                   = $rabbitmq::params::ssl_only,
+  String $ssl_cacert                 = $rabbitmq::params::ssl_cacert,
+  String $ssl_cert                   = $rabbitmq::params::ssl_cert,
+  String $ssl_key                    = $rabbitmq::params::ssl_key,
+  Optional[String] $ssl_depth                  = $rabbitmq::params::ssl_depth,
+  Optional[String] $ssl_cert_password          = $rabbitmq::params::ssl_cert_password,
   $ssl_port                   = $rabbitmq::params::ssl_port,
   $ssl_interface              = $rabbitmq::params::ssl_interface,
   $ssl_management_port        = $rabbitmq::params::ssl_management_port,
   $ssl_stomp_port             = $rabbitmq::params::ssl_stomp_port,
   $ssl_verify                 = $rabbitmq::params::ssl_verify,
   $ssl_fail_if_no_peer_cert   = $rabbitmq::params::ssl_fail_if_no_peer_cert,
-  $ssl_versions               = $rabbitmq::params::ssl_versions,
-  $ssl_ciphers                = $rabbitmq::params::ssl_ciphers,
-  $stomp_ensure               = $rabbitmq::params::stomp_ensure,
-  $ldap_auth                  = $rabbitmq::params::ldap_auth,
-  $ldap_server                = $rabbitmq::params::ldap_server,
-  $ldap_user_dn_pattern       = $rabbitmq::params::ldap_user_dn_pattern,
-  $ldap_other_bind            = $rabbitmq::params::ldap_other_bind,
-  $ldap_use_ssl               = $rabbitmq::params::ldap_use_ssl,
+  Optional[Array] $ssl_versions               = $rabbitmq::params::ssl_versions,
+  Array $ssl_ciphers                = $rabbitmq::params::ssl_ciphers,
+  Boolean $stomp_ensure               = $rabbitmq::params::stomp_ensure,
+  Boolean $ldap_auth                  = $rabbitmq::params::ldap_auth,
+  String $ldap_server                = $rabbitmq::params::ldap_server,
+  String $ldap_user_dn_pattern       = $rabbitmq::params::ldap_user_dn_pattern,
+  String $ldap_other_bind            = $rabbitmq::params::ldap_other_bind,
+  Boolean $ldap_use_ssl               = $rabbitmq::params::ldap_use_ssl,
   $ldap_port                  = $rabbitmq::params::ldap_port,
-  $ldap_log                   = $rabbitmq::params::ldap_log,
-  $ldap_config_variables      = $rabbitmq::params::ldap_config_variables,
+  Boolean $ldap_log                   = $rabbitmq::params::ldap_log,
+  Hash $ldap_config_variables      = $rabbitmq::params::ldap_config_variables,
   $stomp_port                 = $rabbitmq::params::stomp_port,
-  $stomp_ssl_only             = $rabbitmq::params::stomp_ssl_only,
+  Boolean $stomp_ssl_only             = $rabbitmq::params::stomp_ssl_only,
   $version                    = $rabbitmq::params::version,
-  $wipe_db_on_cookie_change   = $rabbitmq::params::wipe_db_on_cookie_change,
+  Boolean $wipe_db_on_cookie_change   = $rabbitmq::params::wipe_db_on_cookie_change,
   $cluster_partition_handling = $rabbitmq::params::cluster_partition_handling,
   $file_limit                 = $rabbitmq::params::file_limit,
-  $environment_variables      = $rabbitmq::params::environment_variables,
-  $config_variables           = $rabbitmq::params::config_variables,
-  $config_kernel_variables    = $rabbitmq::params::config_kernel_variables,
-  $config_management_variables = $rabbitmq::params::config_management_variables,
-  $config_additional_variables = $rabbitmq::params::config_additional_variables,
-  $auth_backends              = $rabbitmq::params::auth_backends,
+  Hash $environment_variables      = $rabbitmq::params::environment_variables,
+  Hash $config_variables           = $rabbitmq::params::config_variables,
+  Hash $config_kernel_variables    = $rabbitmq::params::config_kernel_variables,
+  Hash $config_management_variables = $rabbitmq::params::config_management_variables,
+  Hash $config_additional_variables = $rabbitmq::params::config_additional_variables,
+  Optional[Array] $auth_backends              = $rabbitmq::params::auth_backends,
   $key_content                = undef,
-  $collect_statistics_interval = $rabbitmq::params::collect_statistics_interval,
+  Optional[Integer] $collect_statistics_interval = $rabbitmq::params::collect_statistics_interval,
 ) inherits rabbitmq::params {
 
-  validate_bool($admin_enable)
   # Validate install parameters.
   validate_re($package_apt_pin, '^(|\d+)$')
-  validate_string($package_ensure)
-  validate_string($package_gpg_key)
-  validate_string($package_name)
-  validate_string($package_provider)
-  validate_bool($repos_ensure)
   validate_re($version, '^\d+\.\d+\.\d+(-\d+)*$') # Allow 3 digits and optional -n postfix.
   # Validate config parameters.
-  validate_re($cluster_node_type, '^(ram|disc|disk)$') # Both disc and disk are valid http://www.rabbitmq.com/clustering.html
-  validate_array($cluster_nodes)
-  validate_string($config)
-  validate_absolute_path($config_path)
-  validate_bool($config_cluster)
-  validate_bool($config_stomp)
-  validate_bool($config_shovel)
-  validate_hash($config_shovel_statics)
-  validate_string($default_user)
-  validate_string($default_pass)
-  validate_bool($delete_guest_user)
-  validate_string($env_config)
-  validate_absolute_path($env_config_path)
-  validate_string($erlang_cookie)
-  validate_string($management_hostname)
   if ! is_integer($management_port) {
     validate_re($management_port, '\d+')
   }
-  validate_string($node_ip_address)
-  validate_absolute_path($plugin_dir)
   if ! is_integer($port) {
     validate_re($port, ['\d+','UNSET'])
   }
   if ! is_integer($stomp_port) {
     validate_re($stomp_port, '\d+')
   }
-  validate_bool($wipe_db_on_cookie_change)
-  validate_bool($tcp_keepalive)
-  if $tcp_backlog {
-    validate_integer($tcp_backlog)
-  }
-  if $tcp_sndbuf {
-    validate_integer($tcp_sndbuf)
-  }
-  if $tcp_recbuf {
-    validate_integer($tcp_recbuf)
-  }
 
   # using sprintf for conversion to string, because "${file_limit}" doesn't
   # pass lint, despite being nicer
   validate_re(sprintf('%s', $file_limit),
               '^(\d+|-1|unlimited|infinity)$', '$file_limit must be a positive integer, \'-1\', \'unlimited\', or \'infinity\'.')
-  # Validate service parameters.
-  validate_re($service_ensure, '^(running|stopped)$')
-  validate_bool($service_manage)
-  validate_string($service_name)
-  validate_bool($ssl)
-  validate_bool($ssl_only)
-  validate_string($ssl_cacert)
-  validate_string($ssl_cert)
-  validate_string($ssl_key)
-  if $ssl_depth {
-    validate_integer($ssl_depth)
-  }
-  validate_string($ssl_cert_password)
-  validate_array($ssl_ciphers)
   if ! is_integer($ssl_port) {
     validate_re($ssl_port, '\d+')
   }
@@ -156,33 +108,7 @@ class rabbitmq(
   if ! is_integer($ssl_stomp_port) {
     validate_re($ssl_stomp_port, '\d+')
   }
-  validate_bool($stomp_ensure)
-  validate_bool($stomp_ssl_only)
-  validate_bool($ldap_auth)
-  validate_string($ldap_server)
-  validate_string($ldap_user_dn_pattern)
-  validate_string($ldap_other_bind)
-  validate_hash($ldap_config_variables)
-  validate_bool($ldap_use_ssl)
   validate_re($ldap_port, '\d+')
-  validate_bool($ldap_log)
-  validate_hash($environment_variables)
-  validate_hash($config_variables)
-  validate_hash($config_kernel_variables)
-  validate_hash($config_management_variables)
-  validate_hash($config_additional_variables)
-
-  if $collect_statistics_interval {
-    validate_integer($collect_statistics_interval)
-  }
-
-  if $heartbeat {
-    validate_integer($heartbeat)
-  }
-
-  if $auth_backends {
-    validate_array($auth_backends)
-  }
 
   if $ssl_only and ! $ssl {
     fail('$ssl_only => true requires that $ssl => true')
@@ -193,9 +119,7 @@ class rabbitmq(
   }
 
   if $ssl_versions {
-    if $ssl {
-      validate_array($ssl_versions)
-    } else {
+    unless $ssl {
       fail('$ssl_versions requires that $ssl => true')
     }
   }

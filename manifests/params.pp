@@ -96,8 +96,8 @@ class rabbitmq::params {
   $port                        = '5672'
   $tcp_keepalive               = false
   $tcp_backlog                 = 128
-  $tcp_sndbuf                  = false
-  $tcp_recbuf                  = false
+  $tcp_sndbuf                  = undef
+  $tcp_recbuf                  = undef
   $heartbeat                   = undef
   $ssl                         = false
   $ssl_only                    = false
@@ -134,5 +134,5 @@ class rabbitmq::params {
   $config_additional_variables = {}
   $auth_backends               = undef
   $file_limit                  = '16384'
-  $collect_statistics_interval = false
+  $collect_statistics_interval = undef
 }
