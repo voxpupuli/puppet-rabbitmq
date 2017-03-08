@@ -509,12 +509,6 @@ LimitNOFILE=1234
           :wipe_db_on_cookie_change => false
         }}
 
-        describe 'with defaults' do
-          it 'fails' do
-            expect { catalogue }.to raise_error(Puppet::Error, /You must set the \$erlang_cookie value/)
-          end
-        end
-
         describe 'with erlang_cookie set' do
           let(:params) {{
             :config_cluster           => true,
@@ -1029,21 +1023,6 @@ LimitNOFILE=1234
         end
       end
 
-      describe 'ssl options with invalid ssl_versions type' do
-        let(:params) {
-          { :ssl => true,
-            :ssl_port => 3141,
-            :ssl_cacert => '/path/to/cacert',
-            :ssl_cert => '/path/to/cert',
-            :ssl_key => '/path/to/key',
-            :ssl_versions => 'tlsv1.2, tlsv1.1'
-        } }
-
-        it 'fails' do
-          expect { catalogue }.to raise_error(Puppet::Error, /is not an Array/)
-        end
-      end
-
       describe 'ssl options with ssl_versions and not ssl' do
         let(:params) {
           { :ssl => false,
@@ -1226,18 +1205,6 @@ LimitNOFILE=1234
         end
       end
 
-      describe 'non-bool tcp_keepalive parameter' do
-        let :params do
-          { :tcp_keepalive => 'string' }
-        end
-
-        it 'should raise an error' do
-          expect {
-            should contain_file('rabbitmq.config')
-          }.to raise_error(Puppet::Error, /is not a boolean/)
-        end
-      end
-
       describe 'tcp_backlog with default value' do
         it 'should set tcp_listen_options backlog to 128' do
           should contain_file('rabbitmq.config') \
@@ -1300,15 +1267,6 @@ LimitNOFILE=1234
         end
       end
 
-      describe 'non-integer rabbitmq-heartbeat options' do
-        let(:params) {{ :heartbeat => 'string' }}
-        it 'should raise a validation error' do
-          expect {
-            should contain_file('rabbitmq.config')
-          }.to raise_error(Puppet::Error, /Expected first argument to be an Integer/)
-        end
-      end
-
       context 'delete_guest_user' do
         describe 'should do nothing by default' do
           it { should_not contain_rabbitmq_user('guest') }
@@ -1346,19 +1304,6 @@ LimitNOFILE=1234
           'ensure'    => 'stopped',
           'enable'    => false
         ) }
-      end
-
-      describe 'service with ensure neither running neither stopped' do
-        let :params do
-          { :service_ensure => 'foo' }
-        end
-
-        it 'should raise an error' do
-          expect {
-            should contain_service('rabbitmq-server').with(
-              'ensure' => 'stopped' )
-          }.to raise_error(Puppet::Error, /validate_re\(\): "foo" does not match "\^\(running\|stopped\)\$"/)
-        end
       end
 
       describe 'service with service_manage equal to false' do
