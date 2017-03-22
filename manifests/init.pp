@@ -46,7 +46,7 @@ class rabbitmq(
   String $ssl_cacert                             = $rabbitmq::params::ssl_cacert,
   String $ssl_cert                               = $rabbitmq::params::ssl_cert,
   String $ssl_key                                = $rabbitmq::params::ssl_key,
-  Optional[String] $ssl_depth                    = $rabbitmq::params::ssl_depth,
+  Optional[Integer] $ssl_depth                   = $rabbitmq::params::ssl_depth,
   Optional[String] $ssl_cert_password            = $rabbitmq::params::ssl_cert_password,
   $ssl_port                                      = $rabbitmq::params::ssl_port,
   $ssl_interface                                 = $rabbitmq::params::ssl_interface,
