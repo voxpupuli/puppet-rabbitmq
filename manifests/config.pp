@@ -149,8 +149,8 @@ class rabbitmq::config {
           group                   => '0',
           mode                    => '0755',
           selinux_ignore_defaults => true,
-        } ->
-        file { '/etc/systemd/system/rabbitmq-server.service.d/limits.conf':
+        }
+        -> file { '/etc/systemd/system/rabbitmq-server.service.d/limits.conf':
           content => template('rabbitmq/rabbitmq-server.service.d/limits.conf'),
           owner   => '0',
           group   => '0',
