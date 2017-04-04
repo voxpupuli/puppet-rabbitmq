@@ -13,7 +13,7 @@ Puppet::Type.newtype(:rabbitmq_binding) do
 
   newparam(:name, :namevar => true) do
     desc 'source and destination of bind'
-    newvalues(/^\S*@\S+@\S+$/)
+    newvalues(/^\S*@\S+@\S+@\S+$/)
   end
 
   newparam(:destination_type) do
@@ -22,10 +22,10 @@ Puppet::Type.newtype(:rabbitmq_binding) do
     defaultto('queue')
   end
   
-  newparam(:routing_key) do
-    desc 'binding routing_key'
-    newvalues(/^\S*$/)
-  end
+  #newparam(:routing_key) do
+   # desc 'binding routing_key'
+    #newvalues(/^\S*$/)
+  #end
 
   newparam(:arguments) do
     desc 'binding arguments'
@@ -48,7 +48,7 @@ Puppet::Type.newtype(:rabbitmq_binding) do
   end
 
   autorequire(:rabbitmq_vhost) do
-    [self[:name].split('@')[2]]
+    [self[:name].split('@')[3]]
   end
   
   autorequire(:rabbitmq_exchange) do
@@ -73,13 +73,13 @@ Puppet::Type.newtype(:rabbitmq_binding) do
   def setup_autorequire(type)
     destination_type = value(:destination_type)
     if type == 'exchange'
-      rval = ["#{self[:name].split('@')[0]}@#{self[:name].split('@')[2]}"]
+      rval = ["#{self[:name].split('@')[1]}@#{self[:name].split('@')[3]}"]
       if destination_type == type
-        rval.push("#{self[:name].split('@')[1]}@#{self[:name].split('@')[2]}")
+        rval.push("#{self[:name].split('@')[2]}@#{self[:name].split('@')[3]}")
       end
     else
       if destination_type == type
-        rval = ["#{self[:name].split('@')[1]}@#{self[:name].split('@')[2]}"]
+        rval = ["#{self[:name].split('@')[2]}@#{self[:name].split('@')[3]}"]
       else
         rval = []
       end

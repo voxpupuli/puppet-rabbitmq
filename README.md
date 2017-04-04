@@ -585,11 +585,10 @@ rabbitmq_queue { 'myqueue@myvhost':
 ### rabbitmq\_binding
 
 ```puppet
-rabbitmq_binding { 'myexchange@myqueue@myvhost':
+rabbitmq_binding { 'routing_key@myexchange@myqueue@myvhost':
   user             => 'dan',
   password         => 'bar',
   destination_type => 'queue',
-  routing_key      => '#',
   arguments        => {},
   ensure           => present,
 }

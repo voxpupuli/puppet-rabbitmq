@@ -52,10 +52,9 @@ Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin) do
         unless(source_name.empty?)
           binding = {
             :destination_type => destination_type,
-            :routing_key      => routing_key,
             :arguments        => JSON.parse(arguments),
             :ensure           => :present,
-            :name             => "%s@%s@%s" % [source_name, destination_name, vhost],
+            :name             => "%s@%s@%s@%s" % [routing_key, source_name, destination_name, vhost],
           }
           resources << new(binding) if binding[:name]
         end
@@ -79,8 +78,9 @@ Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin) do
 
   def create
     vhost_opt = should_vhost ? "--vhost=#{should_vhost}" : ''
-    name = resource[:name].split('@').first
-    destination = resource[:name].split('@')[1]
+    routing_key = resource[:name].split('@').first
+    name = resource[:name].split('@')[1]
+    destination = resource[:name].split('@')[2]
     arguments = resource[:arguments]
     if arguments.nil?
       arguments = {}
@@ -95,7 +95,7 @@ Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin) do
       "source=#{name}",
       "destination=#{destination}",
       "arguments=#{arguments.to_json}",
-      "routing_key=#{resource[:routing_key]}",
+      "routing_key=#{routing_key}",
       "destination_type=#{resource[:destination_type]}"
     )
     @property_hash[:ensure] = :present
@@ -103,9 +103,10 @@ Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin) do
 
   def destroy
     vhost_opt = should_vhost ? "--vhost=#{should_vhost}" : ''
-    name = resource[:name].split('@').first
-    destination = resource[:name].split('@')[1]
-    rabbitmqadmin('delete', 'binding', vhost_opt, "--user=#{resource[:user]}", "--password=#{resource[:password]}", '-c', '/etc/rabbitmq/rabbitmqadmin.conf', "source=#{name}", "destination_type=#{resource[:destination_type]}", "destination=#{destination}", "properties_key=#{resource[:routing_key]}")
+    name = resource[:name].split('@')[1]
+    destination = resource[:name].split('@')[2]
+    routing_key = resource[:name].split('@').first
+    rabbitmqadmin('delete', 'binding', vhost_opt, "--user=#{resource[:user]}", "--password=#{resource[:password]}", '-c', '/etc/rabbitmq/rabbitmqadmin.conf', "source=#{name}", "destination_type=#{resource[:destination_type]}", "destination=#{destination}", "properties_key=#{routing_key}")
     @property_hash[:ensure] = :absent
   end
 

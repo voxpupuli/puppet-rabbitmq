@@ -4,7 +4,7 @@ Puppet::Type.type(:rabbitmq_erlang_cookie).provide(:ruby) do
 
   defaultfor :feature => :posix
 
-  env_path = '/opt/puppetlabs/bin:/usr/local/bin:/usr/bin:/bin'
+  env_path = '/opt/puppetlabs/bin:/usr/local/bin:/usr/bin:/bin:/opt/puppet/bin'
   puppet_path = Puppet::Util.withenv(:PATH => env_path) do
     Puppet::Util.which('puppet')
   end

@@ -7,9 +7,8 @@ provider_class = Puppet::Type.type(:rabbitmq_binding).provider(:rabbitmqadmin)
 describe provider_class do
   before :each do
     @resource = Puppet::Type::Rabbitmq_binding.new(
-      {:name => 'source@target@/',
+      {:name => 'blablub@source@target@/',
        :destination_type => :queue,
-       :routing_key => 'blablub',
        :arguments => {}
       }
     )
@@ -40,9 +39,8 @@ EOT
   context 'specifying credentials' do
     before :each do
       @resource = Puppet::Type::Rabbitmq_binding.new(
-        {:name => 'source@test2@/',
+        {:name => 'blablubd@source@test2@/',
          :destination_type => :queue,
-         :routing_key => 'blablubd',
          :arguments => {},
          :user => 'colin',
          :password => 'secret'
