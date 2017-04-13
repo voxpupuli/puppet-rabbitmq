@@ -170,4 +170,21 @@ describe Puppet::Type.type(:rabbitmq_policy) do
       @policy[:definition] = definition
     }.to raise_error(Puppet::Error, /Invalid ha-sync-batch-size value.*future/)
   end
+
+  it 'should accept list value in ha-params when ha-mode = nodes' do
+    definition = {'ha-mode' => 'nodes', 'ha-params' => ['rabbit@rabbit-01', 'rabbit@rabbit-02']}
+    @policy[:definition] = definition
+    @policy[:definition]['ha-mode'].should == 'nodes'
+    @policy[:definition]['ha-params'].should be_a(Array)
+    @policy[:definition]['ha-params'][0].should == 'rabbit@rabbit-01'
+    @policy[:definition]['ha-params'][1].should == 'rabbit@rabbit-02'
+  end
+
+  it 'should not accept non-list value in ha-params when ha-mode = nodes' do
+    definition = {'ha-mode' => 'nodes', 'ha-params' => 'this-will-fail'}
+    expect {
+      @policy[:definition] = definition
+    }.to raise_error(Puppet::Error, /Invalid definition, value this-will-fail for key ha-params is not an array/)
+  end
+
 end
