@@ -735,3 +735,4 @@ You can read the complete module contribution guide [on the Puppet Labs wiki.](h
 * Dan Bode <dan@puppetlabs.com>
 * RPM/RHEL packages by Vincent Janelle <randomfrequency@gmail.com>
 * Puppetlabs Module Team
+* Nibz was here
