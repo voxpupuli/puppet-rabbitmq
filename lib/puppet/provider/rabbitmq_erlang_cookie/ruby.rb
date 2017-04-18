@@ -28,7 +28,10 @@ Puppet::Type.type(:rabbitmq_erlang_cookie).provide(:ruby) do
     if File.exists?(resource[:path])
       File.read(resource[:path])
     else
-      ''
+      # Yep, we said we only want to update resources.
+      # But we can't change what doesn't exist. Without this creating clusters is bothersome.
+      # Worst case scenario: we generate a random 20 character uppercase alpha cookie instead of erlang.
+      ('A'..'Z').to_a.shuffle[0,20].join
     end
   end
 
