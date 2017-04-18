@@ -106,7 +106,7 @@ class rabbitmq(
     validate_re($ssl_management_port, '\d+')
   }
   if ! is_integer($ssl_stomp_port) {
-    validate_re($ssl_stomp_port, '\d+')
+    validate_bool($ssl_stomp_port)
   }
   validate_re($ldap_port, '\d+')
 
