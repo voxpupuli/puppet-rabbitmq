@@ -77,9 +77,9 @@
                    <%- end -%>
                   ]},
 <%- end -%>
-<% if @config_variables -%>
-<%- @config_variables.keys.sort.each do |key| -%>
-    {<%= key %>, <%= @config_variables[key] %>},
+<% if scope['rabbitmq::config_variables'] -%>
+<%- scope['rabbitmq::config_variables'].keys.sort.each do |key| -%>
+    {<%= key %>, <%= scope['rabbitmq::config_variables'][key] %>},
 <%- end -%>
 <%- end -%>
     {default_user, <<"<%= @default_user %>">>},
