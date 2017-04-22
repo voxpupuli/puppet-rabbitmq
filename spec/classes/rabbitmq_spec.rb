@@ -1382,6 +1382,17 @@ EOS
     end
   end
 
+  context "on FreeBSD" do
+    with_freebsd_facts
+    it 'installs the rabbitmq package' do
+      should contain_package('rabbitmq-server').with(
+        'ensure'   => 'installed',
+        'name'     => 'rabbitmq',
+        'provider' => 'freebsd'
+      )
+    end
+  end
+
   describe 'repo management on Debian' do
     with_debian_facts
 
