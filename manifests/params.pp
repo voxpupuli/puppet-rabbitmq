@@ -38,6 +38,17 @@ class rabbitmq::params {
       $rabbitmq_home    = '/var/rabbitmq'
       $plugin_dir       = '/usr/local/lib/rabbitmq/plugins'
     }
+    'FreeBSD': {
+      $package_ensure   = 'installed'
+      $package_name     = 'rabbitmq'
+      $service_name     = 'rabbitmq'
+      $package_provider = 'pkgng'
+      $version          = '3.4.2'
+      $rabbitmq_user    = 'rabbitmq'
+      $rabbitmq_group   = 'rabbitmq'
+      $rabbitmq_home    = '/var/db/rabbitmq'
+      $plugin_dir       = '/usr/local/lib/rabbitmq/plugins'
+    }
     'RedHat': {
       $package_ensure   = 'installed'
       $package_name     = 'rabbitmq-server'
