@@ -61,7 +61,21 @@ class rabbitmq::params {
       $plugin_dir       = "/usr/lib/rabbitmq/lib/rabbitmq_server-${version}/plugins"
     }
     default: {
-      fail("The ${module_name} module is not supported on an ${::osfamily} based system.")
+      case $::operatingsystem {
+        'Amazon': {
+          $package_ensure   = 'installed'
+          $package_name     = 'rabbitmq-server'
+          $service_name     = 'rabbitmq-server'
+          $package_provider = 'rpm'
+          $version          = '3.1.5-1'
+          $base_version     = regsubst($version,'^(.*)-\d$','\1')
+          # This must remain at the end as we need $base_version and $version defined f>
+          $package_source   = "http://www.rabbitmq.com/releases/rabbitmq-server/v${base>
+        }
+        default: {
+          fail("The ${module_name} module is not supported on an ${::osfamily} based syst>
+        }
+      }
     }
   }
 
