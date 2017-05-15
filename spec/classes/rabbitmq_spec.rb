@@ -430,7 +430,7 @@ LimitNOFILE=1234
               'require' => 'Class[Rabbitmq::Install]',
               'notify'  => 'Class[Rabbitmq::Service]'
             )
-            should contain_staging__file('rabbitmqadmin').with_source("http://guest:guest@1.1.1.1:15672/cli/rabbitmqadmin")
+            should contain_staging__file('rabbitmqadmin').with_source("http://1.1.1.1:15672/cli/rabbitmqadmin")
           end
         end
         context 'with default $node_ip_address="UNSET" and service_manage set to true' do
@@ -441,7 +441,7 @@ LimitNOFILE=1234
               'require' => 'Class[Rabbitmq::Install]',
               'notify'  => 'Class[Rabbitmq::Service]'
             )
-            should contain_staging__file('rabbitmqadmin').with_source("http://guest:guest@127.0.0.1:15672/cli/rabbitmqadmin")
+            should contain_staging__file('rabbitmqadmin').with_source("http://127.0.0.1:15672/cli/rabbitmqadmin")
           end
         end
         context 'with service_manage set to true, node_ip_address = "UNSET", and default user/pass specified' do
