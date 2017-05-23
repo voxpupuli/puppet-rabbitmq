@@ -24,11 +24,7 @@ Puppet::Type.type(:rabbitmq_queue).provide(:rabbitmqadmin) do
   end
 
   def self.all_vhosts
-    vhosts = []
-    rabbitmqctl('list_vhosts', '-q').split(/\n/).collect do |vhost|
-        vhosts.push(vhost)
-    end
-    vhosts
+    rabbitmqctl('list_vhosts', '-q').split(/\n/)
   end
 
   def self.all_queues(vhost)
