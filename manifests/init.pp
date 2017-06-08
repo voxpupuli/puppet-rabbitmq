@@ -244,3 +244,4 @@ class rabbitmq(
   Class['::rabbitmq::install'] -> Rabbitmq_plugin<| |>
 
 }
+
