@@ -98,14 +98,21 @@ class rabbitmq::params {
   $tcp_keepalive               = false
   $tcp_backlog                 = 128
   $ssl                         = false
+  $ssl_ciphers                 = []
+  $ssl_erl_dist                = false
+  $ssl_fail_if_no_peer_cert    = false
+  $ssl_honor_cipher_order      = true
+  $ssl_management_port         = 15671
   $ssl_only                    = false
   $ssl_port                    = 5671
-  $ssl_management_port         = 15671
+  $ssl_reuse_sessions          = true
+  $ssl_secure_renegotiate      = true
   $ssl_stomp_port              = 6164
   $ssl_verify                  = 'verify_none'
-  $ssl_fail_if_no_peer_cert    = false
-  $ssl_ciphers                 = []
+  $ssl_versions                = undef
   $stomp_ensure                = false
+  $stomp_port                  = 6163
+  $stomp_ssl_only              = false
   $ldap_auth                   = false
   $ldap_server                 = 'ldap'
   $ldap_user_dn_pattern        = 'cn=username,ou=People,dc=example,dc=com'
@@ -114,8 +121,6 @@ class rabbitmq::params {
   $ldap_port                   = 389
   $ldap_log                    = false
   $ldap_config_variables       = {}
-  $stomp_port                  = 6163
-  $stomp_ssl_only              = false
   $wipe_db_on_cookie_change    = false
   $cluster_partition_handling  = 'ignore'
   $environment_variables       = {}
@@ -127,5 +132,4 @@ class rabbitmq::params {
   $ipv6                        = false
   $inetrc_config               = 'rabbitmq/inetrc.erb'
   $inetrc_config_path          = '/etc/rabbitmq/inetrc'
-  $ssl_erl_dist                = false
 }
