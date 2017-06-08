@@ -509,12 +509,6 @@ LimitNOFILE=1234
           :wipe_db_on_cookie_change => false
         }}
 
-        describe 'with defaults' do
-          it 'fails' do
-            expect { catalogue }.to raise_error(Puppet::Error, /You must set the \$erlang_cookie value/)
-          end
-        end
-
         describe 'with erlang_cookie set' do
           let(:params) {{
             :config_cluster           => true,
@@ -873,10 +867,13 @@ LimitNOFILE=1234
           should contain_file('rabbitmq.config').with_content(
             %r{port, 13142}
           )
+          should contain_file('rabbitmqadmin.conf').with_content(
+            %r{port\s=\s13142}
+          )
         end
       end
 
-        describe 'ssl options and mangament_ssl true' do
+      describe 'ssl options and mangament_ssl true' do
         let(:params) {
           { :ssl => true,
             :ssl_port => 3141,
@@ -910,6 +907,23 @@ LimitNOFILE=1234
         it 'should set ssl managment port to specified values' do
           should contain_file('rabbitmq.config').with_content(
             %r{port, 13141}
+          )
+        end
+        it 'should set ssl options in the rabbitmqadmin.conf' do
+          should contain_file('rabbitmqadmin.conf').with_content(
+            %r{ssl_ca_cert_file\s=\s/path/to/cacert}
+          )
+          should contain_file('rabbitmqadmin.conf').with_content(
+            %r{ssl_cert_file\s=\s/path/to/cert}
+          )
+          should contain_file('rabbitmqadmin.conf').with_content(
+            %r{ssl_key_file\s=\s/path/to/key}
+          )
+          should contain_file('rabbitmqadmin.conf').with_content(
+            %r{hostname\s=\s}
+          )
+          should contain_file('rabbitmqadmin.conf').with_content(
+            %r{port\s=\s13141}
           )
         end
       end
@@ -981,6 +995,11 @@ LimitNOFILE=1234
           should contain_file('rabbitmq.config').with_content(%r{certfile,"/path/to/cert"})
           should contain_file('rabbitmq.config').with_content(%r{keyfile,"/path/to/key})
         end
+        it 'should not set TCP listener environment defaults' do
+          should contain_file('rabbitmq-env.config') \
+            .without_content(%r{NODE_PORT=}) \
+            .without_content(%r{NODE_IP_ADDRESS=})
+        end
       end
 
       describe 'ssl options with ssl_only and ssl_interfaces' do
@@ -1021,21 +1040,6 @@ LimitNOFILE=1234
           should contain_file('rabbitmq.config').with_content(%r{keyfile,"/path/to/key})
           should contain_file('rabbitmq.config').with_content(%r{ssl, \[\{versions, \['tlsv1.1', 'tlsv1.2'\]\}\]})
           should contain_file('rabbitmq.config').with_content(%r{versions, \['tlsv1.1', 'tlsv1.2'\]})
-        end
-      end
-
-      describe 'ssl options with invalid ssl_versions type' do
-        let(:params) {
-          { :ssl => true,
-            :ssl_port => 3141,
-            :ssl_cacert => '/path/to/cacert',
-            :ssl_cert => '/path/to/cert',
-            :ssl_key => '/path/to/key',
-            :ssl_versions => 'tlsv1.2, tlsv1.1'
-        } }
-
-        it 'fails' do
-          expect { catalogue }.to raise_error(Puppet::Error, /is not an Array/)
         end
       end
 
@@ -1221,18 +1225,6 @@ LimitNOFILE=1234
         end
       end
 
-      describe 'non-bool tcp_keepalive parameter' do
-        let :params do
-          { :tcp_keepalive => 'string' }
-        end
-
-        it 'should raise an error' do
-          expect {
-            should contain_file('rabbitmq.config')
-          }.to raise_error(Puppet::Error, /is not a boolean/)
-        end
-      end
-
       describe 'tcp_backlog with default value' do
         it 'should set tcp_listen_options backlog to 128' do
           should contain_file('rabbitmq.config') \
@@ -1295,15 +1287,6 @@ LimitNOFILE=1234
         end
       end
 
-      describe 'non-integer rabbitmq-heartbeat options' do
-        let(:params) {{ :heartbeat => 'string' }}
-        it 'should raise a validation error' do
-          expect {
-            should contain_file('rabbitmq.config')
-          }.to raise_error(Puppet::Error, /Expected first argument to be an Integer/)
-        end
-      end
-
       context 'delete_guest_user' do
         describe 'should do nothing by default' do
           it { should_not contain_rabbitmq_user('guest') }
@@ -1341,19 +1324,6 @@ LimitNOFILE=1234
           'ensure'    => 'stopped',
           'enable'    => false
         ) }
-      end
-
-      describe 'service with ensure neither running neither stopped' do
-        let :params do
-          { :service_ensure => 'foo' }
-        end
-
-        it 'should raise an error' do
-          expect {
-            should contain_service('rabbitmq-server').with(
-              'ensure' => 'stopped' )
-          }.to raise_error(Puppet::Error, /validate_re\(\): "foo" does not match "\^\(running\|stopped\)\$"/)
-        end
       end
 
       describe 'service with service_manage equal to false' do
@@ -1425,8 +1395,7 @@ LimitNOFILE=1234
           'location'    => 'http://www.rabbitmq.com/debian/',
           'release'     => 'testing',
           'repos'       => 'main',
-          'include_src' => false,
-          'key'         => '0A9AF2115F4687BD29803A206B73A36E6026DFCA'
+          'key'         => '{"id"=>"0A9AF2115F4687BD29803A206B73A36E6026DFCA", "source"=>"https://www.rabbitmq.com/rabbitmq-release-signing-key.asc", "content"=>:undef}'
         ) }
       end
     end
@@ -1439,8 +1408,7 @@ LimitNOFILE=1234
           'location'    => 'http://www.rabbitmq.com/debian/',
           'release'     => 'testing',
           'repos'       => 'main',
-          'include_src' => false,
-          'key'         => '0A9AF2115F4687BD29803A206B73A36E6026DFCA'
+          'key'         => '{"id"=>"0A9AF2115F4687BD29803A206B73A36E6026DFCA", "source"=>"https://www.rabbitmq.com/rabbitmq-release-signing-key.asc", "content"=>:undef}'
         ) }
 
         it { should contain_apt__pin('rabbitmq').with(
