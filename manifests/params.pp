@@ -96,14 +96,16 @@ class rabbitmq::params {
   $port                        = '5672'
   $tcp_keepalive               = false
   $tcp_backlog                 = 128
-  $tcp_sndbuf                  = false
-  $tcp_recbuf                  = false
+  $tcp_sndbuf                  = undef
+  $tcp_recbuf                  = undef
   $heartbeat                   = undef
   $ssl                         = false
   $ssl_only                    = false
   $ssl_cacert                  = 'UNSET'
   $ssl_cert                    = 'UNSET'
   $ssl_key                     = 'UNSET'
+  $ssl_depth                   = undef
+  $ssl_cert_password           = undef
   $ssl_port                    = '5671'
   $ssl_interface               = 'UNSET'
   $ssl_management_port         = '15671'
@@ -136,5 +138,5 @@ class rabbitmq::params {
   $config_additional_variables = {}
   $auth_backends               = undef
   $file_limit                  = '16384'
-  $collect_statistics_interval = false
+  $collect_statistics_interval = undef
 }

@@ -1,5 +1,4 @@
-require 'puppet'
-require 'puppet/type/rabbitmq_vhost'
+require 'spec_helper'
 describe Puppet::Type.type(:rabbitmq_vhost) do
   before :each do
     @vhost = Puppet::Type.type(:rabbitmq_vhost).new(:name => 'foo')

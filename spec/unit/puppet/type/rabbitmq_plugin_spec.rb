@@ -1,5 +1,4 @@
-require 'puppet'
-require 'puppet/type/rabbitmq_plugin'
+require 'spec_helper'
 describe Puppet::Type.type(:rabbitmq_plugin) do
   before :each do
     @plugin = Puppet::Type.type(:rabbitmq_plugin).new(:name => 'foo')

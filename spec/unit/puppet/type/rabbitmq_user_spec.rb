@@ -1,5 +1,4 @@
-require 'puppet'
-require 'puppet/type/rabbitmq_user'
+require 'spec_helper'
 describe Puppet::Type.type(:rabbitmq_user) do
   before :each do
     @user = Puppet::Type.type(:rabbitmq_user).new(:name => 'foo', :password => 'pass')
