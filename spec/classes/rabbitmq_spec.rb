@@ -396,26 +396,9 @@ LimitNOFILE=1234
   end
 
   ['Debian', 'RedHat', 'SUSE', 'Archlinux'].each do |distro|
-    osfacts = {
-      :osfamily         => distro,
-      :staging_http_get => '',
-      :puppetversion    => Puppet.version,
-    }
-
-    case distro
-    when 'Debian'
-      osfacts.merge!({
-        :lsbdistcodename => 'squeeze',
-        :lsbdistid       => 'Debian'
-      })
-    when 'RedHat'
-      osfacts.merge!({
-        :operatingsystemmajrelease => '7',
-      })
-    end
 
     context "on #{distro}" do
-      let(:facts) { osfacts }
+      with_distro_facts distro
 
       it { should contain_class('rabbitmq::install') }
       it { should contain_class('rabbitmq::config') }
@@ -1365,7 +1348,7 @@ LimitNOFILE=1234
   end
 
   context "on Archlinux" do
-    let(:facts) {{ :osfamily => 'Archlinux', :staging_http_get => ''}}
+    with_archlinux_facts
     it 'installs the rabbitmq package' do
       should contain_package('rabbitmq-server').with(
         'ensure'   => 'installed',
@@ -1422,26 +1405,10 @@ LimitNOFILE=1234
   end
 
   ['RedHat', 'SuSE'].each do |distro|
-    osfacts = {
-      :osfamily         => distro,
-      :staging_http_get => ''
-    }
-
-    case distro
-    when 'Debian'
-      osfacts.merge!({
-        :lsbdistcodename => 'squeeze',
-        :lsbdistid => 'Debian'
-      })
-    when 'RedHat'
-      osfacts.merge!({
-        :operatingsystemmajrelease => '7',
-      })
-    end
 
     describe "repo management on #{distro}" do
       describe 'imports the key' do
-        let(:facts) { osfacts }
+        with_distro_facts distro
         let(:params) {{ :package_gpg_key => 'https://www.rabbitmq.com/rabbitmq-release-signing-key.asc' }}
 
         it { should contain_exec("rpm --import #{params[:package_gpg_key]}").with(
