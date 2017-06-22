@@ -10,11 +10,14 @@ end
 def with_debian_facts
   let :facts do
     super().merge({
-      :lsbdistcodename  => 'squeeze',
-      :lsbdistid        => 'Debian',
-      :osfamily         => 'Debian',
-      :os               => { :name => 'Debian',
-                             :release => { :full => '6.0'} },
+      :operatingsystemmajrelease => '6',
+      :lsbdistcodename           => 'squeeze',
+      :lsbdistid                 => 'Debian',
+      :osfamily                  => 'Debian',
+      :os                        => {
+        :name    => 'Debian',
+        :release => { :full => '6.0'},
+      },
     })
   end
 end
