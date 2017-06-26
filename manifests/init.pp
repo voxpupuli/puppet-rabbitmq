@@ -79,6 +79,9 @@ class rabbitmq(
   Optional[Array] $auth_backends                 = $rabbitmq::params::auth_backends,
   $key_content                                   = undef,
   Optional[Integer] $collect_statistics_interval = $rabbitmq::params::collect_statistics_interval,
+  Boolean $ipv6                                  = $rabbitmq::params::ipv6,
+  String $inetrc_config                          = $rabbitmq::params::inetrc_config,
+  Stdlib::Absolutepath $inetrc_config_path       = $rabbitmq::params::inetrc_config_path,
 ) inherits rabbitmq::params {
 
   # Validate install parameters.

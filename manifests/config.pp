@@ -67,18 +67,46 @@ class rabbitmq::config {
   $cluster_partition_handling = $rabbitmq::cluster_partition_handling
   $file_limit                 = $rabbitmq::file_limit
   $collect_statistics_interval = $rabbitmq::collect_statistics_interval
+  $ipv6                       = $rabbitmq::ipv6
+  $inetrc_config              = $rabbitmq::inetrc_config
+  $inetrc_config_path         = $rabbitmq::inetrc_config_path
 
   if $ssl_only {
-    $default_env_variables = {}
+    $default_ssl_env_variables = {}
   } else {
-    $default_env_variables = {
+    $default_ssl_env_variables = {
       'NODE_PORT'        => $port,
       'NODE_IP_ADDRESS'  => $node_ip_address
     }
   }
 
+  $inetrc_env = {'export ERL_INETRC' => $inetrc_config_path}
+
   # Handle env variables.
-  $environment_variables = merge($default_env_variables, $rabbitmq::environment_variables)
+  $_environment_variables = merge($default_ssl_env_variables, $inetrc_env, $rabbitmq::environment_variables)
+
+  if $ipv6 {
+    # must append "-proto_dist inet6_tcp" to any provided ERL_ARGS for
+    # both the server and rabbitmqctl, being careful not to mess up
+    # quoting
+    $ipv6_env = ['SERVER', 'CTL'].reduce({}) |$memo, $item| {
+      $orig = $_environment_variables["RABBITMQ_${item}_ERL_ARGS"]
+      $munged = $orig ? {
+        # already quoted, keep quoting
+        /^([\'\"])(.*)\1/ => "${1}${2} -proto_dist inet6_tcp${1}",
+        # unset, add our own quoted value
+        undef             => '"-proto_dist inet6_tcp"',
+        # previously unquoted value, add quoting
+        default           => "\"${orig} -proto_dist inet6_tcp\"",
+      }
+
+      merge($memo, {"RABBITMQ_${item}_ERL_ARGS" => $munged})
+    }
+
+    $environment_variables = merge($_environment_variables, $ipv6_env)
+  } else {
+    $environment_variables = $_environment_variables
+  }
 
   # Get ranch (socket acceptor pool) availability,
   # use init class variable for that since version from the fact comes too late.
@@ -112,6 +140,16 @@ class rabbitmq::config {
     ensure  => file,
     path    => $env_config_path,
     content => template($env_config),
+    owner   => '0',
+    group   => '0',
+    mode    => '0644',
+    notify  => Class['rabbitmq::service'],
+  }
+
+  file { 'rabbitmq-inetrc':
+    ensure  => file,
+    path    => $inetrc_config_path,
+    content => template($inetrc_config),
     owner   => '0',
     group   => '0',
     mode    => '0644',

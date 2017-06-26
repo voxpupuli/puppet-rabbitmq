@@ -135,4 +135,7 @@ class rabbitmq::params {
   $auth_backends               = undef
   $file_limit                  = '16384'
   $collect_statistics_interval = undef
+  $ipv6                        = false
+  $inetrc_config               = 'rabbitmq/inetrc.erb'
+  $inetrc_config_path          = '/etc/rabbitmq/inetrc'
 }
