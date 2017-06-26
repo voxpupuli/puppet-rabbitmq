@@ -542,26 +542,36 @@ LimitNOFILE=1234
       end
 
       describe 'rabbitmq-env configuration' do
-        let(:params) {{ :environment_variables => {
-          'NODE_IP_ADDRESS'    => '1.1.1.1',
-          'NODE_PORT'          => '5656',
-          'NODENAME'           => 'HOSTNAME',
-          'SERVICENAME'        => 'RabbitMQ',
-          'CONSOLE_LOG'        => 'RabbitMQ.debug',
-          'CTL_ERL_ARGS'       => 'verbose',
-          'SERVER_ERL_ARGS'    => 'v',
-          'SERVER_START_ARGS'  => 'debug'
-        }}}
-        it 'should set environment variables' do
-          should contain_file('rabbitmq-env.config') \
-            .with_content(/NODE_IP_ADDRESS=1.1.1.1/) \
-            .with_content(/NODE_PORT=5656/) \
-            .with_content(/NODENAME=HOSTNAME/) \
-            .with_content(/SERVICENAME=RabbitMQ/) \
-            .with_content(/CONSOLE_LOG=RabbitMQ.debug/) \
-            .with_content(/CTL_ERL_ARGS=verbose/) \
-            .with_content(/SERVER_ERL_ARGS=v/) \
-            .with_content(/SERVER_START_ARGS=debug/)
+
+        context 'with default params' do
+          it 'should set environment variables' do
+            should contain_file('rabbitmq-env.config') \
+              .with_content(%r{ERL_INETRC=/etc/rabbitmq/inetrc})
+          end
+        end
+
+        context 'with environment_variables set' do
+          let(:params) {{ :environment_variables => {
+            'NODE_IP_ADDRESS'    => '1.1.1.1',
+            'NODE_PORT'          => '5656',
+            'NODENAME'           => 'HOSTNAME',
+            'SERVICENAME'        => 'RabbitMQ',
+            'CONSOLE_LOG'        => 'RabbitMQ.debug',
+            'CTL_ERL_ARGS'       => 'verbose',
+            'SERVER_ERL_ARGS'    => 'v',
+            'SERVER_START_ARGS'  => 'debug'
+          }}}
+          it 'should set environment variables' do
+            should contain_file('rabbitmq-env.config') \
+              .with_content(/NODE_IP_ADDRESS=1.1.1.1/) \
+              .with_content(/NODE_PORT=5656/) \
+              .with_content(/NODENAME=HOSTNAME/) \
+              .with_content(/SERVICENAME=RabbitMQ/) \
+              .with_content(/CONSOLE_LOG=RabbitMQ.debug/) \
+              .with_content(/CTL_ERL_ARGS=verbose/) \
+              .with_content(/SERVER_ERL_ARGS=v/) \
+              .with_content(/SERVER_START_ARGS=debug/)
+          end
         end
       end
 
@@ -1150,6 +1160,51 @@ LimitNOFILE=1234
             .with_content(/\{rabbitmq_management, \[/) \
             .with_content(/\{listener, \[/) \
             .with_content(/\{port, 3141\}/)
+        end
+      end
+
+      describe 'ipv6 enabled' do
+        let(:params) { { :ipv6 => true } }
+
+        it 'should enable resolver inet6 in inetrc' do
+          should contain_file('rabbitmq-inetrc').with_content(%r{{inet6, true}.})
+        end
+
+        context 'without other erl args' do
+          it 'should enable inet6 distribution' do
+            should contain_file('rabbitmq-env.config') \
+              .with_content(%r{^RABBITMQ_SERVER_ERL_ARGS="-proto_dist inet6_tcp"$}) \
+              .with_content(%r{^RABBITMQ_CTL_ERL_ARGS="-proto_dist inet6_tcp"$})
+          end
+        end
+
+        context 'with other quoted erl args' do
+          let(:params) {
+            { :ipv6 => true,
+              :environment_variables => { 'RABBITMQ_SERVER_ERL_ARGS' => '"some quoted args"',
+                                          'RABBITMQ_CTL_ERL_ARGS'    => '"other quoted args"'} }
+          }
+
+          it 'should enable inet6 distribution and quote properly' do
+            should contain_file('rabbitmq-env.config') \
+              .with_content(%r{^RABBITMQ_SERVER_ERL_ARGS="some quoted args -proto_dist inet6_tcp"$}) \
+              .with_content(%r{^RABBITMQ_CTL_ERL_ARGS="other quoted args -proto_dist inet6_tcp"$})
+          end
+        end
+
+        context 'with other unquoted erl args' do
+          let(:params) {
+            { :ipv6 => true,
+              :environment_variables => { 'RABBITMQ_SERVER_ERL_ARGS' => 'foo',
+                                          'RABBITMQ_CTL_ERL_ARGS'    => 'bar'} }
+          }
+
+          it 'should enable inet6 distribution and quote properly' do
+            should contain_file('rabbitmq-env.config') \
+              .with_content(%r{^RABBITMQ_SERVER_ERL_ARGS="foo -proto_dist inet6_tcp"$}) \
+              .with_content(%r{^RABBITMQ_CTL_ERL_ARGS="bar -proto_dist inet6_tcp"$})
+          end
+
         end
       end
 
