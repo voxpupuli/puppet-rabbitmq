@@ -65,6 +65,12 @@
                    <%- if @ssl_depth -%>
                    {depth,<%= @ssl_depth %>},
                    <%- end -%>
+                   <%- if @ssl_dhfile != 'UNSET' -%>
+                   {dhfile, "<%= @ssl_dhfile %>"},
+                   <%- end -%>
+                   {secure_renegotiate,<%= @ssl_secure_renegotiate %>},
+                   {reuse_sessions,<%= @ssl_reuse_sessions %>},
+                   {honor_cipher_order,<%= @ssl_honor_cipher_order %>},
                    {verify,<%= @ssl_verify %>},
                    {fail_if_no_peer_cert,<%= @ssl_fail_if_no_peer_cert %>}
                    <%- if @ssl_versions -%>
