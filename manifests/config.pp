@@ -114,15 +114,15 @@ class rabbitmq::config {
 
   file { '/etc/rabbitmq':
     ensure => directory,
-    owner  => '0',
-    group  => '0',
+    owner  => $rabbitmq_user,
+    group  => $rabbitmq_group,
     mode   => '0644',
   }
 
   file { '/etc/rabbitmq/ssl':
     ensure => directory,
-    owner  => '0',
-    group  => '0',
+    owner  => $rabbitmq_user,
+    group  => $rabbitmq_group,
     mode   => '0644',
   }
 
@@ -130,8 +130,8 @@ class rabbitmq::config {
     ensure  => file,
     path    => $config_path,
     content => template($config),
-    owner   => '0',
-    group   => '0',
+    owner   => $rabbitmq_user,
+    group   => $rabbitmq_group,
     mode    => '0644',
     notify  => Class['rabbitmq::service'],
   }
@@ -140,8 +140,8 @@ class rabbitmq::config {
     ensure  => file,
     path    => $env_config_path,
     content => template($env_config),
-    owner   => '0',
-    group   => '0',
+    owner   => $rabbitmq_user,
+    group   => $rabbitmq_group,
     mode    => '0644',
     notify  => Class['rabbitmq::service'],
   }
@@ -161,8 +161,8 @@ class rabbitmq::config {
       ensure  => file,
       path    => '/etc/rabbitmq/rabbitmqadmin.conf',
       content => template('rabbitmq/rabbitmqadmin.conf.erb'),
-      owner   => '0',
-      group   => '0',
+      owner   => $rabbitmq_user,
+      group   => $rabbitmq_group,
       mode    => '0644',
       require => File['/etc/rabbitmq'],
     }
@@ -195,8 +195,8 @@ class rabbitmq::config {
         ensure  => file,
         content => template('rabbitmq/default.erb'),
         mode    => '0644',
-        owner   => '0',
-        group   => '0',
+        owner   => $rabbitmq_user,
+        group   => $rabbitmq_group,
         notify  => Class['rabbitmq::service'],
       }
     }
@@ -204,15 +204,15 @@ class rabbitmq::config {
       if versioncmp($::operatingsystemmajrelease, '7') >= 0 {
         file { '/etc/systemd/system/rabbitmq-server.service.d':
           ensure                  => directory,
-          owner                   => '0',
-          group                   => '0',
+          owner                   => $rabbitmq_user,
+          group                   => $rabbitmq_group,
           mode                    => '0755',
           selinux_ignore_defaults => true,
         }
         -> file { '/etc/systemd/system/rabbitmq-server.service.d/limits.conf':
           content => template('rabbitmq/rabbitmq-server.service.d/limits.conf'),
-          owner   => '0',
-          group   => '0',
+          owner   => $rabbitmq_user,
+          group   => $rabbitmq_group,
           mode    => '0644',
           notify  => Exec['rabbitmq-systemd-reload'],
         }
@@ -224,8 +224,8 @@ class rabbitmq::config {
       }
       file { '/etc/security/limits.d/rabbitmq-server.conf':
         content => template('rabbitmq/limits.conf'),
-        owner   => '0',
-        group   => '0',
+        owner   => $rabbitmq_user,
+        group   => $rabbitmq_group,
         mode    => '0644',
         notify  => Class['Rabbitmq::Service'],
       }
