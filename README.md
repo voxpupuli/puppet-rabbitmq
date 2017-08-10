@@ -448,22 +448,6 @@ rabbitmq.config SSL verify setting.
 
 rabbitmq.config `fail_if_no_peer_cert` setting.
 
-####`ssl_secure_renegotiate`
-
-Use ssl secure renegotiate [boolean: default true]
-
-####`ssl_reuse_sessions`
-
-Reuse ssl sessions [boolean: default true]
-
-####`ssl_honor_cipher_order`
-
-Force use of server cipher order [boolean: default true]
-
-####`ssl_dhfile`
-
-Use this dhparam file [example: generate with `openssl dhparam -out /etc/rabbitmq/ssl/dhparam.pem 2048`, default empty]
-
 ####`ssl_versions`
 
 Choose which SSL versions to enable. Example: `['tlsv1.2', 'tlsv1.1']`.
