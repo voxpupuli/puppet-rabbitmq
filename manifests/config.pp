@@ -116,14 +116,14 @@ class rabbitmq::config {
     ensure => directory,
     owner  => '0',
     group  => '0',
-    mode   => '0644',
+    mode   => '0755',
   }
 
   file { '/etc/rabbitmq/ssl':
     ensure => directory,
     owner  => '0',
     group  => '0',
-    mode   => '0644',
+    mode   => '0755',
   }
 
   file { 'rabbitmq.config':
@@ -132,7 +132,7 @@ class rabbitmq::config {
     content => template($config),
     owner   => '0',
     group   => '0',
-    mode    => '0644',
+    mode    => '0640',
     notify  => Class['rabbitmq::service'],
   }
 
