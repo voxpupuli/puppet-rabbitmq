@@ -1,4 +1,12 @@
-# Main rabbitmq class
+# rabbitmq
+#
+# @summary Main class for rabbitmq module
+#
+# @example Declaring the class
+#   class { 'rabbitmq': }
+#
+# @param management_ip_address Allows you to set the IP for management interface to bind to separately. Set to 127.0.0.1 to bind to localhost only, or 0.0.0.0 to bind to all interfaces.
+# @param node_ip_address Allows you to set the IP for RabbitMQ service to bind to. Set to 127.0.0.1 to bind to localhost only, or 0.0.0.0 to bind to all interfaces.
 class rabbitmq(
   Boolean $admin_enable                          = $rabbitmq::params::admin_enable,
   Enum['ram', 'disk', 'disc'] $cluster_node_type = $rabbitmq::params::cluster_node_type,
@@ -14,13 +22,13 @@ class rabbitmq(
   Boolean $delete_guest_user                     = $rabbitmq::params::delete_guest_user,
   String $env_config                             = $rabbitmq::params::env_config,
   Stdlib::Absolutepath $env_config_path          = $rabbitmq::params::env_config_path,
-  Optional[String] $erlang_cookie                = $rabbitmq::params::erlang_cookie,
-  $interface                                     = $rabbitmq::params::interface,
-  $management_ip                                 = $rabbitmq::params::management_ip,
+  Optional[String] $erlang_cookie                = undef,
+  Optional[String] $interface                    = undef,
+  Optional[String] $management_ip_address        = undef,
   $management_port                               = $rabbitmq::params::management_port,
-  $management_ssl                                = $rabbitmq::params::management_ssl,
-  Optional[String] $management_hostname          = $rabbitmq::params::management_hostname,
-  String $node_ip_address                        = $rabbitmq::params::node_ip_address,
+  Boolean $management_ssl                        = $rabbitmq::params::management_ssl,
+  Optional[String] $management_hostname          = undef,
+  Optional[String] $node_ip_address              = undef,
   $package_apt_pin                               = $rabbitmq::params::package_apt_pin,
   String $package_ensure                         = $rabbitmq::params::package_ensure,
   String $package_gpg_key                        = $rabbitmq::params::package_gpg_key,
@@ -28,7 +36,7 @@ class rabbitmq(
   Optional[String] $package_provider             = $rabbitmq::params::package_provider,
   $package_source                                = undef,
   Boolean $repos_ensure                          = $rabbitmq::params::repos_ensure,
-  $manage_repos                                  = $rabbitmq::params::manage_repos,
+  $manage_repos                                  = undef,
   Stdlib::Absolutepath $plugin_dir               = $rabbitmq::params::plugin_dir,
   $rabbitmq_user                                 = $rabbitmq::params::rabbitmq_user,
   $rabbitmq_group                                = $rabbitmq::params::rabbitmq_group,
@@ -36,26 +44,26 @@ class rabbitmq(
   $port                                          = $rabbitmq::params::port,
   Boolean $tcp_keepalive                         = $rabbitmq::params::tcp_keepalive,
   Integer $tcp_backlog                           = $rabbitmq::params::tcp_backlog,
-  Optional[Integer] $tcp_sndbuf                  = $rabbitmq::params::tcp_sndbuf,
-  Optional[Integer] $tcp_recbuf                  = $rabbitmq::params::tcp_recbuf,
-  Optional[Integer] $heartbeat                   = $rabbitmq::params::heartbeat,
+  Optional[Integer] $tcp_sndbuf                  = undef,
+  Optional[Integer] $tcp_recbuf                  = undef,
+  Optional[Integer] $heartbeat                   = undef,
   Enum['running', 'stopped'] $service_ensure     = $rabbitmq::params::service_ensure,
   Boolean $service_manage                        = $rabbitmq::params::service_manage,
   String $service_name                           = $rabbitmq::params::service_name,
   Boolean $ssl                                   = $rabbitmq::params::ssl,
   Boolean $ssl_only                              = $rabbitmq::params::ssl_only,
-  String $ssl_cacert                             = $rabbitmq::params::ssl_cacert,
-  String $ssl_cert                               = $rabbitmq::params::ssl_cert,
-  String $ssl_key                                = $rabbitmq::params::ssl_key,
-  Optional[Integer] $ssl_depth                   = $rabbitmq::params::ssl_depth,
-  Optional[String] $ssl_cert_password            = $rabbitmq::params::ssl_cert_password,
+  Optional[String] $ssl_cacert                   = undef,
+  Optional[String] $ssl_cert                     = undef,
+  Optional[String] $ssl_key                      = undef,
+  Optional[Integer] $ssl_depth                   = undef,
+  Optional[String] $ssl_cert_password            = undef,
   $ssl_port                                      = $rabbitmq::params::ssl_port,
-  $ssl_interface                                 = $rabbitmq::params::ssl_interface,
+  Optional[String] $ssl_interface                = undef,
   $ssl_management_port                           = $rabbitmq::params::ssl_management_port,
   $ssl_stomp_port                                = $rabbitmq::params::ssl_stomp_port,
   $ssl_verify                                    = $rabbitmq::params::ssl_verify,
   $ssl_fail_if_no_peer_cert                      = $rabbitmq::params::ssl_fail_if_no_peer_cert,
-  Optional[Array] $ssl_versions                  = $rabbitmq::params::ssl_versions,
+  Optional[Array] $ssl_versions                  = undef,
   Array $ssl_ciphers                             = $rabbitmq::params::ssl_ciphers,
   Boolean $stomp_ensure                          = $rabbitmq::params::stomp_ensure,
   Boolean $ldap_auth                             = $rabbitmq::params::ldap_auth,
@@ -77,9 +85,9 @@ class rabbitmq(
   Hash $config_kernel_variables                  = $rabbitmq::params::config_kernel_variables,
   Hash $config_management_variables              = $rabbitmq::params::config_management_variables,
   Hash $config_additional_variables              = $rabbitmq::params::config_additional_variables,
-  Optional[Array] $auth_backends                 = $rabbitmq::params::auth_backends,
+  Optional[Array] $auth_backends                 = undef,
   $key_content                                   = undef,
-  Optional[Integer] $collect_statistics_interval = $rabbitmq::params::collect_statistics_interval,
+  Optional[Integer] $collect_statistics_interval = undef,
   Boolean $ipv6                                  = $rabbitmq::params::ipv6,
   String $inetrc_config                          = $rabbitmq::params::inetrc_config,
   Stdlib::Absolutepath $inetrc_config_path       = $rabbitmq::params::inetrc_config_path,
@@ -92,8 +100,8 @@ class rabbitmq(
   if ! is_integer($management_port) {
     validate_re($management_port, '\d+')
   }
-  if ! is_integer($port) {
-    validate_re($port, ['\d+','UNSET'])
+  if $port and ! is_integer($port) {
+    validate_re($port, '\d+')
   }
   if ! is_integer($stomp_port) {
     validate_re($stomp_port, '\d+')

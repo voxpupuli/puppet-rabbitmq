@@ -333,6 +333,11 @@ Boolean, set to true to log LDAP auth.
 
 Boolean, whether or not to manage package repositories.
 
+####`management_ip_address`
+
+Will fall back to `node_ip_address` if not explicitly set; allows configuring
+a separate bind IP for the management interface.
+
 ####`management_hostname`
 
 The hostname for the RabbitMQ management interface.
@@ -351,7 +356,8 @@ Valid values are true or false.
 ####`node_ip_address`
 
 The value of NODE_IP_ADDRESS in rabbitmq_env.config and of the
-rabbitmq_management server if it is enabled.
+rabbitmq_management server if it is enabled. See also `management_ip_address`.
+Use 0.0.0.0 to bind to all interfaces.
 
 ####`package_ensure`
 
@@ -410,7 +416,7 @@ Configures the service for using SSL.
 ####`ssl_only`
 
 Configures the service to only use SSL.  No cleartext TCP listeners will be created.
-Requires that ssl => true and port => UNSET also
+Requires that ssl => true and port => undef also
 
 ####`ssl_cacert`
 
