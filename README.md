@@ -595,6 +595,34 @@ rabbitmq_binding { 'myexchange@myqueue@myvhost':
 }
 ```
 
+```puppet
+rabbitmq_binding { 'binding 1':
+  source           => 'myexchange',
+  destination      => 'myqueue',
+  vhost            => 'myvhost',
+  user             => 'dan',
+  password         => 'bar',
+  destination_type => 'queue',
+  routing_key      => 'key1',
+  arguments        => {},
+  ensure           => present,
+}
+
+rabbitmq_binding { 'binding 2':
+  source           => 'myexchange',
+  destination      => 'myqueue',
+  vhost            => 'myvhost',
+  user             => 'dan',
+  password         => 'bar',
+  destination_type => 'queue',
+  routing_key      => 'key2',
+  arguments        => {},
+  ensure           => present,
+}
+
+```
+
+
 ### rabbitmq\_user\_permissions
 
 ```puppet

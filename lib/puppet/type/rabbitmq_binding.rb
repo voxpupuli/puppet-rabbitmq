@@ -12,7 +12,7 @@ Puppet::Type.newtype(:rabbitmq_binding) do
   end
 
   # Match patterns without '@' as arbitrary names; match patterns with
-  # src@dst@vhost to their named params for backwards compatibility.
+  # src@destination@vhost to their named params for backwards compatibility.
   def self.title_patterns
     [
       [
@@ -22,10 +22,11 @@ Puppet::Type.newtype(:rabbitmq_binding) do
         ]
       ],
       [
-        /^(\S+)@(\S+)@(\S+)$/m,
+        /^((\S+)@(\S+)@(\S+))$/m,
         [
+          [ :name ],
           [ :source ],
-          [ :dest ],
+          [ :destination],
           [ :vhost ]
         ]
       ]
@@ -33,26 +34,26 @@ Puppet::Type.newtype(:rabbitmq_binding) do
   end
 
   newparam(:name) do
-    desc 'resource name, either source@dest@vhost or arbitrary name with params'
-    
+    desc 'resource name, either source@destination@vhost or arbitrary name with params'
+
     isnamevar
   end
 
-  newparam(:source) do
+  newproperty(:source) do
     desc 'source of binding'
 
     newvalues(/^\S+$/)
     isnamevar
   end
 
-  newparam(:dest, :namevar => true) do
+  newproperty(:destination) do
     desc 'destination of binding'
 
     newvalues(/^\S+$/)
     isnamevar
   end
 
-  newparam(:vhost, :namevar => true) do
+  newproperty(:vhost) do
     desc 'vhost'
 
     newvalues(/^\S+$/)
@@ -60,21 +61,20 @@ Puppet::Type.newtype(:rabbitmq_binding) do
     isnamevar
   end
 
-  newparam(:routing_key, :namevar => true) do
+  newproperty(:routing_key) do
     desc 'binding routing_key'
 
     newvalues(/^\S*$/)
-    defaultto('#')
     isnamevar
   end
 
-  newparam(:destination_type) do
+  newproperty(:destination_type) do
     desc 'binding destination_type'
     newvalues(/queue|exchange/)
     defaultto('queue')
   end
 
-  newparam(:arguments) do
+  newproperty(:arguments) do
     desc 'binding arguments'
     defaultto {}
     validate do |value|
@@ -113,7 +113,7 @@ Puppet::Type.newtype(:rabbitmq_binding) do
   autorequire(:rabbitmq_user_permissions) do
     [
       "#{self[:user]}@#{self[:source]}",
-      "#{self[:user]}@#{self[:dest]}"
+      "#{self[:user]}@#{self[:destination]}"
     ]
   end
 
@@ -122,11 +122,11 @@ Puppet::Type.newtype(:rabbitmq_binding) do
     if type == 'exchange'
       rval = ["#{self[:source]}@#{self[:vhost]}"]
       if destination_type == type
-        rval.push("#{self[:dest]}@#{self[:vhost]}")
+        rval.push("#{self[:destination]}@#{self[:vhost]}")
       end
     else
       if destination_type == type
-        rval = ["#{self[:dest]}@#{self[:vhost]}"]
+        rval = ["#{self[:destination]}@#{self[:vhost]}"]
       else
         rval = []
       end
@@ -137,6 +137,14 @@ Puppet::Type.newtype(:rabbitmq_binding) do
   def validate_argument(argument)
     unless [Hash].include?(argument.class)
       raise ArgumentError, "Invalid argument"
+    end
+  end
+
+  # Validate that we have both source and destination now that these are not
+  # necessarily only coming from the resource title.
+  validate do
+    unless self[:source] and self[:destination]
+      raise ArgumentError, "Source and destination must both be defined."
     end
   end
 

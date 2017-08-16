@@ -78,7 +78,7 @@ describe 'rabbitmq binding:' do
   end
   
 
-  context "create multiple bindings when same source / dest / vhost but different routing keys" do
+  context "create multiple bindings when same source / destination / vhost but different routing keys" do
     it 'should run successfully' do
       pp = <<-EOS
       if $::osfamily == 'RedHat' {
@@ -125,7 +125,9 @@ describe 'rabbitmq binding:' do
 
       rabbitmq_binding { 'binding 1':
         source           => 'exchange1',
+        destination      => 'queue1',
         user             => 'dan',
+        vhost            => 'host1',
         password         => 'bar',
         destination_type => 'queue',
         routing_key      => 'test1',
@@ -134,7 +136,9 @@ describe 'rabbitmq binding:' do
 
       rabbitmq_binding { 'binding 2':
         source           => 'exchange1',
+        destination      => 'queue1',
         user             => 'dan',
+        vhost            => 'host1',
         password         => 'bar',
         destination_type => 'queue',
         routing_key      => 'test2',
