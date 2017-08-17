@@ -7,6 +7,7 @@ class rabbitmq::install {
   $package_provider = $rabbitmq::package_provider
   $package_require  = $rabbitmq::package_require
   $package_source   = $rabbitmq::real_package_source
+  $rabbitmq_group   = $rabbitmq::rabbitmq_group
 
   package { 'rabbitmq-server':
     ensure   => $package_ensure,
@@ -26,7 +27,7 @@ class rabbitmq::install {
     file { $rabbitmq::environment_variables['MNESIA_BASE']:
       ensure  => 'directory',
       owner   => 'root',
-      group   => 'rabbitmq',
+      group   => $rabbitmq_group,
       mode    => '0775',
       require => Package['rabbitmq-server'],
     }

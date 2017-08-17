@@ -476,12 +476,17 @@ LimitNOFILE=1234
 
       describe 'manages configuration directory correctly' do
         it { should contain_file('/etc/rabbitmq').with(
-          'ensure' => 'directory'
+          'ensure' => 'directory',
+          'mode'   => '0755'
         )}
       end
 
       describe 'manages configuration file correctly' do
-        it { should contain_file('rabbitmq.config') }
+        it { should contain_file('rabbitmq.config').with(
+          'owner' => '0',
+          'group' => 'rabbitmq',
+          'mode'  => '0640'
+        )}
       end
 
       context 'configures config_cluster' do
