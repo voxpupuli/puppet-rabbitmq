@@ -27,8 +27,8 @@ class rabbitmq::install::rabbitmqadmin {
 
   staging::file { 'rabbitmqadmin':
     target      => "${rabbitmq::rabbitmq_home}/rabbitmqadmin",
-    source      => "${protocol}://${default_user}:${default_pass}@${sanitized_ip}:${management_port}/cli/rabbitmqadmin",
-    curl_option => "-k ${curl_prefix} --retry 30 --retry-delay 6",
+    source      => "${protocol}://${sanitized_ip}:${management_port}/cli/rabbitmqadmin",
+    curl_option => "-u \"${default_user}:${default_pass}\" -k ${curl_prefix} --retry 30 --retry-delay 6",
     timeout     => '180',
     wget_option => '--no-proxy --no-check-certificate',
     require     => [
