@@ -1,5 +1,25 @@
 Puppet::Type.newtype(:rabbitmq_parameter) do
-  desc 'Type for managing rabbitmq parameters'
+  desc <<-DESC
+Type for managing rabbitmq parameters
+
+@example Create some rabbitmq_parameter resources
+   rabbitmq_parameter { 'documentumShovel@/':
+     component_name => '',
+     value          => {
+         'src-uri'    => 'amqp://',
+         'src-queue'  => 'my-queue',
+         'dest-uri'   => 'amqp://remote-server',
+         'dest-queue' => 'another-queue',
+     },
+   }
+   rabbitmq_parameter { 'documentumFed@/':
+     component_name => 'federation-upstream',
+     value          => {
+         'uri'     => 'amqp://myserver',
+         'expires' => '360000',
+     },
+   }
+DESC
 
   ensurable do
     defaultto(:present)

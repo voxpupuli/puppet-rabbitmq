@@ -15,7 +15,6 @@
 3. [Setup - The basics of getting started with rabbitmq](#setup)
     * [What rabbitmq affects](#what-rabbitmq-affects)
     * [Setup requirements](#setup-requirements)
-    * [Beginning with rabbitmq](#beginning-with-rabbitmq)
 4. [Usage - Configuration options and additional functionality](#usage)
 5. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
 5. [Limitations - OS compatibility, etc.](#limitations)
@@ -43,451 +42,13 @@ prior to 2.7.1.
 * rabbitmq configuration file.
 * rabbitmq service.
 
-### Beginning with rabbitmq
-
-
-```puppet
-include '::rabbitmq'
-```
-
 ## Usage
 
 All options and configuration can be done through interacting with the parameters
-on the main rabbitmq class.  These are documented below.
+on the main rabbitmq class.
+These are now documented via [Puppet Strings](https://github.com/puppetlabs/puppet-strings)
 
-## rabbitmq class
-
-To begin with the rabbitmq class controls the installation of rabbitmq.  In here
-you can control many parameters relating to the package and service, such as
-disabling puppet support of the service:
-
-```puppet
-class { '::rabbitmq':
-  service_manage    => false,
-  port              => '5672',
-  delete_guest_user => true,
-}
-```
-
-### Environment Variables
-To use RabbitMQ Environment Variables, use the parameters `environment_variables` e.g.:
-
-```puppet
-class { 'rabbitmq':
-  port                  => '5672',
-  environment_variables => {
-    'NODENAME'    => 'node01',
-    'SERVICENAME' => 'RabbitMQ'
-  }
-}
-```
-
-### Variables Configurable in rabbitmq.config
-To change RabbitMQ Config Variables in rabbitmq.config, use the parameters `config_variables` e.g.:
-
-```puppet
-class { 'rabbitmq':
-  port             => '5672',
-  config_variables => {
-    'hipe_compile' => true,
-    'frame_max'    => 131072,
-    'log_levels'   => "[{connection, info}]"
-  }
-}
-```
-
-To change Erlang Kernel Config Variables in rabbitmq.config, use the parameters
-`config_kernel_variables` e.g.:
-
-```puppet
-class { 'rabbitmq':
-  port                    => '5672',
-  config_kernel_variables => {
-    'inet_dist_listen_min' => 9100,
-    'inet_dist_listen_max' => 9105,
-  }
-}
-```
-
-To change Management Plugin Config Variables in rabbitmq.config, use the parameters
-`config_management_variables` e.g.:
-
-```puppet
-class { 'rabbitmq':
-  config_management_variables => {
-    'rates_mode' => 'basic',
-  }
-}
-```
-
-### Additional Variables Configurable in rabbitmq.config
-To change Additional Config Variables in rabbitmq.config, use the parameter
-`config_additional_variables` e.g.:
-
-```puppet
-class { 'rabbitmq':
-  config_additional_variables => {
-    'autocluster' => '[{consul_service, "rabbit"},{cluster_name, "rabbit"}]',
-    'foo'         => '[{bar, "baz"}]'
-  }
-}
-```
-This will result in the following config appended to the config file:
-```
-% Additional config
-  {autocluster, [{consul_service, "rabbit"},{cluster_name, "rabbit"}]},
-  {foo, [{bar, "baz"}]}
-```
-(This is required for the [autocluster plugin](https://github.com/aweber/rabbitmq-autocluster)
-
-### Clustering
-To use RabbitMQ clustering facilities, use the rabbitmq parameters
-`config_cluster`, `cluster_nodes`, and `cluster_node_type`, e.g.:
-
-```puppet
-class { 'rabbitmq':
-  config_cluster           => true,
-  cluster_nodes            => ['rabbit1', 'rabbit2'],
-  cluster_node_type        => 'ram',
-  erlang_cookie            => 'A_SECRET_COOKIE_STRING',
-  wipe_db_on_cookie_change => true,
-}
-```
-
-## Reference
-
-## Classes
-
-* rabbitmq: Main class for installation and service management.
-* rabbitmq::config: Main class for rabbitmq configuration/management.
-* rabbitmq::install: Handles package installation.
-* rabbitmq::params: Different configuration data for different systems.
-* rabbitmq::service: Handles the rabbitmq service.
-* rabbitmq::repo::apt: Handles apt repo for Debian systems.
-* rabbitmq::repo::rhel: Handles rpm repo for Redhat systems.
-
-### Parameters
-
-#### `admin_enable`
-
-Boolean, if enabled sets up the management interface/plugin for RabbitMQ.
-
-#### `auth_backends`
-
-An array specifying authorization/authentication backend to use. Syntax:
-single quotes should be placed around array entries, ex. ['{foo, baz}', 'baz']
-Defaults to [rabbit_auth_backend_internal], and if using LDAP defaults to
-[rabbit_auth_backend_internal, rabbit_auth_backend_ldap].
-
-#### `cluster_node_type`
-
-Choose between disc and ram nodes.
-
-#### `cluster_nodes`
-
-An array of nodes for clustering.
-
-#### `cluster_partition_handling`
-
-Value to set for `cluster_partition_handling` RabbitMQ configuration variable.
-
-#### `collect_statistics_interval`
-
-Integer, set the collect_statistics_interval in rabbitmq.config
-
-#### `config`
-
-The file to use as the rabbitmq.config template.
-
-#### `config_additional_variables`
-
-String, dditional config variables in rabbitmq.config
-
-#### `config_cluster`
-
-Boolean to enable or disable clustering support.
-
-#### `config_kernel_variables`
-
-Hash of Erlang kernel configuration variables to set (see [Variables Configurable in rabbitmq.config](#variables-configurable-in-rabbitmq.config)).
-
-#### `config_mirrored_queues`
-
-DEPRECATED
-
-Configuring queue mirroring should be done by setting the according policy for
-the queue. You can read more about it
-[here](http://www.rabbitmq.com/ha.html#genesis)
-
-#### `config_path`
-
-The path to write the RabbitMQ configuration file to.
-
-#### `config_management_variables`
-
-Hash of configuration variables for the [Management Plugin](https://www.rabbitmq.com/management.html).
-
-#### `config_stomp`
-
-Boolean to enable or disable stomp.
-
-#### `config_shovel`
-
-Boolean to enable or disable shovel.
-
-#### `config_shovel_statics`
-
-Hash of static shovel configurations
-
-#### `config_variables`
-
-To set config variables in rabbitmq.config
-
-#### `default_user`
-
-Username to set for the `default_user` in rabbitmq.config.
-
-#### `default_pass`
-
-Password to set for the `default_user` in rabbitmq.config.
-
-#### `delete_guest_user`
-
-Boolean to decide if we should delete the default guest user.
-
-#### `env_config`
-
-The template file to use for rabbitmq_env.config.
-
-#### `env_config_path`
-
-The path to write the rabbitmq_env.config file to.
-
-#### `environment_variables`
-
-RabbitMQ Environment Variables in rabbitmq_env.config
-
-#### `erlang_cookie`
-
-The erlang cookie to use for clustering - must be the same between all nodes.
-This value has no default and must be set explicitly if using clustering.
-If you run Pacemaker and you don't want to use RabbitMQ buildin cluster, you can
-set config_cluster to 'False' and set 'erlang_cookie'.
-
-#### `file_limit`
-
-Set rabbitmq file ulimit. Defaults to 16384. Only available on systems with
-`$::osfamily == 'Debian'` or `$::osfamily == 'RedHat'`.
-
-#### `heartbeat`
-
-Set the heartbeat timeout interval, default is unset which uses the builtin server
-defaultsof 60 seconds. Setting this to `0` will disable heartbeats.
-
-#### `key_content`
-
-Uses content method for Debian OS family. Should be a template for apt::source
-class. Undefined by default.
-
-#### `ldap_auth`
-
-Boolean, set to true to enable LDAP auth.
-
-#### `ldap_server`
-
-LDAP server to use for auth.
-
-#### `ldap_user_dn_pattern`
-
-User DN pattern for LDAP auth.
-
-#### `ldap_other_bind`
-
-How to bind to the LDAP server. Defaults to 'anon'.
-
-#### `ldap_config_variables`
-
-Hash of other LDAP config variables.
-
-#### `ldap_use_ssl`
-
-Boolean, set to true to use SSL for the LDAP server.
-
-#### `ldap_port`
-
-Numeric port for LDAP server.
-
-#### `ldap_log`
-
-Boolean, set to true to log LDAP auth.
-
-#### `management_ip_address`
-
-Will fall back to `node_ip_address` if not explicitly set; allows configuring
-a separate bind IP for the management interface.
-
-#### `management_hostname`
-
-The hostname for the RabbitMQ management interface.
-
-#### `management_port`
-
-The port for the RabbitMQ management interface.
-
-#### `management_ssl`
-
-Enable/Disable SSL for the management port.
-Has an effect only if ssl => true.
-Default is true.
-Valid values are true or false.
-
-#### `node_ip_address`
-
-The value of NODE_IP_ADDRESS in rabbitmq_env.config and of the
-rabbitmq_management server if it is enabled. See also `management_ip_address`.
-Use 0.0.0.0 to bind to all interfaces.
-
-#### `package_ensure`
-
-Determines the ensure state of the package.  Set to installed by default, but could
-be changed to latest.
-
-#### `package_gpg_key`
-
-This should generally be left as default. If using a package not signed by the
-RabbitMQ signing key, you can use this parameter to override the expected key.
-
-#### `package_name`
-
-The name of the package to install.
-
-#### `port`
-
-The RabbitMQ port.
-
-#### `repos_ensure`
-
-Ensure that a repo with the official (and newer) RabbitMQ package is configured,
-along with its signing key. Defaults to false (use system packages). This does
-*not* ensure that soft dependencies (like EPEL on RHEL systems) are present.
-
-#### `service_ensure`
-
-The state of the service.
-
-#### `service_manage`
-
-Determines if the service is managed.
-
-#### `service_name`
-
-The name of the service to manage.
-
-#### `ssl`
-
-Configures the service for using SSL.
-
-#### `ssl_only`
-
-Configures the service to only use SSL.  No cleartext TCP listeners will be created.
-Requires that ssl => true and port => undef also
-
-#### `ssl_cacert`
-
-CA cert path to use for SSL.
-
-#### `ssl_cert`
-
-Cert to use for SSL.
-
-#### `ssl_key`
-
-Key to use for SSL.
-
-#### `ssl_cert_password`
-
-Password used when generating CSR.
-
-#### `ssl_depth`
-
-SSL verification depth.
-
-#### `ssl_management_port`
-
-SSL management port.
-
-#### `ssl_stomp_port`
-
-SSL stomp port.
-
-#### `ssl_verify`
-
-rabbitmq.config SSL verify setting.
-
-#### `ssl_fail_if_no_peer_cert`
-
-rabbitmq.config `fail_if_no_peer_cert` setting.
-
-#### `ssl_versions`
-
-Choose which SSL versions to enable. Example: `['tlsv1.2', 'tlsv1.1']`.
-
-Note that it is recommended to disable `sslv3` and `tlsv1` to prevent against POODLE and BEAST attacks. Please see the [RabbitMQ SSL](https://www.rabbitmq.com/ssl.html) documentation for more information.
-
-#### `ssl_ciphers`
-
-Support only a given list of SSL ciphers. Example: `['dhe_rsa,aes_256_cbc,sha','dhe_dss,aes_256_cbc,sha','ecdhe_rsa,aes_256_cbc,sha']`.
-
-Supported ciphers in your install can be listed with:
- rabbitmqctl eval 'ssl:cipher_suites().'
-Functionality can be tested with cipherscan or similar tool: https://github.com/jvehent/cipherscan.git
-
-#### `stomp_port`
-
-The port to use for Stomp.
-
-#### `stomp_ssl_only`
-
-Configures STOMP to only use SSL.  No cleartext STOMP TCP listeners will be created.
-Requires setting ssl_stomp_port also.
-
-#### `stomp_ensure`
-
-Boolean to install the stomp plugin.
-
-#### `tcp_backlog`
-
-Integer, the size of the backlog on TCP connections.
-
-#### `tcp_keepalive`
-
-Boolean to enable TCP connection keepalive for RabbitMQ service.
-
-#### `tcp_recbuf`
-
-Integer, corresponds to recbuf in RabbitMQ `tcp_listen_options`
-
-#### `tcp_sndbuf`
-
-Integer, corresponds to sndbuf in RabbitMQ `tcp_listen_options`
-
-#### `wipe_db_on_cookie_change`
-
-Boolean to determine if we should DESTROY AND DELETE the RabbitMQ database.
-
-#### `rabbitmq_user`
-
-String: OS dependent, default defined in param.pp. The system user the rabbitmq daemon runs as.
-
-#### `rabbitmq_group`
-
-String: OS dependent, default defined in param.pp. The system group the rabbitmq daemon runs as.
-
-#### `rabbitmq_home`
-
-String: OS dependent. default defined in param.pp. The home directory of the rabbitmq deamon.
-
-## Native Types
+For convenience, some examples are duplicated here:
 
 ### rabbitmq\_user
 
@@ -508,7 +69,6 @@ rabbitmq_user { 'dan':
   tags     => ['monitoring', 'tag1'],
 }
 ```
-
 
 ### rabbitmq\_vhost
 
@@ -593,7 +153,6 @@ rabbitmq_binding { 'binding 2':
 
 ```
 
-
 ### rabbitmq\_user\_permissions
 
 ```puppet
@@ -650,27 +209,17 @@ rabbitmq_plugin {'rabbitmq_stomp':
   }
 ```
 
-### rabbitmq\_erlang\_cookie
+## Reference
 
-This is essentially a private type used by the rabbitmq::config class
-to manage the erlang cookie. It replaces the rabbitmq_erlang_cookie fact
-from earlier versions of this module. It manages the content of the cookie
-usually located at "${rabbitmq_home}/.erlang.cookie", which includes
-stopping the rabbitmq service and wiping out the database at
-"${rabbitmq_home}/mnesia" if the user agrees to it. We don't recommend using
-this type directly.
+## Classes
 
-## Limitations
-
-The module has been tested on:
-
-* RedHat Enterprise Linux 6/7
-* Debian 7/8
-* CentOS 6/7
-* Ubuntu 12.04/14.04
-
-Testing on other platforms has been light and cannot be guaranteed.
-Support for EL / CentOS 5 is deprecated.
+* rabbitmq: Main class for installation and service management.
+* rabbitmq::config: Main class for rabbitmq configuration/management.
+* rabbitmq::install: Handles package installation.
+* rabbitmq::params: Different configuration data for different systems.
+* rabbitmq::service: Handles the rabbitmq service.
+* rabbitmq::repo::apt: Handles apt repo for Debian systems.
+* rabbitmq::repo::rhel: Handles rpm repo for Redhat systems.
 
 ### Module dependencies
 

@@ -1,5 +1,15 @@
 Puppet::Type.newtype(:rabbitmq_erlang_cookie) do
-  desc 'Type to manage the rabbitmq erlang cookie securely'
+  desc <<-DESC
+Type to manage the rabbitmq erlang cookie securely
+
+This is essentially a private type used by the rabbitmq::config class
+to manage the erlang cookie. It replaces the rabbitmq_erlang_cookie fact
+from earlier versions of this module. It manages the content of the cookie
+usually located at "${rabbitmq_home}/.erlang.cookie", which includes
+stopping the rabbitmq service and wiping out the database at
+"${rabbitmq_home}/mnesia" if the user agrees to it. We don't recommend using
+this type directly.
+DESC
 
   newparam(:path, namevar: true)
 

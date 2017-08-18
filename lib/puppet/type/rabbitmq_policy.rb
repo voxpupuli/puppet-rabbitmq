@@ -1,5 +1,18 @@
 Puppet::Type.newtype(:rabbitmq_policy) do
-  desc 'Type for managing rabbitmq policies'
+  desc <<-DESC
+Type for managing rabbitmq policies
+
+@example Create a rabbitmq_policy
+ rabbitmq_policy { 'ha-all@myvhost':
+   pattern    => '.*',
+   priority   => 0,
+   applyto    => 'all',
+   definition => {
+     'ha-mode'      => 'all',
+     'ha-sync-mode' => 'automatic',
+   },
+ }
+DESC
 
   ensurable do
     defaultto(:present)
