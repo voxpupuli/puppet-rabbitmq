@@ -1,5 +1,7 @@
 require 'json'
 require 'puppet'
+require 'digest'
+
 Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin) do
 
   if Puppet::PUPPETVERSION.to_f < 3
@@ -15,11 +17,14 @@ Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin) do
   end
   defaultfor :feature => :posix
 
+  # Without this, the composite namevar stuff doesn't work properly.
+  mk_resource_methods
+
   def should_vhost
     if @should_vhost
       @should_vhost
     else
-      @should_vhost = resource[:name].split('@').last
+      @should_vhost = resource[:vhost]
     end
   end
 
@@ -49,13 +54,17 @@ Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin) do
         else
           arguments = '{}'
         end
+        hashed_name = Digest::SHA256.hexdigest "%s@%s@%s@%s" % [source_name, destination_name, vhost, routing_key]
         unless(source_name.empty?)
           binding = {
+            :source           => source_name,
+            :destination      => destination_name,
+            :vhost            => vhost,
             :destination_type => destination_type,
             :routing_key      => routing_key,
             :arguments        => JSON.parse(arguments),
             :ensure           => :present,
-            :name             => "%s@%s@%s" % [source_name, destination_name, vhost],
+            :name             => hashed_name,
           }
           resources << new(binding) if binding[:name]
         end
@@ -64,10 +73,12 @@ Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin) do
     resources
   end
 
+  # see
+  # https://github.com/puppetlabs/puppetlabs-netapp/blob/d0a655665463c69c932f835ba8756be32417a4e9/lib/puppet/provider/netapp_qtree/sevenmode.rb#L66-L73
   def self.prefetch(resources)
-    packages = instances
-    resources.keys.each do |name|
-      if provider = packages.find{ |pkg| pkg.name == name }
+    bindings = instances
+    resources.each do |name, res|
+      if provider = bindings.find{ |binding| binding.source == res[:source] && binding.destination == res[:destination] && binding.vhost == res[:vhost] && binding.routing_key == res[:routing_key] }
         resources[name].provider = provider
       end
     end
@@ -79,8 +90,6 @@ Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin) do
 
   def create
     vhost_opt = should_vhost ? "--vhost=#{should_vhost}" : ''
-    name = resource[:name].split('@').first
-    destination = resource[:name].split('@')[1]
     arguments = resource[:arguments]
     if arguments.nil?
       arguments = {}
@@ -92,8 +101,8 @@ Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin) do
       "--password=#{resource[:password]}",
       '-c',
       '/etc/rabbitmq/rabbitmqadmin.conf',
-      "source=#{name}",
-      "destination=#{destination}",
+      "source=#{resource[:source]}",
+      "destination=#{resource[:destination]}",
       "arguments=#{arguments.to_json}",
       "routing_key=#{resource[:routing_key]}",
       "destination_type=#{resource[:destination_type]}"
@@ -103,9 +112,7 @@ Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin) do
 
   def destroy
     vhost_opt = should_vhost ? "--vhost=#{should_vhost}" : ''
-    name = resource[:name].split('@').first
-    destination = resource[:name].split('@')[1]
-    rabbitmqadmin('delete', 'binding', vhost_opt, "--user=#{resource[:user]}", "--password=#{resource[:password]}", '-c', '/etc/rabbitmq/rabbitmqadmin.conf', "source=#{name}", "destination_type=#{resource[:destination_type]}", "destination=#{destination}", "properties_key=#{resource[:routing_key]}")
+    rabbitmqadmin('delete', 'binding', vhost_opt, "--user=#{resource[:user]}", "--password=#{resource[:password]}", '-c', '/etc/rabbitmq/rabbitmqadmin.conf', "source=#{resource[:source]}", "destination_type=#{resource[:destination_type]}", "destination=#{resource[:destination]}", "properties_key=#{resource[:routing_key]}")
     @property_hash[:ensure] = :absent
   end
 

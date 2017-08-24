@@ -15,33 +15,30 @@ describe Puppet::Type.type(:rabbitmq_binding) do
       Puppet::Type.type(:rabbitmq_binding).new({})
     }.to raise_error(Puppet::Error, 'Title or name must be provided')
   end
-  it 'should not allow whitespace in the name' do
+  it 'should error when missing source' do
     expect {
-      @binding[:name] = 'b r'
-    }.to raise_error(Puppet::Error, /Valid values match/)
+      Puppet::Type.type(:rabbitmq_binding).new(
+        :name        => 'test binding',
+        :destination => 'foobar'
+      )
+    }.to raise_error(Puppet::Error, /Source and destination must both be defined/)
   end
-  it 'should not allow names without one @' do
+  it 'should error when missing destination' do
     expect {
-      @binding[:name] = 'b_r'
-    }.to raise_error(Puppet::Error, /Valid values match/)
+      Puppet::Type.type(:rabbitmq_binding).new(
+        :name   => 'test binding',
+        :source => 'foobar'
+      )
+    }.to raise_error(Puppet::Error, /Source and destination must both be defined/)
   end
-
-  it 'should not allow names without two @' do
-    expect {
-      @binding[:name] = 'b@r'
-    }.to raise_error(Puppet::Error, /Valid values match/)
-  end
-
   it 'should accept an binding destination_type' do
     @binding[:destination_type] = :exchange
     @binding[:destination_type].should == :exchange
   end
-
   it 'should accept a user' do
     @binding[:user] = :root
     @binding[:user].should == :root
   end
-
   it 'should accept a password' do
     @binding[:password] = :PaSsw0rD
     @binding[:password].should == :PaSsw0rD
