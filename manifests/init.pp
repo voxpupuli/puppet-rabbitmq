@@ -148,7 +148,7 @@ class rabbitmq(
         $base_version   = regsubst($version,'^(.*)-\d$','\1')
         $real_package_source = "http://www.rabbitmq.com/releases/rabbitmq-server/v${base_version}/rabbitmq-server-${version}.noarch.rpm"
       }
-      'OpenBSD': {
+      'OpenBSD', 'FreeBSD': {
         # We just use the default OpenBSD package from a mirror
         $real_package_source = undef
       }
