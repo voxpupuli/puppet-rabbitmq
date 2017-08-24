@@ -92,4 +92,91 @@ describe 'rabbitmq class:' do
       it { should be_running }
     end
   end
+
+  context 'binding on all interfaces' do
+    it 'should run successfully' do
+      pp = <<-EOS
+      class { 'rabbitmq':
+        service_manage    => true,
+        port              => 5672,
+        admin_enable      => true,
+        node_ip_address   => '0.0.0.0'
+      }
+      EOS
+
+      apply_manifest(pp, :catch_failures => true)
+    end
+
+    describe service(service_name) do
+      it { should be_running }
+    end
+		describe port(5672) do
+		  it { should be_listening.on('0.0.0.0').with('tcp') }
+		end
+		describe port(15672) do
+		  it { should be_listening.on('0.0.0.0').with('tcp') }
+		end
+		describe port(25672) do
+		  it { should be_listening.on('0.0.0.0').with('tcp') }
+		end
+  end
+
+  context 'binding to localhost only' do
+    it 'should run successfully' do
+      pp = <<-EOS
+      class { 'rabbitmq':
+        service_manage    => true,
+        port              => 5672,
+        admin_enable      => true,
+        node_ip_address   => '127.0.0.1'
+      }
+      EOS
+
+      apply_manifest(pp, :catch_failures => true)
+    end
+
+    describe service(service_name) do
+      it { should be_running }
+    end
+		describe port(5672) do
+		  it { should be_listening.on('127.0.0.1').with('tcp') }
+		end
+		describe port(15672) do
+		  it { should be_listening.on('127.0.0.1').with('tcp') }
+		end
+    # This listens on all interfaces regardless of these settings
+		describe port(25672) do
+		  it { should be_listening.on('0.0.0.0').with('tcp') }
+		end
+  end
+
+  context 'different management_ip_address and node_ip_address' do
+    it 'should run successfully' do
+      pp = <<-EOS
+      class { 'rabbitmq':
+        service_manage        => true,
+        port                  => 5672,
+        admin_enable          => true,
+        node_ip_address       => '0.0.0.0',
+        management_ip_address => '127.0.0.1'
+      }
+      EOS
+
+      apply_manifest(pp, :catch_failures => true)
+    end
+
+    describe service(service_name) do
+      it { should be_running }
+    end
+		describe port(5672) do
+		  it { should be_listening.on('0.0.0.0').with('tcp') }
+		end
+		describe port(15672) do
+		  it { should be_listening.on('127.0.0.1').with('tcp') }
+		end
+		describe port(25672) do
+		  it { should be_listening.on('0.0.0.0').with('tcp') }
+		end
+  end
+
 end

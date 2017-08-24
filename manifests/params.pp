@@ -67,14 +67,11 @@ class rabbitmq::params {
 
   #install
   $admin_enable                = true
-  $management_hostname         = undef
-  $management_ip               = '0.0.0.0'
   $management_port             = '15672'
   $management_ssl              = true
   $package_apt_pin             = ''
   $package_gpg_key             = 'https://www.rabbitmq.com/rabbitmq-release-signing-key.asc'
   $repos_ensure                = true
-  $manage_repos                = undef
   $service_ensure              = 'running'
   $service_manage              = true
   #config
@@ -91,29 +88,16 @@ class rabbitmq::params {
   $delete_guest_user           = false
   $env_config                  = 'rabbitmq/rabbitmq-env.conf.erb'
   $env_config_path             = '/etc/rabbitmq/rabbitmq-env.conf'
-  $erlang_cookie               = undef
-  $interface                   = 'UNSET'
-  $node_ip_address             = 'UNSET'
   $port                        = '5672'
   $tcp_keepalive               = false
   $tcp_backlog                 = 128
-  $tcp_sndbuf                  = undef
-  $tcp_recbuf                  = undef
-  $heartbeat                   = undef
   $ssl                         = false
   $ssl_only                    = false
-  $ssl_cacert                  = 'UNSET'
-  $ssl_cert                    = 'UNSET'
-  $ssl_key                     = 'UNSET'
-  $ssl_depth                   = undef
-  $ssl_cert_password           = undef
   $ssl_port                    = '5671'
-  $ssl_interface               = 'UNSET'
   $ssl_management_port         = '15671'
   $ssl_stomp_port              = '6164'
   $ssl_verify                  = 'verify_none'
   $ssl_fail_if_no_peer_cert    = false
-  $ssl_versions                = undef
   $ssl_ciphers                 = []
   $stomp_ensure                = false
   $ldap_auth                   = false
@@ -133,9 +117,7 @@ class rabbitmq::params {
   $config_kernel_variables     = {}
   $config_management_variables = {}
   $config_additional_variables = {}
-  $auth_backends               = undef
   $file_limit                  = '16384'
-  $collect_statistics_interval = undef
   $ipv6                        = false
   $inetrc_config               = 'rabbitmq/inetrc.erb'
   $inetrc_config_path          = '/etc/rabbitmq/inetrc'
