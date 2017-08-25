@@ -6,15 +6,15 @@ require 'spec_helper_acceptance'
 # These tests only apply to RedHat because 2.8.1 is not available in either the
 # distro or upstream repos for Debian/Ubuntu.
 #
-describe 'rabbitmq class with 2.8.1:', :unless => (fact('osfamily') == 'RedHat') do
+describe 'rabbitmq class with 2.8.1:', unless: (fact('osfamily') == 'RedHat') do
   if fact('osfamily') == 'RedHat'
     package_name     = 'rabbitmq-server'
     service_name     = 'rabbitmq-server'
-    package_source   = "http://www.rabbitmq.com/releases/rabbitmq-server/v2.8.1/rabbitmq-server-2.8.1-1.noarch.rpm"
+    package_source   = 'http://www.rabbitmq.com/releases/rabbitmq-server/v2.8.1/rabbitmq-server-2.8.1-1.noarch.rpm'
     package_ensure   = '2.8.1-1'
 
-    context "default class inclusion" do
-      it 'should run successfully' do
+    context 'default class inclusion' do
+      it 'runs successfully' do
         pp = <<-EOS
         class { 'rabbitmq':
           version          => '2.8.1-1',
@@ -34,28 +34,28 @@ describe 'rabbitmq class with 2.8.1:', :unless => (fact('osfamily') == 'RedHat')
         shell('yum -y erase rabbitmq-server')
         shell('rm -Rf /var/lib/rabbitmq/mnesia /etc/rabbitmq /var/lib/rabbitmq/rabbitmqadmin')
         # Apply twice to ensure no errors the second time.
-        apply_manifest(pp, :catch_failures => true)
-        expect(apply_manifest(pp, :catch_changes => true).exit_code).to be_zero
+        apply_manifest(pp, catch_failures: true)
+        expect(apply_manifest(pp, catch_changes: true).exit_code).to be_zero
         # DEBUG
         shell('netstat -lntp')
       end
 
       describe command('rabbitmqctl status') do
-        its(:stdout) { should match /{rabbit,"RabbitMQ","2.8.1"}/ }
+        its(:stdout) { is_expected.to match %r{{rabbit,"RabbitMQ","2.8.1"}} }
       end
 
       describe package(package_name) do
-        it { should be_installed }
+        it { is_expected.to be_installed }
       end
 
       describe service(service_name) do
-        it { should be_enabled }
-        it { should be_running }
+        it { is_expected.to be_enabled }
+        it { is_expected.to be_running }
       end
     end
 
-    context "disable and stop service" do
-      it 'should run successfully' do
+    context 'disable and stop service' do
+      it 'runs successfully' do
         pp = <<-EOS
         class { 'rabbitmq':
           version          => '2.8.1-1',
@@ -72,17 +72,17 @@ describe 'rabbitmq class with 2.8.1:', :unless => (fact('osfamily') == 'RedHat')
         }
         EOS
 
-        apply_manifest(pp, :catch_failures => true)
+        apply_manifest(pp, catch_failures: true)
       end
 
       describe service(service_name) do
-        it { should_not be_enabled }
-        it { should_not be_running }
+        it { is_expected.not_to be_enabled }
+        it { is_expected.not_to be_running }
       end
     end
 
-    context "service is unmanaged" do
-      it 'should run successfully' do
+    context 'service is unmanaged' do
+      it 'runs successfully' do
         pp_pre = <<-EOS
         class { 'rabbitmq':
           version          => '2.8.1-1',
@@ -108,20 +108,20 @@ describe 'rabbitmq class with 2.8.1:', :unless => (fact('osfamily') == 'RedHat')
         }
         EOS
 
-        apply_manifest(pp_pre, :catch_failures => true)
-        apply_manifest(pp, :catch_failures => true)
+        apply_manifest(pp_pre, catch_failures: true)
+        apply_manifest(pp, catch_failures: true)
       end
 
       describe service(service_name) do
-        it { should be_enabled }
-        it { should be_running }
+        it { is_expected.to be_enabled }
+        it { is_expected.to be_running }
       end
     end
 
     context 'rabbitmqadmin' do
-      #confine :to, :platform => 'el-6-x86'
+      # confine :to, :platform => 'el-6-x86'
 
-      it 'should run successfully' do
+      it 'runs successfully' do
         pp = <<-EOS
         class { 'rabbitmq':
           admin_enable     => true,
@@ -139,23 +139,21 @@ describe 'rabbitmq class with 2.8.1:', :unless => (fact('osfamily') == 'RedHat')
         EOS
 
         shell('rm -f /var/lib/rabbitmq/rabbitmqadmin')
-        apply_manifest(pp, :catch_failures => true)
+        apply_manifest(pp, catch_failures: true)
       end
 
       # since serverspec (used by beaker-rspec) can only tell present/absent for packages
       describe file('/var/lib/rabbitmq/rabbitmqadmin') do
-        it { should be_file }
-      end
-      
-      describe command('/usr/local/bin/rabbitmqadmin --help') do
-        its(:exit_status) { should eq 0 }
+        it { is_expected.to be_file }
       end
 
+      describe command('/usr/local/bin/rabbitmqadmin --help') do
+        its(:exit_status) { is_expected.to eq 0 }
+      end
     end
 
     context 'rabbitmqadmin with specified default credentials' do
-
-      it 'should run successfully' do
+      it 'runs successfully' do
         # make sure credential change takes effect before admin_enable
         pp = <<-EOS
         class { 'rabbitmq':
@@ -178,20 +176,18 @@ describe 'rabbitmq class with 2.8.1:', :unless => (fact('osfamily') == 'RedHat')
         # next 3 lines - see MODULES-1085
         shell('service rabbitmq-server stop')
         shell('rm -Rf /var/lib/rabbitmq/mnesia /var/lib/rabbitmq/rabbitmqadmin')
-        apply_manifest(pp, :catch_failures => true)
+        apply_manifest(pp, catch_failures: true)
       end
 
       # since serverspec (used by beaker-rspec) can only tell present/absent for packages
       describe file('/var/lib/rabbitmq/rabbitmqadmin') do
-        it { should be_file }
+        it { is_expected.to be_file }
       end
 
       describe command('/usr/local/bin/rabbitmqadmin --help') do
-        its(:exit_status) { should eq 0 }
+        its(:exit_status) { is_expected.to eq 0 }
       end
-
     end
 
   end
-
 end

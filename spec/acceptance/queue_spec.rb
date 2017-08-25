@@ -1,10 +1,8 @@
 require 'spec_helper_acceptance'
 
 describe 'rabbitmq binding:' do
-
-
-  context "create binding and queue resources when rabbit using default management port" do
-    it 'should run successfully' do
+  context 'create binding and queue resources when rabbit using default management port' do
+    it 'runs successfully' do
       pp = <<-EOS
       if $::osfamily == 'RedHat' {
         class { 'erlang': epel_enable => true }
@@ -22,7 +20,7 @@ describe 'rabbitmq binding:' do
         password => 'bar',
         tags     => ['monitoring', 'tag1'],
       } ->
-      
+
       rabbitmq_user_permissions { 'dan@host1':
         configure_permission => '.*',
         read_permission      => '.*',
@@ -55,31 +53,30 @@ describe 'rabbitmq binding:' do
         routing_key      => '#',
         ensure           => present,
       }
-      
+
       EOS
 
-      apply_manifest(pp, :catch_failures => true)
-      apply_manifest(pp, :catch_changes => true)
+      apply_manifest(pp, catch_failures: true)
+      apply_manifest(pp, catch_changes: true)
     end
 
-    it 'should have the binding' do
+    it 'has the binding' do
       shell('rabbitmqctl list_bindings -q -p host1') do |r|
-        expect(r.stdout).to match(/exchange1\sexchange\squeue1\squeue\s#/)
-        expect(r.exit_code).to be_zero
-      end
-    end
-    
-    it 'should have the queue' do
-      shell('rabbitmqctl list_queues -q -p host1') do |r|
-        expect(r.stdout).to match(/queue1/)
+        expect(r.stdout).to match(%r{exchange1\sexchange\squeue1\squeue\s#})
         expect(r.exit_code).to be_zero
       end
     end
 
+    it 'has the queue' do
+      shell('rabbitmqctl list_queues -q -p host1') do |r|
+        expect(r.stdout).to match(%r{queue1})
+        expect(r.exit_code).to be_zero
+      end
+    end
   end
-  
-  context "create binding and queue resources when rabbit using a non-default management port" do
-    it 'should run successfully' do
+
+  context 'create binding and queue resources when rabbit using a non-default management port' do
+    it 'runs successfully' do
       pp = <<-EOS
       if $::osfamily == 'RedHat' {
         class { 'erlang': epel_enable => true }
@@ -98,7 +95,7 @@ describe 'rabbitmq binding:' do
         password => 'bar',
         tags     => ['monitoring', 'tag1'],
       } ->
-      
+
       rabbitmq_user_permissions { 'dan@host2':
         configure_permission => '.*',
         read_permission      => '.*',
@@ -131,27 +128,25 @@ describe 'rabbitmq binding:' do
         routing_key      => '#',
         ensure           => present,
       }
-     
+
       EOS
 
-      apply_manifest(pp, :catch_failures => true)
-      apply_manifest(pp, :catch_changes => true)
+      apply_manifest(pp, catch_failures: true)
+      apply_manifest(pp, catch_changes: true)
     end
 
-    it 'should have the binding' do
+    it 'has the binding' do
       shell('rabbitmqctl list_bindings -q -p host2') do |r|
-        expect(r.stdout).to match(/exchange2\sexchange\squeue2\squeue\s#/)
-        expect(r.exit_code).to be_zero
-      end
-    end
-    
-    it 'should have the queue' do
-      shell('rabbitmqctl list_queues -q -p host2') do |r|
-        expect(r.stdout).to match(/queue2/)
+        expect(r.stdout).to match(%r{exchange2\sexchange\squeue2\squeue\s#})
         expect(r.exit_code).to be_zero
       end
     end
 
+    it 'has the queue' do
+      shell('rabbitmqctl list_queues -q -p host2') do |r|
+        expect(r.stdout).to match(%r{queue2})
+        expect(r.exit_code).to be_zero
+      end
+    end
   end
-  
 end

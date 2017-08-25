@@ -1,56 +1,56 @@
 require 'puppet'
 require 'puppet/type/rabbitmq_exchange'
 describe Puppet::Type.type(:rabbitmq_exchange) do
-  before :each do
+  before do
     @exchange = Puppet::Type.type(:rabbitmq_exchange).new(
-      :name => 'foo@bar',
-      :type => :topic,
-      :internal => false,
-      :auto_delete => false,
-      :durable => true
+      name: 'foo@bar',
+      type: :topic,
+      internal: false,
+      auto_delete: false,
+      durable: true
     )
   end
-  it 'should accept an exchange name' do
+  it 'accepts an exchange name' do
     @exchange[:name] = 'dan@pl'
     @exchange[:name].should == 'dan@pl'
   end
-  it 'should require a name' do
-    expect {
+  it 'requires a name' do
+    expect do
       Puppet::Type.type(:rabbitmq_exchange).new({})
-    }.to raise_error(Puppet::Error, 'Title or name must be provided')
+    end.to raise_error(Puppet::Error, 'Title or name must be provided')
   end
-  it 'should not allow whitespace in the name' do
-    expect {
+  it 'does not allow whitespace in the name' do
+    expect do
       @exchange[:name] = 'b r'
-    }.to raise_error(Puppet::Error, /Valid values match/)
+    end.to raise_error(Puppet::Error, %r{Valid values match})
   end
-  it 'should not allow names without @' do
-    expect {
+  it 'does not allow names without @' do
+    expect do
       @exchange[:name] = 'b_r'
-    }.to raise_error(Puppet::Error, /Valid values match/)
+    end.to raise_error(Puppet::Error, %r{Valid values match})
   end
 
-  it 'should accept an exchange type' do
+  it 'accepts an exchange type' do
     @exchange[:type] = :direct
     @exchange[:type].should == :direct
   end
-  it 'should require a type' do
-    expect {
-      Puppet::Type.type(:rabbitmq_exchange).new(:name => 'foo@bar')
-    }.to raise_error(/.*must set type when creating exchange.*/)
+  it 'requires a type' do
+    expect do
+      Puppet::Type.type(:rabbitmq_exchange).new(name: 'foo@bar')
+    end.to raise_error(%r{.*must set type when creating exchange.*})
   end
-  it 'should not require a type when destroying' do
-    expect {
-            Puppet::Type.type(:rabbitmq_exchange).new(:name => 'foo@bar', :ensure => :absent)
-    }.to_not raise_error
+  it 'does not require a type when destroying' do
+    expect do
+      Puppet::Type.type(:rabbitmq_exchange).new(name: 'foo@bar', ensure: :absent)
+    end.not_to raise_error
   end
 
-  it 'should accept a user' do
+  it 'accepts a user' do
     @exchange[:user] = :root
     @exchange[:user].should == :root
   end
 
-  it 'should accept a password' do
+  it 'accepts a password' do
     @exchange[:password] = :PaSsw0rD
     @exchange[:password].should == :PaSsw0rD
   end

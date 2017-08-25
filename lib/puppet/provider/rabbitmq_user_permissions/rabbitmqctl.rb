@@ -1,28 +1,27 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmqctl'))
-Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl, :parent => Puppet::Provider::Rabbitmqctl) do
-
+Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl, parent: Puppet::Provider::Rabbitmqctl) do
   if Puppet::PUPPETVERSION.to_f < 3
-    commands :rabbitmqctl => 'rabbitmqctl'
+    commands rabbitmqctl: 'rabbitmqctl'
   else
-     has_command(:rabbitmqctl, 'rabbitmqctl') do
-       environment :HOME => "/tmp"
-     end
+    has_command(:rabbitmqctl, 'rabbitmqctl') do
+      environment HOME: '/tmp'
+    end
   end
 
-  defaultfor :feature=> :posix
+  defaultfor :feature => :posix
 
   # cache users permissions
   def self.users(name, vhost)
     @users = {} unless @users
     unless @users[name]
       @users[name] = {}
-      self.run_with_retries {
+      run_with_retries do
         rabbitmqctl('-q', 'list_user_permissions', name)
-      }.split(/\n/).each do |line|
-        line = self::strip_backslashes(line)
-        if line =~ /^(\S+)\s+(\S*)\s+(\S*)\s+(\S*)$/
-          @users[name][$1] =
-            {:configure => $2, :read => $4, :write => $3}
+      end.split(%r{\n}).each do |line|
+        line = .strip_backslashes(line)
+        if line =~ %r{^(\S+)\s+(\S*)\s+(\S*)\s+(\S*)$}
+          @users[name][Regexp.last_match(1)] =
+            { configure: Regexp.last_match(2), read: Regexp.last_match(4), write: Regexp.last_match(3) }
         else
           raise Puppet::Error, "cannot parse line from list_user_permissions:#{line}"
         end
@@ -72,7 +71,7 @@ Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl, :parent => P
     users(should_user, should_vhost)[:configure]
   end
 
-  def configure_permission=(perm)
+  def configure_permission=(_perm)
     set_permissions
   end
 
@@ -80,7 +79,7 @@ Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl, :parent => P
     users(should_user, should_vhost)[:read]
   end
 
-  def read_permission=(perm)
+  def read_permission=(_perm)
     set_permissions
   end
 
@@ -88,7 +87,7 @@ Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl, :parent => P
     users(should_user, should_vhost)[:write]
   end
 
-  def write_permission=(perm)
+  def write_permission=(_perm)
     set_permissions
   end
 
@@ -100,15 +99,14 @@ Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl, :parent => P
       resource[:read_permission]      ||= read_permission
       resource[:write_permission]     ||= write_permission
       rabbitmqctl('set_permissions', '-p', should_vhost, should_user,
-        resource[:configure_permission], resource[:write_permission],
-        resource[:read_permission]
-      )
+                  resource[:configure_permission], resource[:write_permission],
+                  resource[:read_permission]
+                 )
     end
   end
 
   def self.strip_backslashes(string)
     # See: https://github.com/rabbitmq/rabbitmq-server/blob/v1_7/docs/rabbitmqctl.1.pod#output-escaping
-    string.gsub(/\\\\/, '\\')
+    string.gsub(%r{\\\\}, '\\')
   end
-
 end

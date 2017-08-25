@@ -1,9 +1,8 @@
 require 'spec_helper_acceptance'
 
 describe 'rabbitmq parameter on a vhost:' do
-
-  context "create parameter resource" do
-    it 'should run successfully' do
+  context 'create parameter resource' do
+    it 'runs successfully' do
       pp = <<-EOS
       if $::osfamily == 'RedHat' {
         class { 'erlang': epel_enable => true }
@@ -33,16 +32,15 @@ describe 'rabbitmq parameter on a vhost:' do
       }
       EOS
 
-      apply_manifest(pp, :catch_failures => true)
-      apply_manifest(pp, :catch_changes => true)
+      apply_manifest(pp, catch_failures: true)
+      apply_manifest(pp, catch_changes: true)
     end
 
-    it 'should have the parameter' do
+    it 'has the parameter' do
       shell('rabbitmqctl list_parameters -p fedhost') do |r|
-        expect(r.stdout).to match(/federation-upstream.*documentumFed.*expires.*3600000/)
+        expect(r.stdout).to match(%r{federation-upstream.*documentumFed.*expires.*3600000})
         expect(r.exit_code).to be_zero
       end
     end
-
   end
 end
