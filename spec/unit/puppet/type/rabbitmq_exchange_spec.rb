@@ -11,7 +11,7 @@ describe Puppet::Type.type(:rabbitmq_exchange) do
   end
   it 'should accept an exchange name' do
     @exchange[:name] = 'dan@pl'
-    @exchange[:name].should == 'dan@pl'
+    expect(@exchange[:name]).to eq('dan@pl')
   end
   it 'should require a name' do
     expect {
@@ -31,7 +31,7 @@ describe Puppet::Type.type(:rabbitmq_exchange) do
 
   it 'should accept an exchange type' do
     @exchange[:type] = :direct
-    @exchange[:type].should == :direct
+    expect(@exchange[:type]).to eq(:direct)
   end
   it 'should require a type' do
     expect {
@@ -46,11 +46,11 @@ describe Puppet::Type.type(:rabbitmq_exchange) do
 
   it 'should accept a user' do
     @exchange[:user] = :root
-    @exchange[:user].should == :root
+    expect(@exchange[:user]).to eq(:root)
   end
 
   it 'should accept a password' do
     @exchange[:password] = :PaSsw0rD
-    @exchange[:password].should == :PaSsw0rD
+    expect(@exchange[:password]).to eq(:PaSsw0rD)
   end
 end

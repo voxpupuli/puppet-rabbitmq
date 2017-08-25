@@ -19,8 +19,8 @@ describe 'rabbitmq with delete_guest_user' do
     end
 
     describe file('/tmp/rabbitmqctl_users') do
-      it { should be_file }
-      it { should_not contain 'guest' }
+      it { is_expected.to be_file }
+      it { is_expected.not_to contain 'guest' }
     end
   end
 end

@@ -12,7 +12,7 @@ describe Puppet::Type.type(:rabbitmq_policy) do
 
   it 'should accept a valid name' do
     @policy[:name] = 'ha-all@/'
-    @policy[:name].should == 'ha-all@/'
+    expect(@policy[:name]).to eq('ha-all@/')
   end
 
   it 'should require a name' do
@@ -29,12 +29,12 @@ describe Puppet::Type.type(:rabbitmq_policy) do
 
   it 'should accept a valid regex for pattern' do
     @policy[:pattern] = '.*?'
-    @policy[:pattern].should == '.*?'
+    expect(@policy[:pattern]).to eq('.*?')
   end
 
   it 'should accept an empty string for pattern' do
     @policy[:pattern] = ''
-    @policy[:pattern].should == ''
+    expect(@policy[:pattern]).to eq('')
   end
 
   it 'should not accept invalid regex for pattern' do
@@ -46,7 +46,7 @@ describe Puppet::Type.type(:rabbitmq_policy) do
   it 'should accept valid value for applyto' do
     [:all, :exchanges, :queues].each do |v|
       @policy[:applyto] = v
-      @policy[:applyto].should == v
+      expect(@policy[:applyto]).to eq(v)
     end
   end
 
@@ -59,7 +59,7 @@ describe Puppet::Type.type(:rabbitmq_policy) do
   it 'should accept a valid hash for definition' do
     definition = {'ha-mode' => 'all', 'ha-sync-mode' => 'automatic'}
     @policy[:definition] = definition
-    @policy[:definition].should == definition
+    expect(@policy[:definition]).to eq(definition)
   end
 
   it 'should not accept invalid hash for definition' do
@@ -75,7 +75,7 @@ describe Puppet::Type.type(:rabbitmq_policy) do
   it 'should accept valid value for priority' do
     [0, 10, '0', '10'].each do |v|
       @policy[:priority] = v
-      @policy[:priority].should == v
+      expect(@policy[:priority]).to eq(v)
     end
   end
 
@@ -90,8 +90,8 @@ describe Puppet::Type.type(:rabbitmq_policy) do
   it 'should accept and convert ha-params for ha-mode exactly' do
     definition = {'ha-mode' => 'exactly', 'ha-params' => '2'}
     @policy[:definition] = definition
-    @policy[:definition]['ha-params'].should be_a(Fixnum)
-    @policy[:definition]['ha-params'].should == 2
+    expect(@policy[:definition]['ha-params']).to be_a(Fixnum)
+    expect(@policy[:definition]['ha-params']).to eq(2)
   end
 
   it 'should not accept non-numeric ha-params for ha-mode exactly' do
@@ -104,8 +104,8 @@ describe Puppet::Type.type(:rabbitmq_policy) do
   it 'should accept and convert the expires value' do
     definition = {'expires' => '1800000'}
     @policy[:definition] = definition
-    @policy[:definition]['expires'].should be_a(Fixnum)
-    @policy[:definition]['expires'].should == 1800000
+    expect(@policy[:definition]['expires']).to be_a(Fixnum)
+    expect(@policy[:definition]['expires']).to eq(1800000)
   end
 
   it 'should not accept non-numeric expires value' do
@@ -118,8 +118,8 @@ describe Puppet::Type.type(:rabbitmq_policy) do
   it 'should accept and convert the message-ttl value' do
     definition = {'message-ttl' => '1800000'}
     @policy[:definition] = definition
-    @policy[:definition]['message-ttl'].should be_a(Fixnum)
-    @policy[:definition]['message-ttl'].should == 1800000
+    expect(@policy[:definition]['message-ttl']).to be_a(Fixnum)
+    expect(@policy[:definition]['message-ttl']).to eq(1800000)
   end
 
   it 'should not accept non-numeric message-ttl value' do
@@ -132,8 +132,8 @@ describe Puppet::Type.type(:rabbitmq_policy) do
   it 'should accept and convert the max-length value' do
     definition = {'max-length' => '1800000'}
     @policy[:definition] = definition
-    @policy[:definition]['max-length'].should be_a(Fixnum)
-    @policy[:definition]['max-length'].should == 1800000
+    expect(@policy[:definition]['max-length']).to be_a(Fixnum)
+    expect(@policy[:definition]['max-length']).to eq(1800000)
   end
 
   it 'should not accept non-numeric max-length value' do
@@ -146,8 +146,8 @@ describe Puppet::Type.type(:rabbitmq_policy) do
   it 'should accept and convert the shards-per-node value' do
     definition = {'shards-per-node' => '1800000'}
     @policy[:definition] = definition
-    @policy[:definition]['shards-per-node'].should be_a(Fixnum)
-    @policy[:definition]['shards-per-node'].should == 1800000
+    expect(@policy[:definition]['shards-per-node']).to be_a(Fixnum)
+    expect(@policy[:definition]['shards-per-node']).to eq(1800000)
   end
 
   it 'should not accept non-numeric shards-per-node value' do
@@ -160,8 +160,8 @@ describe Puppet::Type.type(:rabbitmq_policy) do
   it 'should accept and convert the ha-sync-batch-size value' do
     definition = {'ha-sync-batch-size' => '1800000'}
     @policy[:definition] = definition
-    @policy[:definition]['ha-sync-batch-size'].should be_a(Fixnum)
-    @policy[:definition]['ha-sync-batch-size'].should == 1800000
+    expect(@policy[:definition]['ha-sync-batch-size']).to be_a(Fixnum)
+    expect(@policy[:definition]['ha-sync-batch-size']).to eq(1800000)
   end
   
   it 'should not accept non-numeric ha-sync-batch-size value' do
@@ -174,10 +174,10 @@ describe Puppet::Type.type(:rabbitmq_policy) do
   it 'should accept list value in ha-params when ha-mode = nodes' do
     definition = {'ha-mode' => 'nodes', 'ha-params' => ['rabbit@rabbit-01', 'rabbit@rabbit-02']}
     @policy[:definition] = definition
-    @policy[:definition]['ha-mode'].should == 'nodes'
-    @policy[:definition]['ha-params'].should be_a(Array)
-    @policy[:definition]['ha-params'][0].should == 'rabbit@rabbit-01'
-    @policy[:definition]['ha-params'][1].should == 'rabbit@rabbit-02'
+    expect(@policy[:definition]['ha-mode']).to eq('nodes')
+    expect(@policy[:definition]['ha-params']).to be_a(Array)
+    expect(@policy[:definition]['ha-params'][0]).to eq('rabbit@rabbit-01')
+    expect(@policy[:definition]['ha-params'][1]).to eq('rabbit@rabbit-02')
   end
 
   it 'should not accept non-list value in ha-params when ha-mode = nodes' do

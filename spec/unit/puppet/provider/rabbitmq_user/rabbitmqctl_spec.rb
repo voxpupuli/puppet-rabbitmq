@@ -15,24 +15,24 @@ describe provider_class do
     @provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
 foo
 EOT
-    @provider.exists?.should == 'foo'
+    expect(@provider.exists?).to eq('foo')
   end
   it 'should match user names with 2.4.1 syntax' do
     @provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
 foo bar
 EOT
-    @provider.exists?.should == 'foo bar'
+    expect(@provider.exists?).to eq('foo bar')
   end
   it 'should not match if no users on system' do
     @provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
 EOT
-    @provider.exists?.should be_nil
+    expect(@provider.exists?).to be_nil
   end
   it 'should not match if no matching users on system' do
     @provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
 fooey
 EOT
-    @provider.exists?.should be_nil
+    expect(@provider.exists?).to be_nil
   end
   it 'should match user names from list' do
     @provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
@@ -41,7 +41,7 @@ two three
 foo
 bar
 EOT
-    @provider.exists?.should == 'foo'
+    expect(@provider.exists?).to eq('foo')
   end
   it 'should create user and set password' do
     @resource[:password] = 'bar'
@@ -69,12 +69,12 @@ EOT
     @provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
 foo [administrator]
 EOT
-    @provider.admin.should == :true
+    expect(@provider.admin).to eq(:true)
     @provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
 one [administrator]
 foo []
 EOT
-    @provider.admin.should == :false
+    expect(@provider.admin).to eq(:false)
   end
   it 'should fail if admin value is invalid' do
     @provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
@@ -200,7 +200,7 @@ EOT
     @provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
 foo [administrator]
 EOT
-    @provider.tags.should == []
+    expect(@provider.tags).to eq([])
   end
 
   it 'should return the administrator tag for non-admins' do
@@ -210,6 +210,6 @@ EOT
     @provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
 foo [administrator]
 EOT
-    @provider.tags.should == ["administrator"]
+    expect(@provider.tags).to eq(["administrator"])
   end
 end

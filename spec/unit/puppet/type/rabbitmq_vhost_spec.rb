@@ -5,7 +5,7 @@ describe Puppet::Type.type(:rabbitmq_vhost) do
   end
   it 'should accept a vhost name' do
     @vhost[:name] = 'dan'
-    @vhost[:name].should == 'dan'
+    expect(@vhost[:name]).to eq('dan')
   end
   it 'should require a name' do
     expect {

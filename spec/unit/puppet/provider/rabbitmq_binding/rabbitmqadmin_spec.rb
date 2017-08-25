@@ -26,22 +26,22 @@ EOT
 exchange\tdst_queue\tqueue\t*\t[]
 EOT
       instances = provider_class.instances
-      instances.size.should == 1
-      instances.map do |prov|
+      expect(instances.size).to eq(1)
+      expect(instances.map do |prov|
         {
           :source      => prov.get(:source),
           :destination => prov.get(:destination),
           :vhost       => prov.get(:vhost),
           :routing_key => prov.get(:routing_key)
         }
-      end.should == [
+      end).to eq([
         {
           :source      => 'exchange',
           :destination => 'dst_queue',
           :vhost       => '/',
           :routing_key => '*'
         }
-      ]
+      ])
     end
 
     it 'should return multiple instances' do
@@ -53,15 +53,15 @@ exchange\tdst_queue\tqueue\trouting_one\t[]
 exchange\tdst_queue\tqueue\trouting_two\t[]
 EOT
       instances = provider_class.instances
-      instances.size.should == 2
-      instances.map do |prov|
+      expect(instances.size).to eq(2)
+      expect(instances.map do |prov|
         {
           :source      => prov.get(:source),
           :destination => prov.get(:destination),
           :vhost       => prov.get(:vhost),
           :routing_key => prov.get(:routing_key)
         }
-      end.should == [
+      end).to eq([
         {
           :source      => 'exchange',
           :destination => 'dst_queue',
@@ -74,7 +74,7 @@ EOT
           :vhost       => '/',
           :routing_key => 'routing_two'
         }
-      ]
+      ])
     end
   end
 

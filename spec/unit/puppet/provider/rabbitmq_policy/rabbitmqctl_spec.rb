@@ -34,8 +34,8 @@ describe Puppet::Type.type(:rabbitmq_policy).provider(:rabbitmqctl) do
       :provider => described_class.name
     )
     provider = described_class.new(resource)
-    provider.should_policy.should == 'ha@home'
-    provider.should_vhost.should == '/'
+    expect(provider.should_policy).to eq('ha@home')
+    expect(provider.should_vhost).to eq('/')
   end
 
   it 'should fail with invalid output from list' do
@@ -48,14 +48,14 @@ describe Puppet::Type.type(:rabbitmq_policy).provider(:rabbitmqctl) do
 / ha-all all .* {"ha-mode":"all","ha-sync-mode":"automatic"} 0
 / test exchanges .* {"ha-mode":"all"} 0
 EOT
-    provider.exists?.should == {
+    expect(provider.exists?).to eq({
       :applyto    => 'all',
       :pattern    => '.*',
       :priority   => '0',
       :definition => {
         'ha-mode'      => 'all',
         'ha-sync-mode' => 'automatic'}
-      }
+      })
   end
 
   it 'should match policies from list (<3.2.0)' do
@@ -63,19 +63,19 @@ EOT
 / ha-all .* {"ha-mode":"all","ha-sync-mode":"automatic"} 0
 / test .* {"ha-mode":"all"} 0
 EOT
-    provider.exists?.should == {
+    expect(provider.exists?).to eq({
       :applyto    => 'all',
       :pattern    => '.*',
       :priority   => '0',
       :definition => {
         'ha-mode'      => 'all',
         'ha-sync-mode' => 'automatic'}
-      }
+      })
   end
 
   it 'should not match an empty list' do
     provider.class.expects(:rabbitmqctl).with('list_policies', '-q', '-p', '/').returns ''
-    provider.exists?.should == nil
+    expect(provider.exists?).to eq(nil)
   end
 
   it 'should destroy policy' do

@@ -32,12 +32,12 @@ describe 'rabbitmq server:' do
     end
 
     describe package(package_name) do
-      it { should be_installed }      
+      it { is_expected.to be_installed }      
     end
 
     describe service(service_name) do
-      it { should be_enabled }
-      it { should be_running }
+      it { is_expected.to be_enabled }
+      it { is_expected.to be_running }
     end
   end
 
@@ -57,8 +57,8 @@ describe 'rabbitmq server:' do
     end
 
     describe service(service_name) do
-      it { should_not be_enabled }
-      it { should_not be_running }
+      it { is_expected.not_to be_enabled }
+      it { is_expected.not_to be_running }
     end
   end
 
@@ -89,8 +89,8 @@ describe 'rabbitmq server:' do
     end
 
     describe service(service_name) do
-      it { should be_enabled }
-      it { should be_running }
+      it { is_expected.to be_enabled }
+      it { is_expected.to be_running }
     end
   end
 end

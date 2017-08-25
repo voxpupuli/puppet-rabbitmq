@@ -40,8 +40,8 @@ describe Puppet::Type.type(:rabbitmq_parameter).provider(:rabbitmqctl) do
       :provider => described_class.name
     )
     provider = described_class.new(resource)
-    provider.should_parameter.should == 'documentumShovel'
-    provider.should_vhost.should == '/'
+    expect(provider.should_parameter).to eq('documentumShovel')
+    expect(provider.should_vhost).to eq('/')
   end
 
   it 'should fail with invalid output from list' do
@@ -53,7 +53,7 @@ describe Puppet::Type.type(:rabbitmq_parameter).provider(:rabbitmqctl) do
     provider.class.expects(:rabbitmqctl).with('list_parameters', '-q', '-p', '/').returns <<-EOT
 shovel  documentumShovel  {"src-uri":"amqp://","src-queue":"my-queue","dest-uri":"amqp://remote-server","dest-queue":"another-queue"}
 EOT
-    provider.exists?.should == {
+    expect(provider.exists?).to eq({
       :component_name => 'shovel',
       :value => {
         'src-uri'    => 'amqp://',
@@ -61,12 +61,12 @@ EOT
         'dest-uri'   => 'amqp://remote-server',
         'dest-queue' => 'another-queue',
       }
-    }
+    })
   end
 
   it 'should not match an empty list' do
     provider.class.expects(:rabbitmqctl).with('list_parameters', '-q', '-p', '/').returns ''
-    provider.exists?.should == nil
+    expect(provider.exists?).to eq(nil)
   end
 
   it 'should destroy parameter' do

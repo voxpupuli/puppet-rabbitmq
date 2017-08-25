@@ -36,7 +36,7 @@ amq.topic       topic   false   true    false   []
 test.headers    x-consistent-hash       false   true    false   [{"hash-header","message-distribution-hash"}]
 EOT
     instances = provider_class.instances
-    instances.size.should == 9
+    expect(instances.size).to eq(9)
   end
 
   it 'should call rabbitmqadmin to create as guest' do
