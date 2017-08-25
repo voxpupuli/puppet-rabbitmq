@@ -3,11 +3,11 @@
 # https://github.com/voxpupuli/modulesync
 # https://github.com/voxpupuli/modulesync_config
 HOSTS:
-  centos-7-x64:
+  fedora-24-x64:
     roles:
       - master
-    platform: el-7-x86_64
-    box: centos/7
+    platform: fedora-24-x86_64
+    box: fedora/24-cloud-base
     hypervisor: vagrant
 CONFIG:
   type: aio

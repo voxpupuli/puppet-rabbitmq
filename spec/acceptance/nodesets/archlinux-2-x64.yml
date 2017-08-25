@@ -3,13 +3,11 @@
 # https://github.com/voxpupuli/modulesync
 # https://github.com/voxpupuli/modulesync_config
 HOSTS:
-  centos-7-x64:
+  archlinux-2-x64:
     roles:
       - master
-    platform: el-7-x86_64
-    box: centos/7
+    platform: archlinux-2-x64
+    box: archlinux/archlinux
     hypervisor: vagrant
 CONFIG:
-  type: aio
-...
-# vim: syntax=yaml
+  type: foss

@@ -2,12 +2,15 @@
 # This file is managed via modulesync
 # https://github.com/voxpupuli/modulesync
 # https://github.com/voxpupuli/modulesync_config
+#
+# platform is fedora 24 because there is no
+# puppet-agent for fedora 25 by 2016-12-30
 HOSTS:
-  centos-7-x64:
+  fedora-25-x64:
     roles:
       - master
-    platform: el-7-x86_64
-    box: centos/7
+    platform: fedora-25-x86_64
+    box: fedora/25-cloud-base
     hypervisor: vagrant
 CONFIG:
   type: aio

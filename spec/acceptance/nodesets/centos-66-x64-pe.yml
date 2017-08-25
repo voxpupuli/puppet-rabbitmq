@@ -3,13 +3,15 @@
 # https://github.com/voxpupuli/modulesync
 # https://github.com/voxpupuli/modulesync_config
 HOSTS:
-  centos-7-x64:
+  centos-66-x64:
     roles:
       - master
-    platform: el-7-x86_64
-    box: centos/7
+      - database
+      - dashboard
+    platform: el-6-x86_64
+    box: puppetlabs/centos-6.6-64-puppet-enterprise
     hypervisor: vagrant
 CONFIG:
-  type: aio
+  type: pe
 ...
 # vim: syntax=yaml
