@@ -1,0 +1,10 @@
+HOSTS:
+  centos-6-x64:
+    roles:
+      - agent
+      - default
+    platform: el-6-x86_64
+    hypervisor: vagrant
+    box: puppetlabs/centos-6.6-64-nocm
+CONFIG:
+  type: foss

@@ -22,8 +22,9 @@ This module manages RabbitMQ (www.rabbitmq.com)
 The rabbitmq module sets up rabbitmq and has a number of providers to manage
 everything from vhosts to exchanges after setup.
 
-This module has been tested against 2.7.1 and is known to not support
-all features against earlier versions.
+This module has been tested against 3.5.x and 3.6.x (as well as earlier
+versions) and is known to not support all features against versions
+prior to 2.7.1.
 
 ## Setup
 
@@ -57,23 +58,6 @@ class { '::rabbitmq':
   service_manage    => false,
   port              => '5672',
   delete_guest_user => true,
-}
-```
-
-Or such as offline installation from intranet or local mirrors:
-
-```puppet
-class { '::rabbitmq':
-   key_content     => template('openstack/rabbit.pub.key'),
-   package_gpg_key => '/tmp/rabbit.pub.key',
-}
-```
-
-And this one will use external package key source for any (apt/rpm) package provider:
-
-```puppet
-class { '::rabbitmq':
-   package_gpg_key => 'http://www.some_site.some_domain/some_key.pub.key',
 }
 ```
 
@@ -295,7 +279,7 @@ defaultsof 60 seconds. Setting this to `0` will disable heartbeats.
 ####`key_content`
 
 Uses content method for Debian OS family. Should be a template for apt::source
-class. Overrides `package_gpg_key` behavior, if enabled. Undefined by default.
+class. Undefined by default.
 
 ####`ldap_auth`
 
@@ -329,10 +313,6 @@ Numeric port for LDAP server.
 
 Boolean, set to true to log LDAP auth.
 
-####`manage_repos`
-
-Boolean, whether or not to manage package repositories.
-
 ####`management_ip_address`
 
 Will fall back to `node_ip_address` if not explicitly set; allows configuring
@@ -364,12 +344,10 @@ Use 0.0.0.0 to bind to all interfaces.
 Determines the ensure state of the package.  Set to installed by default, but could
 be changed to latest.
 
-####`package_gpg_key`
+###`package_gpg_key`
 
-RPM package GPG key to import. Uses source method. Should be a URL for Debian/RedHat
-OS family, or a file name for RedHat OS family.
-Set to http://www.rabbitmq.com/rabbitmq-signing-key-public.asc by default.
-Note, that `key_content`, if specified, would override this parameter for Debian OS family.
+This should generally be left as default. If using a package not signed by the
+RabbitMQ signing key, you can use this parameter to override the expected key.
 
 ####`package_name`
 
@@ -379,23 +357,15 @@ The name of the package to install.
 
 What provider to use to install the package.
 
-####`package_source`
-
-Where should the package be installed from?
-
-On Debian- and Arch-based systems using the default package provider,
-this parameter is ignored and the package is installed from the
-rabbitmq repository, if enabled with manage_repo => true, or from the
-system repository otherwise. If you want to use dpkg as the
-package_provider, you must specify a local package_source.
-
-####`plugin_dir`
-
-Location of RabbitMQ plugins.
-
 ####`port`
 
 The RabbitMQ port.
+
+####`repos_ensure`
+
+Ensure that a repo with the official (and newer) RabbitMQ package is configured,
+along with its signing key. Defaults to false (use system packages). This does
+*not* ensure that soft dependencies (like EPEL on RHEL systems) are present.
 
 ####`service_ensure`
 
@@ -496,15 +466,6 @@ Integer, corresponds to recbuf in RabbitMQ `tcp_listen_options`
 ####`tcp_sndbuf`
 
 Integer, corresponds to sndbuf in RabbitMQ `tcp_listen_options`
-
-####`version`
-
-Sets the version to install.
-
-On Debian- and Arch-based operating systems, the version parameter is
-ignored and the latest version is installed from the rabbitmq
-repository, if enabled with manage_repo => true, or from the system
-repository otherwise.
 
 ####`wipe_db_on_cookie_change`
 
@@ -701,20 +662,24 @@ This module has been built on and tested against Puppet 3.x.
 
 The module has been tested on:
 
-* RedHat Enterprise Linux 5/6
-* Debian 6/7
-* CentOS 5/6
+* RedHat Enterprise Linux 6/7
+* Debian 7/8
+* CentOS 6/7
 * Ubuntu 12.04/14.04
 
 Testing on other platforms has been light and cannot be guaranteed.
+Support for EL / CentOS 5 is deprecated.
 
 ### Apt module compatibility
 
-While this module supports both 1.x and 2.x versions of the puppetlabs-apt module, it does not support puppetlabs-apt 2.0.0 or 2.0.1.
+While this module supports both 1.x and 2.x versions of the
+puppetlabs-apt module, it does not support puppetlabs-apt 2.0.0 or
+2.0.1.
 
 ### Module dependencies
 
-If running CentOS/RHEL, and using the yum provider, ensure the epel repo is present.
+If running CentOS/RHEL, ensure the epel repo, or another repo containing
+a suitable Erlang version, is present.
 
 To have a suitable erlang version installed on RedHat and Debian systems,
 you have to install another puppet module from http://forge.puppetlabs.com/garethr/erlang with:

@@ -1,6 +1,7 @@
 RSpec.shared_context "default facts" do
   let(:facts) { { :puppetversion    => Puppet.version,
-                  :staging_http_get => ''} }
+                  :staging_http_get => '',
+                  :rabbitmq_version => '3.6.1' } }
 end
 
 RSpec.configure do |rspec|
