@@ -13,7 +13,7 @@ describe provider_class do
   end
   it 'should match plugins' do
     @provider.expects(:rabbitmqplugins).with('list', '-E', '-m').returns("foo\n")
-    @provider.exists?.should == 'foo'
+    expect(@provider.exists?).to eq('foo')
   end
   it 'should call rabbitmqplugins to enable' do
     @provider.expects(:rabbitmqplugins).with('enable', 'foo')

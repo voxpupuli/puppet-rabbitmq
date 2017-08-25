@@ -25,7 +25,7 @@ test  true  false []
 test2 true  false [{"x-message-ttl",342423},{"x-expires",53253232},{"x-max-length",2332},{"x-max-length-bytes",32563324242},{"x-dead-letter-exchange","amq.direct"},{"x-dead-letter-routing-key","test.routing"}]
 EOT
     instances = provider_class.instances
-    instances.size.should == 2
+    expect(instances.size).to eq(2)
   end
 
   it 'should call rabbitmqadmin to create' do

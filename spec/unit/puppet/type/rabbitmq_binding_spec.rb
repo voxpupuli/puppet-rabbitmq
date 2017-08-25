@@ -8,7 +8,7 @@ describe Puppet::Type.type(:rabbitmq_binding) do
   end
   it 'should accept an queue name' do
     @binding[:name] = 'dan@dude@pl'
-    @binding[:name].should == 'dan@dude@pl'
+    expect(@binding[:name]).to eq('dan@dude@pl')
   end
   it 'should require a name' do
     expect {
@@ -33,14 +33,14 @@ describe Puppet::Type.type(:rabbitmq_binding) do
   end
   it 'should accept an binding destination_type' do
     @binding[:destination_type] = :exchange
-    @binding[:destination_type].should == :exchange
+    expect(@binding[:destination_type]).to eq(:exchange)
   end
   it 'should accept a user' do
     @binding[:user] = :root
-    @binding[:user].should == :root
+    expect(@binding[:user]).to eq(:root)
   end
   it 'should accept a password' do
     @binding[:password] = :PaSsw0rD
-    @binding[:password].should == :PaSsw0rD
+    expect(@binding[:password]).to eq(:PaSsw0rD)
   end
 end

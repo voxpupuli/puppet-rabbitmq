@@ -5,12 +5,12 @@ describe Puppet::Type.type(:rabbitmq_user) do
   end
   it 'should accept a user name' do
     @user[:name] = 'dan'
-    @user[:name].should == 'dan'
-    @user[:admin].should == :false
+    expect(@user[:name]).to eq('dan')
+    expect(@user[:admin]).to eq(:false)
   end
   it 'should accept a password' do
     @user[:password] = 'foo'
-    @user[:password].should == 'foo'
+    expect(@user[:password]).to eq('foo')
   end
   it 'should require a password' do
     expect {
@@ -30,7 +30,7 @@ describe Puppet::Type.type(:rabbitmq_user) do
   [true, false, 'true', 'false'].each do |val|
     it "admin property should accept #{val}" do
       @user[:admin] = val
-      @user[:admin].should == val.to_s.to_sym
+      expect(@user[:admin]).to eq(val.to_s.to_sym)
     end
   end
   it 'should not accept non-boolean values for admin' do

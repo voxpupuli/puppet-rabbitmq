@@ -32,12 +32,12 @@ describe 'rabbitmq class:' do
     end
 
     describe package(package_name) do
-      it { should be_installed }      
+      it { is_expected.to be_installed }      
     end
 
     describe service(service_name) do
-      it { should be_enabled }
-      it { should be_running }
+      it { is_expected.to be_enabled }
+      it { is_expected.to be_running }
     end
   end
 
@@ -57,8 +57,8 @@ describe 'rabbitmq class:' do
     end
 
     describe service(service_name) do
-      it { should_not be_enabled }
-      it { should_not be_running }
+      it { is_expected.not_to be_enabled }
+      it { is_expected.not_to be_running }
     end
   end
 
@@ -88,8 +88,8 @@ describe 'rabbitmq class:' do
     end
 
     describe service(service_name) do
-      it { should be_enabled }
-      it { should be_running }
+      it { is_expected.to be_enabled }
+      it { is_expected.to be_running }
     end
   end
 
@@ -108,17 +108,17 @@ describe 'rabbitmq class:' do
     end
 
     describe service(service_name) do
-      it { should be_running }
+      it { is_expected.to be_running }
     end
     describe port(5672) do
-      it { should be_listening.on('0.0.0.0').with('tcp') }
+      it { is_expected.to be_listening.on('0.0.0.0').with('tcp') }
     end
     describe port(15672) do
-      it { should be_listening.on('0.0.0.0').with('tcp') }
+      it { is_expected.to be_listening.on('0.0.0.0').with('tcp') }
     end
     describe port(25672) do
       xit "Is on 55672 instead on older rmq versions" do
-        should be_listening.on('0.0.0.0').with('tcp')
+        is_expected.to be_listening.on('0.0.0.0').with('tcp')
       end
     end
   end
@@ -138,18 +138,18 @@ describe 'rabbitmq class:' do
     end
 
     describe service(service_name) do
-      it { should be_running }
+      it { is_expected.to be_running }
     end
     describe port(5672) do
-      it { should be_listening.on('127.0.0.1').with('tcp') }
+      it { is_expected.to be_listening.on('127.0.0.1').with('tcp') }
     end
     describe port(15672) do
-      it { should be_listening.on('127.0.0.1').with('tcp') }
+      it { is_expected.to be_listening.on('127.0.0.1').with('tcp') }
     end
     # This listens on all interfaces regardless of these settings
     describe port(25672) do
       xit "Is on 55672 instead on older rmq versions" do
-        should be_listening.on('0.0.0.0').with('tcp')
+        is_expected.to be_listening.on('0.0.0.0').with('tcp')
       end
     end
   end
@@ -170,17 +170,17 @@ describe 'rabbitmq class:' do
     end
 
     describe service(service_name) do
-      it { should be_running }
+      it { is_expected.to be_running }
     end
     describe port(5672) do
-      it { should be_listening.on('0.0.0.0').with('tcp') }
+      it { is_expected.to be_listening.on('0.0.0.0').with('tcp') }
     end
     describe port(15672) do
-      it { should be_listening.on('127.0.0.1').with('tcp') }
+      it { is_expected.to be_listening.on('127.0.0.1').with('tcp') }
     end
     describe port(25672) do
       xit "Is on 55672 instead on older rmq versions" do
-        should be_listening.on('0.0.0.0').with('tcp')
+        is_expected.to be_listening.on('0.0.0.0').with('tcp')
       end
     end
   end

@@ -18,7 +18,7 @@ describe 'rabbitmq::install::rabbitmqadmin class' do
     end
 
     describe file('/var/lib/rabbitmq/rabbitmqadmin') do
-      it { should be_file }
+      it { is_expected.to be_file }
     end
   end
 
@@ -40,7 +40,7 @@ describe 'rabbitmq::install::rabbitmqadmin class' do
     end
 
     describe file('/var/lib/rabbitmq/rabbitmqadmin') do
-      it { should_not be_file }
+      it { is_expected.not_to be_file }
     end
   end
 
@@ -78,7 +78,7 @@ describe 'rabbitmq::install::rabbitmqadmin class' do
     end
 
     describe file('/var/lib/rabbitmq/rabbitmqadmin') do
-      it { should be_file }
+      it { is_expected.to be_file }
     end
   end
 
