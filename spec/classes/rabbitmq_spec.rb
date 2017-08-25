@@ -1385,10 +1385,9 @@ EOS
   context "on FreeBSD" do
     with_freebsd_facts
     it 'installs the rabbitmq package' do
-      should contain_package('rabbitmq-server').with(
+      is_expected.to contain_package('rabbitmq-server').with(
         'ensure'   => 'installed',
         'name'     => 'rabbitmq',
-        'provider' => 'freebsd'
       )
     end
   end

@@ -36,6 +36,12 @@
         "12.04",
         "14.04"
       ]
+    },
+    {
+      "operatingsystem": "FreeBSD"
+    },
+    {
+      "operatingsystem": "OpenBSD"
     }
   ],
   "requirements": [

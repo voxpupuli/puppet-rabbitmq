@@ -38,11 +38,11 @@ def with_freebsd_facts
   # operatingsystemrelease may contain X.X-current
   # or other prefixes
   let :facts do
-    super().merge({
-      :kernelversion             => '12',
-      :osfamily                  => 'FreeBSD',
-      :staging_http_get          => '',
-    })
+    super().merge(
+      kernelversion: '12',
+      osfamily: 'FreeBSD',
+      staging_http_get: ''
+    )
   end
 end
 
