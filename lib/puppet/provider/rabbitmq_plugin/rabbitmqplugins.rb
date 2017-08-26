@@ -1,10 +1,14 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmqctl'))
 Puppet::Type.type(:rabbitmq_plugin).provide(:rabbitmqplugins, parent: Puppet::Provider::Rabbitmqctl) do
-  case Facter.value(:osfamily)
-  when 'RedHat'
-    has_command(:rabbitmqplugins, '/usr/lib/rabbitmq/bin/rabbitmq-plugins') { environment HOME: '/tmp' }
+  # Prefer rabbitmq-plugins if it's in $PATH, but fall back to /usr/lib/rabbitmq/bin
+  if Puppet::Util.which('rabbitmq-plugins')
+    has_command(:rabbitmqplugins, 'rabbitmq-plugins') do
+      environment HOME: '/tmp'
+    end
   else
-    has_command(:rabbitmqplugins, 'rabbitmq-plugins') { environment HOME: '/tmp' }
+    has_command(:rabbitmqplugins, '/usr/lib/rabbitmq/bin/rabbitmq-plugins') do
+      environment HOME: '/tmp'
+    end
   end
 
   defaultfor feature: :posix
