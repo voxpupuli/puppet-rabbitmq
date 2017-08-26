@@ -1,10 +1,8 @@
 require 'spec_helper_acceptance'
 
 describe 'rabbitmq vhost:' do
-
-
-  context "create vhost resource" do
-    it 'should run successfully' do
+  context 'create vhost resource' do
+    it 'runs successfully' do
       pp = <<-EOS
       if $::osfamily == 'RedHat' {
         class { 'erlang': epel_enable => true }
@@ -22,16 +20,15 @@ describe 'rabbitmq vhost:' do
       }
       EOS
 
-      apply_manifest(pp, :catch_failures => true)
-      apply_manifest(pp, :catch_changes => true)
+      apply_manifest(pp, catch_failures: true)
+      apply_manifest(pp, catch_changes: true)
     end
 
-    it 'should have the vhost' do
+    it 'has the vhost' do
       shell('rabbitmqctl list_vhosts') do |r|
-        expect(r.stdout).to match(/myhost/)
+        expect(r.stdout).to match(%r{myhost})
         expect(r.exit_code).to be_zero
       end
     end
-
   end
 end
