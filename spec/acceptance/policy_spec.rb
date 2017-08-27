@@ -1,10 +1,8 @@
 require 'spec_helper_acceptance'
 
 describe 'rabbitmq policy on a vhost:' do
-
-
-  context "create policy resource" do
-    it 'should run successfully' do
+  context 'create policy resource' do
+    it 'runs successfully' do
       pp = <<-EOS
       if $::osfamily == 'RedHat' {
         class { 'erlang': epel_enable => true }
@@ -41,23 +39,20 @@ describe 'rabbitmq policy on a vhost:' do
       }
       EOS
 
-      apply_manifest(pp, :catch_failures => true)
-      apply_manifest(pp, :catch_changes => true)
-
+      apply_manifest(pp, catch_failures: true)
+      apply_manifest(pp, catch_changes: true)
 
       # Apply twice to ensure no changes the second time.
-      apply_manifest(pp, :catch_failures => true)
-      expect(apply_manifest(pp, :catch_changes => true).exit_code).to be_zero
-
+      apply_manifest(pp, catch_failures: true)
+      expect(apply_manifest(pp, catch_changes: true).exit_code).to be_zero
     end
 
-    it 'should have the policy' do
+    it 'has the policy' do
       shell('rabbitmqctl list_policies -p myhost') do |r|
-        expect(r.stdout).to match(/myhost.*ha-all.*ha-sync-mode/)
-        expect(r.stdout).to match(/myhost.*eu-federation/)
+        expect(r.stdout).to match(%r{myhost.*ha-all.*ha-sync-mode})
+        expect(r.stdout).to match(%r{myhost.*eu-federation})
         expect(r.exit_code).to be_zero
       end
     end
-
   end
 end

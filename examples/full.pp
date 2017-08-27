@@ -1,10 +1,9 @@
-class { 'rabbitmq::repo::apt':
+class { '::rabbitmq::repo::apt':
   pin => '900',
 }
 
--> class { 'rabbitmq::server':
+-> class { '::rabbitmq::server':
   delete_guest_user => true,
-#  version           => '2.4.1',
 }
 
 -> rabbitmq_user { 'dan':

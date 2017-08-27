@@ -5,211 +5,213 @@ RSpec.configure do |config|
 end
 provider_class = Puppet::Type.type(:rabbitmq_user).provider(:rabbitmqctl)
 describe provider_class do
-  before :each do
-    @resource = Puppet::Type::Rabbitmq_user.new(
-      {:name => 'foo', :password => 'bar'}
+  let(:resource) do
+    Puppet::Type::Rabbitmq_user.new(
+      name: 'foo', password: 'bar'
     )
-    @provider = provider_class.new(@resource)
   end
-  it 'should match user names' do
-    @provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
+
+  let(:provider) { provider_class.new(resource) }
+
+  it 'matches user names' do
+    provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
 foo
 EOT
-    @provider.exists?.should == 'foo'
+    expect(provider.exists?).to eq('foo')
   end
-  it 'should match user names with 2.4.1 syntax' do
-    @provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
+  it 'matches user names with 2.4.1 syntax' do
+    provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
 foo bar
 EOT
-    @provider.exists?.should == 'foo bar'
+    expect(provider.exists?).to eq('foo bar')
   end
-  it 'should not match if no users on system' do
-    @provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
+  it 'does not match if no users on system' do
+    provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
 EOT
-    @provider.exists?.should be_nil
+    expect(provider.exists?).to be_nil
   end
-  it 'should not match if no matching users on system' do
-    @provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
+  it 'does not match if no matching users on system' do
+    provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
 fooey
 EOT
-    @provider.exists?.should be_nil
+    expect(provider.exists?).to be_nil
   end
-  it 'should match user names from list' do
-    @provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
+  it 'matches user names from list' do
+    provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
 one
 two three
 foo
 bar
 EOT
-    @provider.exists?.should == 'foo'
+    expect(provider.exists?).to eq('foo')
   end
-  it 'should create user and set password' do
-    @resource[:password] = 'bar'
-    @provider.expects(:rabbitmqctl).with('add_user', 'foo', 'bar')
-    @provider.create
+  it 'creates user and set password' do
+    resource[:password] = 'bar'
+    provider.expects(:rabbitmqctl).with('add_user', 'foo', 'bar')
+    provider.create
   end
-  it 'should create user, set password and set to admin' do
-    @resource[:password] = 'bar'
-    @resource[:admin] = 'true'
-    @provider.expects(:rabbitmqctl).with('add_user', 'foo', 'bar')
-    @provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
+  it 'creates user, set password and set to admin' do
+    resource[:password] = 'bar'
+    resource[:admin] = 'true'
+    provider.expects(:rabbitmqctl).with('add_user', 'foo', 'bar')
+    provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
 foo   []
 icinga  [monitoring]
 kitchen []
 kitchen2        [abc, def, ghi]
 EOT
-    @provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', ['administrator'])
-    @provider.create
+    provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', ['administrator'])
+    provider.create
   end
-  it 'should call rabbitmqctl to delete' do
-    @provider.expects(:rabbitmqctl).with('delete_user', 'foo')
-    @provider.destroy
+  it 'calls rabbitmqctl to delete' do
+    provider.expects(:rabbitmqctl).with('delete_user', 'foo')
+    provider.destroy
   end
-  it 'should be able to retrieve admin value' do
-    @provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
+  it 'is able to retrieve admin value' do
+    provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
 foo [administrator]
 EOT
-    @provider.admin.should == :true
-    @provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
+    expect(provider.admin).to eq(:true)
+    provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
 one [administrator]
 foo []
 EOT
-    @provider.admin.should == :false
+    expect(provider.admin).to eq(:false)
   end
-  it 'should fail if admin value is invalid' do
-    @provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
+  it 'fails if admin value is invalid' do
+    provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
 foo fail
 EOT
-    expect { @provider.admin }.to raise_error(Puppet::Error, /Could not match line/)
+    expect { provider.admin }.to raise_error(Puppet::Error, %r{Could not match line})
   end
-  it 'should be able to set admin value' do
-    @provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
+  it 'is able to set admin value' do
+    provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
 foo   []
 icinga  [monitoring]
 kitchen []
 kitchen2        [abc, def, ghi]
 EOT
-    @provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', ['administrator'])
-    @provider.admin=:true
+    provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', ['administrator'])
+    provider.admin = :true
   end
-  it 'should not interfere with existing tags on the user when setting admin value' do
-    @provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
+  it 'does not interfere with existing tags on the user when setting admin value' do
+    provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
 foo   [bar, baz]
 icinga  [monitoring]
 kitchen []
 kitchen2        [abc, def, ghi]
 EOT
-    @provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', ['bar','baz', 'administrator'].sort)
-    @provider.admin=:true
+    provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', %w[bar baz administrator].sort)
+    provider.admin = :true
   end
-  it 'should be able to unset admin value' do
-    @provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
+  it 'is able to unset admin value' do
+    provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
 foo     [administrator]
 guest   [administrator]
 icinga  []
 EOT
-    @provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', [])
-    @provider.admin=:false
+    provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', [])
+    provider.admin = :false
   end
-  it 'should not interfere with existing tags on the user when unsetting admin value' do
-    @provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
+  it 'does not interfere with existing tags on the user when unsetting admin value' do
+    provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
 foo   [administrator, bar, baz]
 icinga  [monitoring]
 kitchen []
 kitchen2        [abc, def, ghi]
 EOT
-    @provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', ['bar','baz'].sort)
-    @provider.admin=:false
+    provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', %w[bar baz].sort)
+    provider.admin = :false
   end
 
-  it 'should clear all tags on existing user' do
-    @provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
+  it 'clears all tags on existing user' do
+    provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
 one [administrator]
 foo [tag1,tag2]
 icinga  [monitoring]
 kitchen []
 kitchen2        [abc, def, ghi]
 EOT
-    @provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', [])
-    @provider.tags=[]
+    provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', [])
+    provider.tags = []
   end
 
-  it 'should set multiple tags' do
-    @provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
+  it 'sets multiple tags' do
+    provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
 one [administrator]
 foo []
 icinga  [monitoring]
 kitchen []
 kitchen2        [abc, def, ghi]
 EOT
-    @provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', ['tag1','tag2'])
-    @provider.tags=['tag1','tag2']
+    provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', %w[tag1 tag2])
+    provider.tags = %w[tag1 tag2]
   end
 
-  it 'should clear tags while keep admin tag' do
-    @resource[:admin]  = true
-    @provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
-one [administrator]
-foo [administrator, tag1, tag2]
-icinga  [monitoring]
-kitchen []
-kitchen2        [abc, def, ghi]
-EOT
-    @provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', ["administrator"])
-    @provider.tags=[]
-  end
-
-  it 'should change tags while keep admin tag' do
-    @resource[:admin]  = true
-    @provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
+  it 'clears tags while keep admin tag' do
+    resource[:admin] = true
+    provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
 one [administrator]
 foo [administrator, tag1, tag2]
 icinga  [monitoring]
 kitchen []
 kitchen2        [abc, def, ghi]
 EOT
-    @provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', ["administrator","tag1","tag3","tag7"])
-    @provider.tags=['tag1','tag7','tag3']
+    provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', ['administrator'])
+    provider.tags = []
   end
 
-  it 'should create user with tags and without admin' do
-    @resource[:tags] = [ "tag1", "tag2" ]
-    @provider.expects(:rabbitmqctl).with('add_user', 'foo', 'bar')
-    @provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', ["tag1","tag2"])
-    @provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
+  it 'changes tags while keep admin tag' do
+    resource[:admin] = true
+    provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
+one [administrator]
+foo [administrator, tag1, tag2]
+icinga  [monitoring]
+kitchen []
+kitchen2        [abc, def, ghi]
+EOT
+    provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', %w[administrator tag1 tag3 tag7])
+    provider.tags = %w[tag1 tag7 tag3]
+  end
+
+  it 'creates user with tags and without admin' do
+    resource[:tags] = %w[tag1 tag2]
+    provider.expects(:rabbitmqctl).with('add_user', 'foo', 'bar')
+    provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', %w[tag1 tag2])
+    provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
 foo []
 EOT
-    @provider.create
+    provider.create
   end
 
-  it 'should create user with tags and with admin' do
-    @resource[:tags] = [ "tag1", "tag2" ]
-    @resource[:admin]  = true
-    @provider.expects(:rabbitmqctl).with('add_user', 'foo', 'bar')
-    @provider.expects(:rabbitmqctl).with('-q', 'list_users').twice.returns <<-EOT
+  it 'creates user with tags and with admin' do
+    resource[:tags] = %w[tag1 tag2]
+    resource[:admin] = true
+    provider.expects(:rabbitmqctl).with('add_user', 'foo', 'bar')
+    provider.expects(:rabbitmqctl).with('-q', 'list_users').twice.returns <<-EOT
 foo []
 EOT
-    @provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', ["administrator"])
-    @provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', ["administrator","tag1","tag2"])
-    @provider.create
+    provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', ['administrator'])
+    provider.expects(:rabbitmqctl).with('set_user_tags', 'foo', %w[administrator tag1 tag2])
+    provider.create
   end
 
-  it 'should not return the administrator tag in tags for admins' do
-    @resource[:tags] = []
-    @resource[:admin]  = true
-    @provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
+  it 'does not return the administrator tag in tags for admins' do
+    resource[:tags] = []
+    resource[:admin] = true
+    provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
 foo [administrator]
 EOT
-    @provider.tags.should == []
+    expect(provider.tags).to eq([])
   end
 
-  it 'should return the administrator tag for non-admins' do
+  it 'returns the administrator tag for non-admins' do
     # this should not happen though.
-    @resource[:tags] = []
-    @resource[:admin]  = :false
-    @provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
+    resource[:tags] = []
+    resource[:admin] = :false
+    provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
 foo [administrator]
 EOT
-    @provider.tags.should == ["administrator"]
+    expect(provider.tags).to eq(['administrator'])
   end
 end

@@ -1,19 +1,18 @@
 require 'puppet'
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmqctl'))
-Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, :parent => Puppet::Provider::Rabbitmqctl) do
-
+Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, parent: Puppet::Provider::Rabbitmqctl) do
   if Puppet::PUPPETVERSION.to_f < 3
-    commands :rabbitmqctl   => 'rabbitmqctl'
-    commands :rabbitmqadmin => '/usr/local/bin/rabbitmqadmin'
+    commands rabbitmqctl: 'rabbitmqctl'
+    commands rabbitmqadmin: '/usr/local/bin/rabbitmqadmin'
   else
     has_command(:rabbitmqctl, 'rabbitmqctl') do
-      environment :HOME => "/tmp"
+      environment HOME: '/tmp'
     end
     has_command(:rabbitmqadmin, '/usr/local/bin/rabbitmqadmin') do
-      environment :HOME => "/tmp"
+      environment HOME: '/tmp'
     end
   end
-  defaultfor :feature => :posix
+  defaultfor feature: :posix
 
   def should_vhost
     if @should_vhost
@@ -25,9 +24,9 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, :parent => Puppet:
 
   def self.all_vhosts
     vhosts = []
-    self.run_with_retries {
+    run_with_retries do
       rabbitmqctl('-q', 'list_vhosts')
-    }.split(/\n/).each do |vhost|
+    end.split(%r{\n}).each do |vhost|
       vhosts.push(vhost)
     end
     vhosts
@@ -35,10 +34,10 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, :parent => Puppet:
 
   def self.all_exchanges(vhost)
     exchanges = []
-    self.run_with_retries {
+    run_with_retries do
       rabbitmqctl('-q', 'list_exchanges', '-p', vhost, 'name', 'type', 'internal', 'durable', 'auto_delete', 'arguments')
-    }.split(/\n/).each do |exchange|
-      next if exchange =~ /^federation:/
+    end.split(%r{\n}).each do |exchange|
+      next if exchange =~ %r{^federation:}
       exchanges.push(exchange)
     end
     exchanges
@@ -47,34 +46,32 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, :parent => Puppet:
   def self.instances
     resources = []
     all_vhosts.each do |vhost|
-        all_exchanges(vhost).each do |line|
-            name, type, internal, durable, auto_delete, arguments = line.split()
-            if type.nil?
-                # if name is empty, it will wrongly get the type's value.
-                # This way type will get the correct value
-                type = name
-                name = ''
-            end
-            # Convert output of arguments from the rabbitmqctl command to a json string.
-            if !arguments.nil?
-              arguments = arguments.gsub(/^\[(.*)\]$/, "").gsub(/\{("(?:.|\\")*?"),/, '{\1:').gsub(/\},\{/, ",")
-              if arguments == ""
-                arguments = '{}'
-              end
-            else
-              arguments = '{}'
-            end
-            exchange = {
-              :type   => type,
-              :ensure => :present,
-              :internal => internal,
-              :durable => durable,
-              :auto_delete => auto_delete,
-              :name   => "%s@%s" % [name, vhost],
-              :arguments => JSON.parse(arguments),
-            }
-            resources << new(exchange) if exchange[:type]
+      all_exchanges(vhost).each do |line|
+        name, type, internal, durable, auto_delete, arguments = line.split
+        if type.nil?
+          # if name is empty, it will wrongly get the type's value.
+          # This way type will get the correct value
+          type = name
+          name = ''
         end
+        # Convert output of arguments from the rabbitmqctl command to a json string.
+        if !arguments.nil?
+          arguments = arguments.gsub(%r{^\[(.*)\]$}, '').gsub(%r{\{("(?:.|\\")*?"),}, '{\1:').gsub(%r{\},\{}, ',')
+          arguments = '{}' if arguments == ''
+        else
+          arguments = '{}'
+        end
+        exchange = {
+          type: type,
+          ensure: :present,
+          internal: internal,
+          durable: durable,
+          auto_delete: auto_delete,
+          name: format('%s@%s', name, vhost),
+          arguments: JSON.parse(arguments)
+        }
+        resources << new(exchange) if exchange[:type]
+      end
     end
     resources
   end
@@ -82,7 +79,7 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, :parent => Puppet:
   def self.prefetch(resources)
     packages = instances
     resources.keys.each do |name|
-      if provider = packages.find{ |pkg| pkg.name == name }
+      if provider = packages.find { |pkg| pkg.name == name }
         resources[name].provider = provider
       end
     end
@@ -96,10 +93,8 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, :parent => Puppet:
     vhost_opt = should_vhost ? "--vhost=#{should_vhost}" : ''
     name = resource[:name].split('@')[0]
     arguments = resource[:arguments]
-    if arguments.nil?
-      arguments = {}
-    end
-    cmd = ['declare', 'exchange', vhost_opt, "--user=#{resource[:user]}", "--password=#{resource[:password]}", "name=#{name}", "type=#{resource[:type]}",]
+    arguments = {} if arguments.nil?
+    cmd = ['declare', 'exchange', vhost_opt, "--user=#{resource[:user]}", "--password=#{resource[:password]}", "name=#{name}", "type=#{resource[:type]}"]
     cmd << "internal=#{resource[:internal]}" if resource[:internal]
     cmd << "durable=#{resource[:durable]}" if resource[:durable]
     cmd << "auto_delete=#{resource[:auto_delete]}" if resource[:auto_delete]
@@ -114,5 +109,4 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, :parent => Puppet:
     rabbitmqadmin('delete', 'exchange', vhost_opt, "--user=#{resource[:user]}", "--password=#{resource[:password]}", "name=#{name}", '-c', '/etc/rabbitmq/rabbitmqadmin.conf')
     @property_hash[:ensure] = :absent
   end
-
 end

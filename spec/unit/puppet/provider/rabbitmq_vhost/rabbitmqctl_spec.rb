@@ -5,41 +5,43 @@ RSpec.configure do |config|
 end
 provider_class = Puppet::Type.type(:rabbitmq_vhost).provider(:rabbitmqctl)
 describe provider_class do
-  before :each do
-    @resource = Puppet::Type::Rabbitmq_vhost.new(
-      {:name => 'foo'}
+  let(:resource) do
+    Puppet::Type::Rabbitmq_vhost.new(
+      name: 'foo'
     )
-    @provider = provider_class.new(@resource)
   end
-  it 'should match vhost names' do
-    @provider.expects(:rabbitmqctl).with('-q', 'list_vhosts').returns <<-EOT
+
+  let(:provider) { provider_class.new(resource) }
+
+  it 'matches vhost names' do
+    provider.expects(:rabbitmqctl).with('-q', 'list_vhosts').returns <<-EOT
 Listing vhosts ...
 foo
 ...done.
 EOT
-    @provider.exists?.should == 'foo'
+    expect(provider.exists?).to eq('foo')
   end
-  it 'should not match if no vhosts on system' do
-    @provider.expects(:rabbitmqctl).with('-q', 'list_vhosts').returns <<-EOT
+  it 'does not match if no vhosts on system' do
+    provider.expects(:rabbitmqctl).with('-q', 'list_vhosts').returns <<-EOT
 Listing vhosts ...
 ...done.
 EOT
-    @provider.exists?.should be_nil
+    expect(provider.exists?).to be_nil
   end
-  it 'should not match if no matching vhosts on system' do
-    @provider.expects(:rabbitmqctl).with('-q', 'list_vhosts').returns <<-EOT
+  it 'does not match if no matching vhosts on system' do
+    provider.expects(:rabbitmqctl).with('-q', 'list_vhosts').returns <<-EOT
 Listing vhosts ...
 fooey
 ...done.
 EOT
-    @provider.exists?.should be_nil
+    expect(provider.exists?).to be_nil
   end
-  it 'should call rabbitmqctl to create' do
-    @provider.expects(:rabbitmqctl).with('add_vhost', 'foo')
-    @provider.create
+  it 'calls rabbitmqctl to create' do
+    provider.expects(:rabbitmqctl).with('add_vhost', 'foo')
+    provider.create
   end
-  it 'should call rabbitmqctl to create' do
-    @provider.expects(:rabbitmqctl).with('delete_vhost', 'foo')
-    @provider.destroy
+  it 'calls rabbitmqctl to create' do
+    provider.expects(:rabbitmqctl).with('delete_vhost', 'foo')
+    provider.destroy
   end
 end

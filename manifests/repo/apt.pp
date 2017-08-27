@@ -28,7 +28,7 @@ class rabbitmq::repo::apt(
     key          => {
       'id'      => $key,
       'source'  => $key_source,
-      'content' =>  $key_content
+      'content' =>  $key_content,
     },
     architecture => $architecture,
   }

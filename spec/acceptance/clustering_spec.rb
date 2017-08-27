@@ -2,9 +2,9 @@ require 'spec_helper_acceptance'
 
 describe 'rabbitmq clustering' do
   context 'rabbitmq::wipe_db_on_cookie_change => false' do
-    it 'should run successfully' do
+    it 'runs successfully' do
       pp = <<-EOS
-      class { 'rabbitmq': 
+      class { 'rabbitmq':
         config_cluster           => true,
         cluster_nodes            => ['rabbit1', 'rabbit2'],
         cluster_node_type        => 'ram',
@@ -17,18 +17,17 @@ describe 'rabbitmq clustering' do
       }
       EOS
 
-      apply_manifest(pp, :expect_failures => true)
+      apply_manifest(pp, expect_failures: true)
     end
 
     describe file('/var/lib/rabbitmq/.erlang.cookie') do
-      it { should_not contain 'TESTCOOKIE' }
+      it { is_expected.not_to contain 'TESTCOOKIE' }
     end
-
   end
   context 'rabbitmq::wipe_db_on_cookie_change => true' do
-    it 'should run successfully' do
+    it 'runs successfully' do
       pp = <<-EOS
-      class { 'rabbitmq': 
+      class { 'rabbitmq':
         config_cluster           => true,
         cluster_nodes            => ['rabbit1', 'rabbit2'],
         cluster_node_type        => 'ram',
@@ -41,20 +40,20 @@ describe 'rabbitmq clustering' do
       }
       EOS
 
-      apply_manifest(pp, :catch_failures => true)
+      apply_manifest(pp, catch_failures: true)
     end
 
     describe file('/etc/rabbitmq/rabbitmq.config') do
-      it { should be_file }
-      it { should contain 'cluster_nodes' }
-      it { should contain 'rabbit@rabbit1' }
-      it { should contain 'rabbit@rabbit2' }
-      it { should contain 'ram' }
+      it { is_expected.to be_file }
+      it { is_expected.to contain 'cluster_nodes' }
+      it { is_expected.to contain 'rabbit@rabbit1' }
+      it { is_expected.to contain 'rabbit@rabbit2' }
+      it { is_expected.to contain 'ram' }
     end
 
     describe file('/var/lib/rabbitmq/.erlang.cookie') do
-      it { should be_file }
-      it { should contain 'TESTCOOKIE' }
+      it { is_expected.to be_file }
+      it { is_expected.to contain 'TESTCOOKIE' }
     end
   end
 end

@@ -1,5 +1,4 @@
 Puppet::Type.newtype(:rabbitmq_parameter) do
-
   desc 'Type for managing rabbitmq parameters'
 
   ensurable do
@@ -15,13 +14,13 @@ Puppet::Type.newtype(:rabbitmq_parameter) do
   autorequire(:service) { 'rabbitmq-server' }
 
   validate do
-    fail('component_name parameter is required.') if self[:ensure] == :present and self[:component_name].nil?
-    fail('value parameter is required.') if self[:ensure] == :present and self[:value].nil?
+    raise('component_name parameter is required.') if self[:ensure] == :present && self[:component_name].nil?
+    raise('value parameter is required.') if self[:ensure] == :present && self[:value].nil?
   end
 
-  newparam(:name, :namevar => true) do
+  newparam(:name, namevar: true) do
     desc 'combination of name@vhost to set parameter for'
-    newvalues(/^\S+@\S+$/)
+    newvalues(%r{^\S+@\S+$})
   end
 
   newproperty(:component_name) do
@@ -46,27 +45,21 @@ Puppet::Type.newtype(:rabbitmq_parameter) do
   end
 
   def validate_component_name(value)
-    if value.empty?
-      raise ArgumentError, "component_name must be defined"
-    end
+    raise ArgumentError, 'component_name must be defined' if value.empty?
   end
 
   def validate_value(value)
-    unless [Hash].include?(value.class)
-      raise ArgumentError, "Invalid value"
-    end
-    value.each do |k,v|
+    raise ArgumentError, 'Invalid value' unless [Hash].include?(value.class)
+    value.each do |_k, v|
       unless [String, TrueClass, FalseClass].include?(v.class)
-        raise ArgumentError, "Invalid value"
+        raise ArgumentError, 'Invalid value'
       end
     end
   end
 
   def munge_value(value)
-    value.each do |k,v|
-      if (v =~ /\A[-+]?[0-9]+\z/)
-        value[k] = v.to_i
-      end
+    value.each do |k, v|
+      value[k] = v.to_i if v =~ %r{\A[-+]?[0-9]+\z}
     end
     value
   end

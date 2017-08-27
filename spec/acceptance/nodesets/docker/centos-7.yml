@@ -1,3 +1,7 @@
+---
+# This file is managed via modulesync
+# https://github.com/voxpupuli/modulesync
+# https://github.com/voxpupuli/modulesync_config
 HOSTS:
   centos-7-x64:
     platform: el-7-x86_64
@@ -5,8 +9,11 @@ HOSTS:
     image: centos:7
     docker_preserve_image: true
     docker_cmd: '["/usr/sbin/init"]'
-    # install various tools required to get the image up to usable levels
     docker_image_commands:
-      - 'yum install -y crontabs tar wget openssl sysvinit-tools iproute which initscripts'
+      - 'yum install -y crontabs initscripts iproute openssl sysvinit-tools tar wget which ss'
+      - 'systemctl mask getty@tty1.service'
 CONFIG:
   trace_limit: 200
+  masterless: true
+...
+# vim: syntax=yaml

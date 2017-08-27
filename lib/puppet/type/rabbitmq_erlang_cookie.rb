@@ -1,13 +1,13 @@
 Puppet::Type.newtype(:rabbitmq_erlang_cookie) do
   desc 'Type to manage the rabbitmq erlang cookie securely'
 
-  newparam(:path, :namevar => true)
+  newparam(:path, namevar: true)
 
   newproperty(:content) do
     desc 'Content of cookie'
-    newvalues(/^\S+$/)
-    def change_to_s(current, desired)
-      "The rabbitmq erlang cookie was changed"
+    newvalues(%r{^\S+$})
+    def change_to_s(_current, _desired)
+      'The rabbitmq erlang cookie was changed'
     end
   end
 
@@ -29,6 +29,6 @@ Puppet::Type.newtype(:rabbitmq_erlang_cookie) do
   end
 
   newparam(:service_name) do
-    newvalues(/^\S+$/)
+    newvalues(%r{^\S+$})
   end
 end

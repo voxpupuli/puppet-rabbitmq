@@ -3,19 +3,18 @@ require 'puppet'
 require 'digest'
 
 Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin) do
-
   if Puppet::PUPPETVERSION.to_f < 3
-    commands :rabbitmqctl   => 'rabbitmqctl'
-    commands :rabbitmqadmin => '/usr/local/bin/rabbitmqadmin'
+    commands rabbitmqctl: 'rabbitmqctl'
+    commands rabbitmqadmin: '/usr/local/bin/rabbitmqadmin'
   else
     has_command(:rabbitmqctl, 'rabbitmqctl') do
-      environment :HOME => "/tmp"
+      environment HOME: '/tmp'
     end
     has_command(:rabbitmqadmin, '/usr/local/bin/rabbitmqadmin') do
-      environment :HOME => "/tmp"
+      environment HOME: '/tmp'
     end
   end
-  defaultfor :feature => :posix
+  defaultfor feature: :posix
 
   # Without this, the composite namevar stuff doesn't work properly.
   mk_resource_methods
@@ -30,44 +29,41 @@ Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin) do
 
   def self.all_vhosts
     vhosts = []
-    rabbitmqctl('list_vhosts', '-q').split(/\n/).collect do |vhost|
+    rabbitmqctl('list_vhosts', '-q').split(%r{\n}).map do |vhost|
       vhosts.push(vhost)
     end
     vhosts
   end
 
   def self.all_bindings(vhost)
-    rabbitmqctl('list_bindings', '-q', '-p', vhost, 'source_name', 'destination_name', 'destination_kind', 'routing_key', 'arguments').split(/\n/)
+    rabbitmqctl('list_bindings', '-q', '-p', vhost, 'source_name', 'destination_name', 'destination_kind', 'routing_key', 'arguments').split(%r{\n})
   end
 
   def self.instances
     resources = []
     all_vhosts.each do |vhost|
-      all_bindings(vhost).collect do |line|
-        source_name, destination_name, destination_type, routing_key, arguments = line.split(/\t/)
+      all_bindings(vhost).map do |line|
+        source_name, destination_name, destination_type, routing_key, arguments = line.split(%r{\t})
         # Convert output of arguments from the rabbitmqctl command to a json string.
         if !arguments.nil?
-          arguments = arguments.gsub(/^\[(.*)\]$/, "").gsub(/\{("(?:.|\\")*?"),/, '{\1:').gsub(/\},\{/, ",")
-          if arguments == ""
-            arguments = '{}'
-          end
+          arguments = arguments.gsub(%r{^\[(.*)\]$}, '').gsub(%r{\{("(?:.|\\")*?"),}, '{\1:').gsub(%r{\},\{}, ',')
+          arguments = '{}' if arguments == ''
         else
           arguments = '{}'
         end
-        hashed_name = Digest::SHA256.hexdigest "%s@%s@%s@%s" % [source_name, destination_name, vhost, routing_key]
-        unless(source_name.empty?)
-          binding = {
-            :source           => source_name,
-            :destination      => destination_name,
-            :vhost            => vhost,
-            :destination_type => destination_type,
-            :routing_key      => routing_key,
-            :arguments        => JSON.parse(arguments),
-            :ensure           => :present,
-            :name             => hashed_name,
-          }
-          resources << new(binding) if binding[:name]
-        end
+        hashed_name = Digest::SHA256.hexdigest format('%s@%s@%s@%s', source_name, destination_name, vhost, routing_key)
+        next if source_name.empty?
+        binding = {
+          source: source_name,
+          destination: destination_name,
+          vhost: vhost,
+          destination_type: destination_type,
+          routing_key: routing_key,
+          arguments: JSON.parse(arguments),
+          ensure: :present,
+          name: hashed_name
+        }
+        resources << new(binding) if binding[:name]
       end
     end
     resources
@@ -78,7 +74,7 @@ Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin) do
   def self.prefetch(resources)
     bindings = instances
     resources.each do |name, res|
-      if provider = bindings.find{ |binding| binding.source == res[:source] && binding.destination == res[:destination] && binding.vhost == res[:vhost] && binding.routing_key == res[:routing_key] }
+      if provider = bindings.find { |binding| binding.source == res[:source] && binding.destination == res[:destination] && binding.vhost == res[:vhost] && binding.routing_key == res[:routing_key] }
         resources[name].provider = provider
       end
     end
@@ -91,22 +87,19 @@ Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin) do
   def create
     vhost_opt = should_vhost ? "--vhost=#{should_vhost}" : ''
     arguments = resource[:arguments]
-    if arguments.nil?
-      arguments = {}
-    end
+    arguments = {} if arguments.nil?
     rabbitmqadmin('declare',
-      'binding',
-      vhost_opt,
-      "--user=#{resource[:user]}",
-      "--password=#{resource[:password]}",
-      '-c',
-      '/etc/rabbitmq/rabbitmqadmin.conf',
-      "source=#{resource[:source]}",
-      "destination=#{resource[:destination]}",
-      "arguments=#{arguments.to_json}",
-      "routing_key=#{resource[:routing_key]}",
-      "destination_type=#{resource[:destination_type]}"
-    )
+                  'binding',
+                  vhost_opt,
+                  "--user=#{resource[:user]}",
+                  "--password=#{resource[:password]}",
+                  '-c',
+                  '/etc/rabbitmq/rabbitmqadmin.conf',
+                  "source=#{resource[:source]}",
+                  "destination=#{resource[:destination]}",
+                  "arguments=#{arguments.to_json}",
+                  "routing_key=#{resource[:routing_key]}",
+                  "destination_type=#{resource[:destination_type]}")
     @property_hash[:ensure] = :present
   end
 
@@ -115,5 +108,4 @@ Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin) do
     rabbitmqadmin('delete', 'binding', vhost_opt, "--user=#{resource[:user]}", "--password=#{resource[:password]}", '-c', '/etc/rabbitmq/rabbitmqadmin.conf', "source=#{resource[:source]}", "destination_type=#{resource[:destination_type]}", "destination=#{resource[:destination]}", "properties_key=#{resource[:routing_key]}")
     @property_hash[:ensure] = :absent
   end
-
 end
