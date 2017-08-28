@@ -346,8 +346,10 @@ be changed to latest.
 
 ###`package_gpg_key`
 
-This should generally be left as default. If using a package not signed by the
-RabbitMQ signing key, you can use this parameter to override the expected key.
+RPM package GPG key to import. Uses source method. Should be a URL for Debian/RedHat
+OS family, or a file name for RedHat OS family.
+Set to https://www.rabbitmq.com/rabbitmq-release-signing-key.asc by default.
+Note, that `key_content`, if specified, would override this parameter for Debian OS family.
 
 ####`package_name`
 
