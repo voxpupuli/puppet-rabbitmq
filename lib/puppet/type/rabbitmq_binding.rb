@@ -11,23 +11,70 @@ Puppet::Type.newtype(:rabbitmq_binding) do
     end
   end
 
-  newparam(:name, :namevar => true) do
-    desc 'source and destination of bind'
-    newvalues(/^\S*@\S+@\S+$/)
+  # Match patterns without '@' as arbitrary names; match patterns with
+  # src@destination@vhost to their named params for backwards compatibility.
+  def self.title_patterns
+    [
+      [
+        /(^([^@]*)$)/m,
+        [
+          [ :name ]
+        ]
+      ],
+      [
+        /^((\S+)@(\S+)@(\S+))$/m,
+        [
+          [ :name ],
+          [ :source ],
+          [ :destination],
+          [ :vhost ]
+        ]
+      ]
+    ]
   end
 
-  newparam(:destination_type) do
+  newparam(:name) do
+    desc 'resource name, either source@destination@vhost or arbitrary name with params'
+
+    isnamevar
+  end
+
+  newproperty(:source) do
+    desc 'source of binding'
+
+    newvalues(/^\S+$/)
+    isnamevar
+  end
+
+  newproperty(:destination) do
+    desc 'destination of binding'
+
+    newvalues(/^\S+$/)
+    isnamevar
+  end
+
+  newproperty(:vhost) do
+    desc 'vhost'
+
+    newvalues(/^\S+$/)
+    defaultto('/')
+    isnamevar
+  end
+
+  newproperty(:routing_key) do
+    desc 'binding routing_key'
+
+    newvalues(/^\S*$/)
+    isnamevar
+  end
+
+  newproperty(:destination_type) do
     desc 'binding destination_type'
     newvalues(/queue|exchange/)
     defaultto('queue')
   end
-  
-  newparam(:routing_key) do
-    desc 'binding routing_key'
-    newvalues(/^\S*$/)
-  end
 
-  newparam(:arguments) do
+  newproperty(:arguments) do
     desc 'binding arguments'
     defaultto {}
     validate do |value|
@@ -48,7 +95,7 @@ Puppet::Type.newtype(:rabbitmq_binding) do
   end
 
   autorequire(:rabbitmq_vhost) do
-    [self[:name].split('@')[2]]
+    setup_autorequire('vhost')
   end
   
   autorequire(:rabbitmq_exchange) do
@@ -65,21 +112,21 @@ Puppet::Type.newtype(:rabbitmq_binding) do
 
   autorequire(:rabbitmq_user_permissions) do
     [
-      "#{self[:user]}@#{self[:name].split('@')[1]}",
-      "#{self[:user]}@#{self[:name].split('@')[0]}"
+      "#{self[:user]}@#{self[:source]}",
+      "#{self[:user]}@#{self[:destination]}"
     ]
   end
 
   def setup_autorequire(type)
     destination_type = value(:destination_type)
     if type == 'exchange'
-      rval = ["#{self[:name].split('@')[0]}@#{self[:name].split('@')[2]}"]
+      rval = ["#{self[:source]}@#{self[:vhost]}"]
       if destination_type == type
-        rval.push("#{self[:name].split('@')[1]}@#{self[:name].split('@')[2]}")
+        rval.push("#{self[:destination]}@#{self[:vhost]}")
       end
     else
       if destination_type == type
-        rval = ["#{self[:name].split('@')[1]}@#{self[:name].split('@')[2]}"]
+        rval = ["#{self[:destination]}@#{self[:vhost]}"]
       else
         rval = []
       end
@@ -90,6 +137,14 @@ Puppet::Type.newtype(:rabbitmq_binding) do
   def validate_argument(argument)
     unless [Hash].include?(argument.class)
       raise ArgumentError, "Invalid argument"
+    end
+  end
+
+  # Validate that we have both source and destination now that these are not
+  # necessarily only coming from the resource title.
+  validate do
+    unless self[:source] and self[:destination]
+      raise ArgumentError, "Source and destination must both be defined."
     end
   end
 

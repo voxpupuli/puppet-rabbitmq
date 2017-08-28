@@ -1,6 +1,4 @@
-require 'puppet'
-require 'puppet/type/rabbitmq_policy'
-
+require 'spec_helper'
 describe Puppet::Type.type(:rabbitmq_policy) do
 
   before do
@@ -158,4 +156,35 @@ describe Puppet::Type.type(:rabbitmq_policy) do
       @policy[:definition] = definition
     }.to raise_error(Puppet::Error, /Invalid shards-per-node value.*future/)
   end
+    
+  it 'should accept and convert the ha-sync-batch-size value' do
+    definition = {'ha-sync-batch-size' => '1800000'}
+    @policy[:definition] = definition
+    @policy[:definition]['ha-sync-batch-size'].should be_a(Fixnum)
+    @policy[:definition]['ha-sync-batch-size'].should == 1800000
+  end
+  
+  it 'should not accept non-numeric ha-sync-batch-size value' do
+    definition = {'ha-sync-batch-size' => 'future'}
+    expect {
+      @policy[:definition] = definition
+    }.to raise_error(Puppet::Error, /Invalid ha-sync-batch-size value.*future/)
+  end
+
+  it 'should accept list value in ha-params when ha-mode = nodes' do
+    definition = {'ha-mode' => 'nodes', 'ha-params' => ['rabbit@rabbit-01', 'rabbit@rabbit-02']}
+    @policy[:definition] = definition
+    @policy[:definition]['ha-mode'].should == 'nodes'
+    @policy[:definition]['ha-params'].should be_a(Array)
+    @policy[:definition]['ha-params'][0].should == 'rabbit@rabbit-01'
+    @policy[:definition]['ha-params'][1].should == 'rabbit@rabbit-02'
+  end
+
+  it 'should not accept non-list value in ha-params when ha-mode = nodes' do
+    definition = {'ha-mode' => 'nodes', 'ha-params' => 'this-will-fail'}
+    expect {
+      @policy[:definition] = definition
+    }.to raise_error(Puppet::Error, /Invalid definition, value this-will-fail for key ha-params is not an array/)
+  end
+
 end

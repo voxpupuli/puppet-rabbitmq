@@ -21,7 +21,6 @@ RSpec.configure do |c|
                          %{"exec { 'setenforce 0': path   => '/bin:/sbin:/usr/bin:/usr/sbin', onlyif => 'which setenforce && getenforce | grep Enforcing', }"})
       end
 
-      on host, "/bin/touch #{default['puppetpath']}/hiera.yaml"
       on host, puppet('module', 'install', 'puppetlabs-stdlib'), { :acceptable_exit_codes => [0,1] }
       on host, puppet('module', 'install', 'puppet-staging'), { :acceptable_exit_codes => [0,1] }
 

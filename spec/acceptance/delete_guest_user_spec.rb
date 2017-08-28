@@ -5,7 +5,7 @@ describe 'rabbitmq with delete_guest_user' do
     it 'should run successfully' do
       pp = <<-EOS
       class { 'rabbitmq': 
-        port              => '5672',
+        port              => 5672,
         delete_guest_user => true,
       }
       if $::osfamily == 'RedHat' {

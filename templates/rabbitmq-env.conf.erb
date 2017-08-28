@@ -1,5 +1,5 @@
-<%- @environment_variables.keys.sort.each do |key| -%>
-<%- if @environment_variables[key] != 'UNSET' -%>
-<%= key %>=<%= @environment_variables[key] %>
-<%- end -%>
-<%- end -%>
+<% @environment_variables.sort.each do |key, value| -%>
+  <%- unless value.nil? -%>
+<%= key %>=<%= value %>
+  <%- end -%>
+<% end -%>

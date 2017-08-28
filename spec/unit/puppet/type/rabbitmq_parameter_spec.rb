@@ -1,6 +1,4 @@
-require 'puppet'
-require 'puppet/type/rabbitmq_parameter'
-
+require 'spec_helper'
 describe Puppet::Type.type(:rabbitmq_parameter) do
 
   before do

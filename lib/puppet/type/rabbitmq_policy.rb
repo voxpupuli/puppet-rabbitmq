@@ -71,8 +71,14 @@ Puppet::Type.newtype(:rabbitmq_policy) do
       raise ArgumentError, "Invalid definition"
     end
     definition.each do |k,v|
-      unless [String].include?(v.class)
-        raise ArgumentError, "Invalid definition, value #{v} is not a string"
+      if k == 'ha-params' && definition['ha-mode'] == 'nodes'
+        unless [Array].include?(v.class)
+          raise ArgumentError, "Invalid definition, value #{v} for key #{k} is not an array"
+        end
+      else
+        unless [String].include?(v.class)
+          raise ArgumentError, "Invalid definition, value #{v} is not a string"
+        end
       end
     end
     if definition['ha-mode'] == 'exactly'
@@ -105,6 +111,12 @@ Puppet::Type.newtype(:rabbitmq_policy) do
         raise ArgumentError, "Invalid shards-per-node value '#{shards_per_node_val}'"
       end
     end
+    if definition.key? 'ha-sync-batch-size'
+      ha_sync_batch_size_val = definition['ha-sync-batch-size']
+      unless ha_sync_batch_size_val.to_i.to_s == ha_sync_batch_size_val
+        raise ArgumentError, "Invalid ha-sync-batch-size value '#{ha_sync_batch_size_val}'"
+      end
+    end
   end
 
   def munge_definition(definition)
@@ -122,6 +134,9 @@ Puppet::Type.newtype(:rabbitmq_policy) do
     end
     if definition.key? 'shards-per-node'
       definition['shards-per-node'] = definition['shards-per-node'].to_i
+    end
+    if definition.key? 'ha-sync-batch-size'
+      definition['ha-sync-batch-size'] = definition['ha-sync-batch-size'].to_i
     end
     definition
   end

@@ -17,13 +17,15 @@
     {cluster_nodes, {[<%= @cluster_nodes.map { |n| "\'rabbit@#{n}\'" }.join(', ') %>], <%= @cluster_node_type %>}},
     {cluster_partition_handling, <%= @cluster_partition_handling %>},
 <% end -%>
-    {tcp_listen_options,
-         [binary,
+    {tcp_listen_options, [
+         <%- unless @ranch -%>
+         binary,
+         {packet,        raw},
+         {reuseaddr,     true},
+         <%- end -%>
          <%- if @tcp_keepalive -%>
          {keepalive,     true},
          <%- end -%>
-         {packet,        raw},
-         {reuseaddr,     true},
          <%- if @tcp_backlog -%>
          {backlog,       <%= @tcp_backlog %>},
          <%- end -%>
@@ -35,28 +37,34 @@
          <%- end -%>
          {nodelay,       true},
          {linger,        {true, 0}},
-         {exit_on_close, false}]
-    },
+         {exit_on_close, false}
+    ]},
 <%- if @collect_statistics_interval -%>
     {collect_statistics_interval, <%= @collect_statistics_interval %>},
 <%- end -%>
 <%- if @ssl_only -%>
     {tcp_listeners, []},
-<%- elsif @interface != 'UNSET' -%>
+<%- elsif @interface -%>
     {tcp_listeners, [{"<%= @interface%>", <%= @port %>}]},
 <%- end -%>
 <%- if @ssl -%>
-  <%- if @ssl_interface != 'UNSET' -%>
+  <%- if @ssl_interface -%>
     {ssl_listeners, [{"<%= @ssl_interface%>", <%= @ssl_port %>}]},
   <%- else -%>
     {ssl_listeners, [<%= @ssl_port %>]},
   <%- end -%>
     {ssl_options, [
-                   <%- if @ssl_cacert != 'UNSET' -%>
+                   <%- if @ssl_cacert -%>
                    {cacertfile,"<%= @ssl_cacert %>"},
                    <%- end -%>
                    {certfile,"<%= @ssl_cert %>"},
                    {keyfile,"<%= @ssl_key %>"},
+                   <%- if @ssl_cert_password -%>
+                   {password, "<%= @ssl_cert_password %>"},
+                   <%- end -%>
+                   <%- if @ssl_depth -%>
+                   {depth,<%= @ssl_depth %>},
+                   <%- end -%>
                    {verify,<%= @ssl_verify %>},
                    {fail_if_no_peer_cert,<%= @ssl_fail_if_no_peer_cert %>}
                    <%- if @ssl_versions -%>
@@ -69,9 +77,9 @@
                    <%- end -%>
                   ]},
 <%- end -%>
-<% if @config_variables -%>
-<%- @config_variables.keys.sort.each do |key| -%>
-    {<%= key %>, <%= @config_variables[key] %>},
+<% if scope['rabbitmq::config_variables'] -%>
+<%- scope['rabbitmq::config_variables'].keys.sort.each do |key| -%>
+    {<%= key %>, <%= scope['rabbitmq::config_variables'][key] %>},
 <%- end -%>
 <%- end -%>
     {default_user, <<"<%= @default_user %>">>},
@@ -90,9 +98,12 @@
 <%- if  !@config_management_variables.empty? -%>,<%-end-%>
     {listener, [
 <%- if @ssl && @management_ssl -%>
+  <%- if @management_ip_address -%>
+      {ip, "<%= @management_ip_address %>"},
+  <%- end -%>
       {port, <%= @ssl_management_port %>},
       {ssl, true},
-      {ssl_opts, [<%- if @ssl_cacert != 'UNSET' %>
+      {ssl_opts, [<%- if @ssl_cacert %>
                   {cacertfile, "<%= @ssl_cacert %>"},
                   <%- end -%>
 
@@ -108,10 +119,10 @@
                   <%- end -%>
                  ]}
 <%- else -%>
+  <%- if @management_ip_address -%>
+      {ip, "<%= @management_ip_address %>"},
+  <%- end -%>
       {port, <%= @management_port %>}
-<%- end -%>
-<%- if @node_ip_address != 'UNSET' -%>
-      ,{ip, "<%= @node_ip_address %>"}
 <%- end -%>
     ]}
 <%- end -%>

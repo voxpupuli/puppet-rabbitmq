@@ -22,8 +22,9 @@ This module manages RabbitMQ (www.rabbitmq.com)
 The rabbitmq module sets up rabbitmq and has a number of providers to manage
 everything from vhosts to exchanges after setup.
 
-This module has been tested against 2.7.1 and is known to not support
-all features against earlier versions.
+This module has been tested against 3.5.x and 3.6.x (as well as earlier
+versions) and is known to not support all features against versions
+prior to 2.7.1.
 
 ## Setup
 
@@ -60,32 +61,15 @@ class { '::rabbitmq':
 }
 ```
 
-Or such as offline installation from intranet or local mirrors:
-
-```puppet
-class { '::rabbitmq':
-   key_content      => template('openstack/rabbit.pub.key'),
-   package_gpg_key  => '/tmp/rabbit.pub.key',
-}
-```
-
-And this one will use external package key source for any (apt/rpm) package provider:
-
-```puppet
-class { '::rabbitmq':
-   package_gpg_key  => 'http://www.some_site.some_domain/some_key.pub.key',
-}
-```
-
 ### Environment Variables
 To use RabbitMQ Environment Variables, use the parameters `environment_variables` e.g.:
 
 ```puppet
 class { 'rabbitmq':
-  port              => '5672',
-  environment_variables   => {
-    'NODENAME'     => 'node01',
-    'SERVICENAME'  => 'RabbitMQ'
+  port                  => '5672',
+  environment_variables => {
+    'NODENAME'    => 'node01',
+    'SERVICENAME' => 'RabbitMQ'
   }
 }
 ```
@@ -95,11 +79,11 @@ To change RabbitMQ Config Variables in rabbitmq.config, use the parameters `conf
 
 ```puppet
 class { 'rabbitmq':
-  port              => '5672',
-  config_variables   => {
-    'hipe_compile'  => true,
-    'frame_max'     => 131072,
-    'log_levels'    => "[{connection, info}]"
+  port             => '5672',
+  config_variables => {
+    'hipe_compile' => true,
+    'frame_max'    => 131072,
+    'log_levels'   => "[{connection, info}]"
   }
 }
 ```
@@ -109,8 +93,8 @@ To change Erlang Kernel Config Variables in rabbitmq.config, use the parameters
 
 ```puppet
 class { 'rabbitmq':
-  port              => '5672',
-  config_kernel_variables  => {
+  port                    => '5672',
+  config_kernel_variables => {
     'inet_dist_listen_min' => 9100,
     'inet_dist_listen_max' => 9105,
   }
@@ -122,7 +106,7 @@ To change Management Plugin Config Variables in rabbitmq.config, use the paramet
 
 ```puppet
 class { 'rabbitmq':
-  config_management_variables  => {
+  config_management_variables => {
     'rates_mode' => 'basic',
   }
 }
@@ -136,7 +120,7 @@ To change Additional Config Variables in rabbitmq.config, use the parameter
 class { 'rabbitmq':
   config_additional_variables => {
     'autocluster' => '[{consul_service, "rabbit"},{cluster_name, "rabbit"}]',
-    'foo' => '[{bar, "baz"}]'
+    'foo'         => '[{bar, "baz"}]'
   }
 }
 ```
@@ -295,7 +279,7 @@ defaultsof 60 seconds. Setting this to `0` will disable heartbeats.
 ####`key_content`
 
 Uses content method for Debian OS family. Should be a template for apt::source
-class. Overrides `package_gpg_key` behavior, if enabled. Undefined by default.
+class. Undefined by default.
 
 ####`ldap_auth`
 
@@ -329,9 +313,14 @@ Numeric port for LDAP server.
 
 Boolean, set to true to log LDAP auth.
 
-####`manage_repos`
+####`management_ip_address`
 
-Boolean, whether or not to manage package repositories.
+Will fall back to `node_ip_address` if not explicitly set; allows configuring
+a separate bind IP for the management interface.
+
+####`management_hostname`
+
+The hostname for the RabbitMQ management interface.
 
 ####`management_port`
 
@@ -347,14 +336,15 @@ Valid values are true or false.
 ####`node_ip_address`
 
 The value of NODE_IP_ADDRESS in rabbitmq_env.config and of the
-rabbitmq_management server if it is enabled.
+rabbitmq_management server if it is enabled. See also `management_ip_address`.
+Use 0.0.0.0 to bind to all interfaces.
 
 ####`package_ensure`
 
 Determines the ensure state of the package.  Set to installed by default, but could
 be changed to latest.
 
-####`package_gpg_key`
+###`package_gpg_key`
 
 RPM package GPG key to import. Uses source method. Should be a URL for Debian/RedHat
 OS family, or a file name for RedHat OS family.
@@ -369,23 +359,15 @@ The name of the package to install.
 
 What provider to use to install the package.
 
-####`package_source`
-
-Where should the package be installed from?
-
-On Debian- and Arch-based systems using the default package provider,
-this parameter is ignored and the package is installed from the
-rabbitmq repository, if enabled with manage_repo => true, or from the
-system repository otherwise. If you want to use dpkg as the
-package_provider, you must specify a local package_source.
-
-####`plugin_dir`
-
-Location of RabbitMQ plugins.
-
 ####`port`
 
 The RabbitMQ port.
+
+####`repos_ensure`
+
+Ensure that a repo with the official (and newer) RabbitMQ package is configured,
+along with its signing key. Defaults to false (use system packages). This does
+*not* ensure that soft dependencies (like EPEL on RHEL systems) are present.
 
 ####`service_ensure`
 
@@ -406,7 +388,7 @@ Configures the service for using SSL.
 ####`ssl_only`
 
 Configures the service to only use SSL.  No cleartext TCP listeners will be created.
-Requires that ssl => true and port => UNSET also
+Requires that ssl => true and port => undef also
 
 ####`ssl_cacert`
 
@@ -419,6 +401,14 @@ Cert to use for SSL.
 ####`ssl_key`
 
 Key to use for SSL.
+
+####`ssl_cert_password`
+
+Password used when generating CSR.
+
+####`ssl_depth`
+
+SSL verification depth.
 
 ####`ssl_management_port`
 
@@ -479,15 +469,6 @@ Integer, corresponds to recbuf in RabbitMQ `tcp_listen_options`
 
 Integer, corresponds to sndbuf in RabbitMQ `tcp_listen_options`
 
-####`version`
-
-Sets the version to install.
-
-On Debian- and Arch-based operating systems, the version parameter is
-ignored and the latest version is installed from the rabbitmq
-repository, if enabled with manage_repo => true, or from the system
-repository otherwise.
-
 ####`wipe_db_on_cookie_change`
 
 Boolean to determine if we should DESTROY AND DELETE the RabbitMQ database.
@@ -541,14 +522,14 @@ rabbitmq_vhost { 'myvhost':
 
 ```puppet
 rabbitmq_exchange { 'myexchange@myvhost':
-  user     => 'dan',
-  password => 'bar',
-  type     => 'topic',
-  ensure   => present,
-  internal => false,
+  user        => 'dan',
+  password    => 'bar',
+  type        => 'topic',
+  ensure      => present,
+  internal    => false,
   auto_delete => false,
-  durable => true,
-  arguments => {
+  durable     => true,
+  arguments   => {
     hash-header => 'message-distribution-hash'
   }
 }
@@ -563,7 +544,7 @@ rabbitmq_queue { 'myqueue@myvhost':
   durable     => true,
   auto_delete => false,
   arguments   => {
-    x-message-ttl => 123,
+    x-message-ttl          => 123,
     x-dead-letter-exchange => 'other'
   },
   ensure      => present,
@@ -582,6 +563,34 @@ rabbitmq_binding { 'myexchange@myqueue@myvhost':
   ensure           => present,
 }
 ```
+
+```puppet
+rabbitmq_binding { 'binding 1':
+  source           => 'myexchange',
+  destination      => 'myqueue',
+  vhost            => 'myvhost',
+  user             => 'dan',
+  password         => 'bar',
+  destination_type => 'queue',
+  routing_key      => 'key1',
+  arguments        => {},
+  ensure           => present,
+}
+
+rabbitmq_binding { 'binding 2':
+  source           => 'myexchange',
+  destination      => 'myqueue',
+  vhost            => 'myvhost',
+  user             => 'dan',
+  password         => 'bar',
+  destination_type => 'queue',
+  routing_key      => 'key2',
+  arguments        => {},
+  ensure           => present,
+}
+
+```
+
 
 ### rabbitmq\_user\_permissions
 
@@ -633,7 +642,7 @@ rabbitmq_plugin {'rabbitmq_stomp':
   rabbitmq_parameter { 'documentumFed@/':
     component_name => 'federation-upstream',
     value          => {
-        'uri'    => 'amqp://myserver',
+        'uri'     => 'amqp://myserver',
         'expires' => '360000',
     },
   }
@@ -655,20 +664,24 @@ This module has been built on and tested against Puppet 3.x.
 
 The module has been tested on:
 
-* RedHat Enterprise Linux 5/6
-* Debian 6/7
-* CentOS 5/6
+* RedHat Enterprise Linux 6/7
+* Debian 7/8
+* CentOS 6/7
 * Ubuntu 12.04/14.04
 
 Testing on other platforms has been light and cannot be guaranteed.
+Support for EL / CentOS 5 is deprecated.
 
 ### Apt module compatibility
 
-While this module supports both 1.x and 2.x versions of the puppetlabs-apt module, it does not support puppetlabs-apt 2.0.0 or 2.0.1.
+While this module supports both 1.x and 2.x versions of the
+puppetlabs-apt module, it does not support puppetlabs-apt 2.0.0 or
+2.0.1.
 
 ### Module dependencies
 
-If running CentOS/RHEL, and using the yum provider, ensure the epel repo is present.
+If running CentOS/RHEL, ensure the epel repo, or another repo containing
+a suitable Erlang version, is present.
 
 To have a suitable erlang version installed on RedHat and Debian systems,
 you have to install another puppet module from http://forge.puppetlabs.com/garethr/erlang with:
