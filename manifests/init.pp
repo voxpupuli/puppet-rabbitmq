@@ -117,6 +117,10 @@ class rabbitmq(
     warning('$package_source is now deprecated. Please use yum installation or handle outside of this module.')
   }
 
+  if $package_provider != undef {
+    warning('$package_provider is now deprecated. Please use yum installation or handle outside of this module.')
+  }
+
   if $manage_repos != undef {
     warning('$manage_repos is now deprecated. Please use $repos_ensure instead.')
   }

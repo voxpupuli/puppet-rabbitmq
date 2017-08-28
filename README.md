@@ -353,10 +353,6 @@ RabbitMQ signing key, you can use this parameter to override the expected key.
 
 The name of the package to install.
 
-####`package_provider`
-
-What provider to use to install the package.
-
 ####`port`
 
 The RabbitMQ port.
