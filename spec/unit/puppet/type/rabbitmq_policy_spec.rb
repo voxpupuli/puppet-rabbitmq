@@ -144,4 +144,18 @@ describe Puppet::Type.type(:rabbitmq_policy) do
       @policy[:definition] = definition
     }.to raise_error(Puppet::Error, /Invalid max-length value.*future/)
   end
+
+  it 'should accept and convert the shards-per-node value' do
+    definition = {'shards-per-node' => '1800000'}
+    @policy[:definition] = definition
+    @policy[:definition]['shards-per-node'].should be_a(Fixnum)
+    @policy[:definition]['shards-per-node'].should == 1800000
+  end
+
+  it 'should not accept non-numeric shards-per-node value' do
+    definition = {'shards-per-node' => 'future'}
+    expect {
+      @policy[:definition] = definition
+    }.to raise_error(Puppet::Error, /Invalid shards-per-node value.*future/)
+  end
 end

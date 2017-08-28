@@ -5,7 +5,12 @@
   {ssl, [{versions, [<%= @ssl_versions.sort.map { |v| "'#{v}'" }.join(', ') %>]}]},
 <%- end -%>
   {rabbit, [
-<% if @ldap_auth -%>
+<%- if @heartbeat -%>
+    {heartbeat, <%=@heartbeat%>},
+<% end -%>
+<% if @auth_backends -%>
+    {auth_backends, [<%= @auth_backends.map { |v| "#{v}" }.join(', ') %>]},
+<% elsif @ldap_auth -%>
     {auth_backends, [rabbit_auth_backend_internal, rabbit_auth_backend_ldap]},
 <% end -%>
 <% if @config_cluster -%>
@@ -19,10 +24,22 @@
          <%- end -%>
          {packet,        raw},
          {reuseaddr,     true},
-         {backlog,       128},
+         <%- if @tcp_backlog -%>
+         {backlog,       <%= @tcp_backlog %>},
+         <%- end -%>
+         <%- if @tcp_sndbuf -%>
+         {sndbuf,       <%= @tcp_sndbuf %>},
+         <%- end -%>
+         <%- if @tcp_recbuf -%>
+         {recbuf,       <%= @tcp_recbuf %>},
+         <%- end -%>
          {nodelay,       true},
+         {linger,        {true, 0}},
          {exit_on_close, false}]
     },
+<%- if @collect_statistics_interval -%>
+    {collect_statistics_interval, <%= @collect_statistics_interval %>},
+<%- end -%>
 <%- if @ssl_only -%>
     {tcp_listeners, []},
 <%- elsif @interface != 'UNSET' -%>
@@ -64,8 +81,13 @@
     <%= @config_kernel_variables.sort.map{|k,v| "{#{k}, #{v}}"}.join(",\n    ") %>
   ]}
 <%- end -%>
-<%- if @admin_enable -%>,
+<%- if @admin_enable or !@config_management_variables.empty? -%>,
   {rabbitmq_management, [
+    <%- if !@config_management_variables.empty? -%>
+    <%= @config_management_variables.sort.map{|k,v| "{#{k}, #{v}}"}.join(",\n    ") %>
+    <%- end -%>
+<%- if @admin_enable -%>
+<%- if  !@config_management_variables.empty? -%>,<%-end-%>
     {listener, [
 <%- if @ssl && @management_ssl -%>
       {port, <%= @ssl_management_port %>},
@@ -88,7 +110,11 @@
 <%- else -%>
       {port, <%= @management_port %>}
 <%- end -%>
+<%- if @node_ip_address != 'UNSET' -%>
+      ,{ip, "<%= @node_ip_address %>"}
+<%- end -%>
     ]}
+<%- end -%>
   ]}
 <%- end -%>
 <% if @config_stomp -%>,
@@ -120,6 +146,18 @@
 <%- end -%>
     {log, <%= @ldap_log %>}
   ]}
+<%- end -%>
+<%- if @config_shovel and not @config_shovel_statics.empty? -%>,
+  {rabbitmq_shovel,
+    [{shovels,[
+      <%= @config_shovel_statics.sort.map{|k,v| "{#{k},[#{v}]}"}.join(",\n      ") %>
+    ]}]}
+<%- end -%>
+<%- if @config_additional_variables and not @config_additional_variables.empty? -%>,
+% Additional config
+<%- @config_additional_variables.keys.sort.each do |key| -%>
+  {<%= key %>, <%= @config_additional_variables[key] %>}<%- if key != @config_additional_variables.keys.sort.last %>,<% end %>
+<%- end -%>
 <%- end -%>
 ].
 % EOF

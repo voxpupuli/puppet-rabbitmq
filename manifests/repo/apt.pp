@@ -2,18 +2,22 @@
 #   puppetlabs-apt
 #   puppetlabs-stdlib
 class rabbitmq::repo::apt(
-  $location    = 'http://www.rabbitmq.com/debian/',
-  $release     = 'testing',
-  $repos       = 'main',
-  $include_src = false,
-  $key         = '0A9AF2115F4687BD29803A206B73A36E6026DFCA',
-  $key_source  = 'https://www.rabbitmq.com/rabbitmq-release-signing-key.asc',
-  $key_content = undef,
+  $location     = 'http://www.rabbitmq.com/debian/',
+  $release      = 'testing',
+  $repos        = 'main',
+  $include_src  = false,
+  $key          = '0A9AF2115F4687BD29803A206B73A36E6026DFCA',
+  $key_source   = 'https://www.rabbitmq.com/rabbitmq-release-signing-key.asc',
+  $key_content  = undef,
+  $architecture = undef,
   ) {
 
   $pin = $rabbitmq::package_apt_pin
 
-  Class['rabbitmq::repo::apt'] -> Package<| title == 'rabbitmq-server' |>
+  # ordering / ensure to get the last version of repository
+  Class['rabbitmq::repo::apt']
+  -> Class['apt::update']
+  -> Package<| title == 'rabbitmq-server' |>
 
   $ensure_source = $rabbitmq::repos_ensure ? {
     false   => 'absent',
@@ -30,13 +34,15 @@ class rabbitmq::repo::apt(
                   'source'  => $key_source,
                   'content' => $key_content,
                 },
+    architecture => $architecture,
   }
 
   if $pin != '' {
-    validate_re($pin, '\d\d\d')
+    validate_re($pin, '\d{1,4}')
     apt::pin { 'rabbitmq':
-      packages => 'rabbitmq-server',
+      packages => '*',
       priority => $pin,
+      origin   => 'www.rabbitmq.com',
     }
   }
 }

@@ -72,7 +72,7 @@ Puppet::Type.newtype(:rabbitmq_policy) do
     end
     definition.each do |k,v|
       unless [String].include?(v.class)
-        raise ArgumentError, "Invalid definition"
+        raise ArgumentError, "Invalid definition, value #{v} is not a string"
       end
     end
     if definition['ha-mode'] == 'exactly'
@@ -99,6 +99,12 @@ Puppet::Type.newtype(:rabbitmq_policy) do
         raise ArgumentError, "Invalid max-length value '#{max_length_val}'"
       end
     end
+    if definition.key? 'shards-per-node'
+      shards_per_node_val = definition['shards-per-node']
+      unless shards_per_node_val.to_i.to_s == shards_per_node_val
+        raise ArgumentError, "Invalid shards-per-node value '#{shards_per_node_val}'"
+      end
+    end
   end
 
   def munge_definition(definition)
@@ -113,6 +119,9 @@ Puppet::Type.newtype(:rabbitmq_policy) do
     end
     if definition.key? 'max-length'
       definition['max-length'] = definition['max-length'].to_i
+    end
+    if definition.key? 'shards-per-node'
+      definition['shards-per-node'] = definition['shards-per-node'].to_i
     end
     definition
   end

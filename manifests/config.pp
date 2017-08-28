@@ -10,6 +10,8 @@ class rabbitmq::config {
   $config_cluster             = $rabbitmq::config_cluster
   $config_path                = $rabbitmq::config_path
   $config_stomp               = $rabbitmq::config_stomp
+  $config_shovel              = $rabbitmq::config_shovel
+  $config_shovel_statics      = $rabbitmq::config_shovel_statics
   $default_user               = $rabbitmq::default_user
   $default_pass               = $rabbitmq::default_pass
   $env_config                 = $rabbitmq::env_config
@@ -25,6 +27,10 @@ class rabbitmq::config {
   $rabbitmq_home              = $rabbitmq::rabbitmq_home
   $port                       = $rabbitmq::port
   $tcp_keepalive              = $rabbitmq::tcp_keepalive
+  $tcp_backlog                = $rabbitmq::tcp_backlog
+  $tcp_sndbuf                 = $rabbitmq::tcp_sndbuf
+  $tcp_recbuf                 = $rabbitmq::tcp_recbuf
+  $heartbeat                  = $rabbitmq::heartbeat
   $service_name               = $rabbitmq::service_name
   $ssl                        = $rabbitmq::ssl
   $ssl_only                   = $rabbitmq::ssl_only
@@ -52,8 +58,12 @@ class rabbitmq::config {
   $wipe_db_on_cookie_change   = $rabbitmq::wipe_db_on_cookie_change
   $config_variables           = $rabbitmq::config_variables
   $config_kernel_variables    = $rabbitmq::config_kernel_variables
+  $config_management_variables = $rabbitmq::config_management_variables
+  $config_additional_variables = $rabbitmq::config_additional_variables
+  $auth_backends              = $rabbitmq::auth_backends
   $cluster_partition_handling = $rabbitmq::cluster_partition_handling
   $file_limit                 = $rabbitmq::file_limit
+  $collect_statistics_interval = $rabbitmq::collect_statistics_interval
   $default_env_variables      =  {
     'NODE_PORT'        => $port,
     'NODE_IP_ADDRESS'  => $node_ip_address
