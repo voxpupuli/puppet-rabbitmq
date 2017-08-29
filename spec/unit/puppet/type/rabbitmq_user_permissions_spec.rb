@@ -5,7 +5,7 @@ describe Puppet::Type.type(:rabbitmq_user_permissions) do
   end
   it 'should accept a valid hostname name' do
     @perms[:name] = 'dan@bar'
-    @perms[:name].should == 'dan@bar'
+    expect(@perms[:name]).to eq('dan@bar')
   end
   it 'should require a name' do
     expect {
@@ -19,15 +19,15 @@ describe Puppet::Type.type(:rabbitmq_user_permissions) do
   end
   [:configure_permission, :read_permission, :write_permission].each do |param|
     it 'should not default to anything' do
-       @perms[param].should == nil
+       expect(@perms[param]).to eq(nil)
     end
     it "should accept a valid regex for #{param}" do
       @perms[param] = '.*?'
-      @perms[param].should == '.*?'  
+      expect(@perms[param]).to eq('.*?')  
     end
     it "should accept an empty string for #{param}" do
       @perms[param] = ''
-      @perms[param].should == ''  
+      expect(@perms[param]).to eq('')  
     end
     it "should not accept invalid regex for #{param}" do
       expect {
@@ -47,8 +47,8 @@ describe Puppet::Type.type(:rabbitmq_user_permissions) do
         [vhost, perm].each { |resource| conf.add_resource resource }
       end
       rel = perm.autorequire[0]
-      rel.source.ref.should == vhost.ref
-      rel.target.ref.should == perm.ref
+      expect(rel.source.ref).to eq(vhost.ref)
+      expect(rel.target.ref).to eq(perm.ref)
     end
   end
 end

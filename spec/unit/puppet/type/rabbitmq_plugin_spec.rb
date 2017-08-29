@@ -5,7 +5,7 @@ describe Puppet::Type.type(:rabbitmq_plugin) do
   end
   it 'should accept a plugin name' do
     @plugin[:name] = 'plugin-name'
-    @plugin[:name].should == 'plugin-name'
+    expect(@plugin[:name]).to eq('plugin-name')
   end
   it 'should require a name' do
     expect {
@@ -13,7 +13,7 @@ describe Puppet::Type.type(:rabbitmq_plugin) do
     }.to raise_error(Puppet::Error, 'Title or name must be provided')
   end
   it 'should default to a umask of 0022' do
-    @plugin[:umask].should == 0022
+    expect(@plugin[:umask]).to eq(0022)
   end
   it 'should not allow a non-octal value to be specified' do
     expect {

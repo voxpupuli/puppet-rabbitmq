@@ -17,14 +17,14 @@ Listing vhosts ...
 foo
 ...done.
 EOT
-    @provider.exists?.should == 'foo'
+    expect(@provider.exists?).to eq('foo')
   end
   it 'should not match if no vhosts on system' do
     @provider.expects(:rabbitmqctl).with('-q', 'list_vhosts').returns <<-EOT
 Listing vhosts ...
 ...done.
 EOT
-    @provider.exists?.should be_nil
+    expect(@provider.exists?).to be_nil
   end
   it 'should not match if no matching vhosts on system' do
     @provider.expects(:rabbitmqctl).with('-q', 'list_vhosts').returns <<-EOT
@@ -32,7 +32,7 @@ Listing vhosts ...
 fooey
 ...done.
 EOT
-    @provider.exists?.should be_nil
+    expect(@provider.exists?).to be_nil
   end
   it 'should call rabbitmqctl to create' do
     @provider.expects(:rabbitmqctl).with('add_vhost', 'foo')

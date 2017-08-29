@@ -18,13 +18,13 @@ describe 'Puppet::Type.type(:rabbitmq_user_permissions).provider(:rabbitmqctl)' 
     @provider.class.expects(:rabbitmqctl).with('-q', 'list_user_permissions', 'foo').returns <<-EOT
 bar 1 2 3
 EOT
-    @provider.exists?.should == {:configure=>"1", :write=>"2", :read=>"3"}
+    expect(@provider.exists?).to eq({:configure=>"1", :write=>"2", :read=>"3"})
   end
   it 'should match user permissions with empty columns' do
     @provider.class.expects(:rabbitmqctl).with('-q', 'list_user_permissions', 'foo').returns <<-EOT
 bar			3
 EOT
-    @provider.exists?.should == {:configure=>"", :write=>"", :read=>"3"}
+    expect(@provider.exists?).to eq({:configure=>"", :write=>"", :read=>"3"})
   end
   it 'should not match user permissions with more than 3 columns' do
     @provider.class.expects(:rabbitmqctl).with('-q', 'list_user_permissions', 'foo').returns <<-EOT
@@ -35,7 +35,7 @@ EOT
   it 'should not match an empty list' do
     @provider.class.expects(:rabbitmqctl).with('-q', 'list_user_permissions', 'foo').returns <<-EOT
 EOT
-    @provider.exists?.should == nil
+    expect(@provider.exists?).to eq(nil)
   end
   it 'should create default permissions' do
     @provider.instance_variable_set(:@should_vhost, "bar")
@@ -54,7 +54,7 @@ EOT
       @provider.class.expects(:rabbitmqctl).with('-q', 'list_user_permissions', 'foo').returns <<-EOT
 bar 1 2 3
 EOT
-      @provider.send(k).should == v
+      expect(@provider.send(k)).to eq(v)
     end
   end
   {:configure_permission => '1', :write_permission => '2', :read_permission => '3'}.each do |k,v|
@@ -63,7 +63,7 @@ EOT
 bar 1 2 3
 EOT
       @provider.exists?
-      @provider.send(k).should == v
+      expect(@provider.send(k)).to eq(v)
     end
   end
   {:configure_permission => ['foo', '2', '3'],

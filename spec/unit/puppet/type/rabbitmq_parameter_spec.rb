@@ -15,7 +15,7 @@ describe Puppet::Type.type(:rabbitmq_parameter) do
 
   it 'should accept a valid name' do
     @parameter[:name] = 'documentumShovel@/'
-    @parameter[:name].should == 'documentumShovel@/'
+    expect(@parameter[:name]).to eq('documentumShovel@/')
   end
 
   it 'should require a name' do
@@ -32,7 +32,7 @@ describe Puppet::Type.type(:rabbitmq_parameter) do
 
   it 'should accept a string' do
     @parameter[:component_name] = 'mystring'
-    @parameter[:component_name].should == 'mystring'
+    expect(@parameter[:component_name]).to eq('mystring')
   end
 
   it 'should not be empty' do
@@ -44,7 +44,7 @@ describe Puppet::Type.type(:rabbitmq_parameter) do
   it 'should accept a valid hash for value' do
     value =  {'message-ttl' => '1800000'}
     @parameter[:value] = value
-    @parameter[:value].should == value
+    expect(@parameter[:value]).to eq(value)
   end
 
   it 'should not accept invalid hash for definition' do
@@ -64,16 +64,16 @@ describe Puppet::Type.type(:rabbitmq_parameter) do
   it 'should accept string as myparameter' do
     value = {'myparameter' => 'mystring'}
     @parameter[:value] = value
-    @parameter[:value]['myparameter'].should be_a(String)
-    @parameter[:value]['myparameter'].should == 'mystring'
+    expect(@parameter[:value]['myparameter']).to be_a(String)
+    expect(@parameter[:value]['myparameter']).to eq('mystring')
   end
 
 
   it 'should convert to integer when string only contains numbers' do
     value = {'myparameter' => '1800000'}
     @parameter[:value] = value
-    @parameter[:value]['myparameter'].should be_a(Fixnum)
-    @parameter[:value]['myparameter'].should == 1800000
+    expect(@parameter[:value]['myparameter']).to be_a(Fixnum)
+    expect(@parameter[:value]['myparameter']).to eq(1800000)
   end
 
 end
