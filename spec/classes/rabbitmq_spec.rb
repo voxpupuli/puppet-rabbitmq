@@ -1017,6 +1017,49 @@ LimitNOFILE=#{value}
               with_content(%r{^RABBITMQ_CTL_ERL_ARGS="bar -proto_dist inet6_tcp"$})
           end
         end
+
+        context 'with SSL and without other erl args' do
+          let(:params) {
+            { :ipv6         => true,
+              :ssl_erl_dist => true }
+          }
+          it 'enables inet6 distribution' do
+            is_expected.to contain_file('rabbitmq-env.config') \
+              .with_content(%r{^RABBITMQ_SERVER_ERL_ARGS=" -pa /usr/lib64/erlang/lib/ssl-7.3.3.1/ebin -proto_dist inet6_tls"$}) \
+              .with_content(%r{^RABBITMQ_CTL_ERL_ARGS=" -pa /usr/lib64/erlang/lib/ssl-7.3.3.1/ebin -proto_dist inet6_tls"$})
+          end
+        end
+
+        context 'with SSL and other quoted erl args' do
+          let(:params) {
+            { :ipv6         => true,
+              :ssl_erl_dist => true,
+              :environment_variables => { 'RABBITMQ_SERVER_ERL_ARGS' => '"some quoted args"',
+                                          'RABBITMQ_CTL_ERL_ARGS'    => '"other quoted args"'} }
+          }
+
+          it 'enables inet6 distribution and quote properly' do
+            is_expected.to contain_file('rabbitmq-env.config') \
+              .with_content(%r{^RABBITMQ_SERVER_ERL_ARGS="some quoted args -pa /usr/lib64/erlang/lib/ssl-7.3.3.1/ebin  -proto_dist inet6_tls"$}) \
+              .with_content(%r{^RABBITMQ_CTL_ERL_ARGS="other quoted args -pa /usr/lib64/erlang/lib/ssl-7.3.3.1/ebin  -proto_dist inet6_tls"$})
+          end
+        end
+
+        context 'with SSL and with other unquoted erl args' do
+          let(:params) {
+            { :ipv6         => true,
+              :ssl_erl_dist => true,
+              :environment_variables => { 'RABBITMQ_SERVER_ERL_ARGS' => 'foo',
+                                          'RABBITMQ_CTL_ERL_ARGS'    => 'bar'} }
+          }
+
+          it 'enables inet6 distribution and quote properly' do
+            is_expected.to contain_file('rabbitmq-env.config') \
+              .with_content(%r{^RABBITMQ_SERVER_ERL_ARGS="foo -pa /usr/lib64/erlang/lib/ssl-7.3.3.1/ebin  -proto_dist inet6_tls"$}) \
+              .with_content(%r{^RABBITMQ_CTL_ERL_ARGS="bar -pa /usr/lib64/erlang/lib/ssl-7.3.3.1/ebin  -proto_dist inet6_tls"$})
+          end
+
+        end
       end
 
       describe 'config_variables options' do

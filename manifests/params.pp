@@ -114,4 +114,5 @@ class rabbitmq::params {
   $ipv6                        = false
   $inetrc_config               = 'rabbitmq/inetrc.erb'
   $inetrc_config_path          = '/etc/rabbitmq/inetrc'
+  $ssl_erl_dist                = false
 }
