@@ -2,9 +2,9 @@ require 'spec_helper_acceptance'
 
 describe 'rabbitmq with delete_guest_user' do
   context 'delete_guest_user' do
-    it 'should run successfully' do
+    it 'runs successfully' do
       pp = <<-EOS
-      class { 'rabbitmq': 
+      class { 'rabbitmq':
         port              => 5672,
         delete_guest_user => true,
       }
@@ -14,7 +14,7 @@ describe 'rabbitmq with delete_guest_user' do
       }
       EOS
 
-      apply_manifest(pp, :catch_failures => true)
+      apply_manifest(pp, catch_failures: true)
       shell('rabbitmqctl list_users > /tmp/rabbitmqctl_users')
     end
 

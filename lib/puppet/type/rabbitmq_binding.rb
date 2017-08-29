@@ -16,18 +16,18 @@ Puppet::Type.newtype(:rabbitmq_binding) do
   def self.title_patterns
     [
       [
-        /(^([^@]*)$)/m,
+        %r{(^([^@]*)$)}m,
         [
-          [ :name ]
+          [:name]
         ]
       ],
       [
-        /^((\S+)@(\S+)@(\S+))$/m,
+        %r{^((\S+)@(\S+)@(\S+))$}m,
         [
-          [ :name ],
-          [ :source ],
-          [ :destination],
-          [ :vhost ]
+          [:name],
+          [:source],
+          [:destination],
+          [:vhost]
         ]
       ]
     ]
@@ -42,21 +42,21 @@ Puppet::Type.newtype(:rabbitmq_binding) do
   newproperty(:source) do
     desc 'source of binding'
 
-    newvalues(/^\S+$/)
+    newvalues(%r{^\S+$})
     isnamevar
   end
 
   newproperty(:destination) do
     desc 'destination of binding'
 
-    newvalues(/^\S+$/)
+    newvalues(%r{^\S+$})
     isnamevar
   end
 
   newproperty(:vhost) do
     desc 'vhost'
 
-    newvalues(/^\S+$/)
+    newvalues(%r{^\S+$})
     defaultto('/')
     isnamevar
   end
@@ -64,13 +64,13 @@ Puppet::Type.newtype(:rabbitmq_binding) do
   newproperty(:routing_key) do
     desc 'binding routing_key'
 
-    newvalues(/^\S*$/)
+    newvalues(%r{^\S*$})
     isnamevar
   end
 
   newproperty(:destination_type) do
     desc 'binding destination_type'
-    newvalues(/queue|exchange/)
+    newvalues(%r{queue|exchange})
     defaultto('queue')
   end
 
@@ -85,19 +85,19 @@ Puppet::Type.newtype(:rabbitmq_binding) do
   newparam(:user) do
     desc 'The user to use to connect to rabbitmq'
     defaultto('guest')
-    newvalues(/^\S+$/)
+    newvalues(%r{^\S+$})
   end
 
   newparam(:password) do
     desc 'The password to use to connect to rabbitmq'
     defaultto('guest')
-    newvalues(/\S+/)
+    newvalues(%r{\S+})
   end
 
   autorequire(:rabbitmq_vhost) do
     setup_autorequire('vhost')
   end
-  
+
   autorequire(:rabbitmq_exchange) do
     setup_autorequire('exchange')
   end
@@ -125,27 +125,26 @@ Puppet::Type.newtype(:rabbitmq_binding) do
         rval.push("#{self[:destination]}@#{self[:vhost]}")
       end
     else
-      if destination_type == type
-        rval = ["#{self[:destination]}@#{self[:vhost]}"]
-      else
-        rval = []
-      end
+      rval = if destination_type == type
+               ["#{self[:destination]}@#{self[:vhost]}"]
+             else
+               []
+             end
     end
     rval
   end
 
   def validate_argument(argument)
     unless [Hash].include?(argument.class)
-      raise ArgumentError, "Invalid argument"
+      raise ArgumentError, 'Invalid argument'
     end
   end
 
   # Validate that we have both source and destination now that these are not
   # necessarily only coming from the resource title.
   validate do
-    unless self[:source] and self[:destination]
-      raise ArgumentError, "Source and destination must both be defined."
+    unless self[:source] && self[:destination]
+      raise ArgumentError, 'Source and destination must both be defined.'
     end
   end
-
 end

@@ -13,30 +13,33 @@ Puppet::Type.newtype(:rabbitmq_user) do
 
   autorequire(:service) { 'rabbitmq-server' }
 
-  newparam(:name, :namevar => true) do
+  newparam(:name, namevar: true) do
     desc 'Name of user'
-    newvalues(/^\S+$/)
+    newvalues(%r{^\S+$})
   end
 
   newproperty(:password) do
     desc 'User password to be set *on creation* and validated each run'
-    def insync?(is)
+    def insync?(_is)
       provider.check_password
     end
-    def set(value)
+
+    def set(_value)
       provider.change_password
     end
-    def change_to_s(current, desired)
-      "password has been changed"
+
+    def change_to_s(_current, _desired)
+      'password has been changed'
     end
-    def should_to_s(newvalue = @should)
+
+    def should_to_s(_newvalue = @should)
       '<new password>'
     end
   end
 
   newproperty(:admin) do
     desc 'whether or not user should be an admin'
-    newvalues(/true|false/)
+    newvalues(%r{true|false})
     munge do |value|
       # converting to_s in case its a boolean
       value.to_s.to_sym
@@ -44,21 +47,21 @@ Puppet::Type.newtype(:rabbitmq_user) do
     defaultto :false
   end
 
-  newproperty(:tags, :array_matching => :all) do
+  newproperty(:tags, array_matching: :all) do
     desc 'additional tags for the user'
     validate do |value|
-      unless value =~ /^\S+$/
+      unless value =~ %r{^\S+$}
         raise ArgumentError, "Invalid tag: #{value.inspect}"
       end
 
-      if value == "administrator"
-        raise ArgumentError, "must use admin property instead of administrator tag"
+      if value == 'administrator'
+        raise ArgumentError, 'must use admin property instead of administrator tag'
       end
     end
     defaultto []
 
     def insync?(is)
-      self.is_to_s(is) == self.should_to_s
+      is_to_s(is) == should_to_s
     end
 
     def is_to_s(currentvalue = @is)
@@ -76,13 +79,11 @@ Puppet::Type.newtype(:rabbitmq_user) do
         '[]'
       end
     end
-
   end
 
   validate do
-    if self[:ensure] == :present and ! self[:password]
+    if self[:ensure] == :present && !self[:password]
       raise ArgumentError, 'must set password when creating user' unless self[:password]
     end
   end
-
 end

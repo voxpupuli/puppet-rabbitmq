@@ -1,79 +1,77 @@
 require 'spec_helper'
 describe Puppet::Type.type(:rabbitmq_parameter) do
-
   before do
     @parameter = Puppet::Type.type(:rabbitmq_parameter).new(
-      :name           => 'documentumShovel@/',
-      :component_name => 'shovel',
-      :value          => {
+      name: 'documentumShovel@/',
+      component_name: 'shovel',
+      value: {
         'src-uri' => 'amqp://myremote-server',
         'src-queue' => 'queue.docs.outgoing',
         'dest-uri' => 'amqp://',
-        'dest-queue' => 'queue.docs.incoming',
-      })
+        'dest-queue' => 'queue.docs.incoming'
+      }
+    )
   end
 
-  it 'should accept a valid name' do
+  it 'accepts a valid name' do
     @parameter[:name] = 'documentumShovel@/'
     expect(@parameter[:name]).to eq('documentumShovel@/')
   end
 
-  it 'should require a name' do
-    expect {
+  it 'requires a name' do
+    expect do
       Puppet::Type.type(:rabbitmq_parameter).new({})
-    }.to raise_error(Puppet::Error, 'Title or name must be provided')
+    end.to raise_error(Puppet::Error, 'Title or name must be provided')
   end
 
-  it 'should fail when name does not have a @' do
-    expect {
+  it 'fails when name does not have a @' do
+    expect do
       @parameter[:name] = 'documentumShovel'
-    }.to raise_error(Puppet::Error, /Valid values match/)
+    end.to raise_error(Puppet::Error, %r{Valid values match})
   end
 
-  it 'should accept a string' do
+  it 'accepts a string' do
     @parameter[:component_name] = 'mystring'
     expect(@parameter[:component_name]).to eq('mystring')
   end
 
-  it 'should not be empty' do
-    expect {
+  it 'is not empty' do
+    expect do
       @parameter[:component_name] = ''
-    }.to raise_error(Puppet::Error, /component_name must be defined/)
+    end.to raise_error(Puppet::Error, %r{component_name must be defined})
   end
 
-  it 'should accept a valid hash for value' do
-    value =  {'message-ttl' => '1800000'}
+  it 'accepts a valid hash for value' do
+    value = { 'message-ttl' => '1800000' }
     @parameter[:value] = value
     expect(@parameter[:value]).to eq(value)
   end
 
-  it 'should not accept invalid hash for definition' do
-    expect {
+  it 'does not accept invalid hash for definition' do
+    expect do
       @parameter[:value] = ''
-    }.to raise_error(Puppet::Error, /Invalid value/)
+    end.to raise_error(Puppet::Error, %r{Invalid value})
 
-    expect {
+    expect do
       @parameter[:value] = 'guest'
-    }.to raise_error(Puppet::Error, /Invalid value/)
+    end.to raise_error(Puppet::Error, %r{Invalid value})
 
-    expect {
-      @parameter[:value] = {'message-ttl' => ['999', '100']}
-    }.to raise_error(Puppet::Error, /Invalid value/)
+    expect do
+      @parameter[:value] = { 'message-ttl' => %w[999 100] }
+    end.to raise_error(Puppet::Error, %r{Invalid value})
   end
 
-  it 'should accept string as myparameter' do
-    value = {'myparameter' => 'mystring'}
+  it 'accepts string as myparameter' do
+    value = { 'myparameter' => 'mystring' }
     @parameter[:value] = value
     expect(@parameter[:value]['myparameter']).to be_a(String)
     expect(@parameter[:value]['myparameter']).to eq('mystring')
   end
 
-
-  it 'should convert to integer when string only contains numbers' do
-    value = {'myparameter' => '1800000'}
+  it 'converts to integer when string only contains numbers' do
+    value = { 'myparameter' => '1800000' }
     @parameter[:value] = value
-    expect(@parameter[:value]['myparameter']).to be_a(Fixnum)
-    expect(@parameter[:value]['myparameter']).to eq(1800000)
+    expect(@parameter[:value]['myparameter']).to be_a(Integer)
+    expect(@parameter[:value]['myparameter']).to eq(1_800_000)
   end
-
 end

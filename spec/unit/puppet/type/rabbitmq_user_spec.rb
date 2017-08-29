@@ -1,31 +1,31 @@
 require 'spec_helper'
 describe Puppet::Type.type(:rabbitmq_user) do
-  before :each do
-    @user = Puppet::Type.type(:rabbitmq_user).new(:name => 'foo', :password => 'pass')
+  before do
+    @user = Puppet::Type.type(:rabbitmq_user).new(name: 'foo', password: 'pass')
   end
-  it 'should accept a user name' do
+  it 'accepts a user name' do
     @user[:name] = 'dan'
     expect(@user[:name]).to eq('dan')
     expect(@user[:admin]).to eq(:false)
   end
-  it 'should accept a password' do
+  it 'accepts a password' do
     @user[:password] = 'foo'
     expect(@user[:password]).to eq('foo')
   end
-  it 'should require a password' do
-    expect {
-      Puppet::Type.type(:rabbitmq_user).new(:name => 'foo')
-    }.to raise_error(/must set password/)
+  it 'requires a password' do
+    expect do
+      Puppet::Type.type(:rabbitmq_user).new(name: 'foo')
+    end.to raise_error(%r{must set password})
   end
-  it 'should require a name' do
-    expect {
+  it 'requires a name' do
+    expect do
       Puppet::Type.type(:rabbitmq_user).new({})
-    }.to raise_error(Puppet::Error, 'Title or name must be provided')
+    end.to raise_error(Puppet::Error, 'Title or name must be provided')
   end
-  it 'should not allow whitespace in the name' do
-    expect {
+  it 'does not allow whitespace in the name' do
+    expect do
       @user[:name] = 'b r'
-    }.to raise_error(Puppet::Error, /Valid values match/)
+    end.to raise_error(Puppet::Error, %r{Valid values match})
   end
   [true, false, 'true', 'false'].each do |val|
     it "admin property should accept #{val}" do
@@ -33,19 +33,19 @@ describe Puppet::Type.type(:rabbitmq_user) do
       expect(@user[:admin]).to eq(val.to_s.to_sym)
     end
   end
-  it 'should not accept non-boolean values for admin' do
-    expect {
+  it 'does not accept non-boolean values for admin' do
+    expect do
       @user[:admin] = 'yes'
-    }.to raise_error(Puppet::Error, /Invalid value/)
+    end.to raise_error(Puppet::Error, %r{Invalid value})
   end
-  it 'should not accept tags with spaces' do
-    expect {
+  it 'does not accept tags with spaces' do
+    expect do
       @user[:tags] = ['policy maker']
-    }.to raise_error(Puppet::Error, /Invalid tag/)
+    end.to raise_error(Puppet::Error, %r{Invalid tag})
   end
-  it 'should not accept the administrator tag' do
-    expect {
+  it 'does not accept the administrator tag' do
+    expect do
       @user[:tags] = ['administrator']
-    }.to raise_error(Puppet::Error, /must use admin property/)
+    end.to raise_error(Puppet::Error, %r{must use admin property})
   end
 end

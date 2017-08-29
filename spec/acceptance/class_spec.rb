@@ -16,8 +16,8 @@ describe 'rabbitmq class:' do
     service_name = 'rabbitmq'
   end
 
-  context "default class inclusion" do
-    it 'should run successfully' do
+  context 'default class inclusion' do
+    it 'runs successfully' do
       pp = <<-EOS
       class { 'rabbitmq': }
       if $::osfamily == 'RedHat' {
@@ -27,12 +27,12 @@ describe 'rabbitmq class:' do
       EOS
 
       # Apply twice to ensure no errors the second time.
-      apply_manifest(pp, :catch_failures => true)
-      expect(apply_manifest(pp, :catch_changes => true).exit_code).to be_zero
+      apply_manifest(pp, catch_failures: true)
+      expect(apply_manifest(pp, catch_changes: true).exit_code).to be_zero
     end
 
     describe package(package_name) do
-      it { is_expected.to be_installed }      
+      it { is_expected.to be_installed }
     end
 
     describe service(service_name) do
@@ -41,8 +41,8 @@ describe 'rabbitmq class:' do
     end
   end
 
-  context "disable and stop service" do
-    it 'should run successfully' do
+  context 'disable and stop service' do
+    it 'runs successfully' do
       pp = <<-EOS
       class { 'rabbitmq':
         service_ensure => 'stopped',
@@ -53,7 +53,7 @@ describe 'rabbitmq class:' do
       }
       EOS
 
-      apply_manifest(pp, :catch_failures => true)
+      apply_manifest(pp, catch_failures: true)
     end
 
     describe service(service_name) do
@@ -62,8 +62,8 @@ describe 'rabbitmq class:' do
     end
   end
 
-  context "service is unmanaged" do
-    it 'should run successfully' do
+  context 'service is unmanaged' do
+    it 'runs successfully' do
       pp_pre = <<-EOS
       class { 'rabbitmq': }
       if $::osfamily == 'RedHat' {
@@ -83,8 +83,8 @@ describe 'rabbitmq class:' do
       }
       EOS
 
-      apply_manifest(pp_pre, :catch_failures => true)
-      apply_manifest(pp, :catch_failures => true)
+      apply_manifest(pp_pre, catch_failures: true)
+      apply_manifest(pp, catch_failures: true)
     end
 
     describe service(service_name) do
@@ -94,7 +94,7 @@ describe 'rabbitmq class:' do
   end
 
   context 'binding on all interfaces' do
-    it 'should run successfully' do
+    it 'runs successfully' do
       pp = <<-EOS
       class { 'rabbitmq':
         service_manage    => true,
@@ -104,7 +104,7 @@ describe 'rabbitmq class:' do
       }
       EOS
 
-      apply_manifest(pp, :catch_failures => true)
+      apply_manifest(pp, catch_failures: true)
     end
 
     describe service(service_name) do
@@ -113,18 +113,18 @@ describe 'rabbitmq class:' do
     describe port(5672) do
       it { is_expected.to be_listening.on('0.0.0.0').with('tcp') }
     end
-    describe port(15672) do
+    describe port(15_672) do
       it { is_expected.to be_listening.on('0.0.0.0').with('tcp') }
     end
-    describe port(25672) do
-      xit "Is on 55672 instead on older rmq versions" do
+    describe port(25_672) do
+      xit 'Is on 55672 instead on older rmq versions' do
         is_expected.to be_listening.on('0.0.0.0').with('tcp')
       end
     end
   end
 
   context 'binding to localhost only' do
-    it 'should run successfully' do
+    it 'runs successfully' do
       pp = <<-EOS
       class { 'rabbitmq':
         service_manage    => true,
@@ -134,7 +134,7 @@ describe 'rabbitmq class:' do
       }
       EOS
 
-      apply_manifest(pp, :catch_failures => true)
+      apply_manifest(pp, catch_failures: true)
     end
 
     describe service(service_name) do
@@ -143,19 +143,19 @@ describe 'rabbitmq class:' do
     describe port(5672) do
       it { is_expected.to be_listening.on('127.0.0.1').with('tcp') }
     end
-    describe port(15672) do
+    describe port(15_672) do
       it { is_expected.to be_listening.on('127.0.0.1').with('tcp') }
     end
     # This listens on all interfaces regardless of these settings
-    describe port(25672) do
-      xit "Is on 55672 instead on older rmq versions" do
+    describe port(25_672) do
+      xit 'Is on 55672 instead on older rmq versions' do
         is_expected.to be_listening.on('0.0.0.0').with('tcp')
       end
     end
   end
 
   context 'different management_ip_address and node_ip_address' do
-    it 'should run successfully' do
+    it 'runs successfully' do
       pp = <<-EOS
       class { 'rabbitmq':
         service_manage        => true,
@@ -166,7 +166,7 @@ describe 'rabbitmq class:' do
       }
       EOS
 
-      apply_manifest(pp, :catch_failures => true)
+      apply_manifest(pp, catch_failures: true)
     end
 
     describe service(service_name) do
@@ -175,14 +175,13 @@ describe 'rabbitmq class:' do
     describe port(5672) do
       it { is_expected.to be_listening.on('0.0.0.0').with('tcp') }
     end
-    describe port(15672) do
+    describe port(15_672) do
       it { is_expected.to be_listening.on('127.0.0.1').with('tcp') }
     end
-    describe port(25672) do
-      xit "Is on 55672 instead on older rmq versions" do
+    describe port(25_672) do
+      xit 'Is on 55672 instead on older rmq versions' do
         is_expected.to be_listening.on('0.0.0.0').with('tcp')
       end
     end
   end
-
 end

@@ -2,7 +2,7 @@ require 'spec_helper_acceptance'
 
 describe 'rabbitmq::install::rabbitmqadmin class' do
   context 'downloads the cli tools' do
-    it 'should run successfully' do
+    it 'runs successfully' do
       pp = <<-EOS
       class { 'rabbitmq':
         admin_enable   => true,
@@ -14,7 +14,7 @@ describe 'rabbitmq::install::rabbitmqadmin class' do
       }
       EOS
 
-      apply_manifest(pp, :catch_failures => true)
+      apply_manifest(pp, catch_failures: true)
     end
 
     describe file('/var/lib/rabbitmq/rabbitmqadmin') do
@@ -23,7 +23,7 @@ describe 'rabbitmq::install::rabbitmqadmin class' do
   end
 
   context 'does nothing if service is unmanaged' do
-    it 'should run successfully' do
+    it 'runs successfully' do
       pp = <<-EOS
       class { 'rabbitmq':
         admin_enable   => true,
@@ -36,7 +36,7 @@ describe 'rabbitmq::install::rabbitmqadmin class' do
       EOS
 
       shell('rm -f /var/lib/rabbitmq/rabbitmqadmin')
-      apply_manifest(pp, :catch_failures => true)
+      apply_manifest(pp, catch_failures: true)
     end
 
     describe file('/var/lib/rabbitmq/rabbitmqadmin') do
@@ -45,7 +45,7 @@ describe 'rabbitmq::install::rabbitmqadmin class' do
   end
 
   context 'works with specified default credentials' do
-    it 'should run successfully' do
+    it 'runs successfully' do
       # make sure credential change takes effect before admin_enable
       pp_pre = <<-EOS
       class { 'rabbitmq':
@@ -73,13 +73,12 @@ describe 'rabbitmq::install::rabbitmqadmin class' do
       EOS
 
       shell('rm -f /var/lib/rabbitmq/rabbitmqadmin')
-      apply_manifest(pp_pre, :catch_failures => true)
-      apply_manifest(pp, :catch_failures => true)
+      apply_manifest(pp_pre, catch_failures: true)
+      apply_manifest(pp, catch_failures: true)
     end
 
     describe file('/var/lib/rabbitmq/rabbitmqadmin') do
       it { is_expected.to be_file }
     end
   end
-
 end

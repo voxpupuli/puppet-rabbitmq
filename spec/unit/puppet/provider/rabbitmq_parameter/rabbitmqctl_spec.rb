@@ -6,82 +6,77 @@ RSpec.configure do |config|
 end
 
 describe Puppet::Type.type(:rabbitmq_parameter).provider(:rabbitmqctl) do
-
   let(:resource) do
     Puppet::Type.type(:rabbitmq_parameter).new(
-      :name           => 'documentumShovel@/',
-      :component_name => 'shovel',
-      :value          => {
+      name: 'documentumShovel@/',
+      component_name: 'shovel',
+      value: {
         'src-uri'    => 'amqp://',
         'src-queue'  => 'my-queue',
         'dest-uri'   => 'amqp://remote-server',
-        'dest-queue' => 'another-queue',
+        'dest-queue' => 'another-queue'
       },
-      :provider => described_class.name
+      provider: described_class.name
     )
   end
 
   let(:provider) { resource.provider }
 
-  after(:each) do
+  after do
     described_class.instance_variable_set(:@parameters, nil)
   end
 
-  it 'should accept @ in parameter name' do
+  it 'accepts @ in parameter name' do
     resource = Puppet::Type.type(:rabbitmq_parameter).new(
-      :name       => 'documentumShovel@/',
-      :component_name => 'shovel',
-      :value          => {
+      name: 'documentumShovel@/',
+      component_name: 'shovel',
+      value: {
         'src-uri'    => 'amqp://',
         'src-queue'  => 'my-queue',
         'dest-uri'   => 'amqp://remote-server',
-        'dest-queue' => 'another-queue',
+        'dest-queue' => 'another-queue'
       },
-      :provider => described_class.name
+      provider: described_class.name
     )
     provider = described_class.new(resource)
     expect(provider.should_parameter).to eq('documentumShovel')
     expect(provider.should_vhost).to eq('/')
   end
 
-  it 'should fail with invalid output from list' do
+  it 'fails with invalid output from list' do
     provider.class.expects(:rabbitmqctl).with('list_parameters', '-q', '-p', '/').returns 'foobar'
-    expect { provider.exists? }.to raise_error(Puppet::Error, /cannot parse line from list_parameter/)
+    expect { provider.exists? }.to raise_error(Puppet::Error, %r{cannot parse line from list_parameter})
   end
 
-  it 'should match parameters from list' do
+  it 'matches parameters from list' do
     provider.class.expects(:rabbitmqctl).with('list_parameters', '-q', '-p', '/').returns <<-EOT
 shovel  documentumShovel  {"src-uri":"amqp://","src-queue":"my-queue","dest-uri":"amqp://remote-server","dest-queue":"another-queue"}
 EOT
-    expect(provider.exists?).to eq({
-      :component_name => 'shovel',
-      :value => {
-        'src-uri'    => 'amqp://',
-        'src-queue'  => 'my-queue',
-        'dest-uri'   => 'amqp://remote-server',
-        'dest-queue' => 'another-queue',
-      }
-    })
+    expect(provider.exists?).to eq(component_name: 'shovel',
+                                   value: {
+                                     'src-uri' => 'amqp://',
+                                     'src-queue'  => 'my-queue',
+                                     'dest-uri'   => 'amqp://remote-server',
+                                     'dest-queue' => 'another-queue'
+                                   })
   end
 
-  it 'should not match an empty list' do
+  it 'does not match an empty list' do
     provider.class.expects(:rabbitmqctl).with('list_parameters', '-q', '-p', '/').returns ''
     expect(provider.exists?).to eq(nil)
   end
 
-  it 'should destroy parameter' do
+  it 'destroys parameter' do
     provider.expects(:rabbitmqctl).with('clear_parameter', '-p', '/', 'shovel', 'documentumShovel')
     provider.destroy
   end
 
-  it 'should only call set_parameter once' do
+  it 'onlies call set_parameter once' do
     provider.expects(:rabbitmqctl).with('set_parameter',
-      '-p', '/',
-      'shovel',
-      'documentumShovel',
-      '{"src-uri":"amqp://","src-queue":"my-queue","dest-uri":"amqp://remote-server","dest-queue":"another-queue"}'
-    ).once
+                                        '-p', '/',
+                                        'shovel',
+                                        'documentumShovel',
+                                        '{"src-uri":"amqp://","src-queue":"my-queue","dest-uri":"amqp://remote-server","dest-queue":"another-queue"}').once
     provider.create
   end
-
 end

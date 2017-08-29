@@ -1,178 +1,178 @@
 require 'spec_helper'
 describe Puppet::Type.type(:rabbitmq_policy) do
-
   before do
     @policy = Puppet::Type.type(:rabbitmq_policy).new(
-      :name       => 'ha-all@/',
-      :pattern    => '.*',
-      :definition => {
+      name: 'ha-all@/',
+      pattern: '.*',
+      definition: {
         'ha-mode' => 'all'
-      })
+      }
+    )
   end
 
-  it 'should accept a valid name' do
+  it 'accepts a valid name' do
     @policy[:name] = 'ha-all@/'
     expect(@policy[:name]).to eq('ha-all@/')
   end
 
-  it 'should require a name' do
-    expect {
+  it 'requires a name' do
+    expect do
       Puppet::Type.type(:rabbitmq_policy).new({})
-    }.to raise_error(Puppet::Error, 'Title or name must be provided')
+    end.to raise_error(Puppet::Error, 'Title or name must be provided')
   end
 
-  it 'should fail when name does not have a @' do
-    expect {
+  it 'fails when name does not have a @' do
+    expect do
       @policy[:name] = 'ha-all'
-    }.to raise_error(Puppet::Error, /Valid values match/)
+    end.to raise_error(Puppet::Error, %r{Valid values match})
   end
 
-  it 'should accept a valid regex for pattern' do
+  it 'accepts a valid regex for pattern' do
     @policy[:pattern] = '.*?'
     expect(@policy[:pattern]).to eq('.*?')
   end
 
-  it 'should accept an empty string for pattern' do
+  it 'accepts an empty string for pattern' do
     @policy[:pattern] = ''
     expect(@policy[:pattern]).to eq('')
   end
 
-  it 'should not accept invalid regex for pattern' do
-    expect {
+  it 'does not accept invalid regex for pattern' do
+    expect do
       @policy[:pattern] = '*'
-    }.to raise_error(Puppet::Error, /Invalid regexp/)
+    end.to raise_error(Puppet::Error, %r{Invalid regexp})
   end
 
-  it 'should accept valid value for applyto' do
+  it 'accepts valid value for applyto' do
     [:all, :exchanges, :queues].each do |v|
       @policy[:applyto] = v
       expect(@policy[:applyto]).to eq(v)
     end
   end
 
-  it 'should not accept invalid value for applyto' do
-    expect {
+  it 'does not accept invalid value for applyto' do
+    expect do
       @policy[:applyto] = 'me'
-    }.to raise_error(Puppet::Error, /Invalid value/)
+    end.to raise_error(Puppet::Error, %r{Invalid value})
   end
 
-  it 'should accept a valid hash for definition' do
-    definition = {'ha-mode' => 'all', 'ha-sync-mode' => 'automatic'}
+  it 'accepts a valid hash for definition' do
+    definition = { 'ha-mode' => 'all', 'ha-sync-mode' => 'automatic' }
     @policy[:definition] = definition
     expect(@policy[:definition]).to eq(definition)
   end
 
-  it 'should not accept invalid hash for definition' do
-    expect {
+  it 'does not accept invalid hash for definition' do
+    expect do
       @policy[:definition] = 'ha-mode'
-    }.to raise_error(Puppet::Error, /Invalid definition/)
+    end.to raise_error(Puppet::Error, %r{Invalid definition})
 
-    expect {
-      @policy[:definition] = {'ha-mode' => ['a', 'b']}
-    }.to raise_error(Puppet::Error, /Invalid definition/)
+    expect do
+      @policy[:definition] = { 'ha-mode' => %w[a b] }
+    end.to raise_error(Puppet::Error, %r{Invalid definition})
   end
 
-  it 'should accept valid value for priority' do
+  it 'accepts valid value for priority' do
     [0, 10, '0', '10'].each do |v|
       @policy[:priority] = v
       expect(@policy[:priority]).to eq(v)
     end
   end
 
-  it 'should not accept invalid value for priority' do
+  it 'does not accept invalid value for priority' do
     ['-1', -1, '1.0', 1.0, 'abc', ''].each do |v|
-      expect {
+      expect do
         @policy[:priority] = v
-      }.to raise_error(Puppet::Error, /Invalid value/)
+      end.to raise_error(Puppet::Error, %r{Invalid value})
     end
   end
 
-  it 'should accept and convert ha-params for ha-mode exactly' do
-    definition = {'ha-mode' => 'exactly', 'ha-params' => '2'}
+  it 'accepts and convert ha-params for ha-mode exactly' do
+    definition = { 'ha-mode' => 'exactly', 'ha-params' => '2' }
     @policy[:definition] = definition
-    expect(@policy[:definition]['ha-params']).to be_a(Fixnum)
+    expect(@policy[:definition]['ha-params']).to be_a(Integer)
     expect(@policy[:definition]['ha-params']).to eq(2)
   end
 
-  it 'should not accept non-numeric ha-params for ha-mode exactly' do
-    definition = {'ha-mode' => 'exactly', 'ha-params' => 'nonnumeric'}
-    expect {
+  it 'does not accept non-numeric ha-params for ha-mode exactly' do
+    definition = { 'ha-mode' => 'exactly', 'ha-params' => 'nonnumeric' }
+    expect do
       @policy[:definition] = definition
-    }.to raise_error(Puppet::Error, /Invalid ha-params.*nonnumeric.*exactly/)
+    end.to raise_error(Puppet::Error, %r{Invalid ha-params.*nonnumeric.*exactly})
   end
 
-  it 'should accept and convert the expires value' do
-    definition = {'expires' => '1800000'}
+  it 'accepts and convert the expires value' do
+    definition = { 'expires' => '1800000' }
     @policy[:definition] = definition
-    expect(@policy[:definition]['expires']).to be_a(Fixnum)
-    expect(@policy[:definition]['expires']).to eq(1800000)
+    expect(@policy[:definition]['expires']).to be_a(Integer)
+    expect(@policy[:definition]['expires']).to eq(1_800_000)
   end
 
-  it 'should not accept non-numeric expires value' do
-    definition = {'expires' => 'future'}
-    expect {
+  it 'does not accept non-numeric expires value' do
+    definition = { 'expires' => 'future' }
+    expect do
       @policy[:definition] = definition
-    }.to raise_error(Puppet::Error, /Invalid expires value.*future/)
+    end.to raise_error(Puppet::Error, %r{Invalid expires value.*future})
   end
 
-  it 'should accept and convert the message-ttl value' do
-    definition = {'message-ttl' => '1800000'}
+  it 'accepts and convert the message-ttl value' do
+    definition = { 'message-ttl' => '1800000' }
     @policy[:definition] = definition
-    expect(@policy[:definition]['message-ttl']).to be_a(Fixnum)
-    expect(@policy[:definition]['message-ttl']).to eq(1800000)
+    expect(@policy[:definition]['message-ttl']).to be_a(Integer)
+    expect(@policy[:definition]['message-ttl']).to eq(1_800_000)
   end
 
-  it 'should not accept non-numeric message-ttl value' do
-    definition = {'message-ttl' => 'future'}
-    expect {
+  it 'does not accept non-numeric message-ttl value' do
+    definition = { 'message-ttl' => 'future' }
+    expect do
       @policy[:definition] = definition
-    }.to raise_error(Puppet::Error, /Invalid message-ttl value.*future/)
+    end.to raise_error(Puppet::Error, %r{Invalid message-ttl value.*future})
   end
 
-  it 'should accept and convert the max-length value' do
-    definition = {'max-length' => '1800000'}
+  it 'accepts and convert the max-length value' do
+    definition = { 'max-length' => '1800000' }
     @policy[:definition] = definition
-    expect(@policy[:definition]['max-length']).to be_a(Fixnum)
-    expect(@policy[:definition]['max-length']).to eq(1800000)
+    expect(@policy[:definition]['max-length']).to be_a(Integer)
+    expect(@policy[:definition]['max-length']).to eq(1_800_000)
   end
 
-  it 'should not accept non-numeric max-length value' do
-    definition = {'max-length' => 'future'}
-    expect {
+  it 'does not accept non-numeric max-length value' do
+    definition = { 'max-length' => 'future' }
+    expect do
       @policy[:definition] = definition
-    }.to raise_error(Puppet::Error, /Invalid max-length value.*future/)
+    end.to raise_error(Puppet::Error, %r{Invalid max-length value.*future})
   end
 
-  it 'should accept and convert the shards-per-node value' do
-    definition = {'shards-per-node' => '1800000'}
+  it 'accepts and convert the shards-per-node value' do
+    definition = { 'shards-per-node' => '1800000' }
     @policy[:definition] = definition
-    expect(@policy[:definition]['shards-per-node']).to be_a(Fixnum)
-    expect(@policy[:definition]['shards-per-node']).to eq(1800000)
+    expect(@policy[:definition]['shards-per-node']).to be_a(Integer)
+    expect(@policy[:definition]['shards-per-node']).to eq(1_800_000)
   end
 
-  it 'should not accept non-numeric shards-per-node value' do
-    definition = {'shards-per-node' => 'future'}
-    expect {
+  it 'does not accept non-numeric shards-per-node value' do
+    definition = { 'shards-per-node' => 'future' }
+    expect do
       @policy[:definition] = definition
-    }.to raise_error(Puppet::Error, /Invalid shards-per-node value.*future/)
+    end.to raise_error(Puppet::Error, %r{Invalid shards-per-node value.*future})
   end
-    
-  it 'should accept and convert the ha-sync-batch-size value' do
-    definition = {'ha-sync-batch-size' => '1800000'}
+
+  it 'accepts and convert the ha-sync-batch-size value' do
+    definition = { 'ha-sync-batch-size' => '1800000' }
     @policy[:definition] = definition
-    expect(@policy[:definition]['ha-sync-batch-size']).to be_a(Fixnum)
-    expect(@policy[:definition]['ha-sync-batch-size']).to eq(1800000)
-  end
-  
-  it 'should not accept non-numeric ha-sync-batch-size value' do
-    definition = {'ha-sync-batch-size' => 'future'}
-    expect {
-      @policy[:definition] = definition
-    }.to raise_error(Puppet::Error, /Invalid ha-sync-batch-size value.*future/)
+    expect(@policy[:definition]['ha-sync-batch-size']).to be_a(Integer)
+    expect(@policy[:definition]['ha-sync-batch-size']).to eq(1_800_000)
   end
 
-  it 'should accept list value in ha-params when ha-mode = nodes' do
-    definition = {'ha-mode' => 'nodes', 'ha-params' => ['rabbit@rabbit-01', 'rabbit@rabbit-02']}
+  it 'does not accept non-numeric ha-sync-batch-size value' do
+    definition = { 'ha-sync-batch-size' => 'future' }
+    expect do
+      @policy[:definition] = definition
+    end.to raise_error(Puppet::Error, %r{Invalid ha-sync-batch-size value.*future})
+  end
+
+  it 'accepts list value in ha-params when ha-mode = nodes' do
+    definition = { 'ha-mode' => 'nodes', 'ha-params' => ['rabbit@rabbit-01', 'rabbit@rabbit-02'] }
     @policy[:definition] = definition
     expect(@policy[:definition]['ha-mode']).to eq('nodes')
     expect(@policy[:definition]['ha-params']).to be_a(Array)
@@ -180,11 +180,10 @@ describe Puppet::Type.type(:rabbitmq_policy) do
     expect(@policy[:definition]['ha-params'][1]).to eq('rabbit@rabbit-02')
   end
 
-  it 'should not accept non-list value in ha-params when ha-mode = nodes' do
-    definition = {'ha-mode' => 'nodes', 'ha-params' => 'this-will-fail'}
-    expect {
+  it 'does not accept non-list value in ha-params when ha-mode = nodes' do
+    definition = { 'ha-mode' => 'nodes', 'ha-params' => 'this-will-fail' }
+    expect do
       @policy[:definition] = definition
-    }.to raise_error(Puppet::Error, /Invalid definition, value this-will-fail for key ha-params is not an array/)
+    end.to raise_error(Puppet::Error, %r{Invalid definition, value this-will-fail for key ha-params is not an array})
   end
-
 end

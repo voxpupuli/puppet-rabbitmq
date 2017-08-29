@@ -11,21 +11,20 @@ Puppet::Type.newtype(:rabbitmq_plugin) do
     end
   end
 
-  newparam(:name, :namevar => true) do
+  newparam(:name, namevar: true) do
     'name of the plugin to enable'
-    newvalues(/^\S+$/)
+    newvalues(%r{^\S+$})
   end
 
   newparam(:umask) do
-    desc "Sets the octal umask to be used while creating this resource"
+    desc 'Sets the octal umask to be used while creating this resource'
     defaultto '0022'
     munge do |value|
-      if value =~ /^0?[0-7]{1,3}$/
+      if value =~ %r{^0?[0-7]{1,3}$}
         return value.to_i(8)
       else
         raise Puppet::Error, "The umask specification is invalid: #{value.inspect}"
       end
     end
   end
-
 end

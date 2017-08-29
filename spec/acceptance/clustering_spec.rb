@@ -2,9 +2,9 @@ require 'spec_helper_acceptance'
 
 describe 'rabbitmq clustering' do
   context 'rabbitmq::wipe_db_on_cookie_change => false' do
-    it 'should run successfully' do
+    it 'runs successfully' do
       pp = <<-EOS
-      class { 'rabbitmq': 
+      class { 'rabbitmq':
         config_cluster           => true,
         cluster_nodes            => ['rabbit1', 'rabbit2'],
         cluster_node_type        => 'ram',
@@ -17,18 +17,17 @@ describe 'rabbitmq clustering' do
       }
       EOS
 
-      apply_manifest(pp, :expect_failures => true)
+      apply_manifest(pp, expect_failures: true)
     end
 
     describe file('/var/lib/rabbitmq/.erlang.cookie') do
       it { is_expected.not_to contain 'TESTCOOKIE' }
     end
-
   end
   context 'rabbitmq::wipe_db_on_cookie_change => true' do
-    it 'should run successfully' do
+    it 'runs successfully' do
       pp = <<-EOS
-      class { 'rabbitmq': 
+      class { 'rabbitmq':
         config_cluster           => true,
         cluster_nodes            => ['rabbit1', 'rabbit2'],
         cluster_node_type        => 'ram',
@@ -41,7 +40,7 @@ describe 'rabbitmq clustering' do
       }
       EOS
 
-      apply_manifest(pp, :catch_failures => true)
+      apply_manifest(pp, catch_failures: true)
     end
 
     describe file('/etc/rabbitmq/rabbitmq.config') do
