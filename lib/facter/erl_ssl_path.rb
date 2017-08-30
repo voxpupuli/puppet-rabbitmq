@@ -11,6 +11,6 @@ Facter.add('erl_ssl_path') do
       end
     end
     # erl returns the string with quotes, strip them off
-    data.gsub!(/\A"|"\Z/, '')
+    data.gsub!(%r{\A"|"\Z}, '')
   end
 end
