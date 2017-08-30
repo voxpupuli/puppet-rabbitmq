@@ -38,6 +38,19 @@ def with_openbsd_facts
   end
 end
 
+def with_freebsd_facts
+  # operatingsystemmajrelease is too broad
+  # operatingsystemrelease may contain X.X-current
+  # or other prefixes
+  let :facts do
+    super().merge(
+      kernelversion: '12',
+      osfamily: 'FreeBSD',
+      staging_http_get: ''
+    )
+  end
+end
+
 def with_redhat_facts
   let :facts do
     super().merge(

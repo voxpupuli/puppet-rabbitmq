@@ -29,6 +29,14 @@ class rabbitmq::params {
       $rabbitmq_group   = '_rabbitmq'
       $rabbitmq_home    = '/var/rabbitmq'
     }
+    'FreeBSD': {
+      $package_ensure   = 'installed'
+      $package_name     = 'rabbitmq'
+      $service_name     = 'rabbitmq'
+      $rabbitmq_user    = 'rabbitmq'
+      $rabbitmq_group   = 'rabbitmq'
+      $rabbitmq_home    = '/var/db/rabbitmq'
+    }
     'RedHat': {
       $package_ensure   = 'installed'
       $package_name     = 'rabbitmq-server'
