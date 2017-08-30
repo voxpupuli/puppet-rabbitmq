@@ -8,11 +8,12 @@ class rabbitmq::repo::rhel(
   Class['rabbitmq::repo::rhel'] -> Package<| title == 'rabbitmq-server' |>
 
   yumrepo { 'rabbitmq':
-    ensure  => present,
-    name    => 'rabbitmq_rabbitmq-server',
-    baseurl => $location,
-    gpgkey  => $key_source,
-    enabled => 1,
+    ensure   => present,
+    name     => 'rabbitmq_rabbitmq-server',
+    baseurl  => $location,
+    gpgkey   => $key_source,
+    enabled  => 1,
+    gpgcheck => 1
   }
 
   # This may still be needed to prevent warnings

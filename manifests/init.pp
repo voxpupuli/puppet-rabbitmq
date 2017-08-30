@@ -34,6 +34,7 @@ class rabbitmq(
   String $package_gpg_key                        = $rabbitmq::params::package_gpg_key,
   String $package_name                           = $rabbitmq::params::package_name,
   Optional[String] $package_source               = undef,
+  Optional[String] $package_provider             = undef,
   Boolean $repos_ensure                          = $rabbitmq::params::repos_ensure,
   $manage_repos                                  = undef,
   $rabbitmq_user                                 = $rabbitmq::params::rabbitmq_user,
@@ -115,6 +116,10 @@ class rabbitmq(
 
   if $package_source != undef {
     warning('$package_source is now deprecated. Please use yum installation or handle outside of this module.')
+  }
+
+  if $package_provider != undef {
+    warning('$package_provider is now deprecated. Please use yum installation or handle outside of this module.')
   }
 
   if $manage_repos != undef {
