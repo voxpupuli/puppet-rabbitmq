@@ -1,7 +1,7 @@
 require 'spec_helper'
 describe Puppet::Type.type(:rabbitmq_parameter) do
-  before do
-    @parameter = Puppet::Type.type(:rabbitmq_parameter).new(
+  let(:parameter) do
+    Puppet::Type.type(:rabbitmq_parameter).new(
       name: 'documentumShovel@/',
       component_name: 'shovel',
       value: {
@@ -14,8 +14,8 @@ describe Puppet::Type.type(:rabbitmq_parameter) do
   end
 
   it 'accepts a valid name' do
-    @parameter[:name] = 'documentumShovel@/'
-    expect(@parameter[:name]).to eq('documentumShovel@/')
+    parameter[:name] = 'documentumShovel@/'
+    expect(parameter[:name]).to eq('documentumShovel@/')
   end
 
   it 'requires a name' do
@@ -26,52 +26,52 @@ describe Puppet::Type.type(:rabbitmq_parameter) do
 
   it 'fails when name does not have a @' do
     expect do
-      @parameter[:name] = 'documentumShovel'
+      parameter[:name] = 'documentumShovel'
     end.to raise_error(Puppet::Error, %r{Valid values match})
   end
 
   it 'accepts a string' do
-    @parameter[:component_name] = 'mystring'
-    expect(@parameter[:component_name]).to eq('mystring')
+    parameter[:component_name] = 'mystring'
+    expect(parameter[:component_name]).to eq('mystring')
   end
 
   it 'is not empty' do
     expect do
-      @parameter[:component_name] = ''
+      parameter[:component_name] = ''
     end.to raise_error(Puppet::Error, %r{component_name must be defined})
   end
 
   it 'accepts a valid hash for value' do
     value = { 'message-ttl' => '1800000' }
-    @parameter[:value] = value
-    expect(@parameter[:value]).to eq(value)
+    parameter[:value] = value
+    expect(parameter[:value]).to eq(value)
   end
 
   it 'does not accept invalid hash for definition' do
     expect do
-      @parameter[:value] = ''
+      parameter[:value] = ''
     end.to raise_error(Puppet::Error, %r{Invalid value})
 
     expect do
-      @parameter[:value] = 'guest'
+      parameter[:value] = 'guest'
     end.to raise_error(Puppet::Error, %r{Invalid value})
 
     expect do
-      @parameter[:value] = { 'message-ttl' => %w[999 100] }
+      parameter[:value] = { 'message-ttl' => %w[999 100] }
     end.to raise_error(Puppet::Error, %r{Invalid value})
   end
 
   it 'accepts string as myparameter' do
     value = { 'myparameter' => 'mystring' }
-    @parameter[:value] = value
-    expect(@parameter[:value]['myparameter']).to be_a(String)
-    expect(@parameter[:value]['myparameter']).to eq('mystring')
+    parameter[:value] = value
+    expect(parameter[:value]['myparameter']).to be_a(String)
+    expect(parameter[:value]['myparameter']).to eq('mystring')
   end
 
   it 'converts to integer when string only contains numbers' do
     value = { 'myparameter' => '1800000' }
-    @parameter[:value] = value
-    expect(@parameter[:value]['myparameter']).to be_a(Integer)
-    expect(@parameter[:value]['myparameter']).to eq(1_800_000)
+    parameter[:value] = value
+    expect(parameter[:value]['myparameter']).to be_a(Integer)
+    expect(parameter[:value]['myparameter']).to eq(1_800_000)
   end
 end

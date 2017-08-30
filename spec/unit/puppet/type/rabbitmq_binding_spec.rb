@@ -1,14 +1,15 @@
 require 'spec_helper'
 describe Puppet::Type.type(:rabbitmq_binding) do
-  before do
-    @binding = Puppet::Type.type(:rabbitmq_binding).new(
+  let(:binding) do
+    Puppet::Type.type(:rabbitmq_binding).new(
       name: 'foo@blub@bar',
       destination_type: :queue
     )
   end
+
   it 'accepts an queue name' do
-    @binding[:name] = 'dan@dude@pl'
-    expect(@binding[:name]).to eq('dan@dude@pl')
+    binding[:name] = 'dan@dude@pl'
+    expect(binding[:name]).to eq('dan@dude@pl')
   end
   it 'requires a name' do
     expect do
@@ -32,15 +33,15 @@ describe Puppet::Type.type(:rabbitmq_binding) do
     end.to raise_error(Puppet::Error, %r{Source and destination must both be defined})
   end
   it 'accepts an binding destination_type' do
-    @binding[:destination_type] = :exchange
-    expect(@binding[:destination_type]).to eq(:exchange)
+    binding[:destination_type] = :exchange
+    expect(binding[:destination_type]).to eq(:exchange)
   end
   it 'accepts a user' do
-    @binding[:user] = :root
-    expect(@binding[:user]).to eq(:root)
+    binding[:user] = :root
+    expect(binding[:user]).to eq(:root)
   end
   it 'accepts a password' do
-    @binding[:password] = :PaSsw0rD
-    expect(@binding[:password]).to eq(:PaSsw0rD)
+    binding[:password] = :PaSsw0rD
+    expect(binding[:password]).to eq(:PaSsw0rD)
   end
 end

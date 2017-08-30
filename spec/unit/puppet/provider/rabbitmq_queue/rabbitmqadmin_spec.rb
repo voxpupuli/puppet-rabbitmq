@@ -5,15 +5,15 @@ RSpec.configure do |config|
 end
 provider_class = Puppet::Type.type(:rabbitmq_queue).provider(:rabbitmqadmin)
 describe provider_class do
-  before do
-    @resource = Puppet::Type::Rabbitmq_queue.new(
+  let(:resource) do
+    Puppet::Type::Rabbitmq_queue.new(
       name: 'test@/',
       durable: :true,
       auto_delete: :false,
       arguments: {}
     )
-    @provider = provider_class.new(@resource)
   end
+  let(:provider) { provider_class.new(resource) }
 
   it 'returns instances' do
     provider_class.expects(:rabbitmqctl).with('list_vhosts', '-q').returns <<-EOT
@@ -28,18 +28,18 @@ EOT
   end
 
   it 'calls rabbitmqadmin to create' do
-    @provider.expects(:rabbitmqadmin).with('declare', 'queue', '--vhost=/', '--user=guest', '--password=guest', '-c', '/etc/rabbitmq/rabbitmqadmin.conf', 'name=test', 'durable=true', 'auto_delete=false', 'arguments={}')
-    @provider.create
+    provider.expects(:rabbitmqadmin).with('declare', 'queue', '--vhost=/', '--user=guest', '--password=guest', '-c', '/etc/rabbitmq/rabbitmqadmin.conf', 'name=test', 'durable=true', 'auto_delete=false', 'arguments={}')
+    provider.create
   end
 
   it 'calls rabbitmqadmin to destroy' do
-    @provider.expects(:rabbitmqadmin).with('delete', 'queue', '--vhost=/', '--user=guest', '--password=guest', '-c', '/etc/rabbitmq/rabbitmqadmin.conf', 'name=test')
-    @provider.destroy
+    provider.expects(:rabbitmqadmin).with('delete', 'queue', '--vhost=/', '--user=guest', '--password=guest', '-c', '/etc/rabbitmq/rabbitmqadmin.conf', 'name=test')
+    provider.destroy
   end
 
   context 'specifying credentials' do
-    before do
-      @resource = Puppet::Type::Rabbitmq_queue.new(
+    let(:resource) do
+      Puppet::Type::Rabbitmq_queue.new(
         name: 'test@/',
         durable: 'true',
         auto_delete: 'false',
@@ -47,12 +47,12 @@ EOT
         user: 'colin',
         password: 'secret'
       )
-      @provider = provider_class.new(@resource)
     end
+    let(:provider) { provider_class.new(resource) }
 
     it 'calls rabbitmqadmin to create' do
-      @provider.expects(:rabbitmqadmin).with('declare', 'queue', '--vhost=/', '--user=colin', '--password=secret', '-c', '/etc/rabbitmq/rabbitmqadmin.conf', 'name=test', 'durable=true', 'auto_delete=false', 'arguments={}')
-      @provider.create
+      provider.expects(:rabbitmqadmin).with('declare', 'queue', '--vhost=/', '--user=colin', '--password=secret', '-c', '/etc/rabbitmq/rabbitmqadmin.conf', 'name=test', 'durable=true', 'auto_delete=false', 'arguments={}')
+      provider.create
     end
   end
 end

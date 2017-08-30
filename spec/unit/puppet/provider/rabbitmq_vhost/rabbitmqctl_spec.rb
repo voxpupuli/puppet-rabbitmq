@@ -5,41 +5,42 @@ RSpec.configure do |config|
 end
 provider_class = Puppet::Type.type(:rabbitmq_vhost).provider(:rabbitmqctl)
 describe provider_class do
-  before do
-    @resource = Puppet::Type::Rabbitmq_vhost.new(
+  let(:resource) do
+    Puppet::Type::Rabbitmq_vhost.new(
       name: 'foo'
     )
-    @provider = provider_class.new(@resource)
   end
+  let(:provider) { provider_class.new(resource) }
+
   it 'matches vhost names' do
-    @provider.expects(:rabbitmqctl).with('-q', 'list_vhosts').returns <<-EOT
+    provider.expects(:rabbitmqctl).with('-q', 'list_vhosts').returns <<-EOT
 Listing vhosts ...
 foo
 ...done.
 EOT
-    expect(@provider.exists?).to eq('foo')
+    expect(provider.exists?).to eq('foo')
   end
   it 'does not match if no vhosts on system' do
-    @provider.expects(:rabbitmqctl).with('-q', 'list_vhosts').returns <<-EOT
+    provider.expects(:rabbitmqctl).with('-q', 'list_vhosts').returns <<-EOT
 Listing vhosts ...
 ...done.
 EOT
-    expect(@provider.exists?).to be_nil
+    expect(provider.exists?).to be_nil
   end
   it 'does not match if no matching vhosts on system' do
-    @provider.expects(:rabbitmqctl).with('-q', 'list_vhosts').returns <<-EOT
+    provider.expects(:rabbitmqctl).with('-q', 'list_vhosts').returns <<-EOT
 Listing vhosts ...
 fooey
 ...done.
 EOT
-    expect(@provider.exists?).to be_nil
+    expect(provider.exists?).to be_nil
   end
   it 'calls rabbitmqctl to create' do
-    @provider.expects(:rabbitmqctl).with('add_vhost', 'foo')
-    @provider.create
+    provider.expects(:rabbitmqctl).with('add_vhost', 'foo')
+    provider.create
   end
   it 'calls rabbitmqctl to create' do
-    @provider.expects(:rabbitmqctl).with('delete_vhost', 'foo')
-    @provider.destroy
+    provider.expects(:rabbitmqctl).with('delete_vhost', 'foo')
+    provider.destroy
   end
 end

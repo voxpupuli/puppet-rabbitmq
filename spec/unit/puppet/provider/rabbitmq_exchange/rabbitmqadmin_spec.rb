@@ -5,8 +5,8 @@ RSpec.configure do |config|
 end
 provider_class = Puppet::Type.type(:rabbitmq_exchange).provider(:rabbitmqadmin)
 describe provider_class do
-  before do
-    @resource = Puppet::Type::Rabbitmq_exchange.new(
+  let(:resource) do
+    Puppet::Type::Rabbitmq_exchange.new(
       name: 'test.headers@/',
       type: :headers,
       internal: :false,
@@ -16,8 +16,8 @@ describe provider_class do
         'hash-headers' => 'message-distribution-hash'
       }
     )
-    @provider = provider_class.new(@resource)
   end
+  let(:provider) { provider_class.new(resource) }
 
   it 'returns instances' do
     provider_class.expects(:rabbitmqctl).with('-q', 'list_vhosts').returns <<-EOT
@@ -39,18 +39,18 @@ EOT
   end
 
   it 'calls rabbitmqadmin to create as guest' do
-    @provider.expects(:rabbitmqadmin).with('declare', 'exchange', '--vhost=/', '--user=guest', '--password=guest', 'name=test.headers', 'type=headers', 'internal=false', 'durable=true', 'auto_delete=false', 'arguments={"hash-headers":"message-distribution-hash"}', '-c', '/etc/rabbitmq/rabbitmqadmin.conf')
-    @provider.create
+    provider.expects(:rabbitmqadmin).with('declare', 'exchange', '--vhost=/', '--user=guest', '--password=guest', 'name=test.headers', 'type=headers', 'internal=false', 'durable=true', 'auto_delete=false', 'arguments={"hash-headers":"message-distribution-hash"}', '-c', '/etc/rabbitmq/rabbitmqadmin.conf')
+    provider.create
   end
 
   it 'calls rabbitmqadmin to destroy' do
-    @provider.expects(:rabbitmqadmin).with('delete', 'exchange', '--vhost=/', '--user=guest', '--password=guest', 'name=test.headers', '-c', '/etc/rabbitmq/rabbitmqadmin.conf')
-    @provider.destroy
+    provider.expects(:rabbitmqadmin).with('delete', 'exchange', '--vhost=/', '--user=guest', '--password=guest', 'name=test.headers', '-c', '/etc/rabbitmq/rabbitmqadmin.conf')
+    provider.destroy
   end
 
   context 'specifying credentials' do
-    before do
-      @resource = Puppet::Type::Rabbitmq_exchange.new(
+    let(:resource) do
+      Puppet::Type::Rabbitmq_exchange.new(
         name: 'test.headers@/',
         type: :headers,
         internal: 'false',
@@ -62,12 +62,12 @@ EOT
           'hash-header' => 'message-distribution-hash'
         }
       )
-      @provider = provider_class.new(@resource)
     end
+    let(:provider) { provider_class.new(resource) }
 
     it 'calls rabbitmqadmin to create with credentials' do
-      @provider.expects(:rabbitmqadmin).with('declare', 'exchange', '--vhost=/', '--user=colin', '--password=secret', 'name=test.headers', 'type=headers', 'internal=false', 'durable=true', 'auto_delete=false', 'arguments={"hash-header":"message-distribution-hash"}', '-c', '/etc/rabbitmq/rabbitmqadmin.conf')
-      @provider.create
+      provider.expects(:rabbitmqadmin).with('declare', 'exchange', '--vhost=/', '--user=colin', '--password=secret', 'name=test.headers', 'type=headers', 'internal=false', 'durable=true', 'auto_delete=false', 'arguments={"hash-header":"message-distribution-hash"}', '-c', '/etc/rabbitmq/rabbitmqadmin.conf')
+      provider.create
     end
   end
 end
