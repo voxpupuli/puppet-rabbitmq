@@ -1,7 +1,7 @@
 # Class: rabbitmq::repo::rhel
 # Makes sure that the Packagecloud repo is installed
 class rabbitmq::repo::rhel(
-    $location       = 'https://packagecloud.io/rabbitmq/rabbitmq-server/el/$releasever/$basearch',
+    $location       = "https://packagecloud.io/rabbitmq/rabbitmq-server/el/${::os[release][major]}/\$basearch",
     $key_source     = 'https://www.rabbitmq.com/rabbitmq-release-signing-key.asc',
   ) {
 
