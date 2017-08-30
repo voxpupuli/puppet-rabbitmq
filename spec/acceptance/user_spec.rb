@@ -4,7 +4,7 @@ describe 'rabbitmq user:' do
   context 'create user resource' do
     it 'runs successfully' do
       pp = <<-EOS
-      if $::osfamily == 'RedHat' {
+      if $facts['os']['family'] == 'RedHat' {
         class { 'erlang': epel_enable => true }
         Class['erlang'] -> Class['::rabbitmq']
       }

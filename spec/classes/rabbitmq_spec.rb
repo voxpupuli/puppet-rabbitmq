@@ -2,7 +2,11 @@ require 'spec_helper'
 
 describe 'rabbitmq' do
   context 'on unsupported distributions' do
-    let(:facts) { { osfamily: 'Unsupported' } }
+    let(:facts) do
+      {
+        os: { family: 'Unsupported' }
+      }
+    end
 
     it 'we fail' do
       expect { catalogue }.to raise_error(Puppet::Error, %r{not supported on an Unsupported})
@@ -16,9 +20,9 @@ describe 'rabbitmq' do
       let(:facts) { facts }
 
       has_systemd = (
-        (facts[:osfamily] == 'RedHat' && facts[:os]['release']['major'].to_i >= 7) ||
-        (facts[:osfamily] == 'Debian' && facts[:os]['release']['full'] == '16.04') ||
-        (facts[:osfamily] == 'Archlinux')
+        (facts[:os]['family'] == 'RedHat' && facts[:os]['release']['major'].to_i >= 7) ||
+        (facts[:os]['family'] == 'Debian' && facts[:os]['release']['full'] == '16.04') ||
+        (facts[:os]['family'] == 'Archlinux')
       )
 
       it { is_expected.to compile.with_all_deps }
@@ -38,7 +42,7 @@ describe 'rabbitmq' do
       context 'with repos_ensure => true' do
         let(:params) { { repos_ensure: true } }
 
-        if facts[:osfamily] == 'Debian'
+        if facts[:os]['family'] == 'Debian'
           it 'includes rabbitmq::repo::apt' do
             is_expected.to contain_class('rabbitmq::repo::apt').
               with_key_source('https://www.rabbitmq.com/rabbitmq-release-signing-key.asc').
@@ -57,7 +61,7 @@ describe 'rabbitmq' do
           it { is_expected.not_to contain_apt__souce('rabbitmq') }
         end
 
-        if facts[:osfamily] == 'RedHat'
+        if facts[:os]['family'] == 'RedHat'
           it { is_expected.to contain_class('rabbitmq::repo::rhel') }
 
           it 'the repo should be present, and contain the expected values' do
@@ -72,7 +76,7 @@ describe 'rabbitmq' do
         end
       end
 
-      context 'with no pin', if: facts[:osfamily] == 'Debian' do
+      context 'with no pin', if: facts[:os]['family'] == 'Debian' do
         let(:params) { { repos_ensure: true, package_apt_pin: '' } }
 
         describe 'it sets up an apt::source' do
@@ -87,7 +91,7 @@ describe 'rabbitmq' do
         end
       end
 
-      context 'with pin', if: facts[:osfamily] == 'Debian' do
+      context 'with pin', if: facts[:os]['family'] == 'Debian' do
         let(:params) { { repos_ensure: true, package_apt_pin: '700' } }
 
         describe 'it sets up an apt::source and pin' do
@@ -114,7 +118,7 @@ describe 'rabbitmq' do
         context "with file_limit => '#{value}'" do
           let(:params) { { file_limit: value } }
 
-          if facts[:osfamily] == 'RedHat'
+          if facts[:os]['family'] == 'RedHat'
             it do
               is_expected.to contain_file('/etc/security/limits.d/rabbitmq-server.conf').
                 with_owner('0').
@@ -127,7 +131,7 @@ describe 'rabbitmq' do
             it { is_expected.not_to contain_file('/etc/security/limits.d/rabbitmq-server.conf') }
           end
 
-          if facts[:osfamily] == 'Debian'
+          if facts[:os]['family'] == 'Debian'
             it { is_expected.to contain_file('/etc/default/rabbitmq-server').with_content(%r{ulimit -n #{value}}) }
           else
             it { is_expected.not_to contain_file('/etc/default/rabbitmq-server') }

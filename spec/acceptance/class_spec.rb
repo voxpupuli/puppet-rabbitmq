@@ -1,7 +1,7 @@
 require 'spec_helper_acceptance'
 
 describe 'rabbitmq class:' do
-  case fact('osfamily')
+  case fact('os.family')
   when 'RedHat'
     package_name = 'rabbitmq-server'
     service_name = 'rabbitmq-server'
@@ -20,7 +20,7 @@ describe 'rabbitmq class:' do
     it 'runs successfully' do
       pp = <<-EOS
       class { 'rabbitmq': }
-      if $::osfamily == 'RedHat' {
+      if $facts['os']['family'] == 'RedHat' {
         class { 'erlang': epel_enable => true}
         Class['erlang'] -> Class['rabbitmq']
       }
@@ -47,7 +47,7 @@ describe 'rabbitmq class:' do
       class { 'rabbitmq':
         service_ensure => 'stopped',
       }
-      if $::osfamily == 'RedHat' {
+      if $facts['os']['family'] == 'RedHat' {
         class { 'erlang': epel_enable => true}
         Class['erlang'] -> Class['rabbitmq']
       }
@@ -66,7 +66,7 @@ describe 'rabbitmq class:' do
     it 'runs successfully' do
       pp_pre = <<-EOS
       class { 'rabbitmq': }
-      if $::osfamily == 'RedHat' {
+      if $facts['os']['family'] == 'RedHat' {
         class { 'erlang': epel_enable => true}
         Class['erlang'] -> Class['rabbitmq']
       }
@@ -77,7 +77,7 @@ describe 'rabbitmq class:' do
         service_manage => false,
         service_ensure  => 'stopped',
       }
-      if $::osfamily == 'RedHat' {
+      if $facts['os']['family'] == 'RedHat' {
         class { 'erlang': epel_enable => true}
         Class['erlang'] -> Class['rabbitmq']
       }
