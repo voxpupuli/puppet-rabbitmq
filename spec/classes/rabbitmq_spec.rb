@@ -200,7 +200,7 @@ EOS
     end
     it 'the repo should be present, and contain the expected values' do
       is_expected.to contain_yumrepo('rabbitmq').with(ensure: 'present',
-                                                      baseurl: 'https://packagecloud.io/rabbitmq/rabbitmq-server/el/$releasever/$basearch',
+                                                      baseurl: 'https://packagecloud.io/rabbitmq/rabbitmq-server/el/7/$basearch',
                                                       gpgkey: 'https://www.rabbitmq.com/rabbitmq-release-signing-key.asc')
     end
   end

@@ -12,14 +12,17 @@ end
 
 def with_debian_facts
   let :facts do
-    super().merge(operatingsystemmajrelease: '6',
-                  lsbdistcodename: 'squeeze',
-                  lsbdistid: 'Debian',
-                  osfamily: 'Debian',
-                  os: {
-                    name: 'Debian',
-                    release: { full: '6.0' }
-                  })
+    super().merge(
+      operatingsystemmajrelease: '6',
+      lsbdistcodename: 'squeeze',
+      lsbdistid: 'Debian',
+      osfamily: 'Debian',
+      os:
+      {
+        name: 'Debian',
+        release: { full: '6.0' }
+      }
+    )
   end
 end
 
@@ -28,15 +31,24 @@ def with_openbsd_facts
   # operatingsystemrelease may contain X.X-current
   # or other prefixes
   let :facts do
-    super().merge(kernelversion: '5.9',
-                  osfamily: 'OpenBSD')
+    super().merge(
+      kernelversion: '5.9',
+      osfamily: 'OpenBSD'
+    )
   end
 end
 
 def with_redhat_facts
   let :facts do
-    super().merge(operatingsystemmajrelease: '7',
-                  osfamily: 'Redhat')
+    super().merge(
+      operatingsystemmajrelease: '7',
+      osfamily: 'Redhat',
+      os:
+      {
+        name: 'CentOS',
+        release: { major: '7' }
+      }
+    )
   end
 end
 
