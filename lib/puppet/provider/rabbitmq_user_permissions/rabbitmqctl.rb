@@ -18,7 +18,7 @@ Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl, parent: Pupp
       run_with_retries do
         rabbitmqctl('-q', 'list_user_permissions', name)
       end.split(%r{\n}).each do |line|
-        line = .strip_backslashes(line)
+        line = strip_backslashes(line)
         if line =~ %r{^(\S+)\s+(\S*)\s+(\S*)\s+(\S*)$}
           @users[name][Regexp.last_match(1)] =
             { configure: Regexp.last_match(2), read: Regexp.last_match(4), write: Regexp.last_match(3) }

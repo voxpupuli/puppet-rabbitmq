@@ -100,9 +100,10 @@ describe 'rabbitmq' do
           'group'   => '0',
           'mode'    => '0644',
           'notify'  => 'Class[Rabbitmq::Service]',
-          'content' => 'rabbitmq soft nofile unlimited
-  rabbitmq hard nofile unlimited
-  '
+          'content' => <<-EOS
+rabbitmq soft nofile unlimited
+rabbitmq hard nofile unlimited
+EOS
         )
       }
     end
@@ -116,9 +117,10 @@ describe 'rabbitmq' do
           'group'   => '0',
           'mode'    => '0644',
           'notify'  => 'Class[Rabbitmq::Service]',
-          'content' => 'rabbitmq soft nofile infinity
-  rabbitmq hard nofile infinity
-  '
+          'content' => <<-EOS
+rabbitmq soft nofile infinity
+rabbitmq hard nofile infinity
+EOS
         )
       }
     end
@@ -132,9 +134,10 @@ describe 'rabbitmq' do
           'group'   => '0',
           'mode'    => '0644',
           'notify'  => 'Class[Rabbitmq::Service]',
-          'content' => 'rabbitmq soft nofile -1
-  rabbitmq hard nofile -1
-  '
+          'content' => <<-EOS
+rabbitmq soft nofile -1
+rabbitmq hard nofile -1
+EOS
         )
       }
     end
@@ -148,9 +151,10 @@ describe 'rabbitmq' do
           'group'   => '0',
           'mode'    => '0644',
           'notify'  => 'Class[Rabbitmq::Service]',
-          'content' => 'rabbitmq soft nofile 1234
-  rabbitmq hard nofile 1234
-  '
+          'content' => <<-EOS
+rabbitmq soft nofile 1234
+rabbitmq hard nofile 1234
+EOS
         )
       }
     end
@@ -230,9 +234,10 @@ describe 'rabbitmq' do
           'group'   => '0',
           'mode'    => '0644',
           'notify'  => 'Exec[rabbitmq-systemd-reload]',
-          'content' => '[Service]
-  LimitNOFILE=unlimited
-  '
+          'content' => <<-EOS
+[Service]
+LimitNOFILE=unlimited
+EOS
         )
       }
     end
@@ -246,9 +251,10 @@ describe 'rabbitmq' do
           'group'   => '0',
           'mode'    => '0644',
           'notify'  => 'Exec[rabbitmq-systemd-reload]',
-          'content' => '[Service]
-  LimitNOFILE=infinity
-  '
+          'content' => <<-EOS
+[Service]
+LimitNOFILE=infinity
+EOS
         )
       }
     end
@@ -262,9 +268,10 @@ describe 'rabbitmq' do
           'group'   => '0',
           'mode'    => '0644',
           'notify'  => 'Exec[rabbitmq-systemd-reload]',
-          'content' => '[Service]
-  LimitNOFILE=-1
-  '
+          'content' => <<-EOS
+[Service]
+LimitNOFILE=-1
+EOS
         )
       }
     end
@@ -278,9 +285,10 @@ describe 'rabbitmq' do
           'group'   => '0',
           'mode'    => '0644',
           'notify'  => 'Exec[rabbitmq-systemd-reload]',
-          'content' => '[Service]
-  LimitNOFILE=1234
-  '
+          'content' => <<-EOS
+[Service]
+LimitNOFILE=1234
+EOS
         )
       }
     end
