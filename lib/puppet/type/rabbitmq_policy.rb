@@ -14,13 +14,13 @@ Puppet::Type.newtype(:rabbitmq_policy) do
   autorequire(:service) { 'rabbitmq-server' }
 
   validate do
-    fail('pattern parameter is required.') if self[:ensure] == :present and self[:pattern].nil?
-    fail('definition parameter is required.') if self[:ensure] == :present and self[:definition].nil?
+    raise('pattern parameter is required.') if self[:ensure] == :present && self[:pattern].nil?
+    raise('definition parameter is required.') if self[:ensure] == :present && self[:definition].nil?
   end
 
-  newparam(:name, :namevar => true) do
+  newparam(:name, namevar: true) do
     desc 'combination of policy@vhost to create policy for'
-    newvalues(/^\S+@\S+$/)
+    newvalues(%r{^\S+@\S+$})
   end
 
   newproperty(:pattern) do
@@ -50,7 +50,7 @@ Puppet::Type.newtype(:rabbitmq_policy) do
 
   newproperty(:priority) do
     desc 'policy priority'
-    newvalues(/^\d+$/)
+    newvalues(%r{^\d+$})
     defaultto 0
   end
 
@@ -59,18 +59,16 @@ Puppet::Type.newtype(:rabbitmq_policy) do
   end
 
   def validate_pattern(value)
-    begin
-      Regexp.new(value)
-    rescue RegexpError
-      raise ArgumentError, "Invalid regexp #{value}"
-    end
+    Regexp.new(value)
+  rescue RegexpError
+    raise ArgumentError, "Invalid regexp #{value}"
   end
 
   def validate_definition(definition)
     unless [Hash].include?(definition.class)
-      raise ArgumentError, "Invalid definition"
+      raise ArgumentError, 'Invalid definition'
     end
-    definition.each do |k,v|
+    definition.each do |k, v|
       if k == 'ha-params' && definition['ha-mode'] == 'nodes'
         unless [Array].include?(v.class)
           raise ArgumentError, "Invalid definition, value #{v} for key #{k} is not an array"

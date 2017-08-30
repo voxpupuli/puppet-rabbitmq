@@ -1,20 +1,20 @@
 require 'spec_helper'
 describe Puppet::Type.type(:rabbitmq_vhost) do
-  before :each do
-    @vhost = Puppet::Type.type(:rabbitmq_vhost).new(:name => 'foo')
+  before do
+    @vhost = Puppet::Type.type(:rabbitmq_vhost).new(name: 'foo')
   end
-  it 'should accept a vhost name' do
+  it 'accepts a vhost name' do
     @vhost[:name] = 'dan'
-    @vhost[:name].should == 'dan'
+    expect(@vhost[:name]).to eq('dan')
   end
-  it 'should require a name' do
-    expect {
+  it 'requires a name' do
+    expect do
       Puppet::Type.type(:rabbitmq_vhost).new({})
-    }.to raise_error(Puppet::Error, 'Title or name must be provided')
+    end.to raise_error(Puppet::Error, 'Title or name must be provided')
   end
-  it 'should not allow whitespace in the name' do
-    expect {
+  it 'does not allow whitespace in the name' do
+    expect do
       @vhost[:name] = 'b r'
-    }.to raise_error(Puppet::Error, /Valid values match/)
+    end.to raise_error(Puppet::Error, %r{Valid values match})
   end
 end

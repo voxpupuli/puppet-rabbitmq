@@ -1,10 +1,8 @@
 require 'spec_helper_acceptance'
 
 describe 'rabbitmq user:' do
-
-
-  context "create user resource" do
-    it 'should run successfully' do
+  context 'create user resource' do
+    it 'runs successfully' do
       pp = <<-EOS
       if $::osfamily == 'RedHat' {
         class { 'erlang': epel_enable => true }
@@ -23,16 +21,15 @@ describe 'rabbitmq user:' do
       }
       EOS
 
-      apply_manifest(pp, :catch_failures => true)
-      apply_manifest(pp, :catch_changes => true)
+      apply_manifest(pp, catch_failures: true)
+      apply_manifest(pp, catch_changes: true)
     end
 
-    it 'should have the user' do
+    it 'has the user' do
       shell('rabbitmqctl list_users') do |r|
-        expect(r.stdout).to match(/dan.*administrator/)
+        expect(r.stdout).to match(%r{dan.*administrator})
         expect(r.exit_code).to be_zero
       end
     end
-
   end
 end

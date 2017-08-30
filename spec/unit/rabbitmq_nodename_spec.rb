@@ -1,13 +1,13 @@
-require "spec_helper"
+require 'spec_helper'
 
 describe Facter::Util::Fact do
-  before {
+  before do
     Facter.clear
-  }
+  end
 
-  describe "rabbitmq_nodename" do
+  describe 'rabbitmq_nodename' do
     context 'with value' do
-      before :each do
+      before do
         Facter::Core::Execution.stubs(:which).with('rabbitmqctl').returns(true)
         Facter::Core::Execution.stubs(:execute).with('rabbitmqctl status 2>&1').returns('Status of node monty@rabbit1 ...')
       end
@@ -17,7 +17,7 @@ describe Facter::Util::Fact do
     end
 
     context 'with dashes in hostname' do
-      before :each do
+      before do
         Facter::Core::Execution.stubs(:which).with('rabbitmqctl').returns(true)
         Facter::Core::Execution.stubs(:execute).with('rabbitmqctl status 2>&1').returns('Status of node monty@rabbit-1 ...')
       end
@@ -27,7 +27,7 @@ describe Facter::Util::Fact do
     end
 
     context 'with quotes around node name' do
-      before :each do
+      before do
         Facter::Core::Execution.stubs(:which).with('rabbitmqctl').returns(true)
         Facter::Core::Execution.stubs(:execute).with('rabbitmqctl status 2>&1').returns('Status of node \'monty@rabbit-1\' ...')
       end
@@ -37,7 +37,7 @@ describe Facter::Util::Fact do
     end
 
     context 'without trailing points' do
-      before :each do
+      before do
         Facter::Core::Execution.stubs(:which).with('rabbitmqctl').returns(true)
         Facter::Core::Execution.stubs(:execute).with('rabbitmqctl status 2>&1').returns('Status of node monty@rabbit-1')
       end
@@ -45,6 +45,5 @@ describe Facter::Util::Fact do
         expect(Facter.fact(:rabbitmq_nodename).value).to eq('monty@rabbit-1')
       }
     end
-
   end
 end
