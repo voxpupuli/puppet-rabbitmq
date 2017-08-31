@@ -8,7 +8,7 @@ Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl, parent: Pupp
     end
   end
 
-  defaultfor :feature => :posix
+  defaultfor feature: :posix
 
   # cache users permissions
   def self.users(name, vhost)
@@ -100,8 +100,7 @@ Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl, parent: Pupp
       resource[:write_permission]     ||= write_permission
       rabbitmqctl('set_permissions', '-p', should_vhost, should_user,
                   resource[:configure_permission], resource[:write_permission],
-                  resource[:read_permission]
-                 )
+                  resource[:read_permission])
     end
   end
 
