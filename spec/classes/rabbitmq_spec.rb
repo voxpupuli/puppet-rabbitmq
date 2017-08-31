@@ -17,7 +17,8 @@ describe 'rabbitmq' do
 
       has_systemd = (
         (facts[:osfamily] == 'RedHat' && facts[:os]["release"]["major"].to_i >= 7) ||
-        (facts[:osfamily] == 'Debian' && facts[:os]["release"]["full"] == '16.04')
+        (facts[:osfamily] == 'Debian' && facts[:os]["release"]["full"] == '16.04') ||
+        (facts[:osfamily] == 'Archlinux')
       )
 
       it { is_expected.to compile.with_all_deps }
