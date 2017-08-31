@@ -16,8 +16,8 @@ describe 'rabbitmq' do
       let(:facts) { facts }
 
       has_systemd = (
-        (facts[:osfamily] == 'RedHat' && facts[:os]["release"]["major"].to_i >= 7) ||
-        (facts[:osfamily] == 'Debian' && facts[:os]["release"]["full"] == '16.04') ||
+        (facts[:osfamily] == 'RedHat' && facts[:os]['release']['major'].to_i >= 7) ||
+        (facts[:osfamily] == 'Debian' && facts[:os]['release']['full'] == '16.04') ||
         (facts[:osfamily] == 'Archlinux')
       )
 
@@ -38,40 +38,41 @@ describe 'rabbitmq' do
       context 'with repos_ensure => true' do
         let(:params) { { repos_ensure: true } }
 
-        case facts[:osfamily]
-        when 'Debian'
+        if facts[:osfamily] == 'Debian'
           it 'includes rabbitmq::repo::apt' do
-            is_expected.to contain_class('rabbitmq::repo::apt')
-              .with_key_source('https://www.rabbitmq.com/rabbitmq-release-signing-key.asc')
-              .with_key_content(nil)
+            is_expected.to contain_class('rabbitmq::repo::apt').
+              with_key_source('https://www.rabbitmq.com/rabbitmq-release-signing-key.asc').
+              with_key_content(nil)
           end
 
           it 'adds a repo with default values' do
-            is_expected.to contain_apt__source('rabbitmq')
-              .with_ensure('present')
-              .with_location('http://www.rabbitmq.com/debian/')
-              .with_release('testing')
-              .with_repos('main')
-          end
-
-          it { is_expected.not_to contain_class('rabbitmq::repo::rhel') }
-        when 'RedHat'
-          it { is_expected.not_to contain_class('rabbitmq::repo::apt') }
-          it { is_expected.to contain_class('rabbitmq::repo::rhel') }
-
-          it 'the repo should be present, and contain the expected values' do
-            is_expected.to contain_yumrepo('rabbitmq')
-              .with_ensure('present')
-              .with_baseurl(%r{https://packagecloud.io/rabbitmq/rabbitmq-server/el/\d+/\$basearch$})
-              .with_gpgkey('https://www.rabbitmq.com/rabbitmq-release-signing-key.asc')
+            is_expected.to contain_apt__source('rabbitmq').
+              with_ensure('present').
+              with_location('http://www.rabbitmq.com/debian/').
+              with_release('testing').
+              with_repos('main')
           end
         else
           it { is_expected.not_to contain_class('rabbitmq::repo::apt') }
+          it { is_expected.not_to contain_apt__souce('rabbitmq') }
+        end
+
+        if facts[:osfamily] == 'RedHat'
+          it { is_expected.to contain_class('rabbitmq::repo::rhel') }
+
+          it 'the repo should be present, and contain the expected values' do
+            is_expected.to contain_yumrepo('rabbitmq').
+              with_ensure('present').
+              with_baseurl(%r{https://packagecloud.io/rabbitmq/rabbitmq-server/el/\d+/\$basearch$}).
+              with_gpgkey('https://www.rabbitmq.com/rabbitmq-release-signing-key.asc')
+          end
+        else
           it { is_expected.not_to contain_class('rabbitmq::repo::rhel') }
+          it { is_expected.not_to contain_yumrepo('rabbitmq') }
         end
       end
 
-      context 'with no pin', :if => facts[:osfamily] == 'Debian' do
+      context 'with no pin', if: facts[:osfamily] == 'Debian' do
         let(:params) { { repos_ensure: true, package_apt_pin: '' } }
 
         describe 'it sets up an apt::source' do
@@ -86,7 +87,7 @@ describe 'rabbitmq' do
         end
       end
 
-      context 'with pin', :if => facts[:osfamily] == 'Debian' do
+      context 'with pin', if: facts[:osfamily] == 'Debian' do
         let(:params) { { repos_ensure: true, package_apt_pin: '700' } }
 
         describe 'it sets up an apt::source and pin' do
@@ -113,43 +114,36 @@ describe 'rabbitmq' do
         context "with file_limit => '#{value}'" do
           let(:params) { { file_limit: value } }
 
-
-          case facts[:osfamily]
-          when 'RedHat'
-            it { is_expected.not_to contain_file('/etc/default/rabbitmq-server') }
-            it {
-              is_expected.to contain_file('/etc/security/limits.d/rabbitmq-server.conf').with(
-                'owner'   => '0',
-                'group'   => '0',
-                'mode'    => '0644',
-                'notify'  => 'Class[Rabbitmq::Service]',
-                'content' => <<-EOS
-rabbitmq soft nofile #{value}
-rabbitmq hard nofile #{value}
-                EOS
-              )
-            }
-          when 'Debian'
-            it { is_expected.to contain_file('/etc/default/rabbitmq-server').with_content(%r{ulimit -n #{value}}) }
-            it { is_expected.not_to contain_file('/etc/security/limits.d/rabbitmq-server.conf') }
+          if facts[:osfamily] == 'RedHat'
+            it do
+              is_expected.to contain_file('/etc/security/limits.d/rabbitmq-server.conf').
+                with_owner('0').
+                with_group('0').
+                with_mode('0644').
+                that_notifies('Class[Rabbitmq::Service]').
+                with_content("rabbitmq soft nofile #{value}\nrabbitmq hard nofile #{value}\n")
+            end
           else
-            it { is_expected.not_to contain_file('/etc/default/rabbitmq-server') }
             it { is_expected.not_to contain_file('/etc/security/limits.d/rabbitmq-server.conf') }
           end
 
+          if facts[:osfamily] == 'Debian'
+            it { is_expected.to contain_file('/etc/default/rabbitmq-server').with_content(%r{ulimit -n #{value}}) }
+          else
+            it { is_expected.not_to contain_file('/etc/default/rabbitmq-server') }
+          end
+
           if has_systemd
-            it {
-              is_expected.to contain_file('/etc/systemd/system/rabbitmq-server.service.d/limits.conf').with(
-                'owner'   => '0',
-                'group'   => '0',
-                'mode'    => '0644',
-                'notify'  => 'Exec[rabbitmq-systemd-reload]',
-                'content' => <<-EOS
-[Service]
-LimitNOFILE=#{value}
-                EOS
-              )
-            }
+            it do
+              is_expected.to contain_file('/etc/systemd/system/rabbitmq-server.service.d/limits.conf').
+                with_owner('0').
+                with_group('0').
+                with_mode('0644').
+                that_notifies('Exec[rabbitmq-systemd-reload]').
+                with_content("[Service]\nLimitNOFILE=#{value}\n")
+            end
+          else
+            it { is_expected.not_to contain_file('/etc/systemd/system/rabbitmq-server.service.d/limits.conf') }
           end
         end
       end
@@ -164,7 +158,7 @@ LimitNOFILE=#{value}
         end
       end
 
-      context 'on systems with systemd', :if => has_systemd do
+      context 'on systems with systemd', if: has_systemd do
         it {
           is_expected.to contain_file('/etc/systemd/system/rabbitmq-server.service.d').with(
             'ensure'                  => 'directory',
@@ -186,7 +180,7 @@ LimitNOFILE=#{value}
         }
       end
 
-      context 'on systems without systemd', :unless => has_systemd do
+      context 'on systems without systemd', unless: has_systemd do
         it { is_expected.not_to contain_file('/etc/systemd/system/rabbitmq-server.service.d') }
         it { is_expected.not_to contain_file('/etc/systemd/system/rabbitmq-server.service.d/limits.conf') }
         it { is_expected.not_to contain_exec('rabbitmq-systemd-reload') }
@@ -1020,46 +1014,46 @@ LimitNOFILE=#{value}
         end
 
         context 'with SSL and without other erl args' do
-          let(:params) {
-            { :ipv6         => true,
-              :ssl_erl_dist => true }
-          }
+          let(:params) do
+            { ipv6: true,
+              ssl_erl_dist: true }
+          end
+
           it 'enables inet6 distribution' do
-            is_expected.to contain_file('rabbitmq-env.config') \
-              .with_content(%r{^RABBITMQ_SERVER_ERL_ARGS=" -pa /usr/lib64/erlang/lib/ssl-7.3.3.1/ebin -proto_dist inet6_tls"$}) \
-              .with_content(%r{^RABBITMQ_CTL_ERL_ARGS=" -pa /usr/lib64/erlang/lib/ssl-7.3.3.1/ebin -proto_dist inet6_tls"$})
+            is_expected.to contain_file('rabbitmq-env.config'). \
+              with_content(%r{^RABBITMQ_SERVER_ERL_ARGS=" -pa /usr/lib64/erlang/lib/ssl-7.3.3.1/ebin -proto_dist inet6_tls"$}). \
+              with_content(%r{^RABBITMQ_CTL_ERL_ARGS=" -pa /usr/lib64/erlang/lib/ssl-7.3.3.1/ebin -proto_dist inet6_tls"$})
           end
         end
 
         context 'with SSL and other quoted erl args' do
-          let(:params) {
-            { :ipv6         => true,
-              :ssl_erl_dist => true,
-              :environment_variables => { 'RABBITMQ_SERVER_ERL_ARGS' => '"some quoted args"',
-                                          'RABBITMQ_CTL_ERL_ARGS'    => '"other quoted args"'} }
-          }
+          let(:params) do
+            { ipv6: true,
+              ssl_erl_dist: true,
+              environment_variables: { 'RABBITMQ_SERVER_ERL_ARGS' => '"some quoted args"',
+                                       'RABBITMQ_CTL_ERL_ARGS'    => '"other quoted args"' } }
+          end
 
           it 'enables inet6 distribution and quote properly' do
-            is_expected.to contain_file('rabbitmq-env.config') \
-              .with_content(%r{^RABBITMQ_SERVER_ERL_ARGS="some quoted args -pa /usr/lib64/erlang/lib/ssl-7.3.3.1/ebin  -proto_dist inet6_tls"$}) \
-              .with_content(%r{^RABBITMQ_CTL_ERL_ARGS="other quoted args -pa /usr/lib64/erlang/lib/ssl-7.3.3.1/ebin  -proto_dist inet6_tls"$})
+            is_expected.to contain_file('rabbitmq-env.config'). \
+              with_content(%r{^RABBITMQ_SERVER_ERL_ARGS="some quoted args -pa /usr/lib64/erlang/lib/ssl-7.3.3.1/ebin  -proto_dist inet6_tls"$}). \
+              with_content(%r{^RABBITMQ_CTL_ERL_ARGS="other quoted args -pa /usr/lib64/erlang/lib/ssl-7.3.3.1/ebin  -proto_dist inet6_tls"$})
           end
         end
 
         context 'with SSL and with other unquoted erl args' do
-          let(:params) {
-            { :ipv6         => true,
-              :ssl_erl_dist => true,
-              :environment_variables => { 'RABBITMQ_SERVER_ERL_ARGS' => 'foo',
-                                          'RABBITMQ_CTL_ERL_ARGS'    => 'bar'} }
-          }
-
-          it 'enables inet6 distribution and quote properly' do
-            is_expected.to contain_file('rabbitmq-env.config') \
-              .with_content(%r{^RABBITMQ_SERVER_ERL_ARGS="foo -pa /usr/lib64/erlang/lib/ssl-7.3.3.1/ebin  -proto_dist inet6_tls"$}) \
-              .with_content(%r{^RABBITMQ_CTL_ERL_ARGS="bar -pa /usr/lib64/erlang/lib/ssl-7.3.3.1/ebin  -proto_dist inet6_tls"$})
+          let(:params) do
+            { ipv6: true,
+              ssl_erl_dist: true,
+              environment_variables: { 'RABBITMQ_SERVER_ERL_ARGS' => 'foo',
+                                       'RABBITMQ_CTL_ERL_ARGS'    => 'bar' } }
           end
 
+          it 'enables inet6 distribution and quote properly' do
+            is_expected.to contain_file('rabbitmq-env.config'). \
+              with_content(%r{^RABBITMQ_SERVER_ERL_ARGS="foo -pa /usr/lib64/erlang/lib/ssl-7.3.3.1/ebin  -proto_dist inet6_tls"$}). \
+              with_content(%r{^RABBITMQ_CTL_ERL_ARGS="bar -pa /usr/lib64/erlang/lib/ssl-7.3.3.1/ebin  -proto_dist inet6_tls"$})
+          end
         end
       end
 
