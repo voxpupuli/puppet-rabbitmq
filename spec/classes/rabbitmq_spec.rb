@@ -9,312 +9,187 @@ describe 'rabbitmq' do
     end
   end
 
-  context 'on Debian' do
-    with_debian_facts
-    it 'does not include rabbitmq::repo::apt' do
-      is_expected.not_to contain_class('rabbitmq::repo::apt')
-    end
+  # TODO: get Archlinux & OpenBSD facts from facterdb
 
-    it 'does ensure rabbitmq apt::source is absent when repos_ensure is false' do
-      is_expected.not_to contain_apt__source('rabbitmq')
-    end
-  end
+  on_supported_os.each do |os, facts|
+    context "on #{os}" do
+      let(:facts) { facts }
 
-  context 'on Debian' do
-    let(:params) { { repos_ensure: true } }
-
-    with_debian_facts
-
-    it 'includes rabbitmq::repo::apt' do
-      is_expected.to contain_class('rabbitmq::repo::apt')
-    end
-
-    describe 'apt::source default values' do
-      it 'adds a repo with default values' do
-        is_expected.to contain_apt__source('rabbitmq').with(ensure: 'present',
-                                                            location: 'http://www.rabbitmq.com/debian/',
-                                                            release: 'testing',
-                                                            repos: 'main')
-      end
-    end
-
-    context 'with file_limit => unlimited' do
-      let(:params) { { file_limit: 'unlimited' } }
-
-      it { is_expected.to contain_file('/etc/default/rabbitmq-server').with_content(%r{ulimit -n unlimited}) }
-    end
-
-    context 'with file_limit => infinity' do
-      let(:params) { { file_limit: 'infinity' } }
-
-      it { is_expected.to contain_file('/etc/default/rabbitmq-server').with_content(%r{ulimit -n infinity}) }
-    end
-
-    context 'with file_limit => \'-1\'' do
-      let(:params) { { file_limit: '-1' } }
-
-      it { is_expected.to contain_file('/etc/default/rabbitmq-server').with_content(%r{ulimit -n -1}) }
-    end
-
-    context 'with file_limit => \'1234\'' do
-      let(:params) { { file_limit: '1234' } }
-
-      it { is_expected.to contain_file('/etc/default/rabbitmq-server').with_content(%r{ulimit -n 1234}) }
-    end
-
-    context 'with file_limit => 1234' do
-      let(:params) { { file_limit: 1234 } }
-
-      it { is_expected.to contain_file('/etc/default/rabbitmq-server').with_content(%r{ulimit -n 1234}) }
-    end
-
-    context 'with file_limit => \'-42\'' do
-      let(:params) { { file_limit: '-42' } }
-
-      it 'does not compile' do
-        expect { catalogue }.to raise_error(Puppet::Error, %r{\$file_limit must be a positive integer, '-1', 'unlimited', or 'infinity'})
-      end
-    end
-
-    context 'with file_limit => \'foo\'' do
-      let(:params) { { file_limit: 'foo' } }
-
-      it 'does not compile' do
-        expect { catalogue }.to raise_error(Puppet::Error, %r{\$file_limit must be a positive integer, '-1', 'unlimited', or 'infinity'})
-      end
-    end
-  end
-
-  context 'on Redhat' do
-    with_redhat_facts
-    it 'does not include rabbitmq::repo::rhel' do
-      is_expected.not_to contain_class('rabbitmq::repo::rhel')
-    end
-
-    context 'with file_limit => \'unlimited\'' do
-      let(:params) { { file_limit: 'unlimited' } }
-
-      it {
-        is_expected.to contain_file('/etc/security/limits.d/rabbitmq-server.conf').with(
-          'owner'   => '0',
-          'group'   => '0',
-          'mode'    => '0644',
-          'notify'  => 'Class[Rabbitmq::Service]',
-          'content' => <<-EOS
-rabbitmq soft nofile unlimited
-rabbitmq hard nofile unlimited
-EOS
-        )
-      }
-    end
-
-    context 'with file_limit => \'infinity\'' do
-      let(:params) { { file_limit: 'infinity' } }
-
-      it {
-        is_expected.to contain_file('/etc/security/limits.d/rabbitmq-server.conf').with(
-          'owner'   => '0',
-          'group'   => '0',
-          'mode'    => '0644',
-          'notify'  => 'Class[Rabbitmq::Service]',
-          'content' => <<-EOS
-rabbitmq soft nofile infinity
-rabbitmq hard nofile infinity
-EOS
-        )
-      }
-    end
-
-    context 'with file_limit => \'-1\'' do
-      let(:params) { { file_limit: '-1' } }
-
-      it {
-        is_expected.to contain_file('/etc/security/limits.d/rabbitmq-server.conf').with(
-          'owner'   => '0',
-          'group'   => '0',
-          'mode'    => '0644',
-          'notify'  => 'Class[Rabbitmq::Service]',
-          'content' => <<-EOS
-rabbitmq soft nofile -1
-rabbitmq hard nofile -1
-EOS
-        )
-      }
-    end
-
-    context 'with file_limit => \'1234\'' do
-      let(:params) { { file_limit: '1234' } }
-
-      it {
-        is_expected.to contain_file('/etc/security/limits.d/rabbitmq-server.conf').with(
-          'owner'   => '0',
-          'group'   => '0',
-          'mode'    => '0644',
-          'notify'  => 'Class[Rabbitmq::Service]',
-          'content' => <<-EOS
-rabbitmq soft nofile 1234
-rabbitmq hard nofile 1234
-EOS
-        )
-      }
-    end
-
-    context 'with file_limit => \'-42\'' do
-      let(:params) { { file_limit: '-42' } }
-
-      it 'does not compile' do
-        expect { catalogue }.to raise_error(Puppet::Error, %r{\$file_limit must be a positive integer, '-1', 'unlimited', or 'infinity'})
-      end
-    end
-
-    context 'with file_limit => \'foo\'' do
-      let(:params) { { file_limit: 'foo' } }
-
-      it 'does not compile' do
-        expect { catalogue }.to raise_error(Puppet::Error, %r{\$file_limit must be a positive integer, '-1', 'unlimited', or 'infinity'})
-      end
-    end
-  end
-
-  context 'on Redhat' do
-    let(:params) { { repos_ensure: false } }
-
-    with_redhat_facts
-    it 'does not contain class rabbitmq::repo::rhel when repos_ensure is false' do
-      is_expected.not_to contain_class('rabbitmq::repo::rhel')
-    end
-    it 'does not contain "rabbitmq" repo' do
-      is_expected.not_to contain_yumrepo('rabbitmq')
-    end
-  end
-
-  context 'on Redhat' do
-    let(:params) { { repos_ensure: true } }
-
-    with_redhat_facts
-    it 'contains class rabbitmq::repo::rhel' do
-      is_expected.to contain_class('rabbitmq::repo::rhel')
-    end
-    it 'contains "rabbitmq" repo' do
-      is_expected.to contain_yumrepo('rabbitmq')
-    end
-    it 'the repo should be present, and contain the expected values' do
-      is_expected.to contain_yumrepo('rabbitmq').with(ensure: 'present',
-                                                      baseurl: 'https://packagecloud.io/rabbitmq/rabbitmq-server/el/7/$basearch',
-                                                      gpgkey: 'https://www.rabbitmq.com/rabbitmq-release-signing-key.asc')
-    end
-  end
-
-  context 'on RedHat 7.0 or higher' do
-    with_redhat_facts
-
-    it {
-      is_expected.to contain_file('/etc/systemd/system/rabbitmq-server.service.d').with(
-        'ensure'                  => 'directory',
-        'owner'                   => '0',
-        'group'                   => '0',
-        'mode'                    => '0755',
-        'selinux_ignore_defaults' => true
+      has_systemd = (
+        (facts[:osfamily] == 'RedHat' && facts[:os]["release"]["major"].to_i >= 7) ||
+        (facts[:osfamily] == 'Debian' && facts[:os]["release"]["full"] == '16.04')
       )
-    }
 
-    it {
-      is_expected.to contain_exec('rabbitmq-systemd-reload').with(
-        'command'     => '/usr/bin/systemctl daemon-reload',
-        'notify'      => 'Class[Rabbitmq::Service]',
-        'refreshonly' => true
-      )
-    }
-    context 'with file_limit => \'unlimited\'' do
-      let(:params) { { file_limit: 'unlimited' } }
-
-      it {
-        is_expected.to contain_file('/etc/systemd/system/rabbitmq-server.service.d/limits.conf').with(
-          'owner'   => '0',
-          'group'   => '0',
-          'mode'    => '0644',
-          'notify'  => 'Exec[rabbitmq-systemd-reload]',
-          'content' => <<-EOS
-[Service]
-LimitNOFILE=unlimited
-EOS
-        )
-      }
-    end
-
-    context 'with file_limit => \'infinity\'' do
-      let(:params) { { file_limit: 'infinity' } }
-
-      it {
-        is_expected.to contain_file('/etc/systemd/system/rabbitmq-server.service.d/limits.conf').with(
-          'owner'   => '0',
-          'group'   => '0',
-          'mode'    => '0644',
-          'notify'  => 'Exec[rabbitmq-systemd-reload]',
-          'content' => <<-EOS
-[Service]
-LimitNOFILE=infinity
-EOS
-        )
-      }
-    end
-
-    context 'with file_limit => \'-1\'' do
-      let(:params) { { file_limit: '-1' } }
-
-      it {
-        is_expected.to contain_file('/etc/systemd/system/rabbitmq-server.service.d/limits.conf').with(
-          'owner'   => '0',
-          'group'   => '0',
-          'mode'    => '0644',
-          'notify'  => 'Exec[rabbitmq-systemd-reload]',
-          'content' => <<-EOS
-[Service]
-LimitNOFILE=-1
-EOS
-        )
-      }
-    end
-
-    context 'with file_limit => \'1234\'' do
-      let(:params) { { file_limit: '1234' } }
-
-      it {
-        is_expected.to contain_file('/etc/systemd/system/rabbitmq-server.service.d/limits.conf').with(
-          'owner'   => '0',
-          'group'   => '0',
-          'mode'    => '0644',
-          'notify'  => 'Exec[rabbitmq-systemd-reload]',
-          'content' => <<-EOS
-[Service]
-LimitNOFILE=1234
-EOS
-        )
-      }
-    end
-  end
-
-  %w[Debian RedHat SUSE Archlinux].each do |distro|
-    osfacts = {
-      osfamily: distro,
-      staging_http_get: '',
-      puppetversion: Puppet.version
-    }
-
-    case distro
-    when 'Debian'
-      osfacts[:lsbdistcodename] = 'squeeze'
-      osfacts[:lsbdistid] = 'Debian'
-    when 'RedHat'
-      osfacts[:operatingsystemmajrelease] = '7'
-    end
-
-    context "on #{distro}" do
-      with_distro_facts distro
-
+      it { is_expected.to compile.with_all_deps }
       it { is_expected.to contain_class('rabbitmq::install') }
       it { is_expected.to contain_class('rabbitmq::config') }
       it { is_expected.to contain_class('rabbitmq::service') }
+
+      it { is_expected.to contain_package('rabbitmq-server').with_ensure('installed').with_name('rabbitmq-server') }
+
+      context 'with default params' do
+        it { is_expected.not_to contain_class('rabbitmq::repo::apt') }
+        it { is_expected.not_to contain_apt__source('rabbitmq') }
+        it { is_expected.not_to contain_class('rabbitmq::repo::rhel') }
+        it { is_expected.not_to contain_yumrepo('rabbitmq') }
+      end
+
+      context 'with repos_ensure => true' do
+        let(:params) { { repos_ensure: true } }
+
+        case facts[:osfamily]
+        when 'Debian'
+          it 'includes rabbitmq::repo::apt' do
+            is_expected.to contain_class('rabbitmq::repo::apt')
+              .with_key_source('https://www.rabbitmq.com/rabbitmq-release-signing-key.asc')
+              .with_key_content(nil)
+          end
+
+          it 'adds a repo with default values' do
+            is_expected.to contain_apt__source('rabbitmq')
+              .with_ensure('present')
+              .with_location('http://www.rabbitmq.com/debian/')
+              .with_release('testing')
+              .with_repos('main')
+          end
+
+          it { is_expected.not_to contain_class('rabbitmq::repo::rhel') }
+        when 'RedHat'
+          it { is_expected.not_to contain_class('rabbitmq::repo::apt') }
+          it { is_expected.to contain_class('rabbitmq::repo::rhel') }
+
+          it 'the repo should be present, and contain the expected values' do
+            is_expected.to contain_yumrepo('rabbitmq')
+              .with_ensure('present')
+              .with_baseurl(%r{https://packagecloud.io/rabbitmq/rabbitmq-server/el/\d+/\$basearch$})
+              .with_gpgkey('https://www.rabbitmq.com/rabbitmq-release-signing-key.asc')
+          end
+        else
+          it { is_expected.not_to contain_class('rabbitmq::repo::apt') }
+          it { is_expected.not_to contain_class('rabbitmq::repo::rhel') }
+        end
+      end
+
+      context 'with no pin', :if => facts[:osfamily] == 'Debian' do
+        let(:params) { { repos_ensure: true, package_apt_pin: '' } }
+
+        describe 'it sets up an apt::source' do
+          it {
+            is_expected.to contain_apt__source('rabbitmq').with(
+              'location'    => 'http://www.rabbitmq.com/debian/',
+              'release'     => 'testing',
+              'repos'       => 'main',
+              'key'         => '{"id"=>"0A9AF2115F4687BD29803A206B73A36E6026DFCA", "source"=>"https://www.rabbitmq.com/rabbitmq-release-signing-key.asc", "content"=>:undef}'
+            )
+          }
+        end
+      end
+
+      context 'with pin', :if => facts[:osfamily] == 'Debian' do
+        let(:params) { { repos_ensure: true, package_apt_pin: '700' } }
+
+        describe 'it sets up an apt::source and pin' do
+          it {
+            is_expected.to contain_apt__source('rabbitmq').with(
+              'location'    => 'http://www.rabbitmq.com/debian/',
+              'release'     => 'testing',
+              'repos'       => 'main',
+              'key'         => '{"id"=>"0A9AF2115F4687BD29803A206B73A36E6026DFCA", "source"=>"https://www.rabbitmq.com/rabbitmq-release-signing-key.asc", "content"=>:undef}'
+            )
+          }
+
+          it {
+            is_expected.to contain_apt__pin('rabbitmq').with(
+              'packages' => '*',
+              'priority' => '700',
+              'origin'   => 'www.rabbitmq.com'
+            )
+          }
+        end
+      end
+
+      ['unlimited', 'infinity', '-1', '1234'].each do |value|
+        context "with file_limit => '#{value}'" do
+          let(:params) { { file_limit: value } }
+
+
+          case facts[:osfamily]
+          when 'RedHat'
+            it { is_expected.not_to contain_file('/etc/default/rabbitmq-server') }
+            it {
+              is_expected.to contain_file('/etc/security/limits.d/rabbitmq-server.conf').with(
+                'owner'   => '0',
+                'group'   => '0',
+                'mode'    => '0644',
+                'notify'  => 'Class[Rabbitmq::Service]',
+                'content' => <<-EOS
+rabbitmq soft nofile #{value}
+rabbitmq hard nofile #{value}
+                EOS
+              )
+            }
+          when 'Debian'
+            it { is_expected.to contain_file('/etc/default/rabbitmq-server').with_content(%r{ulimit -n #{value}}) }
+            it { is_expected.not_to contain_file('/etc/security/limits.d/rabbitmq-server.conf') }
+          else
+            it { is_expected.not_to contain_file('/etc/default/rabbitmq-server') }
+            it { is_expected.not_to contain_file('/etc/security/limits.d/rabbitmq-server.conf') }
+          end
+
+          if has_systemd
+            it {
+              is_expected.to contain_file('/etc/systemd/system/rabbitmq-server.service.d/limits.conf').with(
+                'owner'   => '0',
+                'group'   => '0',
+                'mode'    => '0644',
+                'notify'  => 'Exec[rabbitmq-systemd-reload]',
+                'content' => <<-EOS
+[Service]
+LimitNOFILE=#{value}
+                EOS
+              )
+            }
+          end
+        end
+      end
+
+      ['-42', 'foo'].each do |value|
+        context "with file_limit => '#{value}'" do
+          let(:params) { { file_limit: value } }
+
+          it 'does not compile' do
+            expect { catalogue }.to raise_error(Puppet::Error, %r{\$file_limit must be a positive integer, '-1', 'unlimited', or 'infinity'})
+          end
+        end
+      end
+
+      context 'on systems with systemd', :if => has_systemd do
+        it {
+          is_expected.to contain_file('/etc/systemd/system/rabbitmq-server.service.d').with(
+            'ensure'                  => 'directory',
+            'owner'                   => '0',
+            'group'                   => '0',
+            'mode'                    => '0755',
+            'selinux_ignore_defaults' => true
+          )
+        }
+
+        it { is_expected.to contain_file('/etc/systemd/system/rabbitmq-server.service.d/limits.conf') }
+
+        it {
+          is_expected.to contain_exec('rabbitmq-systemd-reload').with(
+            'command'     => '/usr/bin/systemctl daemon-reload',
+            'notify'      => 'Class[Rabbitmq::Service]',
+            'refreshonly' => true
+          )
+        }
+      end
+
+      context 'on systems without systemd', :unless => has_systemd do
+        it { is_expected.not_to contain_file('/etc/systemd/system/rabbitmq-server.service.d') }
+        it { is_expected.not_to contain_file('/etc/systemd/system/rabbitmq-server.service.d/limits.conf') }
+        it { is_expected.not_to contain_exec('rabbitmq-systemd-reload') }
+      end
 
       context 'with admin_enable set to true' do
         let(:params) { { admin_enable: true, management_ip_address: '1.1.1.1' } }
@@ -1322,114 +1197,6 @@ EOS
         end
 
         it { is_expected.not_to contain_service('rabbitmq-server') }
-      end
-    end
-  end
-
-  ##
-  ## rabbitmq::install
-  ##
-  context 'on RHEL with repos_ensure' do
-    with_redhat_facts
-    let(:params) { { repos_ensure: true } }
-
-    it 'installs the rabbitmq package' do
-      is_expected.to contain_package('rabbitmq-server').with(
-        'ensure'   => 'installed',
-        'name'     => 'rabbitmq-server'
-      )
-    end
-  end
-
-  context 'on RHEL' do
-    with_redhat_facts
-    let(:params) { { repos_ensure: false } }
-
-    it 'installs the rabbitmq package [from EPEL] when $repos_ensure is false' do
-      is_expected.to contain_package('rabbitmq-server').with(
-        'ensure'   => 'installed',
-        'name'     => 'rabbitmq-server'
-      )
-    end
-  end
-
-  context 'on Debian' do
-    with_debian_facts
-    it 'installs the rabbitmq package' do
-      is_expected.to contain_package('rabbitmq-server').with(
-        'ensure'   => 'installed',
-        'name'     => 'rabbitmq-server'
-      )
-    end
-  end
-
-  context 'on Archlinux' do
-    with_archlinux_facts
-    it 'installs the rabbitmq package' do
-      is_expected.to contain_package('rabbitmq-server').with(
-        'ensure'   => 'installed'
-      )
-    end
-  end
-
-  context 'on OpenBSD' do
-    with_openbsd_facts
-    it 'installs the rabbitmq package' do
-      is_expected.to contain_package('rabbitmq-server').with(
-        'ensure'   => 'installed',
-        'name'     => 'rabbitmq'
-      )
-    end
-  end
-
-  context "on FreeBSD" do
-    with_freebsd_facts
-    it 'installs the rabbitmq package' do
-      is_expected.to contain_package('rabbitmq-server').with(
-        'ensure'   => 'installed',
-        'name'     => 'rabbitmq',
-      )
-    end
-  end
-
-  describe 'repo management on Debian' do
-    with_debian_facts
-
-    context 'with no pin' do
-      let(:params) { { repos_ensure: true, package_apt_pin: '' } }
-
-      describe 'it sets up an apt::source' do
-        it {
-          is_expected.to contain_apt__source('rabbitmq').with(
-            'location'    => 'http://www.rabbitmq.com/debian/',
-            'release'     => 'testing',
-            'repos'       => 'main',
-            'key'         => '{"id"=>"0A9AF2115F4687BD29803A206B73A36E6026DFCA", "source"=>"https://www.rabbitmq.com/rabbitmq-release-signing-key.asc", "content"=>:undef}'
-          )
-        }
-      end
-    end
-
-    context 'with pin' do
-      let(:params) { { repos_ensure: true, package_apt_pin: '700' } }
-
-      describe 'it sets up an apt::source and pin' do
-        it {
-          is_expected.to contain_apt__source('rabbitmq').with(
-            'location'    => 'http://www.rabbitmq.com/debian/',
-            'release'     => 'testing',
-            'repos'       => 'main',
-            'key'         => '{"id"=>"0A9AF2115F4687BD29803A206B73A36E6026DFCA", "source"=>"https://www.rabbitmq.com/rabbitmq-release-signing-key.asc", "content"=>:undef}'
-          )
-        }
-
-        it {
-          is_expected.to contain_apt__pin('rabbitmq').with(
-            'packages' => '*',
-            'priority' => '700',
-            'origin'   => 'www.rabbitmq.com'
-          )
-        }
       end
     end
   end
