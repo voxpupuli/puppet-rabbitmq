@@ -69,6 +69,7 @@ class rabbitmq::config {
   $ipv6                        = $rabbitmq::ipv6
   $inetrc_config               = $rabbitmq::inetrc_config
   $inetrc_config_path          = $rabbitmq::inetrc_config_path
+  $ssl_erl_dist                = $rabbitmq::ssl_erl_dist
 
   if $ssl_only {
     $default_ssl_env_variables = {}
@@ -93,25 +94,37 @@ class rabbitmq::config {
   # Handle env variables.
   $_environment_variables = $default_ssl_env_variables + $inetrc_env + $rabbitmq::environment_variables
 
-  if $ipv6 {
+  if $ipv6 or $ssl_erl_dist {
     # must append "-proto_dist inet6_tcp" to any provided ERL_ARGS for
     # both the server and rabbitmqctl, being careful not to mess up
-    # quoting
-    $ipv6_env = ['SERVER', 'CTL'].reduce({}) |$memo, $item| {
+    # quoting. If both IPv6 and TLS are enabled, we must use "inet6_tls".
+    # Finally, if only TLS is enabled (no IPv6), the -proto_dist value to use
+    # is "inet_tls".
+    if $ipv6 and $ssl_erl_dist {
+      $proto_dist = 'inet6_tls'
+      $ssl_path = " -pa ${::erl_ssl_path} "
+    } elsif $ssl_erl_dist {
+      $proto_dist = 'inet_tls'
+      $ssl_path = " -pa ${::erl_ssl_path} "
+    } else {
+      $proto_dist = 'inet6_tcp'
+      $ssl_path = ''
+    }
+    $ipv6_or_tls_env = ['SERVER', 'CTL'].reduce({}) |$memo, $item| {
       $orig = $_environment_variables["RABBITMQ_${item}_ERL_ARGS"]
       $munged = $orig ? {
         # already quoted, keep quoting
-        /^([\'\"])(.*)\1/ => "${1}${2} -proto_dist inet6_tcp${1}",
+        /^([\'\"])(.*)\1/ => "${1}${2}${ssl_path} -proto_dist ${proto_dist}${1}",
         # unset, add our own quoted value
-        undef             => '"-proto_dist inet6_tcp"',
+        undef             => "\"${ssl_path}-proto_dist ${proto_dist}\"",
         # previously unquoted value, add quoting
-        default           => "\"${orig} -proto_dist inet6_tcp\"",
+        default           => "\"${orig}${ssl_path} -proto_dist ${proto_dist}\"",
       }
 
       merge($memo, {"RABBITMQ_${item}_ERL_ARGS" => $munged})
     }
 
-    $environment_variables = $_environment_variables + $ipv6_env
+    $environment_variables = $_environment_variables + $ipv6_or_tls_env
   } else {
     $environment_variables = $_environment_variables
   }

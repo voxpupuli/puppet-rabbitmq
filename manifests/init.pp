@@ -90,6 +90,7 @@ class rabbitmq(
   Boolean $ipv6                                  = $rabbitmq::params::ipv6,
   String $inetrc_config                          = $rabbitmq::params::inetrc_config,
   Stdlib::Absolutepath $inetrc_config_path       = $rabbitmq::params::inetrc_config_path,
+  Boolean $ssl_erl_dist                          = $rabbitmq::params::ssl_erl_dist,
 ) inherits rabbitmq::params {
 
   # Validate install parameters.
