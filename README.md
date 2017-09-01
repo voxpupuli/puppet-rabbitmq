@@ -674,8 +674,9 @@ puppetlabs-apt module, it does not support puppetlabs-apt 2.0.0 or
 
 ### Module dependencies
 
-If running CentOS/RHEL, ensure the epel repo, or another repo containing
-a suitable Erlang version, is present.
+If running CentOS/RHEL, ensure the epel repo, or another repo containing a
+suitable Erlang version, is present. On Debian systems, puppetlabs/apt is a
+soft dependency.
 
 To have a suitable erlang version installed on RedHat and Debian systems,
 you have to install another puppet module from http://forge.puppetlabs.com/garethr/erlang with:
