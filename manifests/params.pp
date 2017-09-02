@@ -4,7 +4,7 @@
 #
 class rabbitmq::params {
 
-  case $::osfamily {
+  case $facts['os']['family'] {
     'Archlinux': {
       $package_ensure   = 'installed'
       $package_name     = 'rabbitmq'
@@ -54,7 +54,7 @@ class rabbitmq::params {
       $rabbitmq_home    = '/var/lib/rabbitmq'
     }
     default: {
-      fail("The ${module_name} module is not supported on an ${::osfamily} based system.")
+      fail("The ${module_name} module is not supported on an ${facts['os']['family']} based system.")
     }
   }
 

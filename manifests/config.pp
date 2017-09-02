@@ -132,8 +132,8 @@ class rabbitmq::config {
   # Get ranch (socket acceptor pool) availability,
   # Now that we have to rely on the fact, this may cause some chicken / egg
   # or idempotency problems
-  if $::rabbitmq_version {
-    $ranch = versioncmp($::rabbitmq_version, '3.6') >= 0
+  if $facts['rabbitmq_version'] {
+    $ranch = versioncmp($facts['rabbitmq_version'], '3.6') >= 0
   }
 
   file { '/etc/rabbitmq':
@@ -192,9 +192,9 @@ class rabbitmq::config {
     }
   }
 
-  case $::osfamily {
+  case $facts['os']['family'] {
     'Debian': {
-      if versioncmp($::operatingsystemmajrelease, '16.04') >= 0 {
+      if versioncmp($facts['os']['release']['full'], '16.04') >= 0 {
         file { '/etc/systemd/system/rabbitmq-server.service.d':
           ensure                  => directory,
           owner                   => '0',
@@ -225,7 +225,7 @@ class rabbitmq::config {
       }
     }
     'RedHat': {
-      if versioncmp($::operatingsystemmajrelease, '7') >= 0 {
+      if versioncmp($facts['os']['release']['major'], '7') >= 0 {
         file { '/etc/systemd/system/rabbitmq-server.service.d':
           ensure                  => directory,
           owner                   => '0',

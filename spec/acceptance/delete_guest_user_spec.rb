@@ -8,7 +8,7 @@ describe 'rabbitmq with delete_guest_user' do
         port              => 5672,
         delete_guest_user => true,
       }
-      if $::osfamily == 'RedHat' {
+      if $facts['os']['family'] == 'RedHat' {
         class { 'erlang': epel_enable => true}
         Class['erlang'] -> Class['rabbitmq']
       }

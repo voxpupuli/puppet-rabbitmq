@@ -134,7 +134,7 @@ class rabbitmq(
   }
 
   if $repos_ensure {
-    case $::osfamily {
+    case $facts['os']['family'] {
       'RedHat': {
         class { '::rabbitmq::repo::rhel':
           key_source  => $package_gpg_key,
