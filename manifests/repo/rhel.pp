@@ -13,7 +13,7 @@ class rabbitmq::repo::rhel(
     baseurl  => $location,
     gpgkey   => $key_source,
     enabled  => 1,
-    gpgcheck => 1
+    gpgcheck => 1,
   }
 
   # This may still be needed to prevent warnings

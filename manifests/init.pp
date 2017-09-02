@@ -5,8 +5,10 @@
 # @example Declaring the class
 #   class { 'rabbitmq': }
 #
-# @param management_ip_address Allows you to set the IP for management interface to bind to separately. Set to 127.0.0.1 to bind to localhost only, or 0.0.0.0 to bind to all interfaces.
-# @param node_ip_address Allows you to set the IP for RabbitMQ service to bind to. Set to 127.0.0.1 to bind to localhost only, or 0.0.0.0 to bind to all interfaces.
+# @param management_ip_address Allows you to set the IP for management interface to bind to separately. Set to 127.0.0.1 to bind to
+#  localhost only, or 0.0.0.0 to bind to all interfaces.
+# @param node_ip_address Allows you to set the IP for RabbitMQ service to bind to. Set to 127.0.0.1 to bind to localhost only, or 0.0.0.0
+#  to bind to all interfaces.
 class rabbitmq(
   Boolean $admin_enable                          = $rabbitmq::params::admin_enable,
   Enum['ram', 'disk', 'disc'] $cluster_node_type = $rabbitmq::params::cluster_node_type,

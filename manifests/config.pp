@@ -76,7 +76,7 @@ class rabbitmq::config {
   } else {
     $default_ssl_env_variables = {
       'NODE_PORT'        => $port,
-      'NODE_IP_ADDRESS'  => $node_ip_address
+      'NODE_IP_ADDRESS'  => $node_ip_address,
     }
   }
 
