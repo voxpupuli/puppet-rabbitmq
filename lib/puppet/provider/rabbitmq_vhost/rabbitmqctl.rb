@@ -14,11 +14,8 @@ Puppet::Type.type(:rabbitmq_vhost).provide(:rabbitmqctl, parent: Puppet::Provide
     end
 
     vhost_list.split(%r{\n}).map do |line|
-      if line =~ %r{^(\S+)$}
-        new(name: Regexp.last_match(1))
-      else
-        raise Puppet::Error, "Cannot parse invalid vhost line: #{line}"
-      end
+      raise Puppet::Error, "Cannot parse invalid vhost line: #{line}" unless line =~ %r{^(\S+)$}
+      new(name: Regexp.last_match(1))
     end
   end
 

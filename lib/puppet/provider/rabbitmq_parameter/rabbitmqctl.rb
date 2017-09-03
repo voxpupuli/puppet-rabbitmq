@@ -14,14 +14,11 @@ Puppet::Type.type(:rabbitmq_parameter).provide(:rabbitmqctl, parent: Puppet::Pro
         rabbitmqctl('list_parameters', '-q', '-p', vhost)
       end
       parameter_list.split(%r{\n}).each do |line|
-        if line =~ %r{^(\S+)\s+(\S+)\s+(\S+)$}
-          @parameters[vhost][Regexp.last_match(2)] = {
-            component_name: Regexp.last_match(1),
-            value: JSON.parse(Regexp.last_match(3))
-          }
-        else
-          raise Puppet::Error, "cannot parse line from list_parameter:#{line}"
-        end
+        raise Puppet::Error, "cannot parse line from list_parameter:#{line}" unless line =~ %r{^(\S+)\s+(\S+)\s+(\S+)$}
+        @parameters[vhost][Regexp.last_match(2)] = {
+          component_name: Regexp.last_match(1),
+          value: JSON.parse(Regexp.last_match(3))
+        }
       end
     end
     @parameters[vhost][name]
@@ -68,15 +65,17 @@ Puppet::Type.type(:rabbitmq_parameter).provide(:rabbitmqctl, parent: Puppet::Pro
   end
 
   def set_parameter
-    unless @set_parameter
-      @set_parameter = true
-      resource[:value] ||= value
-      resource[:component_name] ||= component_name
-      rabbitmqctl('set_parameter',
-                  '-p', should_vhost,
-                  resource[:component_name],
-                  should_parameter,
-                  resource[:value].to_json)
-    end
+    return if @set_parameter
+
+    @set_parameter = true
+    resource[:value] ||= value
+    resource[:component_name] ||= component_name
+    rabbitmqctl(
+      'set_parameter',
+      '-p', should_vhost,
+      resource[:component_name],
+      should_parameter,
+      resource[:value].to_json
+    )
   end
 end

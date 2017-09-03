@@ -20,12 +20,9 @@ Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl, parent: Pupp
       end
       user_permission_list.split(%r{\n}).each do |line|
         line = strip_backslashes(line)
-        if line =~ %r{^(\S+)\s+(\S*)\s+(\S*)\s+(\S*)$}
-          @users[name][Regexp.last_match(1)] =
-            { configure: Regexp.last_match(2), read: Regexp.last_match(4), write: Regexp.last_match(3) }
-        else
-          raise Puppet::Error, "cannot parse line from list_user_permissions:#{line}"
-        end
+        raise Puppet::Error, "cannot parse line from list_user_permissions:#{line}" unless line =~ %r{^(\S+)\s+(\S*)\s+(\S*)\s+(\S*)$}
+        @users[name][Regexp.last_match(1)] =
+          { configure: Regexp.last_match(2), read: Regexp.last_match(4), write: Regexp.last_match(3) }
       end
     end
     @users[name][vhost]
@@ -94,15 +91,20 @@ Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl, parent: Pupp
 
   # implement memoization so that we only call set_permissions once
   def set_permissions
-    unless @permissions_set
-      @permissions_set = true
-      resource[:configure_permission] ||= configure_permission
-      resource[:read_permission]      ||= read_permission
-      resource[:write_permission]     ||= write_permission
-      rabbitmqctl('set_permissions', '-p', should_vhost, should_user,
-                  resource[:configure_permission], resource[:write_permission],
-                  resource[:read_permission])
-    end
+    return if @permissions_set
+
+    @permissions_set = true
+    resource[:configure_permission] ||= configure_permission
+    resource[:read_permission]      ||= read_permission
+    resource[:write_permission]     ||= write_permission
+    rabbitmqctl(
+      'set_permissions',
+      '-p', should_vhost,
+      should_user,
+      resource[:configure_permission],
+      resource[:write_permission],
+      resource[:read_permission]
+    )
   end
 
   def self.strip_backslashes(string)

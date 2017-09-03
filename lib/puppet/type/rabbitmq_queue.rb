@@ -61,8 +61,6 @@ Puppet::Type.newtype(:rabbitmq_queue) do
   end
 
   def validate_argument(argument)
-    unless [Hash].include?(argument.class)
-      raise ArgumentError, 'Invalid argument'
-    end
+    raise ArgumentError, 'Invalid argument' unless [Hash].include?(argument.class)
   end
 end
