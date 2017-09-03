@@ -13,9 +13,11 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl, parent: Puppet::Provider
   defaultfor feature: :posix
 
   def self.instances
-    run_with_retries do
+    user_list = run_with_retries do
       rabbitmqctl('-q', 'list_users')
-    end.split(%r{\n}).map do |line|
+    end
+
+    user_list.split(%r{\n}).map do |line|
       if line =~ %r{^(\S+)(\s+\[.*?\]|)$}
         new(name: Regexp.last_match(1))
       else
@@ -54,9 +56,11 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl, parent: Puppet::Provider
   end
 
   def exists?
-    self.class.run_with_retries do
+    user_list = self.class.run_with_retries do
       rabbitmqctl('-q', 'list_users')
-    end.split(%r{\n}).find do |line|
+    end
+
+    user_list.split(%r{\n}).find do |line|
       line.match(%r{^#{Regexp.escape(resource[:name])}(\s+(\[.*?\]|\S+)|)$})
     end
   end

@@ -10,9 +10,10 @@ Puppet::Type.type(:rabbitmq_parameter).provide(:rabbitmqctl, parent: Puppet::Pro
     @parameters = {} unless @parameters
     unless @parameters[vhost]
       @parameters[vhost] = {}
-      run_with_retries do
+      parameter_list = run_with_retries do
         rabbitmqctl('list_parameters', '-q', '-p', vhost)
-      end.split(%r{\n}).each do |line|
+      end
+      parameter_list.split(%r{\n}).each do |line|
         if line =~ %r{^(\S+)\s+(\S+)\s+(\S+)$}
           @parameters[vhost][Regexp.last_match(2)] = {
             component_name: Regexp.last_match(1),

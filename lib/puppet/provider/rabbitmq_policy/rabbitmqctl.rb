@@ -10,9 +10,10 @@ Puppet::Type.type(:rabbitmq_policy).provide(:rabbitmqctl, parent: Puppet::Provid
     @policies = {} unless @policies
     unless @policies[vhost]
       @policies[vhost] = {}
-      run_with_retries do
+      policy_list = run_with_retries do
         rabbitmqctl('list_policies', '-q', '-p', vhost)
-      end.split(%r{\n}).each do |line|
+      end
+      policy_list.split(%r{\n}).each do |line|
         # rabbitmq<3.2 does not support the applyto field
         # 1 2      3?  4  5                                            6
         # / ha-all all .* {"ha-mode":"all","ha-sync-mode":"automatic"} 0

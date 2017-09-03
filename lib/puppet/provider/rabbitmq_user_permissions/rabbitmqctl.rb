@@ -15,9 +15,10 @@ Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl, parent: Pupp
     @users = {} unless @users
     unless @users[name]
       @users[name] = {}
-      run_with_retries do
+      user_permission_list = run_with_retries do
         rabbitmqctl('-q', 'list_user_permissions', name)
-      end.split(%r{\n}).each do |line|
+      end
+      user_permission_list.split(%r{\n}).each do |line|
         line = strip_backslashes(line)
         if line =~ %r{^(\S+)\s+(\S*)\s+(\S*)\s+(\S*)$}
           @users[name][Regexp.last_match(1)] =

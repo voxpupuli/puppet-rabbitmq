@@ -9,9 +9,11 @@ Puppet::Type.type(:rabbitmq_vhost).provide(:rabbitmqctl, parent: Puppet::Provide
   end
 
   def self.instances
-    run_with_retries do
+    vhost_list = run_with_retries do
       rabbitmqctl('-q', 'list_vhosts')
-    end.split(%r{\n}).map do |line|
+    end
+
+    vhost_list.split(%r{\n}).map do |line|
       if line =~ %r{^(\S+)$}
         new(name: Regexp.last_match(1))
       else
@@ -29,10 +31,6 @@ Puppet::Type.type(:rabbitmq_vhost).provide(:rabbitmqctl, parent: Puppet::Provide
   end
 
   def exists?
-    out = self.class.run_with_retries do
-      rabbitmqctl('-q', 'list_vhosts')
-    end.split(%r{\n}).find do |line|
-      line.match(%r{^#{Regexp.escape(resource[:name])}$})
-    end
+    self.class.run_with_retries { rabbitmqctl('-q', 'list_vhosts') }.split(%r{\n}).include? resource[:name]
   end
 end

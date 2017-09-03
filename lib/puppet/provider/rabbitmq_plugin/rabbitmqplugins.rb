@@ -21,9 +21,11 @@ Puppet::Type.type(:rabbitmq_plugin).provide(:rabbitmqplugins, parent: Puppet::Pr
   defaultfor feature: :posix
 
   def self.instances
-    run_with_retries do
+    plugin_list = run_with_retries do
       rabbitmqplugins('list', '-E', '-m')
-    end.split(%r{\n}).map do |line|
+    end
+
+    plugin_list.split(%r{\n}).map do |line|
       if line =~ %r{^(\S+)$}
         new(name: Regexp.last_match(1))
       else
@@ -45,10 +47,6 @@ Puppet::Type.type(:rabbitmq_plugin).provide(:rabbitmqplugins, parent: Puppet::Pr
   end
 
   def exists?
-    self.class.run_with_retries do
-      rabbitmqplugins('list', '-E', '-m')
-    end.split(%r{\n}).find do |line|
-      line.match(%r{^#{resource[:name]}$})
-    end
+    self.class.run_with_retries { rabbitmqplugins('list', '-E', '-m') }.split(%r{\n}).include? resource[:name]
   end
 end
