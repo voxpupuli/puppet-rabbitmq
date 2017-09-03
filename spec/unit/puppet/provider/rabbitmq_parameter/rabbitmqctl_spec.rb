@@ -19,28 +19,35 @@ describe Puppet::Type.type(:rabbitmq_parameter).provider(:rabbitmqctl) do
       provider: described_class.name
     )
   end
-
   let(:provider) { resource.provider }
 
   after do
     described_class.instance_variable_set(:@parameters, nil)
   end
 
-  it 'accepts @ in parameter name' do
-    resource = Puppet::Type.type(:rabbitmq_parameter).new(
-      name: 'documentumShovel@/',
-      component_name: 'shovel',
-      value: {
-        'src-uri'    => 'amqp://',
-        'src-queue'  => 'my-queue',
-        'dest-uri'   => 'amqp://remote-server',
-        'dest-queue' => 'another-queue'
-      },
-      provider: described_class.name
-    )
-    provider = described_class.new(resource)
-    expect(provider.should_parameter).to eq('documentumShovel')
-    expect(provider.should_vhost).to eq('/')
+  context 'has "@" in parameter name' do
+    let(:resource) do
+      Puppet::Type.type(:rabbitmq_parameter).new(
+        name: 'documentumShovel@/',
+        component_name: 'shovel',
+        value: {
+          'src-uri'    => 'amqp://',
+          'src-queue'  => 'my-queue',
+          'dest-uri'   => 'amqp://remote-server',
+          'dest-queue' => 'another-queue'
+        },
+        provider: described_class.name
+      )
+    end
+    let(:provider) { described_class.new(resource) }
+
+    it do
+      expect(provider.should_parameter).to eq('documentumShovel')
+    end
+
+    it do
+      expect(provider.should_vhost).to eq('/')
+    end
   end
 
   it 'fails with invalid output from list' do
