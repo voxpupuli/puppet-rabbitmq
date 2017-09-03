@@ -1,5 +1,13 @@
 # rabbitmq
 
+[![License](https://img.shields.io/github/license/voxpupuli/puppet-rabbitmq.svg)](https://github.com/voxpupuli/puppet-rabbitmq/blob/master/LICENSE)
+[![Build Status](https://travis-ci.org/voxpupuli/puppet-rabbitmq.svg?branch=master)](https://travis-ci.org/voxpupuli/puppet-rabbitmq)
+[![Code Coverage](https://coveralls.io/repos/github/voxpupuli/puppet-rabbitmq/badge.svg?branch=master)](https://coveralls.io/github/voxpupuli/puppet-rabbitmq)
+[![Puppet Forge](https://img.shields.io/puppetforge/v/puppet/rabbitmq.svg)](https://forge.puppetlabs.com/puppet/rabbitmq)
+[![Puppet Forge - downloads](https://img.shields.io/puppetforge/dt/puppet/rabbitmq.svg)](https://forge.puppetlabs.com/puppet/rabbitmq)
+[![Puppet Forge - endorsement](https://img.shields.io/puppetforge/e/puppet/rabbitmq.svg)](https://forge.puppetlabs.com/puppet/rabbitmq)
+[![Puppet Forge - scores](https://img.shields.io/puppetforge/f/puppet/rabbitmq.svg)](https://forge.puppetlabs.com/puppet/rabbitmq)
+
 #### Table of Contents
 
 1. [Overview](#overview)
