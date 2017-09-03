@@ -14,7 +14,7 @@ describe provider_class do
 
   it 'matches plugins' do
     provider.expects(:rabbitmqplugins).with('list', '-E', '-m').returns("foo\n")
-    expect(provider.exists?).to eq('foo')
+    expect(provider.exists?).to eq(true)
   end
   it 'calls rabbitmqplugins to enable' do
     provider.expects(:rabbitmqplugins).with('enable', 'foo')

@@ -13,14 +13,13 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl, parent: Puppet::Provider
   defaultfor feature: :posix
 
   def self.instances
-    run_with_retries do
+    user_list = run_with_retries do
       rabbitmqctl('-q', 'list_users')
-    end.split(%r{\n}).map do |line|
-      if line =~ %r{^(\S+)(\s+\[.*?\]|)$}
-        new(name: Regexp.last_match(1))
-      else
-        raise Puppet::Error, "Cannot parse invalid user line: #{line}"
-      end
+    end
+
+    user_list.split(%r{\n}).map do |line|
+      raise Puppet::Error, "Cannot parse invalid user line: #{line}" unless line =~ %r{^(\S+)(\s+\[.*?\]|)$}
+      new(name: Regexp.last_match(1))
     end
   end
 
@@ -54,9 +53,11 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl, parent: Puppet::Provider
   end
 
   def exists?
-    self.class.run_with_retries do
+    user_list = self.class.run_with_retries do
       rabbitmqctl('-q', 'list_users')
-    end.split(%r{\n}).find do |line|
+    end
+
+    user_list.split(%r{\n}).find do |line|
       line.match(%r{^#{Regexp.escape(resource[:name])}(\s+(\[.*?\]|\S+)|)$})
     end
   end
@@ -73,11 +74,9 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl, parent: Puppet::Provider
   end
 
   def admin
-    if usertags = get_user_tags
-      (:true if usertags.include?('administrator')) || :false
-    else
-      raise Puppet::Error, "Could not match line '#{resource[:name]} (true|false)' from list_users (perhaps you are running on an older version of rabbitmq that does not support admin users?)"
-    end
+    usertags = get_user_tags
+    raise Puppet::Error, "Could not match line '#{resource[:name]} (true|false)' from list_users (perhaps you are running on an older version of rabbitmq that does not support admin users?)" unless usertags
+    (:true if usertags.include?('administrator')) || :false
   end
 
   def admin=(state)
@@ -90,7 +89,7 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl, parent: Puppet::Provider
     end
   end
 
-  def set_user_tags(tags)
+  def set_user_tags(tags) # rubocop:disable Style/AccessorMethodName
     is_admin = get_user_tags.member?('administrator') \
                || resource[:admin] == :true
     usertags = Set.new(tags)
@@ -106,7 +105,7 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl, parent: Puppet::Provider
 
   private
 
-  def get_user_tags
+  def get_user_tags # rubocop:disable Style/AccessorMethodName
     match = rabbitmqctl('-q', 'list_users').split(%r{\n}).map do |line|
       line.match(%r{^#{Regexp.escape(resource[:name])}\s+\[(.*?)\]})
     end.compact.first

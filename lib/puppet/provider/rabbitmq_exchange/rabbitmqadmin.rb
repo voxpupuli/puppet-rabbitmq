@@ -23,24 +23,14 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, parent: Puppet::Pr
   end
 
   def self.all_vhosts
-    vhosts = []
-    run_with_retries do
-      rabbitmqctl('-q', 'list_vhosts')
-    end.split(%r{\n}).each do |vhost|
-      vhosts.push(vhost)
-    end
-    vhosts
+    run_with_retries { rabbitmqctl('-q', 'list_vhosts') }.split(%r{\n})
   end
 
   def self.all_exchanges(vhost)
-    exchanges = []
-    run_with_retries do
+    exchange_list = run_with_retries do
       rabbitmqctl('-q', 'list_exchanges', '-p', vhost, 'name', 'type', 'internal', 'durable', 'auto_delete', 'arguments')
-    end.split(%r{\n}).each do |exchange|
-      next if exchange =~ %r{^federation:}
-      exchanges.push(exchange)
     end
-    exchanges
+    exchange_list.split(%r{\n}).reject { |exchange| exchange =~ %r{^federation:} }
   end
 
   def self.instances
@@ -79,7 +69,7 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, parent: Puppet::Pr
   def self.prefetch(resources)
     packages = instances
     resources.keys.each do |name|
-      if provider = packages.find { |pkg| pkg.name == name }
+      if (provider = packages.find { |pkg| pkg.name == name })
         resources[name].provider = provider
       end
     end

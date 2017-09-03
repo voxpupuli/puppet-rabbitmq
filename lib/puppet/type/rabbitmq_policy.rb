@@ -109,7 +109,7 @@ Puppet::Type.newtype(:rabbitmq_policy) do
         raise ArgumentError, "Invalid shards-per-node value '#{shards_per_node_val}'"
       end
     end
-    if definition.key? 'ha-sync-batch-size'
+    if definition.key? 'ha-sync-batch-size' # rubocop:disable Style/GuardClause
       ha_sync_batch_size_val = definition['ha-sync-batch-size']
       unless ha_sync_batch_size_val.to_i.to_s == ha_sync_batch_size_val
         raise ArgumentError, "Invalid ha-sync-batch-size value '#{ha_sync_batch_size_val}'"

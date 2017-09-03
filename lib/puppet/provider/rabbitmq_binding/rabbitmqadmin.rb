@@ -74,7 +74,7 @@ Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin) do
   def self.prefetch(resources)
     bindings = instances
     resources.each do |name, res|
-      if provider = bindings.find { |binding| binding.source == res[:source] && binding.destination == res[:destination] && binding.vhost == res[:vhost] && binding.routing_key == res[:routing_key] }
+      if (provider = bindings.find { |binding| binding.source == res[:source] && binding.destination == res[:destination] && binding.vhost == res[:vhost] && binding.routing_key == res[:routing_key] })
         resources[name].provider = provider
       end
     end

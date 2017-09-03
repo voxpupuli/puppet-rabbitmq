@@ -64,7 +64,7 @@ Puppet::Type.newtype(:rabbitmq_user) do
       is_to_s(is) == should_to_s
     end
 
-    def is_to_s(currentvalue = @is)
+    def is_to_s(currentvalue = @is) # rubocop:disable Style/PredicateName
       if currentvalue
         "[#{currentvalue.sort.join(', ')}]"
       else
