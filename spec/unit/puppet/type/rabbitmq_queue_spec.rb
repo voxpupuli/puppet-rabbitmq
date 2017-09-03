@@ -34,7 +34,6 @@ describe Puppet::Type.type(:rabbitmq_queue) do
   it 'accepts an arguments with numbers value' do
     queue[:arguments] = { 'x-message-ttl' => 30 }
     expect(queue[:arguments].to_json).to eq('{"x-message-ttl":30}')
-    expect(queue[:arguments]['x-message-ttl']).to eq(30)
   end
 
   it 'accepts an arguments with string value' do

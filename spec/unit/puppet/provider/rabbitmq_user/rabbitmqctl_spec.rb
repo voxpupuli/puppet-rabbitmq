@@ -71,6 +71,8 @@ EOT
 foo [administrator]
 EOT
     expect(provider.admin).to eq(:true)
+  end
+  it 'is able to retrieve correct admin value when there are multiple results' do
     provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
 one [administrator]
 foo []
