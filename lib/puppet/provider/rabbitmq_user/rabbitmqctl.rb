@@ -94,7 +94,7 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl, parent: Puppet::Provider
     end
   end
 
-  def set_user_tags(tags)
+  def set_user_tags(tags) # rubocop:disable Style/AccessorMethodName
     is_admin = get_user_tags.member?('administrator') \
                || resource[:admin] == :true
     usertags = Set.new(tags)
@@ -110,7 +110,7 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl, parent: Puppet::Provider
 
   private
 
-  def get_user_tags
+  def get_user_tags # rubocop:disable Style/AccessorMethodName
     match = rabbitmqctl('-q', 'list_users').split(%r{\n}).map do |line|
       line.match(%r{^#{Regexp.escape(resource[:name])}\s+\[(.*?)\]})
     end.compact.first
