@@ -1,1 +1,1 @@
-class { 'rabbitmq::service': }
+class { '::rabbitmq::service': }
