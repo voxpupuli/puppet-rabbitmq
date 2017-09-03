@@ -77,7 +77,7 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl, parent: Puppet::Provider
   end
 
   def admin
-    if usertags = get_user_tags
+    if (usertags = get_user_tags)
       (:true if usertags.include?('administrator')) || :false
     else
       raise Puppet::Error, "Could not match line '#{resource[:name]} (true|false)' from list_users (perhaps you are running on an older version of rabbitmq that does not support admin users?)"
