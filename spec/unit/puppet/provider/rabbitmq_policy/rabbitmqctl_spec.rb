@@ -16,25 +16,32 @@ describe Puppet::Type.type(:rabbitmq_policy).provider(:rabbitmqctl) do
       provider: described_class.name
     )
   end
-
   let(:provider) { resource.provider }
 
   after do
     described_class.instance_variable_set(:@policies, nil)
   end
 
-  it 'accepts @ in policy name' do
-    resource = Puppet::Type.type(:rabbitmq_policy).new(
-      name: 'ha@home@/',
-      pattern: '.*',
-      definition: {
-        'ha-mode' => 'all'
-      },
-      provider: described_class.name
-    )
-    provider = described_class.new(resource)
-    expect(provider.should_policy).to eq('ha@home')
-    expect(provider.should_vhost).to eq('/')
+  context 'has "@" in policy name' do
+    let(:resource) do
+      Puppet::Type.type(:rabbitmq_policy).new(
+        name: 'ha@home@/',
+        pattern: '.*',
+        definition: {
+          'ha-mode' => 'all'
+        },
+        provider: described_class.name
+      )
+    end
+    let(:provider) { described_class.new(resource) }
+
+    it do
+      expect(provider.should_policy).to eq('ha@home')
+    end
+
+    it do
+      expect(provider.should_vhost).to eq('/')
+    end
   end
 
   it 'fails with invalid output from list' do
