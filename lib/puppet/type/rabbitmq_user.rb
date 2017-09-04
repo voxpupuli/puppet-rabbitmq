@@ -39,12 +39,12 @@ DESC
 
   newproperty(:password) do
     desc 'User password to be set *on creation* and validated each run'
-    def insync?(is)
+    def insync?(_is)
       provider.check_password(should)
     end
 
-    def change_to_s(current, desired)
-      "password has been changed"
+    def change_to_s(_current, _desired)
+      'password has been changed'
     end
   end
 
