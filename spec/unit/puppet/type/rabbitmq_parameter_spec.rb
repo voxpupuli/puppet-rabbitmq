@@ -47,15 +47,19 @@ describe Puppet::Type.type(:rabbitmq_parameter) do
     expect(parameter[:value]).to eq(value)
   end
 
-  it 'does not accept invalid hash for definition' do
+  it 'does not accept an empty string for definition' do
     expect do
       parameter[:value] = ''
     end.to raise_error(Puppet::Error, %r{Invalid value})
+  end
 
+  it 'does not accept a string for definition' do
     expect do
       parameter[:value] = 'guest'
     end.to raise_error(Puppet::Error, %r{Invalid value})
+  end
 
+  it 'does not accept an array for definition' do
     expect do
       parameter[:value] = { 'message-ttl' => %w[999 100] }
     end.to raise_error(Puppet::Error, %r{Invalid value})
@@ -64,14 +68,12 @@ describe Puppet::Type.type(:rabbitmq_parameter) do
   it 'accepts string as myparameter' do
     value = { 'myparameter' => 'mystring' }
     parameter[:value] = value
-    expect(parameter[:value]['myparameter']).to be_a(String)
     expect(parameter[:value]['myparameter']).to eq('mystring')
   end
 
   it 'converts to integer when string only contains numbers' do
     value = { 'myparameter' => '1800000' }
     parameter[:value] = value
-    expect(parameter[:value]['myparameter']).to be_a(Integer)
     expect(parameter[:value]['myparameter']).to eq(1_800_000)
   end
 end

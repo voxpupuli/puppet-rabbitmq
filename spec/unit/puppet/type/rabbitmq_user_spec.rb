@@ -7,6 +7,9 @@ describe Puppet::Type.type(:rabbitmq_user) do
   it 'accepts a user name' do
     user[:name] = 'dan'
     expect(user[:name]).to eq('dan')
+  end
+  it 'admin is false when :admin is not set' do
+    user[:name] = 'dan'
     expect(user[:admin]).to eq(:false)
   end
   it 'accepts a password' do
