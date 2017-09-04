@@ -1,12 +1,119 @@
-## Version 5.6.0
-### Summary
-This is an unsupported Release. Add 2 features as listed below.
+# Change log
 
-### Features
-- Allow ha-sync-batch-size for rabbitmq_policy definition to be integer
-- Ability to set management_hostname in rabbitmqadmin.conf
+All notable changes to this project will be documented in this file.
+Each new release typically also includes the latest modulesync defaults.
+These should not impact the functionality of the module.
 
-## Version 5.5.0
+## [Unreleased](https://github.com/voxpupuli/puppet-rabbitmq/tree/HEAD)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/5.6.0...HEAD)
+
+**Implemented enhancements:**
+
+- Add FreeBSD support [\#567](https://github.com/voxpupuli/puppet-rabbitmq/pull/567) ([wyardley](https://github.com/wyardley))
+
+**Fixed bugs:**
+
+- Switch $releasevar to ${::os\[release\]\[major\]} [\#577](https://github.com/voxpupuli/puppet-rabbitmq/pull/577) ([wyardley](https://github.com/wyardley))
+- Update file / directory permissions [\#560](https://github.com/voxpupuli/puppet-rabbitmq/pull/560) ([wyardley](https://github.com/wyardley))
+- Extend rabbitmqadmin config template with SSL options. [\#526](https://github.com/voxpupuli/puppet-rabbitmq/pull/526) ([justahero](https://github.com/justahero))
+
+**Closed issues:**
+
+- Update to support puppet/staging 2 [\#587](https://github.com/voxpupuli/puppet-rabbitmq/issues/587)
+- Update to support puppetlabs/apt 3 or 4 [\#586](https://github.com/voxpupuli/puppet-rabbitmq/issues/586)
+- repos\_ensure and version on RHEL 7 [\#573](https://github.com/voxpupuli/puppet-rabbitmq/issues/573)
+- puppet resource rabbitmq\_exchange does not work [\#174](https://github.com/voxpupuli/puppet-rabbitmq/issues/174)
+- exchanges will be recreated in every puppet run if the vhost is not / [\#173](https://github.com/voxpupuli/puppet-rabbitmq/issues/173)
+- $PATH [\#169](https://github.com/voxpupuli/puppet-rabbitmq/issues/169)
+- Illegal cluster node name [\#163](https://github.com/voxpupuli/puppet-rabbitmq/issues/163)
+- option to ignore the repo part [\#158](https://github.com/voxpupuli/puppet-rabbitmq/issues/158)
+- version parameter does not work [\#154](https://github.com/voxpupuli/puppet-rabbitmq/issues/154)
+- Error message when creating an exchange with rabbitmq\_exchange [\#137](https://github.com/voxpupuli/puppet-rabbitmq/issues/137)
+- rabbitmqadmin fails with puppet 2.7.21 with master  \(code from master branch\) [\#121](https://github.com/voxpupuli/puppet-rabbitmq/issues/121)
+- Add support for exchanges [\#51](https://github.com/voxpupuli/puppet-rabbitmq/issues/51)
+- invalid parameter provider [\#49](https://github.com/voxpupuli/puppet-rabbitmq/issues/49)
+
+**Merged pull requests:**
+
+- update more lint warnings for relative classname inclusion in examples [\#595](https://github.com/voxpupuli/puppet-rabbitmq/pull/595) ([wyardley](https://github.com/wyardley))
+- move these tests to a context block, and use 'let\(:foo\)' syntax [\#593](https://github.com/voxpupuli/puppet-rabbitmq/pull/593) ([wyardley](https://github.com/wyardley))
+- Fix stdlib requirement [\#592](https://github.com/voxpupuli/puppet-rabbitmq/pull/592) ([alexjfisher](https://github.com/alexjfisher))
+- More Rubocop fixes and README.md badges [\#590](https://github.com/voxpupuli/puppet-rabbitmq/pull/590) ([alexjfisher](https://github.com/alexjfisher))
+- Update dependencies, name, and required Puppet version [\#589](https://github.com/voxpupuli/puppet-rabbitmq/pull/589) ([wyardley](https://github.com/wyardley))
+- Typo in .fixtures.yml breaking unit tests [\#588](https://github.com/voxpupuli/puppet-rabbitmq/pull/588) ([TraGicCode](https://github.com/TraGicCode))
+- Rewrite the spec testing case [\#585](https://github.com/voxpupuli/puppet-rabbitmq/pull/585) ([ekohl](https://github.com/ekohl))
+- Fix namevar parameter documentation in types [\#584](https://github.com/voxpupuli/puppet-rabbitmq/pull/584) ([alexjfisher](https://github.com/alexjfisher))
+- Add official archlinux support [\#583](https://github.com/voxpupuli/puppet-rabbitmq/pull/583) ([bastelfreak](https://github.com/bastelfreak))
+- Rubocop fixes: Update hash syntax and some formatting [\#582](https://github.com/voxpupuli/puppet-rabbitmq/pull/582) ([wyardley](https://github.com/wyardley))
+- Switch to rspec-puppet-facts [\#581](https://github.com/voxpupuli/puppet-rabbitmq/pull/581) ([ekohl](https://github.com/ekohl))
+- update various small warnings [\#580](https://github.com/voxpupuli/puppet-rabbitmq/pull/580) ([wyardley](https://github.com/wyardley))
+- switch to structured facts for os\* and rabbitmq\_version [\#579](https://github.com/voxpupuli/puppet-rabbitmq/pull/579) ([wyardley](https://github.com/wyardley))
+- move facter unit tests to the proper place [\#578](https://github.com/voxpupuli/puppet-rabbitmq/pull/578) ([wyardley](https://github.com/wyardley))
+- Switch to 'let\(:foo\)' syntax \(resolves rubocop warnings\) [\#576](https://github.com/voxpupuli/puppet-rabbitmq/pull/576) ([wyardley](https://github.com/wyardley))
+- BREAKING: Drop Ruby 1.8 support. Rubocop auto-fixes in preparation for modulesync [\#575](https://github.com/voxpupuli/puppet-rabbitmq/pull/575) ([wyardley](https://github.com/wyardley))
+- Enable configuring SSL for Erlang distribution [\#574](https://github.com/voxpupuli/puppet-rabbitmq/pull/574) ([JAORMX](https://github.com/JAORMX))
+- removed package\_provider var from readme and added deprecation check … [\#571](https://github.com/voxpupuli/puppet-rabbitmq/pull/571) ([bostrowski13](https://github.com/bostrowski13))
+- Switch from 'UNSET' to undefs, rename management\_ip to management\_ip\_address [\#559](https://github.com/voxpupuli/puppet-rabbitmq/pull/559) ([wyardley](https://github.com/wyardley))
+- don't "touch" hiera.yaml in spec\_helper\_acceptance [\#558](https://github.com/voxpupuli/puppet-rabbitmq/pull/558) ([wyardley](https://github.com/wyardley))
+- \(MODULES-5187\) mysnc puppet 5 and ruby 2.4 [\#554](https://github.com/voxpupuli/puppet-rabbitmq/pull/554) ([eputnam](https://github.com/eputnam))
+- \(MODULES-5144\) Prep for puppet 5 [\#553](https://github.com/voxpupuli/puppet-rabbitmq/pull/553) ([hunner](https://github.com/hunner))
+- Add options for IPv6 and inetrc [\#552](https://github.com/voxpupuli/puppet-rabbitmq/pull/552) ([jeckersb](https://github.com/jeckersb))
+- Fix unit tests on \#535 [\#550](https://github.com/voxpupuli/puppet-rabbitmq/pull/550) ([hunner](https://github.com/hunner))
+- Fix error text in `rabbitmq\_vhost` provider [\#549](https://github.com/voxpupuli/puppet-rabbitmq/pull/549) ([hybby](https://github.com/hybby))
+- Improve distro fact handling in tests [\#548](https://github.com/voxpupuli/puppet-rabbitmq/pull/548) ([jeckersb](https://github.com/jeckersb))
+- Extra ssl options to harden rabbitmq listener [\#547](https://github.com/voxpupuli/puppet-rabbitmq/pull/547) ([xepa](https://github.com/xepa))
+- Update regexp for rabbitmq\_nodename fact [\#545](https://github.com/voxpupuli/puppet-rabbitmq/pull/545) ([SergK](https://github.com/SergK))
+- Simplify "all\_vhosts" in rabbitmq\_queue provider [\#544](https://github.com/voxpupuli/puppet-rabbitmq/pull/544) ([KarolisL](https://github.com/KarolisL))
+- Upstream staging module released 2.2.0. Allow using it. [\#543](https://github.com/voxpupuli/puppet-rabbitmq/pull/543) ([vStone](https://github.com/vStone))
+- Scope config\_variables for Puppet 4 [\#541](https://github.com/voxpupuli/puppet-rabbitmq/pull/541) ([jarro2783](https://github.com/jarro2783))
+- \[msync\] 786266 Implement puppet-module-gems, a45803 Remove metadata.json from locales config [\#540](https://github.com/voxpupuli/puppet-rabbitmq/pull/540) ([wilson208](https://github.com/wilson208))
+- \[Bugfix\] convert $ssl\_depth from string to integer [\#539](https://github.com/voxpupuli/puppet-rabbitmq/pull/539) ([bastelfreak](https://github.com/bastelfreak))
+- \[MODULES-4528\] Replace Puppet.version.to\_f version comparison from spec\_helper.rb [\#538](https://github.com/voxpupuli/puppet-rabbitmq/pull/538) ([wilson208](https://github.com/wilson208))
+- \[MODULES-4555\] allow list values to ha-params when ha-mode=nodes [\#537](https://github.com/voxpupuli/puppet-rabbitmq/pull/537) ([eserte](https://github.com/eserte))
+- 	replace validate\_\* with datatypes [\#536](https://github.com/voxpupuli/puppet-rabbitmq/pull/536) ([bastelfreak](https://github.com/bastelfreak))
+- Systemd open files limit [\#535](https://github.com/voxpupuli/puppet-rabbitmq/pull/535) ([arteal](https://github.com/arteal))
+- \[MODULES-4450\] don't set ssl depth if undef [\#534](https://github.com/voxpupuli/puppet-rabbitmq/pull/534) ([JAORMX](https://github.com/JAORMX))
+- moved username:password to separate parameter [\#532](https://github.com/voxpupuli/puppet-rabbitmq/pull/532) ([vdmkenny](https://github.com/vdmkenny))
+- \(maint\) parallel\_spec maintenance: spec\_helper [\#531](https://github.com/voxpupuli/puppet-rabbitmq/pull/531) ([eputnam](https://github.com/eputnam))
+- added ssl\_depth and password params for configuration [\#530](https://github.com/voxpupuli/puppet-rabbitmq/pull/530) ([bostrowski13](https://github.com/bostrowski13))
+- \(MODULES-4098\) Sync the rest of the files [\#528](https://github.com/voxpupuli/puppet-rabbitmq/pull/528) ([hunner](https://github.com/hunner))
+- \(MODULES-4097\) Sync travis.yml [\#527](https://github.com/voxpupuli/puppet-rabbitmq/pull/527) ([hunner](https://github.com/hunner))
+- \(FM-5972\) gettext and spec.opts [\#525](https://github.com/voxpupuli/puppet-rabbitmq/pull/525) ([eputnam](https://github.com/eputnam))
+- \[MODULES-4223\] don't set NODE\_PORT and NODE\_IP\_ADDRESS if ssl\_only [\#524](https://github.com/voxpupuli/puppet-rabbitmq/pull/524) ([JAORMX](https://github.com/JAORMX))
+- \(FM-5939\) removes spec.opts [\#523](https://github.com/voxpupuli/puppet-rabbitmq/pull/523) ([eputnam](https://github.com/eputnam))
+- \(MODULES-3631\) msync Gemfile for 1.9 frozen strings [\#522](https://github.com/voxpupuli/puppet-rabbitmq/pull/522) ([hunner](https://github.com/hunner))
+- Designate former tests files as examples [\#521](https://github.com/voxpupuli/puppet-rabbitmq/pull/521) ([DavidS](https://github.com/DavidS))
+- Fixed lint on README.md snippets [\#520](https://github.com/voxpupuli/puppet-rabbitmq/pull/520) ([mvisonneau](https://github.com/mvisonneau))
+- \(MODULES-3704\) Update gemfile template to be identical [\#519](https://github.com/voxpupuli/puppet-rabbitmq/pull/519) ([hunner](https://github.com/hunner))
+- Fix sync [\#518](https://github.com/voxpupuli/puppet-rabbitmq/pull/518) ([hunner](https://github.com/hunner))
+- \[MODULES-3733\] rabbitmq provider env\_path does not locate ruby gem installed puppet binary [\#517](https://github.com/voxpupuli/puppet-rabbitmq/pull/517) ([nzverev](https://github.com/nzverev))
+- Allows deprecation errors [\#516](https://github.com/voxpupuli/puppet-rabbitmq/pull/516) ([pmcmaw](https://github.com/pmcmaw))
+- Allow Configuring Management IP Binding [\#506](https://github.com/voxpupuli/puppet-rabbitmq/pull/506) ([naftulikay](https://github.com/naftulikay))
+- Multiple routing keys for bindings using namevars [\#504](https://github.com/voxpupuli/puppet-rabbitmq/pull/504) ([wyardley](https://github.com/wyardley))
+- Updated app.pp to address deprecation warnings [\#497](https://github.com/voxpupuli/puppet-rabbitmq/pull/497) ([ilium007](https://github.com/ilium007))
+- Cleanup void tcp options [\#464](https://github.com/voxpupuli/puppet-rabbitmq/pull/464) ([mpolenchuk](https://github.com/mpolenchuk))
+
+## [5.6.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/5.6.0) (2016-10-25)
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/5.5.0...5.6.0)
+
+**Implemented enhancements:**
+
+- Allow ha-sync-batch-size for rabbitmq\_policy definition to be integer  [\#500](https://github.com/voxpupuli/puppet-rabbitmq/pull/500) ([mxftw](https://github.com/mxftw))
+- Ability to set management\_hostname in rabbitmqadmin.conf [\#498](https://github.com/voxpupuli/puppet-rabbitmq/pull/498) ([tampakrap](https://github.com/tampakrap))
+
+**Merged pull requests:**
+
+- \(MODULES-3983\) Update parallel\_tests for ruby 2.0.0 moduleSync [\#514](https://github.com/voxpupuli/puppet-rabbitmq/pull/514) ([pmcmaw](https://github.com/pmcmaw))
+- \[FM-5719\] Release prep for unsupported release 5.6.0 [\#513](https://github.com/voxpupuli/puppet-rabbitmq/pull/513) ([wilson208](https://github.com/wilson208))
+- Bug fix for when queue names include spaces [\#512](https://github.com/voxpupuli/puppet-rabbitmq/pull/512) ([Bubbad](https://github.com/Bubbad))
+- set $real\_package\_source to undef instead of empty [\#507](https://github.com/voxpupuli/puppet-rabbitmq/pull/507) ([bastelfreak](https://github.com/bastelfreak))
+- Release 5.5.0 [\#503](https://github.com/voxpupuli/puppet-rabbitmq/pull/503) ([eputnam](https://github.com/eputnam))
+- Update modulesync\_config \[a3fe424\] [\#501](https://github.com/voxpupuli/puppet-rabbitmq/pull/501) ([DavidS](https://github.com/DavidS))
+- repos and version fixes [\#493](https://github.com/voxpupuli/puppet-rabbitmq/pull/493) ([wyardley](https://github.com/wyardley))
+- use unless instead of if, and empty? instead of !='' [\#491](https://github.com/voxpupuli/puppet-rabbitmq/pull/491) ([wyardley](https://github.com/wyardley))
+
+## 5.5.0 (2016-08-29)
 ### Summary
 Adds some exciting new features (listed below) for a long awaited release!
 
@@ -22,18 +129,18 @@ Adds some exciting new features (listed below) for a long awaited release!
 ### Bugfixes
 - MODULES-3740 - RabbitMQ template missing important config parameter
 
-## Version 5.4.0
+## 5.4.0 (2016-05-11)
 ### Summary
 Adds several new parameters, features, and lots of bugfixes
 
 #### Features
-- Adds configuration for rabbitmq_shovel plugin including static shovels
+- Adds configuration for rabbitmq\_shovel plugin including static shovels
 - (MODULE-2040) Add configuration of `auth_backends`
 - Adds the `config_management_variables` parameter
 - Adds `heartbeat` parameter
 - Adds `rabbitmq_version` fact
 - Adds ipv6 support to `rabbitmqadmin`
-- MODULES-3148: Allow shards-per-node for rabbitmq_policy definition to be integer
+- MODULES-3148: Allow shards-per-node for rabbitmq\_policy definition to be integer
 - Adds `rabbitmq_nodename` fact
 - Allow passing architecture to `apt::source`
 
@@ -42,15 +149,15 @@ Adds several new parameters, features, and lots of bugfixes
 - Fixes an issue with Puppet 4+ when run from a cron job
 - Updates RedHat to use yum instead of rpm
 - Fixes the `$file_limit` parameter to allow integers
-- MODULES-2252 - fix "Could not prefetch rabbitmq_exchange provider 'rabbitmqadmin': 757: unexpected token at 'fanout'" issue
+- MODULES-2252 - fix "Could not prefetch rabbitmq\_exchange provider 'rabbitmqadmin': 757: unexpected token at 'fanout'" issue
 - Improves error message when policy definition value is not a string
 - MODULES-2645 add apt::update requirement for Debian
 - Fixes pinning for apt on Debian based distros
-- Updates install.pp to ensure that mnesia_base directory exists
+- Updates install.pp to ensure that mnesia\_base directory exists
 - Fixes rabbitmqadmin url
 - Updates default `$package_gpg_key` to https
 - Fixes `curl --noproxy` command to set host dynamically
-- Ignore system umask when generating enabled_plugins file
+- Ignore system umask when generating enabled\_plugins file
 - Fix to skip federated queues in the output
 - Updates module dependencies to use `puppet-staging` instead of `nanliu-staging`
 - Fixes bug where `rabbitmq_management` block is created twice
@@ -60,7 +167,7 @@ Adds several new parameters, features, and lots of bugfixes
 - Fixes bug that shows new user password changes on noop runs
 - (MODULES-3295) Allow ssl => false without warning
 
-## 2015-10-07 - Version 5.3.1
+## 5.3.1 (2015-10-07)
 ### Summary
 Adds a new resource type and a few ssl management parameters
 
@@ -75,15 +182,15 @@ Adds a new resource type and a few ssl management parameters
 - Fix message-ttl and max-length integer conversion in rabbitmq\_policy
 - Allow managing erlang cookie without config\_cluster
 
-## 2015-05-26 - Version 5.3.0 [YANKED]
+## 5.3.0 (2015-05-26) [YANKED]
 ### Summary
 This is a deleted release. It did not follow semver.
 
-## 2015-06-23 - Version 5.2.3
+## 5.2.3 (2015-06-23)
 ### Summary
 This is a patch release that updates the dependency requirements in the metadata.
 
-## 2015-06-09 - Version 5.2.2
+## 5.2.2 (2015-06-09)
 ### Summary
 This is a bugfix to allow the rabbitmq\_exchange type's internal/durable/auto\_delete attributes work when they are not explicitly passed.
 
@@ -92,22 +199,22 @@ This is a bugfix to allow the rabbitmq\_exchange type's internal/durable/auto\_d
 - Start unit testing on puppet 4
 - Add default value to tcp\_listen\_options
 
-## 2015-05-26 - Version 5.2.1
-###Summary
+## 5.2.1 (2015-05-26)
+### Summary
 This release includes a fix for idempotency between puppet runs, as well as Readme updates
 
-####Features
+#### Features
 - Readme updates
 - Testing updates
 
-####Bugfixes
+#### Bugfixes
 - Ensure idempotency between Puppet runs
 
-## 2015-04-28 - Version 5.2.0
-###Summary
+## 5.2.0 (2015-04-28)
+### Summary
 This release adds several new features for expanded configuration, support for SSL Ciphers, several bugfixes, and improved tests.
 
-####Features
+#### Features
 - New parameters to class `rabbitmq`
   - `ssl_ciphers`
 - New parameters to class `rabbitmq::config`
@@ -121,7 +228,7 @@ This release adds several new features for expanded configuration, support for S
 - Adds support for SSL Ciphers
 - Adds `file_limit` support for RedHat platforms
 
-####Bugfixes
+#### Bugfixes
 - Will not create `rabbitmqadmin.conf` if admin is disabled
 - Fixes `check_password`
 - Fix to allow bindings and queues to be created when non-default management port is being used by rabbitmq. (MODULES-1856)
@@ -129,14 +236,14 @@ This release adds several new features for expanded configuration, support for S
 - Updates apt key for full fingerprint compliance.
 - Adds a missing `routing_key` param to rabbitmqadmin absent binding call.
 
-## 2015-03-10 - Version 5.1.0
-###Summary
+## 5.1.0 (2015-03-10)
+### Summary
 This release adds several features for greater flexibility in configuration of rabbitmq, includes a number of bug fixes, and bumps the minimum required version of puppetlabs-stdlib to 3.0.0.
 
-####Changes to defaults
+#### Changes to defaults
 - The default environment variables in `rabbitmq::config` have been renamed from `RABBITMQ_NODE_PORT` and `RABBITMQ_NODE_IP_ADDRESS` to `NODE_PORT` and `NODE_IP_ADDRESS` (MODULES-1673)
 
-####Features
+#### Features
 - New parameters to class `rabbitmq`
   - `file_limit`
   - `interface`
@@ -150,7 +257,7 @@ This release adds several features for greater flexibility in configuration of r
 - Add `rabbitmq_queue` and `rabbitmq_binding` types
 - Update the providers to be able to retry commands
 
-####Bugfixes
+#### Bugfixes
 - Cleans up the formatting for rabbitmq.conf for readability
 - Update tag splitting in the `rabbitmqctl` provider for `rabbitmq_user` to work with comma or space separated tags
 - Do not enforce the source value for the yum provider (MODULES-1631)
@@ -160,7 +267,7 @@ This release adds several features for greater flexibility in configuration of r
 - Fix issues in `rabbitmq_user` with tags not being sorted
 - Fix broken check for existing exchanges in `rabbitmq_exchange`
 
-## 2014-12-22 - Version 5.0.0
+## 5.0.0 (2014-12-22)
 ### Summary
 
 This release fixes a longstanding security issue where the rabbitmq
@@ -170,25 +277,25 @@ and fixes several bugs.
 
 #### Backwards-incompatible Changes
 
-- Removed the rabbitmq_erlang_cookie fact and replaced the logic to
+- Removed the rabbitmq\_erlang\_cookie fact and replaced the logic to
   manage that cookie with a provider.
 - Dropped official support for Puppet 2.7 (EOL 9/30/2014
   https://groups.google.com/forum/#!topic/puppet-users/QLguMcLraLE )
-- Changed the default value of $rabbitmq::params::ldap_user_dn_pattern
+- Changed the default value of $rabbitmq::params::ldap\_user\_dn\_pattern
   to not contain a variable
-- Removed deprecated parameters: $rabbitmq::cluster_disk_nodes,
-  $rabbitmq::server::manage_service, and
-  $rabbitmq::server::config_mirrored_queues
+- Removed deprecated parameters: $rabbitmq::cluster\_disk\_nodes,
+  $rabbitmq::server::manage\_service, and
+  $rabbitmq::server::config\_mirrored\_queues
 
 #### Features
 
-- Add tcp_keepalive parameter to enable TCP keepalive
+- Add tcp\_keepalive parameter to enable TCP keepalive
 - Use https to download rabbitmqadmin tool when $rabbitmq::ssl is true
-- Add key_content parameter for offline Debian package installations
+- Add key\_content parameter for offline Debian package installations
 - Use 16 character apt key to avoid potential collisions
-- Add rabbitmq_policy type, including support for rabbitmq <3.2.0
-- Add rabbitmq::ensure_repo parameter
-- Add ability to change rabbitmq_user password
+- Add rabbitmq\_policy type, including support for rabbitmq <3.2.0
+- Add rabbitmq::ensure\_repo parameter
+- Add ability to change rabbitmq\_user password
 - Allow disk as a valid cluster node type
 
 #### Bugfixes
@@ -196,11 +303,11 @@ and fixes several bugs.
 - Avoid attempting to install rabbitmqadmin via a proxy (since it is
   downloaded from localhost)
 - Optimize check for RHEL GPG key
-- Configure ssl_listener in stomp only if using ssl
+- Configure ssl\_listener in stomp only if using ssl
 - Use rpm as default package provider for RedHat, bringing the module in
   line with the documented instructions to manage erlang separately and allowing
   the default version and source parameters to become meaningful
-- Configure cacertfile only if verify_none is not set
+- Configure cacertfile only if verify\_none is not set
 - Use -q flag for rabbitmqctl commands to avoid parsing inconsistent
   debug output
 - Use the -m flag for rabbitmqplugins commands, again to avoid parsing
@@ -213,37 +320,37 @@ and fixes several bugs.
 - Add, update, and fix tests
 - Update docs
 
-## 2014-08-20 - Version 4.1.0
+## 4.1.0 (2014-08-20)
 ### Summary
 
 This release adds several new features, fixes bugs, and improves tests and
 documentation.
 
 #### Features
-- Autorequire the rabbitmq-server service in the rabbitmq_vhost type
+- Autorequire the rabbitmq-server service in the rabbitmq\_vhost type
 - Add credentials to rabbitmqadmin URL
-- Added $ssl_only parameter to rabbitmq, rabbitmq::params, and
+- Added $ssl\_only parameter to rabbitmq, rabbitmq::params, and
 rabbitmq::config
-- Added property tags to rabbitmq_user provider
+- Added property tags to rabbitmq\_user provider
 
 #### Bugfixes
 - Fix erroneous commas in rabbitmq::config
-- Use correct ensure value for the rabbitmq_stomp rabbitmq_plugin
+- Use correct ensure value for the rabbitmq\_stomp rabbitmq\_plugin
 - Set HOME env variable to nil when leveraging rabbitmq to remove type error
 from Python script
 - Fix location for rabbitmq-plugins for RHEL
-- Remove validation for package_source to allow it to be set to false
+- Remove validation for package\_source to allow it to be set to false
 - Allow LDAP auth configuration without configuring stomp
-- Added missing $ssl_verify and $ssl_fail_if_no_peer_cert to rabbitmq::config
+- Added missing $ssl\_verify and $ssl\_fail\_if\_no\_peer\_cert to rabbitmq::config
 
-## 2014-05-16 - Version 4.0.0
+## 4.0.0 (2014-05-16)
 ### Summary
 
 This release includes many new features and bug fixes.  With the exception of
 erlang management this should be backwards compatible with 3.1.0.
 
 #### Backwards-incompatible Changes
-- erlang_manage was removed.  You will need to manage erlang separately. See
+- erlang\_manage was removed.  You will need to manage erlang separately. See
 the README for more information on how to configure this.
 
 #### Features
@@ -262,17 +369,17 @@ the README for more information on how to configure this.
 - exchanges no longer recreated on each puppet run if non-default vhost is used
 - Allow port to be UNSET
 - Re-added rabbitmq::server class
-- Deprecated previously unused manage_service variable in favor of 
-  service_manage
+- Deprecated previously unused manage\_service variable in favor of 
+  service\_manage
 - Use correct key for rabbitmq apt::source
-- config_mirrored_queues variable removed
+- config\_mirrored\_queues variable removed
   - It previously did nothing, will now at least throw a warning if you try to
     use it
 - Remove unnecessary dependency on Class['rabbitmq::repo::rhel'] in
   rabbitmq::install
 
 
-## 2013-09-14 - Version 3.1.0
+## 3.1.0 (2013-09-14)
 ### Summary
 
 This release focuses on a few small (but critical) bugfixes as well as extends
@@ -284,12 +391,12 @@ the amount of custom RabbitMQ configuration you can do with the module.
 - ArchLinux support added.
 
 #### Fixes
-- Make use of the user/password parameters in rabbitmq_exchange{}
-- Correct the read/write parameter order on set_permissions/list_permissions as
+- Make use of the user/password parameters in rabbitmq\_exchange{}
+- Correct the read/write parameter order on set\_permissions/list\_permissions as
   they were reversed.
 - Make the module pull down 3.1.5 by default.
 
-## 2013-07-18 3.0.0
+## 3.0.0 (2013-07-18)
 ### Summary
 
 This release heavily refactors the RabbitMQ and changes functionality in
@@ -310,7 +417,7 @@ a 3.x release.
 - Refactor the module to fix RHEL support.  All interaction with the module
 is now done through the main rabbitmq class.
 - Add support for mirrored queues (Only on Debian family distributions currently)
-- Add rabbitmq_exchange provider (using rabbitmqadmin)
+- Add rabbitmq\_exchange provider (using rabbitmqadmin)
 - Add new `rabbitmq` class parameters:
   - `manage_service`: Boolean to choose if Puppet should manage the service. (For pacemaker/HA setups)
 - Add SuSE support.
@@ -320,36 +427,39 @@ is now done through the main rabbitmq class.
 - Rabbitmq::server has been removed and is now rabbitmq::config.  You should
 not use this class directly, only via the main rabbitmq class.
 
-## 2013-04-11 2.1.0
+## 2.1.0 (2013-04-11)
 
 - remove puppetversion from rabbitmq.config template
 - add cluster support
 - escape resource names in regexp
 
-## 2012-07-31 Jeff McCune <jeff@puppetlabs.com> 2.0.2
+## 2.0.2 (2012-07-31)
 - Re-release 2.0.1 with $EDITOR droppings cleaned up
 
-## 2012-05-03 2.0.0
+## 2.0.0 (2012-05-03)
 - added support for new-style admin users
 - added support for rabbitmq 2.7.1
 
-## 2011-06-14 Dan Bode <dan@Puppetlabs.com> 2.0.0rc1
+## 2.0.0rc1 (2011-06-14)
 - Massive refactor:
-- added native types for user/vhost/user_permissions
-- added apt support for vendor packages
-- added smoke tests
+  - added native types for user/vhost/user\_permissions
+  - added apt support for vendor packages
+  - added smoke tests
 
-## 2011-04-08 Jeff McCune <jeff@puppetlabs.com> 1.0.4
+## 1.0.4 (2011-04-08)
 - Update module for RabbitMQ 2.4.1 and rabbitmq-plugin-stomp package.
 
-## 2011-03-24 1.0.3
+## 1.0.3 (2011-03-24)
 - Initial release to the forge.  Reviewed by Cody.  Whitespace is good.
 
-## 2011-03-22 1.0.2
+## 1.0.2 (2011-03-22)
 - Whitespace only fix again...  ack '\t' is my friend...
 
-## 2011-03-22 1.0.1
+## 1.0.1 (2011-03-22)
 - Whitespace only fix.
 
-## 2011-03-22 1.0.0
+## 1.0.0 (2011-03-22)
 - Initial Release.  Manage the package, file and service.
+
+
+\* *This Change Log was automatically generated by [github_changelog_generator](https://github.com/skywinder/Github-Changelog-Generator)*
