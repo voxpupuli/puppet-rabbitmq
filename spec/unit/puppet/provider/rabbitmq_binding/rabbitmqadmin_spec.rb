@@ -15,6 +15,7 @@ describe provider_class do
   end
   let(:provider) { provider_class.new(resource) }
 
+  # rubocop:disable RSpec/MultipleExpectations
   describe '#instances' do
     it 'returns instances' do
       provider_class.expects(:rabbitmqctl).with('list_vhosts', '-q').returns <<-EOT
@@ -41,7 +42,9 @@ EOT
                    }
                  ])
     end
+    # rubocop:enable RSpec/MultipleExpectations
 
+    # rubocop:disable RSpec/MultipleExpectations
     it 'returns multiple instances' do
       provider_class.expects(:rabbitmqctl).with('list_vhosts', '-q').returns <<-EOT
 /
@@ -75,6 +78,7 @@ EOT
                  ])
     end
   end
+  # rubocop:enable RSpec/MultipleExpectations
 
   describe 'Test for prefetch error' do
     let(:resource) do
