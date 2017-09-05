@@ -672,17 +672,11 @@ The module has been tested on:
 Testing on other platforms has been light and cannot be guaranteed.
 Support for EL / CentOS 5 is deprecated.
 
-### Apt module compatibility
-
-While this module supports both 1.x and 2.x versions of the
-puppetlabs-apt module, it does not support puppetlabs-apt 2.0.0 or
-2.0.1.
-
 ### Module dependencies
 
 If running CentOS/RHEL, ensure the epel repo, or another repo containing a
-suitable Erlang version, is present. On Debian systems, puppetlabs/apt is a
-soft dependency.
+suitable Erlang version, is present. On Debian systems, puppetlabs/apt
+(>=2.0.0 < 5.0.0) is a soft dependency.
 
 To have a suitable erlang version installed on RedHat and Debian systems,
 you have to install another puppet module from http://forge.puppetlabs.com/garethr/erlang with:
@@ -708,29 +702,13 @@ This module also depends on the excellent puppet/staging module on the Forge:
 
     puppet module install puppet-staging
 
-### Downgrade Issues
-
-Be advised that there were configuration file syntax and other changes made between RabbitMQ
-versions 2 and 3. In order to downgrade from 3 to 2 (not that this is a terribly good idea)
-you will need to manually remove all RabbitMQ configuration files (``/etc/rabbitmq``) and
-the mnesia directory (usually ``/var/lib/rabbitmq/mnesia``). The latter action will delete
-any and all messages stored to disk.
-
-Failure to do this will result in RabbitMQ failing to start with a cryptic error message about
-"init terminating in do_boot", containing "rabbit_upgrade,maybe_upgrade_mnesia".
-
 ## Development
 
-Puppet Labs modules on the Puppet Forge are open projects, and community
-contributions are essential for keeping them great. We can’t access the
-huge number of platforms and myriad of hardware, software, and deployment
-configurations that Puppet is intended to serve.
+This module is maintained by [Vox Pupuli](https://voxpupuli.org/). Voxpupuli
+welcomes new contributions to this module, especially those that include
+documentation and rspec tests. We are happy to provide guidance if necessary.
 
-We want to keep it as easy as possible to contribute changes so that our
-modules work in your environment. There are a few guidelines that we need
-contributors to follow so that we can have a chance of keeping on top of things.
-
-You can read the complete module contribution guide [on the Puppet Labs wiki.](http://projects.puppetlabs.com/projects/module-site/wiki/Module_contributing)
+Please see [CONTRIBUTING](.git/CONTRIBUTING.md) for more details.
 
 ### Authors
 * Jeff McCune <jeff@puppetlabs.com>
