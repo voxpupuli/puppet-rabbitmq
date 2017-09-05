@@ -1,6 +1,8 @@
 #
 class rabbitmq::install::rabbitmqadmin {
 
+  require '::archive'
+
   if($rabbitmq::ssl and $rabbitmq::management_ssl) {
     $management_port = $rabbitmq::ssl_management_port
     $protocol        = 'https'
@@ -25,13 +27,14 @@ class rabbitmq::install::rabbitmqadmin {
     $sanitized_ip = $management_ip_address
   }
 
-  staging::file { 'rabbitmqadmin':
-    target      => "${rabbitmq::rabbitmq_home}/rabbitmqadmin",
-    source      => "${protocol}://${sanitized_ip}:${management_port}/cli/rabbitmqadmin",
-    curl_option => "-u \"${default_user}:${default_pass}\" -k ${curl_prefix} --retry 30 --retry-delay 6",
-    timeout     => '180',
-    wget_option => '--no-proxy --no-check-certificate',
-    require     => [
+  archive { 'rabbitmqadmin':
+    path           => "${rabbitmq::rabbitmq_home}/rabbitmqadmin",
+    source         => "${protocol}://${sanitized_ip}:${management_port}/cli/rabbitmqadmin",
+    username       => $default_user,
+    password       => $default_pass,
+    allow_insecure => true,
+    cleanup        => false,
+    require        => [
       Class['rabbitmq::service'],
       Rabbitmq_plugin['rabbitmq_management']
     ],
@@ -42,7 +45,7 @@ class rabbitmq::install::rabbitmqadmin {
     group   => '0',
     source  => "${rabbitmq::rabbitmq_home}/rabbitmqadmin",
     mode    => '0755',
-    require => Staging::File['rabbitmqadmin'],
+    require => Archive['rabbitmqadmin'],
   }
 
 }
