@@ -200,7 +200,7 @@ describe 'rabbitmq' do
               'require' => 'Class[Rabbitmq::Install]',
               'notify'  => 'Class[Rabbitmq::Service]'
             )
-            is_expected.to contain_staging__file('rabbitmqadmin').with_source('http://1.1.1.1:15672/cli/rabbitmqadmin')
+            is_expected.to contain_archive('rabbitmqadmin').with_source('http://1.1.1.1:15672/cli/rabbitmqadmin')
           end
         end
         context 'with $management_ip_address undef and service_manage set to true' do
@@ -212,16 +212,17 @@ describe 'rabbitmq' do
               'require' => 'Class[Rabbitmq::Install]',
               'notify'  => 'Class[Rabbitmq::Service]'
             )
-            is_expected.to contain_staging__file('rabbitmqadmin').with_source('http://127.0.0.1:15672/cli/rabbitmqadmin')
+            is_expected.to contain_archive('rabbitmqadmin').with_source('http://127.0.0.1:15672/cli/rabbitmqadmin')
           end
         end
         context 'with service_manage set to true, node_ip_address = undef, and default user/pass specified' do
           let(:params) { { admin_enable: true, default_user: 'foobar', default_pass: 'hunter2', node_ip_address: :undef } }
 
           it 'we use the correct URL to rabbitmqadmin' do
-            is_expected.to contain_staging__file('rabbitmqadmin').with(
+            is_expected.to contain_archive('rabbitmqadmin').with(
               source: 'http://127.0.0.1:15672/cli/rabbitmqadmin',
-              curl_option: '-u "foobar:hunter2" -k  --retry 30 --retry-delay 6'
+              username: 'foobar',
+              password: 'hunter2'
             )
           end
         end
@@ -229,9 +230,10 @@ describe 'rabbitmq' do
           let(:params) { { admin_enable: true, default_user: 'foobar', default_pass: 'hunter2', management_ip_address: '1.1.1.1' } }
 
           it 'we use the correct URL to rabbitmqadmin' do
-            is_expected.to contain_staging__file('rabbitmqadmin').with(
+            is_expected.to contain_archive('rabbitmqadmin').with(
               source: 'http://1.1.1.1:15672/cli/rabbitmqadmin',
-              curl_option: '-u "foobar:hunter2" -k --noproxy 1.1.1.1 --retry 30 --retry-delay 6'
+              username: 'foobar',
+              password: 'hunter2'
             )
           end
         end
@@ -240,9 +242,10 @@ describe 'rabbitmq' do
           let(:params) { { admin_enable: true, management_port: 55_672, management_ip_address: '1.1.1.1' } }
 
           it 'we use the correct URL to rabbitmqadmin' do
-            is_expected.to contain_staging__file('rabbitmqadmin').with(
+            is_expected.to contain_archive('rabbitmqadmin').with(
               source: 'http://1.1.1.1:55672/cli/rabbitmqadmin',
-              curl_option: '-u "guest:guest" -k --noproxy 1.1.1.1 --retry 30 --retry-delay 6'
+              username: 'guest',
+              password: 'guest'
             )
           end
         end
@@ -251,9 +254,10 @@ describe 'rabbitmq' do
           let(:params) { { admin_enable: true, management_port: 55_672, management_ip_address: '::1' } }
 
           it 'we use the correct URL to rabbitmqadmin' do
-            is_expected.to contain_staging__file('rabbitmqadmin').with(
+            is_expected.to contain_archive('rabbitmqadmin').with(
               source: 'http://[::1]:55672/cli/rabbitmqadmin',
-              curl_option: '-u "guest:guest" -k --noproxy ::1 -g -6 --retry 30 --retry-delay 6'
+              username: 'guest',
+              password: 'guest'
             )
           end
         end
