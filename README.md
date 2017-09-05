@@ -708,7 +708,7 @@ This module is maintained by [Vox Pupuli](https://voxpupuli.org/). Voxpupuli
 welcomes new contributions to this module, especially those that include
 documentation and rspec tests. We are happy to provide guidance if necessary.
 
-Please see [CONTRIBUTING](.git/CONTRIBUTING.md) for more details.
+Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for more details.
 
 ### Authors
 * Jeff McCune <jeff@puppetlabs.com>
