@@ -197,7 +197,6 @@ describe 'rabbitmq' do
           it 'we enable the admin interface by default' do
             is_expected.to contain_class('rabbitmq::install::rabbitmqadmin')
             is_expected.to contain_rabbitmq_plugin('rabbitmq_management').with(
-              'require' => 'Class[Rabbitmq::Install]',
               'notify'  => 'Class[Rabbitmq::Service]'
             )
             is_expected.to contain_archive('rabbitmqadmin').with_source('http://1.1.1.1:15672/cli/rabbitmqadmin')
@@ -209,7 +208,6 @@ describe 'rabbitmq' do
           it 'we enable the admin interface by default' do
             is_expected.to contain_class('rabbitmq::install::rabbitmqadmin')
             is_expected.to contain_rabbitmq_plugin('rabbitmq_management').with(
-              'require' => 'Class[Rabbitmq::Install]',
               'notify'  => 'Class[Rabbitmq::Service]'
             )
             is_expected.to contain_archive('rabbitmqadmin').with_source('http://127.0.0.1:15672/cli/rabbitmqadmin')
