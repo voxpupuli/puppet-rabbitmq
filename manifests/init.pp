@@ -151,45 +151,41 @@ class rabbitmq(
     }
   }
 
-  include '::rabbitmq::install'
-  include '::rabbitmq::config'
-  include '::rabbitmq::service'
-  include '::rabbitmq::management'
+  contain '::rabbitmq::install'
+  contain '::rabbitmq::config'
+  contain '::rabbitmq::service'
+  contain '::rabbitmq::management'
 
   if $admin_enable and $service_manage {
     include '::rabbitmq::install::rabbitmqadmin'
 
     rabbitmq_plugin { 'rabbitmq_management':
       ensure   => present,
-      require  => Class['rabbitmq::install'],
       notify   => Class['rabbitmq::service'],
       provider => 'rabbitmqplugins',
     }
 
-    Class['::rabbitmq::service'] -> Class['::rabbitmq::install::rabbitmqadmin']
-    Class['::rabbitmq::install::rabbitmqadmin'] -> Rabbitmq_exchange<| |>
+    Class['rabbitmq::service'] -> Class['rabbitmq::install::rabbitmqadmin']
+    Class['rabbitmq::install::rabbitmqadmin'] -> Rabbitmq_exchange<| |>
   }
 
   if $stomp_ensure {
     rabbitmq_plugin { 'rabbitmq_stomp':
-      ensure  => present,
-      require => Class['rabbitmq::install'],
-      notify  => Class['rabbitmq::service'],
+      ensure => present,
+      notify => Class['rabbitmq::service'],
     }
   }
 
   if ($ldap_auth) {
     rabbitmq_plugin { 'rabbitmq_auth_backend_ldap':
-      ensure  => present,
-      require => Class['rabbitmq::install'],
-      notify  => Class['rabbitmq::service'],
+      ensure => present,
+      notify => Class['rabbitmq::service'],
     }
   }
 
   if ($config_shovel) {
     rabbitmq_plugin { 'rabbitmq_shovel':
       ensure   => present,
-      require  => Class['rabbitmq::install'],
       notify   => Class['rabbitmq::service'],
       provider => 'rabbitmqplugins',
     }
@@ -197,24 +193,18 @@ class rabbitmq(
     if ($admin_enable) {
       rabbitmq_plugin { 'rabbitmq_shovel_management':
         ensure   => present,
-        require  => Class['rabbitmq::install'],
         notify   => Class['rabbitmq::service'],
         provider => 'rabbitmqplugins',
       }
     }
   }
 
-  # Anchor this as per #8040 - this ensures that classes won't float off and
-  # mess everything up.  You can read about this at:
-  # http://docs.puppetlabs.com/puppet/2.7/reference/lang_containment.html#known-issues
-  anchor { 'rabbitmq::begin': }
-  anchor { 'rabbitmq::end': }
-
-  Anchor['rabbitmq::begin'] -> Class['::rabbitmq::install']
-    -> Class['::rabbitmq::config'] ~> Class['::rabbitmq::service']
-    -> Class['::rabbitmq::management'] -> Anchor['rabbitmq::end']
+  Class['rabbitmq::install']
+  -> Class['rabbitmq::config']
+  ~> Class['rabbitmq::service']
+  -> Class['rabbitmq::management']
 
   # Make sure the various providers have their requirements in place.
-  Class['::rabbitmq::install'] -> Rabbitmq_plugin<| |>
+  Class['rabbitmq::install'] -> Rabbitmq_plugin<| |>
 
 }
