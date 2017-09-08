@@ -177,9 +177,9 @@ describe 'rabbitmq' do
 
         it {
           is_expected.to contain_exec('rabbitmq-systemd-reload').with(
-            'command'     => '/usr/bin/systemctl daemon-reload',
-            'notify'      => 'Class[Rabbitmq::Service]',
-            'refreshonly' => true
+            command: '/usr/bin/systemctl daemon-reload',
+            notify: 'Class[Rabbitmq::Service]',
+            refreshonly: :true
           )
         }
       end
@@ -197,9 +197,14 @@ describe 'rabbitmq' do
           it 'we enable the admin interface by default' do
             is_expected.to contain_class('rabbitmq::install::rabbitmqadmin')
             is_expected.to contain_rabbitmq_plugin('rabbitmq_management').with(
-              'notify'  => 'Class[Rabbitmq::Service]'
+              notify: 'Class[Rabbitmq::Service]'
             )
             is_expected.to contain_archive('rabbitmqadmin').with_source('http://1.1.1.1:15672/cli/rabbitmqadmin')
+          end
+          if facts[:os]['family'] == 'Debian'
+            it 'python is in the catalog on Debian / Ubuntu' do
+              is_expected.to contain_package('python')
+            end
           end
         end
         context 'with $management_ip_address undef and service_manage set to true' do
@@ -208,7 +213,7 @@ describe 'rabbitmq' do
           it 'we enable the admin interface by default' do
             is_expected.to contain_class('rabbitmq::install::rabbitmqadmin')
             is_expected.to contain_rabbitmq_plugin('rabbitmq_management').with(
-              'notify'  => 'Class[Rabbitmq::Service]'
+              notify: 'Class[Rabbitmq::Service]'
             )
             is_expected.to contain_archive('rabbitmqadmin').with_source('http://127.0.0.1:15672/cli/rabbitmqadmin')
           end

@@ -6,6 +6,8 @@ class rabbitmq::params {
 
   case $facts['os']['family'] {
     'Archlinux': {
+      $manage_python    = true
+      $python_package   = 'python2'
       $package_ensure   = 'installed'
       $package_name     = 'rabbitmq'
       $service_name     = 'rabbitmq'
@@ -14,6 +16,8 @@ class rabbitmq::params {
       $rabbitmq_home    = '/var/lib/rabbitmq'
     }
     'Debian': {
+      $manage_python    = true
+      $python_package   = 'python'
       $package_ensure   = 'installed'
       $package_name     = 'rabbitmq-server'
       $service_name     = 'rabbitmq-server'
@@ -22,6 +26,8 @@ class rabbitmq::params {
       $rabbitmq_home    = '/var/lib/rabbitmq'
     }
     'OpenBSD': {
+      $manage_python    = true
+      $python_package   = 'python2'
       $package_ensure   = 'installed'
       $package_name     = 'rabbitmq'
       $service_name     = 'rabbitmq'
@@ -30,6 +36,8 @@ class rabbitmq::params {
       $rabbitmq_home    = '/var/rabbitmq'
     }
     'FreeBSD': {
+      $manage_python    = true
+      $python_package   = 'python2'
       $package_ensure   = 'installed'
       $package_name     = 'rabbitmq'
       $service_name     = 'rabbitmq'
@@ -38,6 +46,8 @@ class rabbitmq::params {
       $rabbitmq_home    = '/var/db/rabbitmq'
     }
     'RedHat': {
+      $manage_python    = true
+      $python_package   = 'python'
       $package_ensure   = 'installed'
       $package_name     = 'rabbitmq-server'
       $service_name     = 'rabbitmq-server'
@@ -46,6 +56,8 @@ class rabbitmq::params {
       $rabbitmq_home    = '/var/lib/rabbitmq'
     }
     'SUSE': {
+      $manage_python    = true
+      $python_package   = 'python'
       $package_ensure   = 'installed'
       $package_name     = 'rabbitmq-server'
       $service_name     = 'rabbitmq-server'
