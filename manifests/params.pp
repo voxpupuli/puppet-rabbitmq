@@ -73,6 +73,7 @@ class rabbitmq::params {
   $config                      = 'rabbitmq/rabbitmq.config.erb'
   $config_cluster              = false
   $config_path                 = '/etc/rabbitmq/rabbitmq.config'
+  $config_ranch                = true
   $config_stomp                = false
   $config_shovel               = false
   $config_shovel_statics       = {}

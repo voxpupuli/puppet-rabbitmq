@@ -288,6 +288,26 @@ describe 'rabbitmq' do
         }
       end
 
+      describe 'does not contain pre-ranch settings with default config' do
+        it do
+          is_expected.to contain_file('rabbitmq.config'). \
+            without_content(%r{binary,}).                 \
+            without_content(%r{\{packet,        raw\},}). \
+            without_content(%r{\{reuseaddr,     true\},})
+        end
+      end
+
+      describe 'contains pre-ranch settings with config_ranch set to false' do
+        let(:params) { { config_ranch: false } }
+
+        it do
+          is_expected.to contain_file('rabbitmq.config'). \
+            with_content(%r{binary,}).                 \
+            with_content(%r{\{packet,        raw\},}). \
+            with_content(%r{\{reuseaddr,     true\},})
+        end
+      end
+
       context 'configures config_cluster' do
         let(:params) do
           {

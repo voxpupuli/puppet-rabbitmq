@@ -9,6 +9,7 @@ class rabbitmq::config {
   $config                      = $rabbitmq::config
   $config_cluster              = $rabbitmq::config_cluster
   $config_path                 = $rabbitmq::config_path
+  $config_ranch                = $rabbitmq::config_ranch
   $config_stomp                = $rabbitmq::config_stomp
   $config_shovel               = $rabbitmq::config_shovel
   $config_shovel_statics       = $rabbitmq::config_shovel_statics
@@ -127,13 +128,6 @@ class rabbitmq::config {
     $environment_variables = $_environment_variables + $ipv6_or_tls_env
   } else {
     $environment_variables = $_environment_variables
-  }
-
-  # Get ranch (socket acceptor pool) availability,
-  # Now that we have to rely on the fact, this may cause some chicken / egg
-  # or idempotency problems
-  if $facts['rabbitmq_version'] {
-    $ranch = versioncmp($facts['rabbitmq_version'], '3.6') >= 0
   }
 
   file { '/etc/rabbitmq':
