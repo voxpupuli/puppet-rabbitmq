@@ -177,9 +177,9 @@ describe 'rabbitmq' do
 
         it {
           is_expected.to contain_exec('rabbitmq-systemd-reload').with(
-            command: '/usr/bin/systemctl daemon-reload',
+            command: '/bin/systemctl daemon-reload',
             notify: 'Class[Rabbitmq::Service]',
-            refreshonly: :true
+            refreshonly: true
           )
         }
       end
