@@ -1,8 +1,6 @@
+require 'spec_helper'
 require 'puppet'
-require 'mocha'
-RSpec.configure do |config|
-  config.mock_with :mocha
-end
+
 provider_class = Puppet::Type.type(:rabbitmq_exchange).provider(:rabbitmqadmin)
 describe provider_class do
   let(:resource) do

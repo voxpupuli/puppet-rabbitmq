@@ -192,27 +192,20 @@ class rabbitmq::config {
     }
   }
 
+  if ($file_limit + 0) {
+    $systemd_file_limit = $file_limit
+  } else {
+    $systemd_file_limit = 0
+  }
+
   case $facts['os']['family'] {
     'Debian': {
       if versioncmp($facts['os']['release']['full'], '16.04') >= 0 {
-        file { '/etc/systemd/system/rabbitmq-server.service.d':
-          ensure                  => directory,
-          owner                   => '0',
-          group                   => '0',
-          mode                    => '0755',
-          selinux_ignore_defaults => true,
-        }
-        -> file { '/etc/systemd/system/rabbitmq-server.service.d/limits.conf':
-          content => template('rabbitmq/rabbitmq-server.service.d/limits.conf'),
-          owner   => '0',
-          group   => '0',
-          mode    => '0644',
-          notify  => Exec['rabbitmq-systemd-reload'],
-        }
-        exec { 'rabbitmq-systemd-reload':
-          command     => '/bin/systemctl daemon-reload',
-          notify      => Class['Rabbitmq::Service'],
-          refreshonly => true,
+        include '::systemd'
+        ::systemd::service_limits { 'rabbitmq-server.service':
+          limits => {
+            'LimitNOFILE' => $systemd_file_limit,
+          },
         }
       }
       file { '/etc/default/rabbitmq-server':
@@ -226,24 +219,11 @@ class rabbitmq::config {
     }
     'RedHat': {
       if versioncmp($facts['os']['release']['major'], '7') >= 0 {
-        file { '/etc/systemd/system/rabbitmq-server.service.d':
-          ensure                  => directory,
-          owner                   => '0',
-          group                   => '0',
-          mode                    => '0755',
-          selinux_ignore_defaults => true,
-        }
-        -> file { '/etc/systemd/system/rabbitmq-server.service.d/limits.conf':
-          content => template('rabbitmq/rabbitmq-server.service.d/limits.conf'),
-          owner   => '0',
-          group   => '0',
-          mode    => '0644',
-          notify  => Exec['rabbitmq-systemd-reload'],
-        }
-        exec { 'rabbitmq-systemd-reload':
-          command     => '/usr/bin/systemctl daemon-reload',
-          notify      => Class['Rabbitmq::Service'],
-          refreshonly => true,
+        include '::systemd'
+        ::systemd::service_limits { 'rabbitmq-server.service':
+          limits => {
+            'LimitNOFILE' => $systemd_file_limit,
+          },
         }
       }
       file { '/etc/security/limits.d/rabbitmq-server.conf':

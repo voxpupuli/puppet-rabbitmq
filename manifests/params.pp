@@ -110,7 +110,7 @@ class rabbitmq::params {
   $config_kernel_variables     = {}
   $config_management_variables = {}
   $config_additional_variables = {}
-  $file_limit                  = '16384'
+  $file_limit                  = 16384
   $ipv6                        = false
   $inetrc_config               = 'rabbitmq/inetrc.erb'
   $inetrc_config_path          = '/etc/rabbitmq/inetrc'
