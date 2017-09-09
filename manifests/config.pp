@@ -241,7 +241,7 @@ class rabbitmq::config {
           notify  => Exec['rabbitmq-systemd-reload'],
         }
         exec { 'rabbitmq-systemd-reload':
-          command     => '/usr/bin/systemctl daemon-reload',
+          command     => '/bin/systemctl daemon-reload',
           notify      => Class['Rabbitmq::Service'],
           refreshonly => true,
         }
