@@ -1,5 +1,42 @@
 Puppet::Type.newtype(:rabbitmq_binding) do
-  desc 'Native type for managing rabbitmq bindings'
+  desc <<-DESC
+Native type for managing rabbitmq bindings
+
+@example Create a rabbitmq_binding
+ rabbitmq_binding { 'myexchange@myqueue@myvhost':
+   user             => 'dan',
+   password         => 'bar',
+   destination_type => 'queue',
+   routing_key      => '#',
+   arguments        => {},
+   ensure           => present,
+ }
+
+@example Create bindings with same source / destination / vhost but different routing key using individual parameters
+rabbitmq_binding { 'binding 1':
+  ensure           => present,
+  source           => 'myexchange',
+  destination      => 'myqueue',
+  vhost            => 'myvhost',
+  user             => 'dan',
+  password         => 'bar',
+  destination_type => 'queue',
+  routing_key      => 'key1',
+  arguments        => {},
+}
+
+rabbitmq_binding { 'binding 2':
+  ensure           => present,
+  source           => 'myexchange',
+  destination      => 'myqueue',
+  vhost            => 'myvhost',
+  user             => 'dan',
+  password         => 'bar',
+  destination_type => 'queue',
+  routing_key      => 'key2',
+  arguments        => {},
+}
+DESC
 
   ensurable do
     defaultto(:present)

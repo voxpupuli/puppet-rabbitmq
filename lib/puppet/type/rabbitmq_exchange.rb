@@ -1,5 +1,21 @@
 Puppet::Type.newtype(:rabbitmq_exchange) do
-  desc 'Native type for managing rabbitmq exchanges'
+  desc <<-DESC
+Native type for managing rabbitmq exchanges
+
+@example Create a rabbitmq_exchange
+ rabbitmq_exchange { 'myexchange@myvhost':
+   user        => 'dan',
+   password    => 'bar',
+   type        => 'topic',
+   ensure      => present,
+   internal    => false,
+   auto_delete => false,
+   durable     => true,
+   arguments   => {
+     hash-header => 'message-distribution-hash'
+   }
+ }
+DESC
 
   ensurable do
     defaultto(:present)

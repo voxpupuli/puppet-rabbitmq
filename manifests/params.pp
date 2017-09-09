@@ -1,6 +1,6 @@
-# Class: rabbitmq::params
+# rabbitmq::params
 #
-#   The RabbitMQ Module configuration settings.
+# @summary OS Specific parameters and other settings
 #
 class rabbitmq::params {
 

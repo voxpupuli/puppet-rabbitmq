@@ -1,5 +1,20 @@
 Puppet::Type.newtype(:rabbitmq_queue) do
-  desc 'Native type for managing rabbitmq queue'
+  desc <<-DESC
+Native type for managing rabbitmq queue
+
+@example Create a rabbitmq_queue
+ rabbitmq_queue { 'myqueue@myvhost':
+   ensure      => present,
+   user        => 'dan',
+   password    => 'bar',
+   durable     => true,
+   auto_delete => false,
+   arguments   => {
+     x-message-ttl          => 123,
+     x-dead-letter-exchange => 'other'
+   },
+ }
+DESC
 
   ensurable do
     defaultto(:present)

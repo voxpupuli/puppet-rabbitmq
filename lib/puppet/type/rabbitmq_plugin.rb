@@ -1,5 +1,15 @@
 Puppet::Type.newtype(:rabbitmq_plugin) do
-  desc 'manages rabbitmq plugins'
+  desc <<-DESC
+manages rabbitmq plugins
+
+@example query all currently enabled plugins
+ $ puppet resource rabbitmq_plugin
+
+@example Ensure a rabbitmq_plugin resource
+ rabbitmq_plugin {'rabbitmq_stomp':
+   ensure => present,
+ }
+DESC
 
   ensurable do
     defaultto(:present)

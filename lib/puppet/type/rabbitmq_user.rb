@@ -1,5 +1,24 @@
 Puppet::Type.newtype(:rabbitmq_user) do
-  desc 'Native type for managing rabbitmq users'
+  desc <<-DESC
+Native type for managing rabbitmq users
+
+@example query all current users
+ $ puppet resource rabbitmq_user
+
+@example Configure a user, dan
+ rabbitmq_user { 'dan':
+   admin    => true,
+   password => 'bar',
+ }
+
+@example Optional parameter tags will set further rabbitmq tags like monitoring, policymaker, etc.
+ To set the administrator tag use admin-flag.
+ rabbitmq_user { 'dan':
+   admin    => true,
+   password => 'bar',
+   tags     => ['monitoring', 'tag1'],
+ }
+DESC
 
   ensurable do
     defaultto(:present)

@@ -1,5 +1,14 @@
 Puppet::Type.newtype(:rabbitmq_user_permissions) do
-  desc 'Type for managing rabbitmq user permissions'
+  desc <<-DESC
+Type for managing rabbitmq user permissions
+
+@example Define some rabbitmq_user_permissions
+ rabbitmq_user_permissions { 'dan@myvhost':
+   configure_permission => '.*',
+   read_permission      => '.*',
+   write_permission     => '.*',
+ }
+DESC
 
   ensurable do
     defaultto(:present)
