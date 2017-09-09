@@ -3,6 +3,15 @@ class rabbitmq::install::rabbitmqadmin {
 
   require '::archive'
 
+  $python_package = $rabbitmq::params::python_package
+  # Some systems (e.g., Ubuntu 16.04) don't ship Python 2 by default
+  if $rabbitmq::manage_python {
+    ensure_packages([$python_package])
+    $rabbitmqadmin_require = [Archive['rabbitmqadmin'], Package[$python_package]]
+  } else {
+    $rabbitmqadmin_require = Archive['rabbitmqadmin']
+  }
+
   if($rabbitmq::ssl and $rabbitmq::management_ssl) {
     $management_port = $rabbitmq::ssl_management_port
     $protocol        = 'https'
@@ -45,7 +54,7 @@ class rabbitmq::install::rabbitmqadmin {
     group   => '0',
     source  => "${rabbitmq::rabbitmq_home}/rabbitmqadmin",
     mode    => '0755',
-    require => Archive['rabbitmqadmin'],
+    require => $rabbitmqadmin_require,
   }
 
 }

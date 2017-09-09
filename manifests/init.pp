@@ -124,6 +124,8 @@
 # @param ldap_use_ssl Set to true to use SSL for the LDAP server.
 # @param ldap_port Numeric port for LDAP server.
 # @param ldap_log Set to true to log LDAP auth.
+# @param manage_python If enabled, on platforms that don't provide a Python 2 package by default, ensure that the python package is
+#  installed (for rabbitmqadmin). This will only apply if `admin_enable` and `service_manage` are set.
 # @param manage_repos Whether or not to manage package repositories.
 # @param management_hostname The hostname for the RabbitMQ management interface.
 # @param management_port The port for the RabbitMQ management interface.
@@ -213,6 +215,7 @@ class rabbitmq(
   Optional[String] $package_provider             = undef,
   Boolean $repos_ensure                          = $rabbitmq::params::repos_ensure,
   $manage_repos                                  = undef,
+  Boolean $manage_python                         = $rabbitmq::params::manage_python,
   $rabbitmq_user                                 = $rabbitmq::params::rabbitmq_user,
   $rabbitmq_group                                = $rabbitmq::params::rabbitmq_group,
   $rabbitmq_home                                 = $rabbitmq::params::rabbitmq_home,
