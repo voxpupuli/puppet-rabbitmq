@@ -50,6 +50,105 @@ These are now documented via [Puppet Strings](https://github.com/puppetlabs/pupp
 
 For convenience, some examples are duplicated here:
 
+## rabbitmq class
+
+To begin with the rabbitmq class controls the installation of rabbitmq.  In here
+you can control many parameters relating to the package and service, such as
+disabling puppet support of the service:
+
+```puppet
+class { '::rabbitmq':
+  service_manage    => false,
+  port              => '5672',
+  delete_guest_user => true,
+}
+```
+
+### Environment Variables
+To use RabbitMQ Environment Variables, use the parameters `environment_variables` e.g.:
+
+```puppet
+class { 'rabbitmq':
+  port                  => '5672',
+  environment_variables => {
+    'NODENAME'    => 'node01',
+    'SERVICENAME' => 'RabbitMQ'
+  }
+}
+```
+
+### Variables Configurable in rabbitmq.config
+To change RabbitMQ Config Variables in rabbitmq.config, use the parameters `config_variables` e.g.:
+
+```puppet
+class { 'rabbitmq':
+  port             => '5672',
+  config_variables => {
+    'hipe_compile' => true,
+    'frame_max'    => 131072,
+    'log_levels'   => "[{connection, info}]"
+  }
+}
+```
+
+To change Erlang Kernel Config Variables in rabbitmq.config, use the parameters
+`config_kernel_variables` e.g.:
+
+```puppet
+class { 'rabbitmq':
+  port                    => '5672',
+  config_kernel_variables => {
+    'inet_dist_listen_min' => 9100,
+    'inet_dist_listen_max' => 9105,
+  }
+}
+```
+
+To change Management Plugin Config Variables in rabbitmq.config, use the parameters
+`config_management_variables` e.g.:
+
+```puppet
+class { 'rabbitmq':
+  config_management_variables => {
+    'rates_mode' => 'basic',
+  }
+}
+```
+
+### Additional Variables Configurable in rabbitmq.config
+To change Additional Config Variables in rabbitmq.config, use the parameter
+`config_additional_variables` e.g.:
+
+```puppet
+class { 'rabbitmq':
+  config_additional_variables => {
+    'autocluster' => '[{consul_service, "rabbit"},{cluster_name, "rabbit"}]',
+    'foo'         => '[{bar, "baz"}]'
+  }
+}
+```
+This will result in the following config appended to the config file:
+```
+% Additional config
+  {autocluster, [{consul_service, "rabbit"},{cluster_name, "rabbit"}]},
+  {foo, [{bar, "baz"}]}
+```
+(This is required for the [autocluster plugin](https://github.com/aweber/rabbitmq-autocluster)
+
+### Clustering
+To use RabbitMQ clustering facilities, use the rabbitmq parameters
+`config_cluster`, `cluster_nodes`, and `cluster_node_type`, e.g.:
+
+```puppet
+class { 'rabbitmq':
+  config_cluster           => true,
+  cluster_nodes            => ['rabbit1', 'rabbit2'],
+  cluster_node_type        => 'ram',
+  erlang_cookie            => 'A_SECRET_COOKIE_STRING',
+  wipe_db_on_cookie_change => true,
+}
+```
+
 ### rabbitmq\_user
 
 query all current users: `$ puppet resource rabbitmq_user`
