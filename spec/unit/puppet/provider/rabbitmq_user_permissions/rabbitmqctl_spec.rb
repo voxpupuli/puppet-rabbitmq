@@ -1,8 +1,5 @@
-require 'puppet'
-require 'mocha'
-RSpec.configure do |config|
-  config.mock_with :mocha
-end
+require 'spec_helper'
+
 describe 'Puppet::Type.type(:rabbitmq_user_permissions).provider(:rabbitmqctl)' do
   let(:resource) do
     Puppet::Type::Rabbitmq_user_permissions.new(
