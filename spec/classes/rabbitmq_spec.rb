@@ -201,10 +201,20 @@ describe 'rabbitmq' do
             )
             is_expected.to contain_archive('rabbitmqadmin').with_source('http://1.1.1.1:15672/cli/rabbitmqadmin')
           end
-          if facts[:os]['family'] == 'Debian'
-            it 'python is in the catalog on Debian / Ubuntu' do
-              is_expected.to contain_package('python')
-            end
+          if %w[RedHat Debian SUSE].include?(facts[:os]['family'])
+            it { is_expected.to contain_package('python') }
+          end
+          if %w[Archlinux FreeBSD OpenBSD].include?(facts[:os]['family'])
+            it { is_expected.to contain_package('python2') }
+          end
+        end
+        context 'with manage_python false' do
+          let(:params) { { manage_python: false } }
+
+          it do
+            is_expected.to contain_class('rabbitmq::install::rabbitmqadmin')
+            is_expected.not_to contain_package('python')
+            is_expected.not_to contain_package('python2')
           end
         end
         context 'with $management_ip_address undef and service_manage set to true' do
