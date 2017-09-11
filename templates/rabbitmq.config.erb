@@ -18,7 +18,7 @@
     {cluster_partition_handling, <%= @cluster_partition_handling %>},
 <% end -%>
     {tcp_listen_options, [
-         <%- unless @ranch -%>
+         <%- unless @config_ranch -%>
          binary,
          {packet,        raw},
          {reuseaddr,     true},

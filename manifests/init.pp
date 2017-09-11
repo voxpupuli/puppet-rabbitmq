@@ -192,6 +192,7 @@ class rabbitmq(
   String $config                                 = $rabbitmq::params::config,
   Boolean $config_cluster                        = $rabbitmq::params::config_cluster,
   Stdlib::Absolutepath $config_path              = $rabbitmq::params::config_path,
+  Boolean $config_ranch                          = $rabbitmq::params::config_ranch,
   Boolean $config_stomp                          = $rabbitmq::params::config_stomp,
   Boolean $config_shovel                         = $rabbitmq::params::config_shovel,
   Hash $config_shovel_statics                    = $rabbitmq::params::config_shovel_statics,
