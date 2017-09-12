@@ -26,12 +26,6 @@ EOT
 EOT
     expect(provider.exists?).to be_nil
   end
-  it 'does not match if no matching users on system' do
-    provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
-fooey
-EOT
-    expect(provider.exists?).to be_nil
-  end
   it 'matches user names from list' do
     provider.expects(:rabbitmqctl).with('-q', 'list_users').returns <<-EOT
 one
@@ -40,6 +34,19 @@ foo
 bar
 EOT
     expect(provider.exists?).to eq('foo')
+  end
+  context 'when no password is given' do
+    let(:resource) do
+      Puppet::Type::Rabbitmq_user.new(
+        name: 'rmq_x'
+      )
+    end
+
+    it 'raises an error' do
+      expect do
+        provider.create
+      end.to raise_error(Puppet::Error, 'Password is a required parameter for rabbitmq_user (user: rmq_x)')
+    end
   end
   it 'creates user and set password' do
     resource[:password] = 'bar'
