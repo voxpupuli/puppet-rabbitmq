@@ -156,12 +156,16 @@
 # @param ssl_cert Cert to use for SSL.
 # @param ssl_cert_password Password used when generating CSR.
 # @param ssl_depth SSL verification depth.
+# @param ssl_dhfile Use this dhparam file [example: generate with `openssl dhparam -out /etc/rabbitmq/ssl/dhparam.pem 2048`
 # @param ssl_erl_dist Whether to use the erlang package's SSL (relies on the ssl_erl_path fact)
+# @param ssl_honor_cipher_order Force use of server cipher order
 # @param ssl_interface Interface for SSL listener to bind to
 # @param ssl_key Key to use for SSL.
 # @param ssl_only Configures the service to only use SSL.  No cleartext TCP listeners will be created. Requires that ssl => true and
 # @param ssl_management_port SSL management port.
 # @param ssl_port SSL port for RabbitMQ
+# @param ssl_reuse_sessions Reuse ssl sessions
+# @param ssl_secure_renegotiate Use ssl secure renegotiate
 # @param ssl_stomp_port SSL stomp port.
 # @param ssl_verify rabbitmq.config SSL verify setting.
 # @param ssl_fail_if_no_peer_cert rabbitmq.config `fail_if_no_peer_cert` setting.

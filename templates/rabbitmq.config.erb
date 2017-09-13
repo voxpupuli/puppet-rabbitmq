@@ -65,7 +65,7 @@
                    <%- if @ssl_depth -%>
                    {depth,<%= @ssl_depth %>},
                    <%- end -%>
-                   <%- if @ssl_dhfile != 'UNSET' -%>
+                   <%- if @ssl_dhfile -%>
                    {dhfile, "<%= @ssl_dhfile %>"},
                    <%- end -%>
                    {secure_renegotiate,<%= @ssl_secure_renegotiate %>},
@@ -112,7 +112,6 @@
       {ssl_opts, [<%- if @ssl_cacert %>
                   {cacertfile, "<%= @ssl_cacert %>"},
                   <%- end -%>
-
                   {certfile, "<%= @ssl_cert %>"},
                   {keyfile, "<%= @ssl_key %>"}
                    <%- if @ssl_versions -%>
