@@ -2,7 +2,7 @@
 # system as described in the RabbitMQ docs [1].
 #
 # [1] https://www.rabbitmq.com/clustering-ssl.html
-Facter.add('erl_ssl_path') do
+Facter.add(:erl_ssl_path) do
   setcode do
     if Facter::Util::Resolution.which('erl')
       data = Facter::Core::Execution.execute("erl -eval 'io:format(\"~p\", [code:lib_dir(ssl, ebin)]),halt().' -noshell")
