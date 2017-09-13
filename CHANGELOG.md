@@ -1,10 +1,49 @@
-# Change log
+# Changelog
 
 All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
-These should not impact the functionality of the module.
+These should not affect the functionality of the module.
 
-## [v6.0.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v6.0.0) (2017-09-06)
+## [v7.0.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v7.0.0) (2017-09-14)
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v6.0.0...v7.0.0)
+
+**Implemented enhancements:**
+
+- Add additional SSL configuration options \(original PR from xepa\) [\#632](https://github.com/voxpupuli/puppet-rabbitmq/pull/632) ([wyardley](https://github.com/wyardley))
+- Add support for max-length-bytes as an integer \(\#557\), patch by zhianliu [\#628](https://github.com/voxpupuli/puppet-rabbitmq/pull/628) ([wyardley](https://github.com/wyardley))
+- Add official support for Ubuntu 16.04 [\#624](https://github.com/voxpupuli/puppet-rabbitmq/pull/624) ([wyardley](https://github.com/wyardley))
+- BREAKING: Adds config\_ranch parameter \(default: true\) to suppress config lines \(\#618\) [\#621](https://github.com/voxpupuli/puppet-rabbitmq/pull/621) ([wyardley](https://github.com/wyardley))
+- Move examples and params to puppet strings style docs [\#562](https://github.com/voxpupuli/puppet-rabbitmq/pull/562) ([wyardley](https://github.com/wyardley))
+
+**Fixed bugs:**
+
+- Extra newline in SSL section of rabbitmq.config [\#634](https://github.com/voxpupuli/puppet-rabbitmq/issues/634)
+- Idempotency problems with rabbitmq 3.6.5 and puppet 4.8.2 [\#618](https://github.com/voxpupuli/puppet-rabbitmq/issues/618)
+- Enabling new plugin fails [\#566](https://github.com/voxpupuli/puppet-rabbitmq/issues/566)
+- Rabbitmq\_user\_permissions parser fails for empty string [\#172](https://github.com/voxpupuli/puppet-rabbitmq/issues/172)
+- Error on using puppet resource rabbitmq\_user [\#147](https://github.com/voxpupuli/puppet-rabbitmq/issues/147)
+- Resolve issue with "puppet resource rabbitmq\_user" failing \(\#147\) [\#629](https://github.com/voxpupuli/puppet-rabbitmq/pull/629) ([wyardley](https://github.com/wyardley))
+- BREAKING: Ensure python package \(adds manage\_python option\) [\#623](https://github.com/voxpupuli/puppet-rabbitmq/pull/623) ([wyardley](https://github.com/wyardley))
+- BREAKING: Adds config\\_ranch parameter \\(default: true\\) to suppress config lines \\(\\#618\\) [\#621](https://github.com/voxpupuli/puppet-rabbitmq/pull/621) ([wyardley](https://github.com/wyardley))
+- Switch back to using rabbitmq-plugins from system path \(\#566\) [\#570](https://github.com/voxpupuli/puppet-rabbitmq/pull/570) ([wyardley](https://github.com/wyardley))
+
+**Closed issues:**
+
+- Add support for max-length-bytes as a integer [\#557](https://github.com/voxpupuli/puppet-rabbitmq/issues/557)
+- 'provider rabbitmqplugins not functional on this host' [\#150](https://github.com/voxpupuli/puppet-rabbitmq/issues/150)
+- Doesn't require curl, fails when it isn't installed [\#145](https://github.com/voxpupuli/puppet-rabbitmq/issues/145)
+- EPEL RPM does not install /usr/sbin/rabbitmq-plugins [\#134](https://github.com/voxpupuli/puppet-rabbitmq/issues/134)
+- Parameter config\_mirrored\_queues has no effect [\#125](https://github.com/voxpupuli/puppet-rabbitmq/issues/125)
+
+**Merged pull requests:**
+
+- Switch string to symbol for erl\_ssl\_path fact definition [\#631](https://github.com/voxpupuli/puppet-rabbitmq/pull/631) ([wyardley](https://github.com/wyardley))
+- Fix test cases for \#623 \(manage\_python\) [\#626](https://github.com/voxpupuli/puppet-rabbitmq/pull/626) ([wyardley](https://github.com/wyardley))
+- Add back a few examples removed in \#562 [\#625](https://github.com/voxpupuli/puppet-rabbitmq/pull/625) ([wyardley](https://github.com/wyardley))
+- Update 'require' statements and mock types to fix spec tests [\#620](https://github.com/voxpupuli/puppet-rabbitmq/pull/620) ([wyardley](https://github.com/wyardley))
+- Update fixtures to voxpupuli/archive \(from puppet-community\) [\#619](https://github.com/voxpupuli/puppet-rabbitmq/pull/619) ([wyardley](https://github.com/wyardley))
+
+## [v6.0.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v6.0.0) (2017-09-07)
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/5.6.0...v6.0.0)
 
 **Implemented enhancements:**
@@ -26,6 +65,7 @@ These should not impact the functionality of the module.
 
 **Fixed bugs:**
 
+- Look into "error while resolving custom fact" error [\#614](https://github.com/voxpupuli/puppet-rabbitmq/issues/614)
 - repos\_ensure and version on RHEL 7 [\#573](https://github.com/voxpupuli/puppet-rabbitmq/issues/573)
 - Avoid error when rabbitmqctl is not present\), update spec syntax \(\#614\) [\#615](https://github.com/voxpupuli/puppet-rabbitmq/pull/615) ([wyardley](https://github.com/wyardley))
 - fix a couple of problems with erl\_ssl\_path fact [\#609](https://github.com/voxpupuli/puppet-rabbitmq/pull/609) ([costela](https://github.com/costela))
@@ -39,7 +79,6 @@ These should not impact the functionality of the module.
 
 **Closed issues:**
 
-- Look into "error while resolving custom fact" error [\#614](https://github.com/voxpupuli/puppet-rabbitmq/issues/614)
 - use of new 6.0.0 module on new installation fails [\#611](https://github.com/voxpupuli/puppet-rabbitmq/issues/611)
 - Problem with erl\_ssl\_path fact on RHEL 7.x, erlang 18.3 [\#610](https://github.com/voxpupuli/puppet-rabbitmq/issues/610)
 - Update to support puppet/staging 2 [\#587](https://github.com/voxpupuli/puppet-rabbitmq/issues/587)
@@ -57,6 +96,7 @@ These should not impact the functionality of the module.
 
 - Replace 'anchor's with 'contain' in server.pp [\#616](https://github.com/voxpupuli/puppet-rabbitmq/pull/616) ([alexjfisher](https://github.com/alexjfisher))
 - Switch to 'contain' vs. anchor pattern, and use Class\['foo'\] vs Class\['::foo'\] [\#613](https://github.com/voxpupuli/puppet-rabbitmq/pull/613) ([wyardley](https://github.com/wyardley))
+- Updates for 6.0.0 release [\#612](https://github.com/voxpupuli/puppet-rabbitmq/pull/612) ([wyardley](https://github.com/wyardley))
 - Fix typo \(.git =\> .github\) in README link [\#608](https://github.com/voxpupuli/puppet-rabbitmq/pull/608) ([wyardley](https://github.com/wyardley))
 - Update README, and remove old CONTRIBUTING.md [\#607](https://github.com/voxpupuli/puppet-rabbitmq/pull/607) ([wyardley](https://github.com/wyardley))
 - Ignore remaining multiple expectations warnings [\#602](https://github.com/voxpupuli/puppet-rabbitmq/pull/602) ([wyardley](https://github.com/wyardley))
