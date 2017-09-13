@@ -686,6 +686,10 @@ describe 'rabbitmq' do
             ssl_cacert: '/path/to/cacert',
             ssl_cert: '/path/to/cert',
             ssl_key: '/path/to/key',
+            ssl_secure_renegotiate: true,
+            ssl_reuse_sessions: true,
+            ssl_honor_cipher_order: true,
+            ssl_dhfile: :undef,
             management_ssl: false,
             management_port: 13_142 }
         end
@@ -706,6 +710,18 @@ describe 'rabbitmq' do
           is_expected.to contain_file('rabbitmq.config').with_content(
             %r{keyfile,"/path/to/key"}
           )
+          is_expected.to contain_file('rabbitmq.config').with_content(
+            %r{secure_renegotiate,true}
+          )
+          is_expected.to contain_file('rabbitmq.config').with_content(
+            %r{reuse_sessions,true}
+          )
+          is_expected.to contain_file('rabbitmq.config').with_content(
+            %r{honor_cipher_order,true}
+          )
+          is_expected.to contain_file('rabbitmq.config').without_content(
+            %r{dhfile,}
+          )
         end
         it 'sets non ssl port for management port' do
           is_expected.to contain_file('rabbitmq.config').with_content(
@@ -724,6 +740,11 @@ describe 'rabbitmq' do
             ssl_cacert: '/path/to/cacert',
             ssl_cert: '/path/to/cert',
             ssl_key: '/path/to/key',
+            ssl_secure_renegotiate: true,
+            ssl_reuse_sessions: true,
+            ssl_honor_cipher_order: true,
+            ssl_dhfile: :undef,
+
             management_ssl: true,
             ssl_management_port: 13_141 }
         end
@@ -746,6 +767,18 @@ describe 'rabbitmq' do
           )
           is_expected.to contain_file('rabbitmq.config').with_content(
             %r{keyfile,"/path/to/key"}
+          )
+          is_expected.to contain_file('rabbitmq.config').with_content(
+            %r{secure_renegotiate,true}
+          )
+          is_expected.to contain_file('rabbitmq.config').with_content(
+            %r{reuse_sessions,true}
+          )
+          is_expected.to contain_file('rabbitmq.config').with_content(
+            %r{honor_cipher_order,true}
+          )
+          is_expected.to contain_file('rabbitmq.config').without_content(
+            %r{dhfile,}
           )
         end
         it 'sets ssl managment port to specified values' do
@@ -778,7 +811,11 @@ describe 'rabbitmq' do
             ssl_port: 3141,
             ssl_cacert: '/path/to/cacert',
             ssl_cert: '/path/to/cert',
-            ssl_key: '/path/to/key' }
+            ssl_key: '/path/to/key',
+            ssl_secure_renegotiate: true,
+            ssl_reuse_sessions: true,
+            ssl_honor_cipher_order: true,
+            ssl_dhfile: :undef }
         end
 
         it 'sets ssl options to specified values' do
@@ -796,6 +833,18 @@ describe 'rabbitmq' do
           )
           is_expected.to contain_file('rabbitmq.config').with_content(
             %r{keyfile,"/path/to/key"}
+          )
+          is_expected.to contain_file('rabbitmq.config').with_content(
+            %r{secure_renegotiate,true}
+          )
+          is_expected.to contain_file('rabbitmq.config').with_content(
+            %r{reuse_sessions,true}
+          )
+          is_expected.to contain_file('rabbitmq.config').with_content(
+            %r{honor_cipher_order,true}
+          )
+          is_expected.to contain_file('rabbitmq.config').without_content(
+            %r{dhfile,}
           )
         end
       end
@@ -936,6 +985,56 @@ describe 'rabbitmq' do
           is_expected.to contain_file('rabbitmq.config').with_content(%r{keyfile, "/path/to/key"\}})
           is_expected.to contain_file('rabbitmq.config').with_content(%r{,\{versions, \['tlsv1.1', 'tlsv1.2'\]\}})
         end
+      end
+
+      describe 'ssl with ssl_dhfile' do
+        let(:params) do
+          { ssl: true,
+            ssl_interface: '0.0.0.0',
+            ssl_dhfile: '/etc/pki/tls/dh-params.pem' }
+        end
+
+        it { is_expected.to contain_file('rabbitmq.config').with_content(%r{dhfile, "/etc/pki/tls/dh-params\.pem}) }
+      end
+
+      describe 'ssl with ssl_dhfile unset' do
+        let(:params) do
+          { ssl: true,
+            ssl_interface: '0.0.0.0',
+            ssl_dhfile: :undef }
+        end
+
+        it { is_expected.to contain_file('rabbitmq.config').without_content(%r{dhfile,}) }
+      end
+
+      describe 'ssl with ssl_secure_renegotiate false' do
+        let(:params) do
+          { ssl: true,
+            ssl_interface: '0.0.0.0',
+            ssl_secure_renegotiate: false }
+        end
+
+        it { is_expected.to contain_file('rabbitmq.config').with_content(%r{secure_renegotiate,false}) }
+      end
+
+      describe 'ssl with ssl_reuse_sessions false' do
+        let(:params) do
+          { ssl: true,
+            ssl_interface: '0.0.0.0',
+            ssl_reuse_sessions: false }
+        end
+
+        it { is_expected.to contain_file('rabbitmq.config').with_content(%r{reuse_sessions,false}) }
+      end
+
+      describe 'ssl with ssl_honor_cipher_order false' do
+        let(:params) do
+          { ssl: true,
+            ssl_interface: '0.0.0.0',
+            ssl_honor_cipher_order: false }
+        end
+
+        it { is_expected.to contain_file('rabbitmq.config').with_content(%r{honor_cipher_order,false}) }
       end
 
       describe 'ssl admin options' do
