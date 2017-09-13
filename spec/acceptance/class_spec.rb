@@ -154,6 +154,35 @@ describe 'rabbitmq class:' do
     end
   end
 
+  context 'ssl enabled' do
+    it 'runs successfully' do
+      pp = <<-EOS
+      class { 'rabbitmq':
+        service_manage  => true,
+        admin_enable    => true,
+        node_ip_address => '0.0.0.0',
+        ssl_interface   => '0.0.0.0',
+        ssl             => true,
+        ssl_cacert      => '/tmp/cacert.crt',
+        ssl_cert        => '/tmp/rabbitmq.crt',
+        ssl_key         => '/tmp/rabbitmq.key',
+      }
+      EOS
+
+      apply_manifest(pp, catch_failures: true)
+    end
+
+    describe service(service_name) do
+      it { is_expected.to be_running }
+    end
+    describe port(5671) do
+      it { is_expected.to be_listening.on('0.0.0.0').with('tcp') }
+    end
+    describe port(15_671) do
+      it { is_expected.to be_listening.on('0.0.0.0').with('tcp') }
+    end
+  end
+
   context 'different management_ip_address and node_ip_address' do
     it 'runs successfully' do
       pp = <<-EOS
