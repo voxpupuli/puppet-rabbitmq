@@ -141,6 +141,19 @@ describe Puppet::Type.type(:rabbitmq_policy) do
     end.to raise_error(Puppet::Error, %r{Invalid max-length value.*future})
   end
 
+  it 'accepts and convert the max-length-bytes value' do
+    definition = { 'max-length-bytes' => '1800000' }
+    policy[:definition] = definition
+    expect(policy[:definition]['max-length-bytes']).to eq(1_800_000)
+  end
+
+  it 'does not accept non-numeric max-length-bytes value' do
+    definition = { 'max-length-bytes' => 'future' }
+    expect do
+      policy[:definition] = definition
+    end.to raise_error(Puppet::Error, %r{Invalid max-length-bytes value.*future})
+  end
+
   it 'accepts and convert the shards-per-node value' do
     definition = { 'shards-per-node' => '1800000' }
     policy[:definition] = definition

@@ -116,6 +116,12 @@ DESC
         raise ArgumentError, "Invalid max-length value '#{max_length_val}'"
       end
     end
+    if definition.key? 'max-length-bytes'
+      max_length_bytes_val = definition['max-length-bytes']
+      unless max_length_bytes_val.to_i.to_s == max_length_bytes_val
+        raise ArgumentError, "Invalid max-length-bytes value '#{max_length_bytes_val}'"
+      end
+    end
     if definition.key? 'shards-per-node'
       shards_per_node_val = definition['shards-per-node']
       unless shards_per_node_val.to_i.to_s == shards_per_node_val
@@ -142,6 +148,9 @@ DESC
     end
     if definition.key? 'max-length'
       definition['max-length'] = definition['max-length'].to_i
+    end
+    if definition.key? 'max-length-bytes'
+      definition['max-length-bytes'] = definition['max-length-bytes'].to_i
     end
     if definition.key? 'shards-per-node'
       definition['shards-per-node'] = definition['shards-per-node'].to_i
