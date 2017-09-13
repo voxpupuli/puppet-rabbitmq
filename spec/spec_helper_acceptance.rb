@@ -1,19 +1,21 @@
 require 'beaker-rspec'
 require 'beaker/puppet_install_helper'
-
-run_puppet_install_helper
+require 'beaker/module_install_helper'
 
 UNSUPPORTED_PLATFORMS = [].freeze
 
-RSpec.configure do |c|
-  # Project root
-  proj_root = File.expand_path(File.join(File.dirname(__FILE__), '..'))
+run_puppet_install_helper
+install_module
+install_module_dependencies
 
+# Install aditional modules for soft deps
+install_module_from_forge('puppetlabs-apt', '>= 4.1.0 < 5.0.0') if fact('os.family') == 'Debian'
+install_module_from_forge('garethr-erlang', '>= 0.3.0 < 1.0.0') if fact('os.family') == 'RedHat'
+
+RSpec.configure do |c|
   # Readable test descriptions
   c.formatter = :documentation
   c.before :suite do
-    puppet_module_install(source: proj_root, module_name: 'rabbitmq')
-
     hosts.each do |host|
       if fact('os.family') == 'RedHat' && fact('selinux') == 'true'
         # Make sure selinux is disabled so the tests work.
@@ -21,16 +23,6 @@ RSpec.configure do |c|
                         %("exec { 'setenforce 0': path   => '/bin:/sbin:/usr/bin:/usr/sbin', onlyif => 'which setenforce && getenforce | grep Enforcing', }"))
       end
 
-      on host, puppet('module', 'install', 'puppetlabs-stdlib'), acceptable_exit_codes: [0, 1]
-      on host, puppet('module', 'install', 'puppet-archive'), acceptable_exit_codes: [0, 1]
-
-      if fact('os.family') == 'Debian'
-        on host, puppet('module', 'install', 'puppetlabs-apt'), acceptable_exit_codes: [0, 1]
-      end
-
-      if fact('os.family') == 'RedHat'
-        on host, puppet('module', 'install', 'garethr-erlang'), acceptable_exit_codes: [0, 1]
-      end
       # Fake certs
       on host, 'echo "-----BEGIN RSA PRIVATE KEY-----
 MIICXAIBAAKBgQDw1uXI+EAgxk4dOxArPqMNnnCQqmXeQ61XQQXoAgWWjRvY4LAJ
@@ -109,5 +101,15 @@ I28L690yK+Bnk1ezGs+ln6yxiWOdnurckaLkTj6/JFw2x5q/uaTXOxjG/YKKpMQE
 Fq8uI2+DbX/zW18ZIEv6UloGEEWbLO1427+Yyb/THMczWYyH20PTyzT8zFOt
 -----END CERTIFICATE-----" > /tmp/cacert.crt'
     end
+  end
+end
+
+shared_examples 'an idempotent resource' do
+  it 'applies with no errors' do
+    apply_manifest(pp, catch_failures: true)
+  end
+
+  it 'applies a second time without changes' do
+    apply_manifest(pp, catch_changes: true)
   end
 end
