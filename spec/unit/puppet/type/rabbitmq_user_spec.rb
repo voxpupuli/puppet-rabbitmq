@@ -16,11 +16,6 @@ describe Puppet::Type.type(:rabbitmq_user) do
     user[:password] = 'foo'
     expect(user[:password]).to eq('foo')
   end
-  it 'requires a password' do
-    expect do
-      Puppet::Type.type(:rabbitmq_user).new(name: 'foo')
-    end.to raise_error(%r{must set password})
-  end
   it 'requires a name' do
     expect do
       Puppet::Type.type(:rabbitmq_user).new({})

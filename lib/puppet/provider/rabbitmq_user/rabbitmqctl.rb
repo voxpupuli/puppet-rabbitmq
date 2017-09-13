@@ -24,6 +24,8 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl, parent: Puppet::Provider
   end
 
   def create
+    raise Puppet::Error, "Password is a required parameter for rabbitmq_user (user: #{name})" if @resource[:password].nil?
+
     rabbitmqctl('add_user', resource[:name], resource[:password])
     make_user_admin if resource[:admin] == :true
     set_user_tags(resource[:tags]) unless resource[:tags].empty?
