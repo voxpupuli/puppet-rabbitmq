@@ -1,12 +1,12 @@
 {
-  "name": "puppetlabs-rabbitmq",
-  "version": "5.6.0",
-  "author": "puppetlabs",
+  "name": "puppet-rabbitmq",
+  "version": "5.6.1",
+  "author": "voxpupuli",
   "summary": "Installs, configures, and manages RabbitMQ.",
   "license": "Apache-2.0",
-  "source": "https://github.com/puppetlabs/puppetlabs-rabbitmq",
-  "project_page": "https://github.com/puppetlabs/puppetlabs-rabbitmq",
-  "issues_url": "https://tickets.puppetlabs.com/browse/MODULES",
+  "source": "https://github.com/voxpupuli/puppet-rabbitmq",
+  "project_page": "https://github.com/voxpupuli/puppet-rabbitmq",
+  "issues_url": "https://github.com/voxpupuli/puppet-rabbitmq/issues",
   "operatingsystem_support": [
     {
       "operatingsystem": "RedHat",

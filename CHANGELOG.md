@@ -1,3 +1,10 @@
+## Version 5.6.1
+### Summary
+This is a metadata change to release a 5.6.x version into Vox Pupuli's namespace.
+
+### Fixed
+- Change forge namespace to voxpupuli's. fixes #627
+
 ## Version 5.6.0
 ### Summary
 This is an unsupported Release. Add 2 features as listed below.
