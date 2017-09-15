@@ -15,7 +15,6 @@ group :test do
   gem 'rspec-puppet', '~> 2.5',                                     :require => false
   gem 'rspec-puppet-facts',                                         :require => false
   gem 'rspec-puppet-utils',                                         :require => false
-  gem 'puppet-lint-absolute_classname-check',                       :require => false
   gem 'puppet-lint-leading_zero-check',                             :require => false
   gem 'puppet-lint-trailing_comma-check',                           :require => false
   gem 'puppet-lint-version_comparison-check',                       :require => false
@@ -56,7 +55,6 @@ group :system_tests do
   end
   gem 'serverspec',                    :require => false
   gem 'beaker-puppet_install_helper',  :require => false
-  gem 'beaker-module_install_helper',  :require => false
 end
 
 
