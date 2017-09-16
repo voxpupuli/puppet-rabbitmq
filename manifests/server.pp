@@ -51,7 +51,7 @@ class rabbitmq::server(
   $wipe_db_on_cookie_change = $rabbitmq::params::wipe_db_on_cookie_change,
 ) inherits rabbitmq::params {
 
-  class { '::rabbitmq':
+  class { 'rabbitmq':
     port                     => $port,
     delete_guest_user        => $delete_guest_user,
     package_name             => $package_name,
@@ -69,5 +69,5 @@ class rabbitmq::server(
     erlang_cookie            => $erlang_cookie,
     wipe_db_on_cookie_change => $wipe_db_on_cookie_change,
   }
-  contain '::rabbitmq'
+  contain rabbitmq
 }

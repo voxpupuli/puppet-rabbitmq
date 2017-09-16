@@ -57,7 +57,7 @@ you can control many parameters relating to the package and service, such as
 disabling puppet support of the service:
 
 ```puppet
-class { '::rabbitmq':
+class { 'rabbitmq':
   service_manage    => false,
   port              => '5672',
   delete_guest_user => true,

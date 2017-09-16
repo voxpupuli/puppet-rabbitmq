@@ -3,10 +3,10 @@
 # @summary A module to manage RabbitMQ
 #
 # @example Basic usage
-#  include '::rabbitmq'
+#  include rabbitmq
 #
 # @example rabbitmq class
-#  class { '::rabbitmq':
+#  class { 'rabbitmq':
 #    service_manage    => false,
 #    port              => '5672',
 #    delete_guest_user => true,
@@ -14,13 +14,13 @@
 #
 # @example Offline installation from local mirror:
 #
-#  class { '::rabbitmq':
+#  class { 'rabbitmq':
 #    key_content     => template('openstack/rabbit.pub.key'),
 #    package_gpg_key => '/tmp/rabbit.pub.key',
 #  }
 #
 # @example Use external package key source for any (apt/rpm) package provider:
-#  class { '::rabbitmq':
+#  class { 'rabbitmq':
 #    package_gpg_key => 'http://www.some_site.some_domain/some_key.pub.key',
 #  }
 #
@@ -322,12 +322,12 @@ class rabbitmq(
   if $repos_ensure {
     case $facts['os']['family'] {
       'RedHat': {
-        class { '::rabbitmq::repo::rhel':
+        class { 'rabbitmq::repo::rhel':
           key_source  => $package_gpg_key,
         }
       }
       'Debian': {
-        class { '::rabbitmq::repo::apt' :
+        class { 'rabbitmq::repo::apt' :
           key_source  => $package_gpg_key,
           key_content => $key_content,
         }
@@ -337,13 +337,13 @@ class rabbitmq(
     }
   }
 
-  contain '::rabbitmq::install'
-  contain '::rabbitmq::config'
-  contain '::rabbitmq::service'
-  contain '::rabbitmq::management'
+  contain rabbitmq::install
+  contain rabbitmq::config
+  contain rabbitmq::service
+  contain rabbitmq::management
 
   if $admin_enable and $service_manage {
-    include '::rabbitmq::install::rabbitmqadmin'
+    include 'rabbitmq::install::rabbitmqadmin'
 
     rabbitmq_plugin { 'rabbitmq_management':
       ensure   => present,
