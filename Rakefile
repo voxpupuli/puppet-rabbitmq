@@ -31,6 +31,17 @@ task test: [
   :release_checks,
 ]
 
+desc "Run main 'test' task and report merged results to coveralls"
+task test_with_coveralls: [:test] do
+  if Dir.exist?(File.expand_path('../lib', __FILE__))
+    require 'coveralls/rake/task'
+    Coveralls::RakeTask.new
+    Rake::Task['coveralls:push'].invoke
+  else
+    puts 'Skipping reporting to coveralls.  Module has no lib dir'
+  end
+end
+
 begin
   require 'github_changelog_generator/task'
   GitHubChangelogGenerator::RakeTask.new :changelog do |config|
