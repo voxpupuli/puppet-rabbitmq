@@ -2,7 +2,7 @@ node default {
 
   $rabbitmq_plugins = [ 'amqp_client', 'rabbitmq_stomp' ]
 
-  class { '::rabbitmq::server':
+  class { 'rabbitmq::server':
     config => '[ {rabbit_stomp, [{tcp_listeners, [1234]} ]} ].',
   }
 

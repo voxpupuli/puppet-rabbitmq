@@ -6,9 +6,9 @@ describe 'rabbitmq parameter on a vhost:' do
       pp = <<-EOS
       if $facts['os']['family'] == 'RedHat' {
         class { 'erlang': epel_enable => true }
-        Class['erlang'] -> Class['::rabbitmq']
+        Class['erlang'] -> Class['rabbitmq']
       }
-      class { '::rabbitmq':
+      class { 'rabbitmq':
         service_manage    => true,
         port              => 5672,
         delete_guest_user => true,
