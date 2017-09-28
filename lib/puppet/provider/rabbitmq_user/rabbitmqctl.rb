@@ -1,16 +1,18 @@
-require 'puppet'
-require 'set'
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmqctl'))
-Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl, parent: Puppet::Provider::Rabbitmqctl) do
-  if Puppet::PUPPETVERSION.to_f < 3
-    commands rabbitmqctl: 'rabbitmqctl'
-  else
-    has_command(:rabbitmqctl, 'rabbitmqctl') do
-      environment HOME: '/tmp'
-    end
+Puppet::Type.type(:rabbitmq_user).provide(
+  :rabbitmqctl,
+  parent: Puppet::Provider::Rabbitmqctl
+) do
+  has_command(:rabbitmqctl, 'rabbitmqctl') do
+    environment HOME: '/tmp'
   end
 
   defaultfor feature: :posix
+
+  def initialize(value = {})
+    super(value)
+    @property_flush = {}
+  end
 
   def self.instances
     user_list = run_with_retries do
@@ -18,61 +20,73 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl, parent: Puppet::Provider
     end
 
     user_list.split(%r{\n}).map do |line|
-      raise Puppet::Error, "Cannot parse invalid user line: #{line}" unless line =~ %r{^(\S+)(\s+\[.*?\]|)$}
-      new(name: Regexp.last_match(1))
+      raise Puppet::Error, "Cannot parse invalid user line: #{line}" unless line =~ %r{^(\S+)\s+\[(.*?)\]$}
+      user = Regexp.last_match(1)
+      tags = Regexp.last_match(2).split(%r{,\s*})
+      new(
+        ensure: :present,
+        name: user,
+        tags: tags
+      )
     end
   end
 
-  def create
-    raise Puppet::Error, "Password is a required parameter for rabbitmq_user (user: #{name})" if @resource[:password].nil?
-
-    rabbitmqctl('add_user', resource[:name], resource[:password])
-    make_user_admin if resource[:admin] == :true
-    set_user_tags(resource[:tags]) unless resource[:tags].empty?
-  end
-
-  def change_password
-    rabbitmqctl('change_password', resource[:name], resource[:password])
-  end
-
-  def password
-    nil
-  end
-
-  def check_password
-    response = self.class.run_with_retries do
-      rabbitmqctl('eval', 'rabbit_access_control:check_user_pass_login(list_to_binary("' + resource[:name] + '"), list_to_binary("' + resource[:password] + '")).')
+  def self.prefetch(resources)
+    users = instances
+    resources.each_key do |user|
+      if (provider = users.find { |u| u.name == user })
+        resources[user].provider = provider
+      end
     end
-    if response.include? 'refused'
-      false
-    else
-      true
-    end
-  end
-
-  def destroy
-    rabbitmqctl('delete_user', resource[:name])
   end
 
   def exists?
-    user_list = self.class.run_with_retries do
-      rabbitmqctl('-q', 'list_users')
-    end
+    @property_hash[:ensure] == :present
+  end
 
-    user_list.split(%r{\n}).find do |line|
-      line.match(%r{^#{Regexp.escape(resource[:name])}(\s+(\[.*?\]|\S+)|)$})
-    end
+  def create
+    # Fail here (rather than a validate block in the type) if password is not
+    # set, so that "puppet resource" still works.
+    raise Puppet::Error, "Password is a required parameter for rabbitmq_user (user: #{name})" if @resource[:password].nil?
+
+    rabbitmqctl('add_user', @resource[:name], @resource[:password])
+
+    tags = @resource[:tags]
+    tags << admin_tag if @resource[:admin] == :true
+    rabbitmqctl('set_user_tags', @resource[:name], tags) unless tags.empty?
+
+    @property_hash[:ensure] = :present
+  end
+
+  def destroy
+    rabbitmqctl('delete_user', @resource[:name])
+    @property_hash[:ensure] = :absent
+  end
+
+  def password=(password)
+    rabbitmqctl('change_password', @resource[:name], password)
+  end
+
+  def password; end
+
+  def check_password(password)
+    check_access_control = [
+      'rabbit_access_control:check_user_pass_login(',
+      %[list_to_binary("#{@resource[:name]}"), ],
+      %[list_to_binary("#{password}")).]
+    ]
+
+    response = rabbitmqctl('eval', check_access_control.join)
+    !response.include? 'refused'
   end
 
   def tags
-    tags = get_user_tags
     # do not expose the administrator tag for admins
-    tags.delete('administrator') if resource[:admin] == :true
-    tags.entries.sort
+    @property_hash[:tags].reject { |tag| tag == admin_tag }
   end
 
   def tags=(tags)
-    set_user_tags(tags) unless tags.nil?
+    @property_flush[:tags] = tags
   end
 
   def admin
@@ -91,26 +105,25 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl, parent: Puppet::Provider
     end
   end
 
-  def set_user_tags(tags) # rubocop:disable Style/AccessorMethodName
-    is_admin = get_user_tags.member?('administrator') \
-               || resource[:admin] == :true
-    usertags = Set.new(tags)
-    usertags.add('administrator') if is_admin
-    rabbitmqctl('set_user_tags', resource[:name], usertags.entries.sort)
+  def admin
+    @property_hash[:tags].include?(admin_tag) ? :true : :false
   end
 
-  def make_user_admin
-    usertags = get_user_tags
-    usertags.add('administrator')
-    rabbitmqctl('set_user_tags', resource[:name], usertags.entries.sort)
+  def admin=(state)
+    @property_flush[:admin] = state
+  end
+
+  def flush
+    return if @property_flush.empty?
+    tags = @property_flush[:tags] || @resource[:tags]
+    tags << admin_tag if @resource[:admin] == :true
+    rabbitmqctl('set_user_tags', @resource[:name], tags)
+    @property_flush.clear
   end
 
   private
 
-  def get_user_tags # rubocop:disable Style/AccessorMethodName
-    match = rabbitmqctl('-q', 'list_users').split(%r{\n}).map do |line|
-      line.match(%r{^#{Regexp.escape(resource[:name])}\s+\[(.*?)\]})
-    end.compact.first
-    Set.new(match[1].split(' ').map { |x| x.gsub(%r{,$}, '') }) if match
+  def admin_tag
+    'administrator'
   end
 end

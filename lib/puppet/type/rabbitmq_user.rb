@@ -40,19 +40,11 @@ DESC
   newproperty(:password) do
     desc 'User password to be set *on creation* and validated each run'
     def insync?(_is)
-      provider.check_password
-    end
-
-    def set(_value)
-      provider.change_password
+      provider.check_password(should)
     end
 
     def change_to_s(_current, _desired)
       'password has been changed'
-    end
-
-    def should_to_s(_newvalue = @should)
-      '<new password>'
     end
   end
 
@@ -80,23 +72,11 @@ DESC
     defaultto []
 
     def insync?(is)
-      is_to_s(is) == should_to_s
+      is.sort == should.sort
     end
 
-    def is_to_s(currentvalue = @is) # rubocop:disable Style/PredicateName
-      if currentvalue
-        "[#{currentvalue.sort.join(', ')}]"
-      else
-        '[]'
-      end
-    end
-
-    def should_to_s(newvalue = @should)
-      if newvalue
-        "[#{newvalue.sort.join(', ')}]"
-      else
-        '[]'
-      end
+    def should_to_s(value)
+      Array(value)
     end
   end
 end
