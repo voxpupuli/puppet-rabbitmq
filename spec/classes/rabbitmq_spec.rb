@@ -45,15 +45,15 @@ describe 'rabbitmq' do
         if facts[:os]['family'] == 'Debian'
           it 'includes rabbitmq::repo::apt' do
             is_expected.to contain_class('rabbitmq::repo::apt').
-              with_key_source('https://www.rabbitmq.com/rabbitmq-release-signing-key.asc').
+              with_key_source('https://packagecloud.io/gpg.key').
               with_key_content(nil)
           end
 
           it 'adds a repo with default values' do
             is_expected.to contain_apt__source('rabbitmq').
               with_ensure('present').
-              with_location('http://www.rabbitmq.com/debian/').
-              with_release('testing').
+              with_location("https://packagecloud.io/rabbitmq/rabbitmq-server/#{facts[:os]['name'].downcase}").
+              with_release(nil).
               with_repos('main')
           end
         else
@@ -82,10 +82,9 @@ describe 'rabbitmq' do
         describe 'it sets up an apt::source' do
           it {
             is_expected.to contain_apt__source('rabbitmq').with(
-              'location'    => 'http://www.rabbitmq.com/debian/',
-              'release'     => 'testing',
+              'location'    => "https://packagecloud.io/rabbitmq/rabbitmq-server/#{facts[:os]['name'].downcase}",
               'repos'       => 'main',
-              'key'         => '{"id"=>"0A9AF2115F4687BD29803A206B73A36E6026DFCA", "source"=>"https://www.rabbitmq.com/rabbitmq-release-signing-key.asc", "content"=>:undef}'
+              'key'         => '{"id"=>"418A7F2FB0E1E6E7EABF6FE8C2E73424D59097AB", "source"=>"https://packagecloud.io/gpg.key", "content"=>:undef}'
             )
           }
         end
@@ -97,10 +96,9 @@ describe 'rabbitmq' do
         describe 'it sets up an apt::source and pin' do
           it {
             is_expected.to contain_apt__source('rabbitmq').with(
-              'location'    => 'http://www.rabbitmq.com/debian/',
-              'release'     => 'testing',
+              'location'    => "https://packagecloud.io/rabbitmq/rabbitmq-server/#{facts[:os]['name'].downcase}",
               'repos'       => 'main',
-              'key'         => '{"id"=>"0A9AF2115F4687BD29803A206B73A36E6026DFCA", "source"=>"https://www.rabbitmq.com/rabbitmq-release-signing-key.asc", "content"=>:undef}'
+              'key'         => '{"id"=>"418A7F2FB0E1E6E7EABF6FE8C2E73424D59097AB", "source"=>"https://packagecloud.io/gpg.key", "content"=>:undef}'
             )
           }
 
@@ -108,7 +106,7 @@ describe 'rabbitmq' do
             is_expected.to contain_apt__pin('rabbitmq').with(
               'packages' => '*',
               'priority' => '700',
-              'origin'   => 'www.rabbitmq.com'
+              'origin'   => 'packagecloud.io'
             )
           }
         end

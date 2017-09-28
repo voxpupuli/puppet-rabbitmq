@@ -137,8 +137,8 @@
 # @param package_apt_pin Whether to pin the package to a particular source
 # @param package_ensure Determines the ensure state of the package.  Set to installed by default, but could be changed to latest.
 # @param package_gpg_key RPM package GPG key to import. Uses source method. Should be a URL for Debian/RedHat OS family, or a file name for
-#  RedHat OS family. Set to http://www.rabbitmq.com/rabbitmq-signing-key-public.asc by default. Note, that `key_content`, if specified,
-#  would override this parameter for Debian OS family.
+#  RedHat OS family. Set to https://packagecloud.io/gpg.key by default. Note, that `key_content`, if specified, would override this
+#  parameter for Debian OS family.
 # @param package_name The name of the package to install.
 # @param package_provider What provider to use to install the package.
 # @param package_source Where should the package be installed from? On Debian- and Arch-based systems using the default package provider,
@@ -322,15 +322,10 @@ class rabbitmq(
   if $repos_ensure {
     case $facts['os']['family'] {
       'RedHat': {
-        class { 'rabbitmq::repo::rhel':
-          key_source  => $package_gpg_key,
-        }
+        contain rabbitmq::repo::rhel
       }
       'Debian': {
-        class { 'rabbitmq::repo::apt' :
-          key_source  => $package_gpg_key,
-          key_content => $key_content,
-        }
+        contain rabbitmq::repo::apt
       }
       default: {
       }

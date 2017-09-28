@@ -2,13 +2,12 @@
 #   puppetlabs-apt
 #   puppetlabs-stdlib
 class rabbitmq::repo::apt(
-  $location     = 'http://www.rabbitmq.com/debian/',
-  $release      = 'testing',
+  $location     = 'https://packagecloud.io/rabbitmq/rabbitmq-server',
   $repos        = 'main',
   $include_src  = false,
-  $key          = '0A9AF2115F4687BD29803A206B73A36E6026DFCA',
-  $key_source   = $rabbitmq::key_source,
-  $key_content  = undef,
+  $key          = '418A7F2FB0E1E6E7EABF6FE8C2E73424D59097AB',
+  $key_source   = $rabbitmq::package_gpg_key,
+  $key_content  = $rabbitmq::key_content,
   $architecture = undef,
   ) {
 
@@ -19,10 +18,10 @@ class rabbitmq::repo::apt(
   -> Class['apt::update']
   -> Package<| title == 'rabbitmq-server' |>
 
+  $osname = downcase($facts['os']['name'])
   apt::source { 'rabbitmq':
     ensure       => present,
-    location     => $location,
-    release      => $release,
+    location     => "${location}/${osname}",
     repos        => $repos,
     include      => { 'src' => $include_src },
     key          => {
@@ -38,7 +37,7 @@ class rabbitmq::repo::apt(
     apt::pin { 'rabbitmq':
       packages => '*',
       priority => $pin,
-      origin   => 'www.rabbitmq.com',
+      origin   => 'packagecloud.io',
     }
   }
 }

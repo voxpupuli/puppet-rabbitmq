@@ -14,6 +14,7 @@ class rabbitmq::params {
       $rabbitmq_user    = 'rabbitmq'
       $rabbitmq_group   = 'rabbitmq'
       $rabbitmq_home    = '/var/lib/rabbitmq'
+      $package_gpg_key  = undef
     }
     'Debian': {
       $manage_python    = true
@@ -24,6 +25,7 @@ class rabbitmq::params {
       $rabbitmq_user    = 'rabbitmq'
       $rabbitmq_group   = 'rabbitmq'
       $rabbitmq_home    = '/var/lib/rabbitmq'
+      $package_gpg_key  = 'https://packagecloud.io/gpg.key'
     }
     'OpenBSD': {
       $manage_python    = true
@@ -34,6 +36,7 @@ class rabbitmq::params {
       $rabbitmq_user    = '_rabbitmq'
       $rabbitmq_group   = '_rabbitmq'
       $rabbitmq_home    = '/var/rabbitmq'
+      $package_gpg_key  = undef
     }
     'FreeBSD': {
       $manage_python    = true
@@ -44,6 +47,7 @@ class rabbitmq::params {
       $rabbitmq_user    = 'rabbitmq'
       $rabbitmq_group   = 'rabbitmq'
       $rabbitmq_home    = '/var/db/rabbitmq'
+      $package_gpg_key  = undef
     }
     'RedHat': {
       $manage_python    = true
@@ -54,6 +58,7 @@ class rabbitmq::params {
       $rabbitmq_user    = 'rabbitmq'
       $rabbitmq_group   = 'rabbitmq'
       $rabbitmq_home    = '/var/lib/rabbitmq'
+      $package_gpg_key  = 'https://www.rabbitmq.com/rabbitmq-release-signing-key.asc'
     }
     'SUSE': {
       $manage_python    = true
@@ -64,6 +69,7 @@ class rabbitmq::params {
       $rabbitmq_user    = 'rabbitmq'
       $rabbitmq_group   = 'rabbitmq'
       $rabbitmq_home    = '/var/lib/rabbitmq'
+      $package_gpg_key  = undef
     }
     default: {
       fail("The ${module_name} module is not supported on an ${facts['os']['family']} based system.")
@@ -75,7 +81,6 @@ class rabbitmq::params {
   $management_port             = 15672
   $management_ssl              = true
   $package_apt_pin             = ''
-  $package_gpg_key             = 'https://www.rabbitmq.com/rabbitmq-release-signing-key.asc'
   $repos_ensure                = false
   $service_ensure              = 'running'
   $service_manage              = true
