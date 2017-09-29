@@ -4,8 +4,33 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v7.1.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v7.1.0) (2017-10-03)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v7.0.0...v7.1.0)
+
+**Implemented enhancements:**
+
+- Rework apt to use packagecloud repos as well \(\#640\) [\#641](https://github.com/voxpupuli/puppet-rabbitmq/pull/641) ([wyardley](https://github.com/wyardley))
+- Refactor rabbitmq\_user provider \(mpolenchuk\) [\#598](https://github.com/voxpupuli/puppet-rabbitmq/pull/598) ([wyardley](https://github.com/wyardley))
+
+**Closed issues:**
+
+- Please switch to Package Cloud apt repository; rabbitmq.com's one becomes read-only in a few months [\#640](https://github.com/voxpupuli/puppet-rabbitmq/issues/640)
+
+**Merged pull requests:**
+
+- Switch back to "include foo" \(without leading colons\) syntax [\#639](https://github.com/voxpupuli/puppet-rabbitmq/pull/639) ([wyardley](https://github.com/wyardley))
+- Lower required Puppet version from 4.8.0 to 4.7.1 [\#637](https://github.com/voxpupuli/puppet-rabbitmq/pull/637) ([wyardley](https://github.com/wyardley))
+- 7.0.0 release [\#633](https://github.com/voxpupuli/puppet-rabbitmq/pull/633) ([wyardley](https://github.com/wyardley))
+
 ## [v7.0.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v7.0.0) (2017-09-14)
+
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v6.0.0...v7.0.0)
+
+**Breaking changes:**
+
+- BREAKING: Ensure python package \(adds manage\_python option\) [\#623](https://github.com/voxpupuli/puppet-rabbitmq/pull/623) ([wyardley](https://github.com/wyardley))
+- BREAKING: Adds config\_ranch parameter \(default: true\) to suppress config lines \(\#618\) [\#621](https://github.com/voxpupuli/puppet-rabbitmq/pull/621) ([wyardley](https://github.com/wyardley))
 
 **Implemented enhancements:**
 
@@ -24,7 +49,7 @@ These should not affect the functionality of the module.
 - Error on using puppet resource rabbitmq\_user [\#147](https://github.com/voxpupuli/puppet-rabbitmq/issues/147)
 - Resolve issue with "puppet resource rabbitmq\_user" failing \(\#147\) [\#629](https://github.com/voxpupuli/puppet-rabbitmq/pull/629) ([wyardley](https://github.com/wyardley))
 - BREAKING: Ensure python package \(adds manage\_python option\) [\#623](https://github.com/voxpupuli/puppet-rabbitmq/pull/623) ([wyardley](https://github.com/wyardley))
-- BREAKING: Adds config\\_ranch parameter \\(default: true\\) to suppress config lines \\(\\#618\\) [\#621](https://github.com/voxpupuli/puppet-rabbitmq/pull/621) ([wyardley](https://github.com/wyardley))
+- BREAKING: Adds config\_ranch parameter \(default: true\) to suppress config lines \(\#618\) [\#621](https://github.com/voxpupuli/puppet-rabbitmq/pull/621) ([wyardley](https://github.com/wyardley))
 - Switch back to using rabbitmq-plugins from system path \(\#566\) [\#570](https://github.com/voxpupuli/puppet-rabbitmq/pull/570) ([wyardley](https://github.com/wyardley))
 
 **Closed issues:**
@@ -44,7 +69,16 @@ These should not affect the functionality of the module.
 - Update fixtures to voxpupuli/archive \(from puppet-community\) [\#619](https://github.com/voxpupuli/puppet-rabbitmq/pull/619) ([wyardley](https://github.com/wyardley))
 
 ## [v6.0.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v6.0.0) (2017-09-07)
+
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/5.6.0...v6.0.0)
+
+**Breaking changes:**
+
+- BREAKING: Drop Ruby 1.8 support. Rubocop auto-fixes in preparation for modulesync [\#575](https://github.com/voxpupuli/puppet-rabbitmq/pull/575) ([wyardley](https://github.com/wyardley))
+- BREAKING: Switch from 'UNSET' to undef, rename management\_ip to management\_ip\_address [\#559](https://github.com/voxpupuli/puppet-rabbitmq/pull/559) ([wyardley](https://github.com/wyardley))
+- BREAKING: Drop Puppet 3 support. Replace validate\_\* with datatypes [\#536](https://github.com/voxpupuli/puppet-rabbitmq/pull/536) ([bastelfreak](https://github.com/bastelfreak))
+- Updated app.pp to address deprecation warnings [\#497](https://github.com/voxpupuli/puppet-rabbitmq/pull/497) ([ilium007](https://github.com/ilium007))
+- BREAKING: manage\_repos is now repos\_ensure \(default false\), version is now unused, switch to RabbitMQ's "packagecloud" repos [\#493](https://github.com/voxpupuli/puppet-rabbitmq/pull/493) ([wyardley](https://github.com/wyardley))
 
 **Implemented enhancements:**
 
@@ -62,6 +96,7 @@ These should not affect the functionality of the module.
 - Add ssl\_depth and password params for configuration [\#530](https://github.com/voxpupuli/puppet-rabbitmq/pull/530) ([bostrowski13](https://github.com/bostrowski13))
 - Allow Configuring Management IP Binding [\#506](https://github.com/voxpupuli/puppet-rabbitmq/pull/506) ([naftulikay](https://github.com/naftulikay))
 - Support multiple routing keys for bindings using separate parameters [\#504](https://github.com/voxpupuli/puppet-rabbitmq/pull/504) ([wyardley](https://github.com/wyardley))
+- BREAKING: manage\_repos is now repos\_ensure \(default false\), version is now unused, switch to RabbitMQ's "packagecloud" repos [\#493](https://github.com/voxpupuli/puppet-rabbitmq/pull/493) ([wyardley](https://github.com/wyardley))
 
 **Fixed bugs:**
 
@@ -70,6 +105,7 @@ These should not affect the functionality of the module.
 - Avoid error when rabbitmqctl is not present\), update spec syntax \(\#614\) [\#615](https://github.com/voxpupuli/puppet-rabbitmq/pull/615) ([wyardley](https://github.com/wyardley))
 - fix a couple of problems with erl\_ssl\_path fact [\#609](https://github.com/voxpupuli/puppet-rabbitmq/pull/609) ([costela](https://github.com/costela))
 - Switch $releasevar to ${::os\[release\]\[major\]} [\#577](https://github.com/voxpupuli/puppet-rabbitmq/pull/577) ([wyardley](https://github.com/wyardley))
+- Fix regex double escaping of rabbitmqctl list\_policies [\#561](https://github.com/voxpupuli/puppet-rabbitmq/pull/561) ([wyardley](https://github.com/wyardley))
 - Update file / directory permissions [\#560](https://github.com/voxpupuli/puppet-rabbitmq/pull/560) ([wyardley](https://github.com/wyardley))
 - Update regexp for rabbitmq\_nodename fact [\#545](https://github.com/voxpupuli/puppet-rabbitmq/pull/545) ([SergK](https://github.com/SergK))
 - \[Bugfix\] convert $ssl\_depth from string to integer [\#539](https://github.com/voxpupuli/puppet-rabbitmq/pull/539) ([bastelfreak](https://github.com/bastelfreak))
@@ -143,23 +179,23 @@ These should not affect the functionality of the module.
 - \(MODULES-3704\) Update gemfile template to be identical [\#519](https://github.com/voxpupuli/puppet-rabbitmq/pull/519) ([hunner](https://github.com/hunner))
 - Fix sync [\#518](https://github.com/voxpupuli/puppet-rabbitmq/pull/518) ([hunner](https://github.com/hunner))
 - Allows deprecation errors [\#516](https://github.com/voxpupuli/puppet-rabbitmq/pull/516) ([pmcmaw](https://github.com/pmcmaw))
-- Updated app.pp to address deprecation warnings [\#497](https://github.com/voxpupuli/puppet-rabbitmq/pull/497) ([ilium007](https://github.com/ilium007))
+- Bug fix for when queue names include spaces [\#512](https://github.com/voxpupuli/puppet-rabbitmq/pull/512) ([Bubbad](https://github.com/Bubbad))
+- Do not check cert when acquiring rabbitmqadmin with wget. [\#478](https://github.com/voxpupuli/puppet-rabbitmq/pull/478) ([modax](https://github.com/modax))
 - Cleanup void tcp options [\#464](https://github.com/voxpupuli/puppet-rabbitmq/pull/464) ([mpolenchuk](https://github.com/mpolenchuk))
 
 ## [5.6.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/5.6.0) (2016-10-25)
+
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/5.5.0...5.6.0)
 
 **Implemented enhancements:**
 
 - Allow ha-sync-batch-size for rabbitmq\_policy definition to be integer  [\#500](https://github.com/voxpupuli/puppet-rabbitmq/pull/500) ([mxftw](https://github.com/mxftw))
 - Ability to set management\_hostname in rabbitmqadmin.conf [\#498](https://github.com/voxpupuli/puppet-rabbitmq/pull/498) ([tampakrap](https://github.com/tampakrap))
-- BREAKING: manage\_repos is now repos\_ensure \(default false\), version is now unused, switch to RabbitMQ's "packagecloud" repos [\#493](https://github.com/voxpupuli/puppet-rabbitmq/pull/493) ([wyardley](https://github.com/wyardley))
 
 **Merged pull requests:**
 
 - \(MODULES-3983\) Update parallel\_tests for ruby 2.0.0 moduleSync [\#514](https://github.com/voxpupuli/puppet-rabbitmq/pull/514) ([pmcmaw](https://github.com/pmcmaw))
 - \[FM-5719\] Release prep for unsupported release 5.6.0 [\#513](https://github.com/voxpupuli/puppet-rabbitmq/pull/513) ([wilson208](https://github.com/wilson208))
-- Bug fix for when queue names include spaces [\#512](https://github.com/voxpupuli/puppet-rabbitmq/pull/512) ([Bubbad](https://github.com/Bubbad))
 - set $real\_package\_source to undef instead of empty [\#507](https://github.com/voxpupuli/puppet-rabbitmq/pull/507) ([bastelfreak](https://github.com/bastelfreak))
 - Release 5.5.0 [\#503](https://github.com/voxpupuli/puppet-rabbitmq/pull/503) ([eputnam](https://github.com/eputnam))
 - Update modulesync\_config \[a3fe424\] [\#501](https://github.com/voxpupuli/puppet-rabbitmq/pull/501) ([DavidS](https://github.com/DavidS))
