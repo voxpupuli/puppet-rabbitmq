@@ -120,7 +120,7 @@ class rabbitmq::params {
   $stomp_ssl_only              = false
   $ldap_auth                   = false
   $ldap_server                 = 'ldap'
-  $ldap_user_dn_pattern        = 'cn=username,ou=People,dc=example,dc=com'
+  $ldap_user_dn_pattern        = undef
   $ldap_other_bind             = 'anon'
   $ldap_use_ssl                = false
   $ldap_port                   = 389

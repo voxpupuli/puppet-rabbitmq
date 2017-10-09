@@ -255,7 +255,7 @@ class rabbitmq(
   Boolean $stomp_ensure                          = $rabbitmq::params::stomp_ensure,
   Boolean $ldap_auth                             = $rabbitmq::params::ldap_auth,
   String $ldap_server                            = $rabbitmq::params::ldap_server,
-  String $ldap_user_dn_pattern                   = $rabbitmq::params::ldap_user_dn_pattern,
+  Optional[String] $ldap_user_dn_pattern         = $rabbitmq::params::ldap_user_dn_pattern,
   String $ldap_other_bind                        = $rabbitmq::params::ldap_other_bind,
   Boolean $ldap_use_ssl                          = $rabbitmq::params::ldap_use_ssl,
   $ldap_port                                     = $rabbitmq::params::ldap_port,
