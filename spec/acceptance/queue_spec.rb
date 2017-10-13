@@ -159,6 +159,12 @@ describe 'rabbitmq binding:' do
       end
     end
     # rubocop:enable RSpec/MultipleExpectations
+
+    it 'puppet resource shows a binding' do
+      shell('puppet resource rabbitmq_binding') do |r|
+        expect(r.stdout).to match(%r{source\s+=>\s+'exchange1',})
+      end
+    end
   end
 
   context 'create binding and queue resources when using a non-default management port' do

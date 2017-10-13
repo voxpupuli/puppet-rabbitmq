@@ -18,7 +18,9 @@ describe provider_class do
       provider_class.expects(:rabbitmqctl).with('list_vhosts', '-q').returns <<-EOT
 /
 EOT
-      provider_class.expects(:rabbitmqctl).with('list_bindings', '-q', '-p', '/', 'source_name', 'destination_name', 'destination_kind', 'routing_key', 'arguments').returns <<-EOT
+      provider_class.expects(:rabbitmqctl).with(
+        'list_bindings', '-q', '-p', '/', 'source_name', 'destination_name', 'destination_kind', 'routing_key', 'arguments'
+      ).returns <<-EOT
 exchange\tdst_queue\tqueue\t*\t[]
 EOT
       instances = provider_class.instances
@@ -46,7 +48,9 @@ EOT
       provider_class.expects(:rabbitmqctl).with('list_vhosts', '-q').returns <<-EOT
 /
 EOT
-      provider_class.expects(:rabbitmqctl).with('list_bindings', '-q', '-p', '/', 'source_name', 'destination_name', 'destination_kind', 'routing_key', 'arguments').returns <<-EOT
+      provider_class.expects(:rabbitmqctl).with(
+        'list_bindings', '-q', '-p', '/', 'source_name', 'destination_name', 'destination_kind', 'routing_key', 'arguments'
+      ).returns <<-EOT
 exchange\tdst_queue\tqueue\trouting_one\t[]
 exchange\tdst_queue\tqueue\trouting_two\t[]
 EOT
@@ -93,7 +97,9 @@ EOT
       provider_class.expects(:rabbitmqctl).with('list_vhosts', '-q').returns <<-EOT
 /
 EOT
-      provider_class.expects(:rabbitmqctl).with('list_bindings', '-q', '-p', '/', 'source_name', 'destination_name', 'destination_kind', 'routing_key', 'arguments').returns <<-EOT
+      provider_class.expects(:rabbitmqctl).with(
+        'list_bindings', '-q', '-p', '/', 'source_name', 'destination_name', 'destination_kind', 'routing_key', 'arguments'
+      ).returns <<-EOT
 exchange\tdst_queue\tqueue\t*\t[]
 EOT
 
@@ -105,7 +111,9 @@ EOT
       provider_class.expects(:rabbitmqctl).with('list_vhosts', '-q').returns <<-EOT
 /
 EOT
-      provider_class.expects(:rabbitmqctl).with('list_bindings', '-q', '-p', '/', 'source_name', 'destination_name', 'destination_kind', 'routing_key', 'arguments').returns <<-EOT
+      provider_class.expects(:rabbitmqctl).with(
+        'list_bindings', '-q', '-p', '/', 'source_name', 'destination_name', 'destination_kind', 'routing_key', 'arguments'
+      ).returns <<-EOT
 exchange\tdst_queue\tqueue\t*\t[]
 EOT
 
@@ -113,51 +121,67 @@ EOT
     end
   end
 
-  it 'calls rabbitmqadmin to create' do
-    provider.expects(:rabbitmqadmin).with('declare', 'binding', '--vhost=/', '--user=guest', '--password=guest', '-c', '/etc/rabbitmq/rabbitmqadmin.conf', 'source=source', 'destination=target', 'arguments={}', 'routing_key=blablub', 'destination_type=queue')
-    provider.create
-  end
-
-  it 'calls rabbitmqadmin to destroy' do
-    provider.expects(:rabbitmqadmin).with('delete', 'binding', '--vhost=/', '--user=guest', '--password=guest', '-c', '/etc/rabbitmq/rabbitmqadmin.conf', 'source=source', 'destination_type=queue', 'destination=target', 'properties_key=blablub')
-    provider.destroy
-  end
-
-  context 'specifying credentials' do
-    let(:resource) do
-      Puppet::Type::Rabbitmq_binding.new(
-        name: 'source@test2@/',
-        destination_type: :queue,
-        routing_key: 'blablubd',
-        arguments: {},
-        user: 'colin',
-        password: 'secret'
-      )
-    end
-    let(:provider) { provider_class.new(resource) }
-
+  describe '#create' do
     it 'calls rabbitmqadmin to create' do
-      provider.expects(:rabbitmqadmin).with('declare', 'binding', '--vhost=/', '--user=colin', '--password=secret', '-c', '/etc/rabbitmq/rabbitmqadmin.conf', 'source=source', 'destination=test2', 'arguments={}', 'routing_key=blablubd', 'destination_type=queue')
+      provider.expects(:rabbitmqadmin).with(
+        'declare', 'binding', '--vhost=/', '--user=guest', '--password=guest', '-c', '/etc/rabbitmq/rabbitmqadmin.conf',
+        'source=source', 'destination=target', 'arguments={}', 'routing_key=blablub', 'destination_type=queue'
+      )
       provider.create
     end
+
+    context 'specifying credentials' do
+      let(:resource) do
+        Puppet::Type::Rabbitmq_binding.new(
+          name: 'source@test2@/',
+          destination_type: :queue,
+          routing_key: 'blablubd',
+          arguments: {},
+          user: 'colin',
+          password: 'secret'
+        )
+      end
+      let(:provider) { provider_class.new(resource) }
+
+      it 'calls rabbitmqadmin to create' do
+        provider.expects(:rabbitmqadmin).with(
+          'declare', 'binding', '--vhost=/', '--user=colin', '--password=secret', '-c', '/etc/rabbitmq/rabbitmqadmin.conf',
+          'source=source', 'destination=test2', 'arguments={}', 'routing_key=blablubd', 'destination_type=queue'
+        )
+        provider.create
+      end
+    end
+
+    context 'new queue_bindings' do
+      let(:resource) do
+        Puppet::Type::Rabbitmq_binding.new(
+          name: 'binding1',
+          source: 'exchange1',
+          destination: 'destqueue',
+          destination_type: :queue,
+          routing_key: 'blablubd',
+          arguments: {}
+        )
+      end
+      let(:provider) { provider_class.new(resource) }
+
+      it 'calls rabbitmqadmin to create' do
+        provider.expects(:rabbitmqadmin).with(
+          'declare', 'binding', '--vhost=/', '--user=guest', '--password=guest', '-c', '/etc/rabbitmq/rabbitmqadmin.conf',
+          'source=exchange1', 'destination=destqueue', 'arguments={}', 'routing_key=blablubd', 'destination_type=queue'
+        )
+        provider.create
+      end
+    end
   end
 
-  context 'new queue_bindings' do
-    let(:resource) do
-      Puppet::Type::Rabbitmq_binding.new(
-        name: 'binding1',
-        source: 'exchange1',
-        destination: 'destqueue',
-        destination_type: :queue,
-        routing_key: 'blablubd',
-        arguments: {}
+  describe '#destroy' do
+    it 'calls rabbitmqadmin to destroy' do
+      provider.expects(:rabbitmqadmin).with(
+        'delete', 'binding', '--vhost=/', '--user=guest', '--password=guest', '-c', '/etc/rabbitmq/rabbitmqadmin.conf',
+        'source=source', 'destination_type=queue', 'destination=target', 'properties_key=blablub'
       )
-    end
-    let(:provider) { provider_class.new(resource) }
-
-    it 'calls rabbitmqadmin to create' do
-      provider.expects(:rabbitmqadmin).with('declare', 'binding', '--vhost=/', '--user=guest', '--password=guest', '-c', '/etc/rabbitmq/rabbitmqadmin.conf', 'source=exchange1', 'destination=destqueue', 'arguments={}', 'routing_key=blablubd', 'destination_type=queue')
-      provider.create
+      provider.destroy
     end
   end
 end

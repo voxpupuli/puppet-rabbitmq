@@ -3,17 +3,13 @@ require 'puppet'
 require 'digest'
 
 Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin) do
-  if Puppet::PUPPETVERSION.to_f < 3
-    commands rabbitmqctl: 'rabbitmqctl'
-    commands rabbitmqadmin: '/usr/local/bin/rabbitmqadmin'
-  else
-    has_command(:rabbitmqctl, 'rabbitmqctl') do
-      environment HOME: '/tmp'
-    end
-    has_command(:rabbitmqadmin, '/usr/local/bin/rabbitmqadmin') do
-      environment HOME: '/tmp'
-    end
+  has_command(:rabbitmqctl, 'rabbitmqctl') do
+    environment HOME: '/tmp'
   end
+  has_command(:rabbitmqadmin, '/usr/local/bin/rabbitmqadmin') do
+    environment HOME: '/tmp'
+  end
+
   defaultfor feature: :posix
 
   # Without this, the composite namevar stuff doesn't work properly.

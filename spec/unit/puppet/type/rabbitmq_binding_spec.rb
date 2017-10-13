@@ -22,7 +22,7 @@ describe Puppet::Type.type(:rabbitmq_binding) do
         name: 'test binding',
         destination: 'foobar'
       )
-    end.to raise_error(Puppet::Error, %r{Source and destination must both be defined})
+    end.to raise_error(Puppet::Error, %r{`source` must be defined})
   end
   it 'errors when missing destination' do
     expect do
@@ -30,7 +30,7 @@ describe Puppet::Type.type(:rabbitmq_binding) do
         name: 'test binding',
         source: 'foobar'
       )
-    end.to raise_error(Puppet::Error, %r{Source and destination must both be defined})
+    end.to raise_error(Puppet::Error, %r{`destination` must be defined})
   end
   it 'accepts an binding destination_type' do
     binding[:destination_type] = :exchange
