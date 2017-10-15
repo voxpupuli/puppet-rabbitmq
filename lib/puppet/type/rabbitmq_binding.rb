@@ -178,8 +178,12 @@ DESC
   # Validate that we have both source and destination now that these are not
   # necessarily only coming from the resource title.
   validate do
-    unless self[:source] && self[:destination]
-      raise ArgumentError, 'Source and destination must both be defined.'
+    if !self[:source] && !defined? provider.source
+      raise ArgumentError, '`source` must be defined'
+    end
+
+    if !self[:destination] && !defined? provider.destination
+      raise ArgumentError, '`destination` must be defined'
     end
   end
 end
