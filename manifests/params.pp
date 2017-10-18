@@ -6,70 +6,76 @@ class rabbitmq::params {
 
   case $facts['os']['family'] {
     'Archlinux': {
-      $manage_python    = true
-      $python_package   = 'python2'
-      $package_ensure   = 'installed'
-      $package_name     = 'rabbitmq'
-      $service_name     = 'rabbitmq'
-      $rabbitmq_user    = 'rabbitmq'
-      $rabbitmq_group   = 'rabbitmq'
-      $rabbitmq_home    = '/var/lib/rabbitmq'
-      $package_gpg_key  = undef
+      $manage_python         = true
+      $python_package        = 'python2'
+      $package_ensure        = 'installed'
+      $package_name          = 'rabbitmq'
+      $service_name          = 'rabbitmq'
+      $rabbitmq_user         = 'rabbitmq'
+      $rabbitmq_group        = 'rabbitmq'
+      $rabbitmq_home         = '/var/lib/rabbitmq'
+      $package_gpg_key       = undef
+      $rabbitmqadmin_package = 'rabbitmqadmin'
     }
     'Debian': {
-      $manage_python    = true
-      $python_package   = 'python'
-      $package_ensure   = 'installed'
-      $package_name     = 'rabbitmq-server'
-      $service_name     = 'rabbitmq-server'
-      $rabbitmq_user    = 'rabbitmq'
-      $rabbitmq_group   = 'rabbitmq'
-      $rabbitmq_home    = '/var/lib/rabbitmq'
-      $package_gpg_key  = 'https://packagecloud.io/gpg.key'
+      $manage_python         = true
+      $python_package        = 'python'
+      $package_ensure        = 'installed'
+      $package_name          = 'rabbitmq-server'
+      $service_name          = 'rabbitmq-server'
+      $rabbitmq_user         = 'rabbitmq'
+      $rabbitmq_group        = 'rabbitmq'
+      $rabbitmq_home         = '/var/lib/rabbitmq'
+      $package_gpg_key       = 'https://packagecloud.io/gpg.key'
+      $rabbitmqadmin_package = undef
     }
     'OpenBSD': {
-      $manage_python    = true
-      $python_package   = 'python2'
-      $package_ensure   = 'installed'
-      $package_name     = 'rabbitmq'
-      $service_name     = 'rabbitmq'
-      $rabbitmq_user    = '_rabbitmq'
-      $rabbitmq_group   = '_rabbitmq'
-      $rabbitmq_home    = '/var/rabbitmq'
-      $package_gpg_key  = undef
+      $manage_python         = true
+      $python_package        = 'python2'
+      $package_ensure        = 'installed'
+      $package_name          = 'rabbitmq'
+      $service_name          = 'rabbitmq'
+      $rabbitmq_user         = '_rabbitmq'
+      $rabbitmq_group        = '_rabbitmq'
+      $rabbitmq_home         = '/var/rabbitmq'
+      $package_gpg_key       = undef
+      $rabbitmqadmin_package = undef
     }
     'FreeBSD': {
-      $manage_python    = true
-      $python_package   = 'python2'
-      $package_ensure   = 'installed'
-      $package_name     = 'rabbitmq'
-      $service_name     = 'rabbitmq'
-      $rabbitmq_user    = 'rabbitmq'
-      $rabbitmq_group   = 'rabbitmq'
-      $rabbitmq_home    = '/var/db/rabbitmq'
-      $package_gpg_key  = undef
+      $manage_python         = true
+      $python_package        = 'python2'
+      $package_ensure        = 'installed'
+      $package_name          = 'rabbitmq'
+      $service_name          = 'rabbitmq'
+      $rabbitmq_user         = 'rabbitmq'
+      $rabbitmq_group        = 'rabbitmq'
+      $rabbitmq_home         = '/var/db/rabbitmq'
+      $package_gpg_key       = undef
+      $rabbitmqadmin_package = undef
     }
     'RedHat': {
-      $manage_python    = true
-      $python_package   = 'python'
-      $package_ensure   = 'installed'
-      $package_name     = 'rabbitmq-server'
-      $service_name     = 'rabbitmq-server'
-      $rabbitmq_user    = 'rabbitmq'
-      $rabbitmq_group   = 'rabbitmq'
-      $rabbitmq_home    = '/var/lib/rabbitmq'
-      $package_gpg_key  = 'https://www.rabbitmq.com/rabbitmq-release-signing-key.asc'
+      $manage_python         = true
+      $python_package        = 'python'
+      $package_ensure        = 'installed'
+      $package_name          = 'rabbitmq-server'
+      $service_name          = 'rabbitmq-server'
+      $rabbitmq_user         = 'rabbitmq'
+      $rabbitmq_group        = 'rabbitmq'
+      $rabbitmq_home         = '/var/lib/rabbitmq'
+      $package_gpg_key       = 'https://www.rabbitmq.com/rabbitmq-release-signing-key.asc'
+      $rabbitmqadmin_package = undef
     }
     'SUSE': {
-      $manage_python    = true
-      $python_package   = 'python'
-      $package_ensure   = 'installed'
-      $package_name     = 'rabbitmq-server'
-      $service_name     = 'rabbitmq-server'
-      $rabbitmq_user    = 'rabbitmq'
-      $rabbitmq_group   = 'rabbitmq'
-      $rabbitmq_home    = '/var/lib/rabbitmq'
-      $package_gpg_key  = undef
+      $manage_python         = true
+      $python_package        = 'python'
+      $package_ensure        = 'installed'
+      $package_name          = 'rabbitmq-server'
+      $service_name          = 'rabbitmq-server'
+      $rabbitmq_user         = 'rabbitmq'
+      $rabbitmq_group        = 'rabbitmq'
+      $rabbitmq_home         = '/var/lib/rabbitmq'
+      $package_gpg_key       = undef
+      $rabbitmqadmin_package = undef
     }
     default: {
       fail("The ${module_name} module is not supported on an ${facts['os']['family']} based system.")

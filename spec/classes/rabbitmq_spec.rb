@@ -192,6 +192,20 @@ describe 'rabbitmq' do
         let(:params) { { admin_enable: true, management_ip_address: '1.1.1.1' } }
 
         context 'with service_manage set to true' do
+          let(:params) { { admin_enable: true, management_ip_address: '1.1.1.1', service_manage: true } }
+
+          context 'with rabbitmqadmin_package set to blub' do
+            let(:params) { { rabbitmqadmin_package: 'blub' } }
+
+            it 'installs a package called blub' do
+              is_expected.to contain_package('rabbitmqadmin').with_name('blub')
+            end
+          end
+          if facts[:os]['family'] == 'Archlinux'
+            it 'installs a package called rabbitmqadmin' do
+              is_expected.to contain_package('rabbitmqadmin').with_name('rabbitmqadmin')
+            end
+          end
           it 'we enable the admin interface by default' do
             is_expected.to contain_class('rabbitmq::install::rabbitmqadmin')
             is_expected.to contain_rabbitmq_plugin('rabbitmq_management').with(
@@ -215,6 +229,7 @@ describe 'rabbitmq' do
             is_expected.not_to contain_package('python2')
           end
         end
+
         context 'with $management_ip_address undef and service_manage set to true' do
           let(:params) { { admin_enable: true, management_ip_address: :undef } }
 
