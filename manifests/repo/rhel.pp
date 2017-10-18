@@ -1,8 +1,8 @@
 # Class: rabbitmq::repo::rhel
 # Makes sure that the Packagecloud repo is installed
 class rabbitmq::repo::rhel(
-    $location       = "https://packagecloud.io/rabbitmq/rabbitmq-server/el/${facts['os'][release][major]}/\$basearch",
-    $key_source     = $rabbitmq::package_gpg_key,
+    $location          = "https://packagecloud.io/rabbitmq/rabbitmq-server/el/${facts['os'][release][major]}/\$basearch",
+    String $key_source = $rabbitmq::package_gpg_key,
   ) {
 
   Class['rabbitmq::repo::rhel'] -> Package<| title == 'rabbitmq-server' |>
