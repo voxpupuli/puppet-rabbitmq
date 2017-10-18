@@ -69,7 +69,7 @@ To use RabbitMQ Environment Variables, use the parameters `environment_variables
 
 ```puppet
 class { 'rabbitmq':
-  port                  => '5672',
+  port                  => 5672,
   environment_variables => {
     'NODENAME'    => 'node01',
     'SERVICENAME' => 'RabbitMQ'
@@ -82,7 +82,7 @@ To change RabbitMQ Config Variables in rabbitmq.config, use the parameters `conf
 
 ```puppet
 class { 'rabbitmq':
-  port             => '5672',
+  port             => 5672,
   config_variables => {
     'hipe_compile' => true,
     'frame_max'    => 131072,
@@ -96,7 +96,7 @@ To change Erlang Kernel Config Variables in rabbitmq.config, use the parameters
 
 ```puppet
 class { 'rabbitmq':
-  port                    => '5672',
+  port                    => 5672,
   config_kernel_variables => {
     'inet_dist_listen_min' => 9100,
     'inet_dist_listen_max' => 9105,
