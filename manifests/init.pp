@@ -207,7 +207,7 @@ class rabbitmq(
   Optional[String] $node_ip_address                                = undef,
   Optional[Variant[Numeric, String]] $package_apt_pin              = undef,
   String $package_ensure                                           = $rabbitmq::params::package_ensure,
-  String $package_gpg_key                                          = $rabbitmq::params::package_gpg_key,
+  Optional[String] $package_gpg_key                                = $rabbitmq::params::package_gpg_key,
   String $package_name                                             = $rabbitmq::params::package_name,
   Optional[String] $package_source                                 = undef,
   Optional[String] $package_provider                               = undef,
