@@ -4,6 +4,36 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v8.0.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v8.0.0) (2017-10-19)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v7.1.0...v8.0.0)
+
+**Breaking changes:**
+
+- BREAKING: Remove deprecated manage\_repos parameter and disallow strings for integer parameters [\#649](https://github.com/voxpupuli/puppet-rabbitmq/pull/649) ([wyardley](https://github.com/wyardley))
+
+**Implemented enhancements:**
+
+- allow installation of rabbitmqadmin via package [\#654](https://github.com/voxpupuli/puppet-rabbitmq/pull/654) ([bastelfreak](https://github.com/bastelfreak))
+
+**Fixed bugs:**
+
+- Error on using puppet resource rabbitmq\_binding [\#650](https://github.com/voxpupuli/puppet-rabbitmq/issues/650)
+- use correct datatype for $package\_gpg\_key [\#653](https://github.com/voxpupuli/puppet-rabbitmq/pull/653) ([bastelfreak](https://github.com/bastelfreak))
+- Fix 'puppet resource rabbitmq\_binding' and add tests \(\#650\) [\#651](https://github.com/voxpupuli/puppet-rabbitmq/pull/651) ([wyardley](https://github.com/wyardley))
+
+**Closed issues:**
+
+- admin\_enable throws Server Error: no parameter named 'allow\_insecure' [\#646](https://github.com/voxpupuli/puppet-rabbitmq/issues/646)
+- Add variable to rabbitmq.config [\#644](https://github.com/voxpupuli/puppet-rabbitmq/issues/644)
+
+**Merged pull requests:**
+
+- use correct datatype for port param in README.md [\#652](https://github.com/voxpupuli/puppet-rabbitmq/pull/652) ([bastelfreak](https://github.com/bastelfreak))
+- Make ldap\_user\_dn\_pattern optional [\#645](https://github.com/voxpupuli/puppet-rabbitmq/pull/645) ([sfhardman](https://github.com/sfhardman))
+- Add tags to metadata [\#643](https://github.com/voxpupuli/puppet-rabbitmq/pull/643) ([wyardley](https://github.com/wyardley))
+- 7.1.0 release [\#642](https://github.com/voxpupuli/puppet-rabbitmq/pull/642) ([wyardley](https://github.com/wyardley))
+
 ## [v7.1.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v7.1.0) (2017-10-03)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v7.0.0...v7.1.0)
@@ -37,7 +67,6 @@ These should not affect the functionality of the module.
 - Add additional SSL configuration options \(original PR from xepa\) [\#632](https://github.com/voxpupuli/puppet-rabbitmq/pull/632) ([wyardley](https://github.com/wyardley))
 - Add support for max-length-bytes as an integer \(\#557\), patch by zhianliu [\#628](https://github.com/voxpupuli/puppet-rabbitmq/pull/628) ([wyardley](https://github.com/wyardley))
 - Add official support for Ubuntu 16.04 [\#624](https://github.com/voxpupuli/puppet-rabbitmq/pull/624) ([wyardley](https://github.com/wyardley))
-- BREAKING: Adds config\_ranch parameter \(default: true\) to suppress config lines \(\#618\) [\#621](https://github.com/voxpupuli/puppet-rabbitmq/pull/621) ([wyardley](https://github.com/wyardley))
 - Move examples and params to puppet strings style docs [\#562](https://github.com/voxpupuli/puppet-rabbitmq/pull/562) ([wyardley](https://github.com/wyardley))
 
 **Fixed bugs:**
@@ -48,8 +77,6 @@ These should not affect the functionality of the module.
 - Rabbitmq\_user\_permissions parser fails for empty string [\#172](https://github.com/voxpupuli/puppet-rabbitmq/issues/172)
 - Error on using puppet resource rabbitmq\_user [\#147](https://github.com/voxpupuli/puppet-rabbitmq/issues/147)
 - Resolve issue with "puppet resource rabbitmq\_user" failing \(\#147\) [\#629](https://github.com/voxpupuli/puppet-rabbitmq/pull/629) ([wyardley](https://github.com/wyardley))
-- BREAKING: Ensure python package \(adds manage\_python option\) [\#623](https://github.com/voxpupuli/puppet-rabbitmq/pull/623) ([wyardley](https://github.com/wyardley))
-- BREAKING: Adds config\_ranch parameter \(default: true\) to suppress config lines \(\#618\) [\#621](https://github.com/voxpupuli/puppet-rabbitmq/pull/621) ([wyardley](https://github.com/wyardley))
 - Switch back to using rabbitmq-plugins from system path \(\#566\) [\#570](https://github.com/voxpupuli/puppet-rabbitmq/pull/570) ([wyardley](https://github.com/wyardley))
 
 **Closed issues:**
@@ -85,18 +112,14 @@ These should not affect the functionality of the module.
 - Convert to use 'archive' instead of 'staging' for rabbitmqadmin install [\#604](https://github.com/voxpupuli/puppet-rabbitmq/pull/604) ([wyardley](https://github.com/wyardley))
 - Update dependencies, name, and required Puppet version [\#589](https://github.com/voxpupuli/puppet-rabbitmq/pull/589) ([wyardley](https://github.com/wyardley))
 - Add official archlinux support [\#583](https://github.com/voxpupuli/puppet-rabbitmq/pull/583) ([bastelfreak](https://github.com/bastelfreak))
-- BREAKING: Drop Ruby 1.8 support. Rubocop auto-fixes in preparation for modulesync [\#575](https://github.com/voxpupuli/puppet-rabbitmq/pull/575) ([wyardley](https://github.com/wyardley))
 - Enable configuring SSL for Erlang distribution [\#574](https://github.com/voxpupuli/puppet-rabbitmq/pull/574) ([JAORMX](https://github.com/JAORMX))
 - Add FreeBSD support [\#567](https://github.com/voxpupuli/puppet-rabbitmq/pull/567) ([wyardley](https://github.com/wyardley))
-- BREAKING: Switch from 'UNSET' to undef, rename management\_ip to management\_ip\_address [\#559](https://github.com/voxpupuli/puppet-rabbitmq/pull/559) ([wyardley](https://github.com/wyardley))
 - Add options for IPv6 and inetrc [\#552](https://github.com/voxpupuli/puppet-rabbitmq/pull/552) ([jeckersb](https://github.com/jeckersb))
 - Extra ssl options to harden rabbitmq listener [\#547](https://github.com/voxpupuli/puppet-rabbitmq/pull/547) ([xepa](https://github.com/xepa))
 - \[MODULES-4555\] allow list values to ha-params when ha-mode=nodes [\#537](https://github.com/voxpupuli/puppet-rabbitmq/pull/537) ([eserte](https://github.com/eserte))
-- BREAKING: Drop Puppet 3 support. Replace validate\_\* with datatypes [\#536](https://github.com/voxpupuli/puppet-rabbitmq/pull/536) ([bastelfreak](https://github.com/bastelfreak))
 - Add ssl\_depth and password params for configuration [\#530](https://github.com/voxpupuli/puppet-rabbitmq/pull/530) ([bostrowski13](https://github.com/bostrowski13))
 - Allow Configuring Management IP Binding [\#506](https://github.com/voxpupuli/puppet-rabbitmq/pull/506) ([naftulikay](https://github.com/naftulikay))
 - Support multiple routing keys for bindings using separate parameters [\#504](https://github.com/voxpupuli/puppet-rabbitmq/pull/504) ([wyardley](https://github.com/wyardley))
-- BREAKING: manage\_repos is now repos\_ensure \(default false\), version is now unused, switch to RabbitMQ's "packagecloud" repos [\#493](https://github.com/voxpupuli/puppet-rabbitmq/pull/493) ([wyardley](https://github.com/wyardley))
 
 **Fixed bugs:**
 
