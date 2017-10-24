@@ -1083,6 +1083,8 @@ describe 'rabbitmq' do
             ssl_cacert: '/path/to/cacert',
             ssl_cert: '/path/to/cert',
             ssl_key: '/path/to/key',
+            ssl_management_verify: 'verify_peer',
+            ssl_management_fail_if_no_peer_cert: true,
             admin_enable: true }
         end
 
@@ -1092,6 +1094,8 @@ describe 'rabbitmq' do
           is_expected.to contain_file('rabbitmq.config').with_content(%r{port, 3141\}})
           is_expected.to contain_file('rabbitmq.config').with_content(%r{ssl, true\}})
           is_expected.to contain_file('rabbitmq.config').with_content(%r{ssl_opts, \[})
+          is_expected.to contain_file('rabbitmq.config').with_content(%r{verify,verify_peer\},})
+          is_expected.to contain_file('rabbitmq.config').with_content(%r{fail_if_no_peer_cert,true\}})
           is_expected.to contain_file('rabbitmq.config').with_content(%r{cacertfile, "/path/to/cacert"\},})
           is_expected.to contain_file('rabbitmq.config').with_content(%r{certfile, "/path/to/cert"\},})
           is_expected.to contain_file('rabbitmq.config').with_content(%r{keyfile, "/path/to/key"\}})

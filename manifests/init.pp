@@ -164,6 +164,8 @@
 # @param ssl_stomp_port SSL stomp port.
 # @param ssl_verify rabbitmq.config SSL verify setting.
 # @param ssl_fail_if_no_peer_cert rabbitmq.config `fail_if_no_peer_cert` setting.
+# @param ssl_management_verify rabbitmq.config SSL verify setting for rabbitmq_management.
+# @param ssl_manaagement_fail_if_no_peer_cert rabbitmq.config `fail_if_no_peer_cert` setting for rabbitmq_management.
 # @param ssl_versions Choose which SSL versions to enable. Example: `['tlsv1.2', 'tlsv1.1']` Note that it is recommended to disable `sslv3
 #  and `tlsv1` to prevent against POODLE and BEAST attacks. Please see the [RabbitMQ SSL](https://www.rabbitmq.com/ssl.html) documentation
 #  for more information.
@@ -239,6 +241,8 @@ class rabbitmq(
   Integer[1, 65535] $ssl_stomp_port                                = $rabbitmq::params::ssl_stomp_port,
   Enum['verify_none','verify_peer'] $ssl_verify                    = $rabbitmq::params::ssl_verify,
   Boolean $ssl_fail_if_no_peer_cert                                = $rabbitmq::params::ssl_fail_if_no_peer_cert,
+  Enum['verify_none','verify_peer'] $ssl_management_verify         = $rabbitmq::params::ssl_management_verify,
+  Boolean $ssl_management_fail_if_no_peer_cert                     = $rabbitmq::params::ssl_management_fail_if_no_peer_cert,
   Optional[Array] $ssl_versions                                    = undef,
   Boolean $ssl_secure_renegotiate                                  = $rabbitmq::params::ssl_secure_renegotiate,
   Boolean $ssl_reuse_sessions                                      = $rabbitmq::params::ssl_reuse_sessions,
