@@ -197,7 +197,7 @@ class rabbitmq(
   Boolean $config_shovel                                           = $rabbitmq::params::config_shovel,
   Hash $config_shovel_statics                                      = $rabbitmq::params::config_shovel_statics,
   String $default_user                                             = $rabbitmq::params::default_user,
-  String $default_pass                                             = $rabbitmq::params::default_pass,
+  Variant[String, Sensitive[String]] $default_pass                 = $rabbitmq::params::default_pass,
   Boolean $delete_guest_user                                       = $rabbitmq::params::delete_guest_user,
   String $env_config                                               = $rabbitmq::params::env_config,
   Stdlib::Absolutepath $env_config_path                            = $rabbitmq::params::env_config_path,
