@@ -346,9 +346,7 @@ For Debian systems:
       ensure => 'latest',
     }
 
-This module also depends on the excellent puppet/staging module on the Forge:
-
-    puppet module install puppet-staging
+This module also depends on voxpupuli/archive to install rabbitmqadmin.
 
 ## Development
 
