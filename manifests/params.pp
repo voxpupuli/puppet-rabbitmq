@@ -69,7 +69,7 @@ class rabbitmq::params {
       $manage_python         = true
       $python_package        = 'python'
       $package_ensure        = 'installed'
-      $package_name          = 'rabbitmq-server'
+      $package_name          = ['rabbitmq-server', 'rabbitmq-server-plugins']
       $service_name          = 'rabbitmq-server'
       $rabbitmq_user         = 'rabbitmq'
       $rabbitmq_group        = 'rabbitmq'
