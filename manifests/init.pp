@@ -138,7 +138,7 @@
 # @param package_gpg_key RPM package GPG key to import. Uses source method. Should be a URL for Debian/RedHat OS family, or a file name for
 #  RedHat OS family. Set to https://packagecloud.io/gpg.key by default. Note, that `key_content`, if specified, would override this
 #  parameter for Debian OS family.
-# @param package_name The name of the package to install.
+# @param package_name Name(s) of the package(s) to install
 # @param port The RabbitMQ port.
 # @param repos_ensure Ensure that a repo with the official (and newer) RabbitMQ package is configured, along with its signing key.
 #  Defaults to false (use system packages). This does not ensure that soft dependencies (like EPEL on RHEL systems) are present.
@@ -211,7 +211,7 @@ class rabbitmq(
   Optional[Variant[Numeric, String]] $package_apt_pin              = undef,
   String $package_ensure                                           = $rabbitmq::params::package_ensure,
   Optional[String] $package_gpg_key                                = $rabbitmq::params::package_gpg_key,
-  String $package_name                                             = $rabbitmq::params::package_name,
+  Variant[String, Array] $package_name                             = $rabbitmq::params::package_name,
   Optional[String] $package_source                                 = undef,
   Optional[String] $package_provider                               = undef,
   Boolean $repos_ensure                                            = $rabbitmq::params::repos_ensure,
