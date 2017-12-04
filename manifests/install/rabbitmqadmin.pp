@@ -6,8 +6,7 @@ class rabbitmq::install::rabbitmqadmin {
       ensure => 'present',
       name   => $rabbitmq::rabbitmqadmin_package,
     }
-  } else {
-    require archive
+  }
 
     $python_package = $rabbitmq::params::python_package
     # Some systems (e.g., Ubuntu 16.04) don't ship Python 2 by default
