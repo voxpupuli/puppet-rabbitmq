@@ -10,7 +10,7 @@ Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin) do
     environment HOME: '/tmp'
   end
 
-  defaultfor feature: :posix
+  confine feature: :posix
 
   # Without this, the composite namevar stuff doesn't work properly.
   mk_resource_methods

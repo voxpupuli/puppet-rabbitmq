@@ -3,7 +3,7 @@ require 'puppet/util/package'
 
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmqctl'))
 Puppet::Type.type(:rabbitmq_parameter).provide(:rabbitmqctl, parent: Puppet::Provider::Rabbitmqctl) do
-  defaultfor feature: :posix
+  confine feature: :posix
 
   # cache parameters
   def self.parameters(name, vhost)

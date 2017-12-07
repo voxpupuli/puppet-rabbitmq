@@ -1,7 +1,7 @@
 require 'puppet'
 require 'set'
 Puppet::Type.type(:rabbitmq_erlang_cookie).provide(:ruby) do
-  defaultfor feature: :posix
+  confine feature: :posix
 
   def exists?
     # Hack to prevent the create method from being called.

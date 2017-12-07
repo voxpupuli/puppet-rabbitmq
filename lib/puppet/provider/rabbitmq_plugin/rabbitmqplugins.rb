@@ -11,7 +11,7 @@ Puppet::Type.type(:rabbitmq_plugin).provide(:rabbitmqplugins, parent: Puppet::Pr
     end
   end
 
-  defaultfor feature: :posix
+  confine feature: :posix
 
   def self.instances
     plugin_list = run_with_retries do

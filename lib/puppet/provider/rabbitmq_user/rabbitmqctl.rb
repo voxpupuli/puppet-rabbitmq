@@ -7,7 +7,7 @@ Puppet::Type.type(:rabbitmq_user).provide(
     environment HOME: '/tmp'
   end
 
-  defaultfor feature: :posix
+  confine feature: :posix
 
   def initialize(value = {})
     super(value)
