@@ -12,7 +12,7 @@ Puppet::Type.type(:rabbitmq_queue).provide(:rabbitmqadmin) do
       environment HOME: '/tmp'
     end
   end
-  confine :feature => :posix
+  confine feature: :posix
 
   def should_vhost
     if @should_vhost
