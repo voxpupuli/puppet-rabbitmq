@@ -18,7 +18,7 @@ Puppet::Type.type(:rabbitmq_policy).provide(:rabbitmqctl, parent: Puppet::Provid
         # 1 2      3?  4  5                                            6
         # / ha-all all .* {"ha-mode":"all","ha-sync-mode":"automatic"} 0 << This is for RabbitMQ v < 3.7.0
         # / ha-all .* all {"ha-mode":"all","ha-sync-mode":"automatic"} 0 << This is for RabbitMQ v = 3.7.0
-        if Puppet::Util::Package.versioncmp(rabbitmq_version, '3.7.0') >= 0
+        if Puppet::Util::Package.versioncmp(rabbitmq_version, '3.7') >= 0
           raise Puppet::Error, "cannot parse line from list_policies:#{line}" unless line =~ %r{^(\S+)\s+(\S+)\s+(\S+)\s+(all|exchanges|queues)?\s+(\S+)\s+(\d+)$}
           n          = Regexp.last_match(2)
           applyto    = Regexp.last_match(4) || 'all'
@@ -49,7 +49,7 @@ Puppet::Type.type(:rabbitmq_policy).provide(:rabbitmqctl, parent: Puppet::Provid
     @policies[vhost][name]
   end
 
-  def policies(vhost,name)
+  def policies(vhost, name)
     self.class.policies(vhost, name)
   end
 
