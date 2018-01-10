@@ -40,39 +40,64 @@ describe Puppet::Type.type(:rabbitmq_policy).provider(:rabbitmqctl) do
   end
 
   it 'fails with invalid output from list' do
+    provider.class.expects(:rabbitmqctl).with('-q', 'status').returns '{rabbit,"RabbitMQ","3.1.5"}'
     provider.class.expects(:rabbitmqctl).with('list_policies', '-q', '-p', '/').returns 'foobar'
     expect { provider.exists? }.to raise_error(Puppet::Error, %r{cannot parse line from list_policies})
   end
 
-  it 'matches policies from list (>=3.2.0)' do
-    provider.class.expects(:rabbitmqctl).with('list_policies', '-q', '-p', '/').returns <<-EOT
+  context 'with RabbitMQ version >=3.7.0' do
+    it 'matches policies from list' do
+      provider.class.expects(:rabbitmqctl).with('-q', 'status').returns '{rabbit,"RabbitMQ","3.7.0"}'
+      provider.class.expects(:rabbitmqctl).with('list_policies', '-q', '-p', '/').returns <<-EOT
+/ ha-all .* all {"ha-mode":"all","ha-sync-mode":"automatic"} 0
+/ test exchanges .* {"ha-mode":"all"} 0
+EOT
+      expect(provider.exists?).to eq(applyto: 'all',
+                                     pattern: '.*',
+                                     priority: '0',
+                                     definition: {
+                                       'ha-mode'      => 'all',
+                                       'ha-sync-mode' => 'automatic'
+                                     })
+    end
+  end
+
+  context 'with RabbitMQ version >=3.2.0 and < 3.7.0' do
+    it 'matches policies from list' do
+      provider.class.expects(:rabbitmqctl).with('-q', 'status').returns '{rabbit,"RabbitMQ","3.6.9"}'
+      provider.class.expects(:rabbitmqctl).with('list_policies', '-q', '-p', '/').returns <<-EOT
 / ha-all all .* {"ha-mode":"all","ha-sync-mode":"automatic"} 0
 / test exchanges .* {"ha-mode":"all"} 0
 EOT
-    expect(provider.exists?).to eq(applyto: 'all',
-                                   pattern: '.*',
-                                   priority: '0',
-                                   definition: {
-                                     'ha-mode'      => 'all',
-                                     'ha-sync-mode' => 'automatic'
-                                   })
+      expect(provider.exists?).to eq(applyto: 'all',
+                                     pattern: '.*',
+                                     priority: '0',
+                                     definition: {
+                                       'ha-mode'      => 'all',
+                                       'ha-sync-mode' => 'automatic'
+                                     })
+    end
   end
 
-  it 'matches policies from list (<3.2.0)' do
-    provider.class.expects(:rabbitmqctl).with('list_policies', '-q', '-p', '/').returns <<-EOT
+  context 'with RabbitMQ version <3.2.0' do
+    it 'matches policies from list (<3.2.0)' do
+      provider.class.expects(:rabbitmqctl).with('-q', 'status').returns '{rabbit,"RabbitMQ","3.1.5"}'
+      provider.class.expects(:rabbitmqctl).with('list_policies', '-q', '-p', '/').returns <<-EOT
 / ha-all .* {"ha-mode":"all","ha-sync-mode":"automatic"} 0
 / test .* {"ha-mode":"all"} 0
 EOT
-    expect(provider.exists?).to eq(applyto: 'all',
-                                   pattern: '.*',
-                                   priority: '0',
-                                   definition: {
-                                     'ha-mode'      => 'all',
-                                     'ha-sync-mode' => 'automatic'
-                                   })
+      expect(provider.exists?).to eq(applyto: 'all',
+                                     pattern: '.*',
+                                     priority: '0',
+                                     definition: {
+                                       'ha-mode'      => 'all',
+                                       'ha-sync-mode' => 'automatic'
+                                     })
+    end
   end
 
   it 'does not match an empty list' do
+    provider.class.expects(:rabbitmqctl).with('-q', 'status').returns '{rabbit,"RabbitMQ","3.1.5"}'
     provider.class.expects(:rabbitmqctl).with('list_policies', '-q', '-p', '/').returns ''
     expect(provider.exists?).to eq(nil)
   end
