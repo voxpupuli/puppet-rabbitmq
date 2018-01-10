@@ -50,7 +50,7 @@ describe Puppet::Type.type(:rabbitmq_policy).provider(:rabbitmqctl) do
       provider.class.expects(:rabbitmqctl).with('-q', 'status').returns '{rabbit,"RabbitMQ","3.7.0"}'
       provider.class.expects(:rabbitmqctl).with('list_policies', '-q', '-p', '/').returns <<-EOT
 / ha-all .* all {"ha-mode":"all","ha-sync-mode":"automatic"} 0
-/ test exchanges .* {"ha-mode":"all"} 0
+/ test .* exchanges {"ha-mode":"all"} 0
 EOT
       expect(provider.exists?).to eq(applyto: 'all',
                                      pattern: '.*',
