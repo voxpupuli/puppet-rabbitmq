@@ -1,17 +1,17 @@
 require 'spec_helper'
 
-describe Puppet::Type.type(:rabbitmq_policy).provider(:rabbitmqctl) do
+provider_class = Puppet::Type.type(:rabbitmq_policy).provider(:rabbitmqctl)
+describe provider_class do
   let(:resource) do
     Puppet::Type.type(:rabbitmq_policy).new(
       name: 'ha-all@/',
       pattern: '.*',
       definition: {
         'ha-mode' => 'all'
-      },
-      provider: described_class.name
+      }
     )
   end
-  let(:provider) { resource.provider }
+  let(:provider) { provider_class.new(resource) }
 
   after do
     described_class.instance_variable_set(:@policies, nil)
@@ -47,7 +47,7 @@ describe Puppet::Type.type(:rabbitmq_policy).provider(:rabbitmqctl) do
 
   context 'with RabbitMQ version >=3.7.0' do
     it 'matches policies from list' do
-      provider.class.expects(:rabbitmqctl).with('-q', 'status').returns '{rabbit,"RabbitMQ","3.7.0"}'
+      provider.class.expects(:rabbitmq_version).returns '3.7.0'
       provider.class.expects(:rabbitmqctl).with('list_policies', '-q', '-p', '/').returns <<-EOT
 / ha-all .* all {"ha-mode":"all","ha-sync-mode":"automatic"} 0
 / test .* exchanges {"ha-mode":"all"} 0
@@ -64,7 +64,7 @@ EOT
 
   context 'with RabbitMQ version >=3.2.0 and < 3.7.0' do
     it 'matches policies from list' do
-      provider.class.expects(:rabbitmqctl).with('-q', 'status').returns '{rabbit,"RabbitMQ","3.6.9"}'
+      provider.class.expects(:rabbitmq_version).returns '3.6.9'
       provider.class.expects(:rabbitmqctl).with('list_policies', '-q', '-p', '/').returns <<-EOT
 / ha-all all .* {"ha-mode":"all","ha-sync-mode":"automatic"} 0
 / test exchanges .* {"ha-mode":"all"} 0
@@ -81,7 +81,7 @@ EOT
 
   context 'with RabbitMQ version <3.2.0' do
     it 'matches policies from list (<3.2.0)' do
-      provider.class.expects(:rabbitmqctl).with('-q', 'status').returns '{rabbit,"RabbitMQ","3.1.5"}'
+      provider.class.expects(:rabbitmq_version).returns '3.1.5'
       provider.class.expects(:rabbitmqctl).with('list_policies', '-q', '-p', '/').returns <<-EOT
 / ha-all .* {"ha-mode":"all","ha-sync-mode":"automatic"} 0
 / test .* {"ha-mode":"all"} 0
