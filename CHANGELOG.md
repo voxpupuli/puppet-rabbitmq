@@ -4,7 +4,37 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
-## [v8.0.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v8.0.0) (2017-10-19)
+## [v8.1.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v8.1.0) (2018-01-11)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v8.0.0...v8.1.0)
+
+**Implemented enhancements:**
+
+- Add options for ssl verify and 'fail\_if\_no\_peer\_cert' for the managem… [\#657](https://github.com/voxpupuli/puppet-rabbitmq/pull/657) ([paebersold](https://github.com/paebersold))
+- add ability to have array as package name [\#656](https://github.com/voxpupuli/puppet-rabbitmq/pull/656) ([tampakrap](https://github.com/tampakrap))
+
+**Fixed bugs:**
+
+- Support policy format change in v3.7.0 - \#671 \(Replaces \#674\) [\#676](https://github.com/voxpupuli/puppet-rabbitmq/pull/676) ([fatmcgav](https://github.com/fatmcgav))
+- Remove `archive require` in rabbitmqadmin class [\#669](https://github.com/voxpupuli/puppet-rabbitmq/pull/669) ([lzecca78](https://github.com/lzecca78))
+
+**Closed issues:**
+
+- not working with rabbitmq-server 3.7 - Cannot parse invalid user line [\#671](https://github.com/voxpupuli/puppet-rabbitmq/issues/671)
+- Rabbitmq crashing with config\_ranch = true [\#668](https://github.com/voxpupuli/puppet-rabbitmq/issues/668)
+- puppet/rabbitmq 8.0.0 - /etc/apt/sources.list.d/rabbitmq.list not updated/created [\#662](https://github.com/voxpupuli/puppet-rabbitmq/issues/662)
+- rabbitmqadmin install has no way of continuing to use staging in environments using an incompatible archive module [\#659](https://github.com/voxpupuli/puppet-rabbitmq/issues/659)
+- RabbitMQ Admin Package should work with Puppet-Archive module, or explicitly depend on camptocamp's archive module [\#658](https://github.com/voxpupuli/puppet-rabbitmq/issues/658)
+
+**Merged pull requests:**
+
+- Do not use defaultfor to choose the only existing provider [\#672](https://github.com/voxpupuli/puppet-rabbitmq/pull/672) ([mbaldessari](https://github.com/mbaldessari))
+- regenerate puppet-strings docs [\#667](https://github.com/voxpupuli/puppet-rabbitmq/pull/667) ([bastelfreak](https://github.com/bastelfreak))
+- Remove EOL operatingsystems [\#666](https://github.com/voxpupuli/puppet-rabbitmq/pull/666) ([ekohl](https://github.com/ekohl))
+- Update README to specify voxpupuli/archive dependency vs. staging [\#660](https://github.com/voxpupuli/puppet-rabbitmq/pull/660) ([wyardley](https://github.com/wyardley))
+- release 8.0.0 [\#655](https://github.com/voxpupuli/puppet-rabbitmq/pull/655) ([bastelfreak](https://github.com/bastelfreak))
+
+## [v8.0.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v8.0.0) (2017-10-18)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v7.1.0...v8.0.0)
 
