@@ -20,10 +20,12 @@ Puppet::Type.type(:rabbitmq_policy).provide(:rabbitmqctl, parent: Puppet::Provid
       # / ha-all .* all {"ha-mode":"all","ha-sync-mode":"automatic"} 0 << This is for RabbitMQ v >= 3.7.0
       if Puppet::Util::Package.versioncmp(rabbitmq_version, '3.7') >= 0
         regex = %r{^(\S+)\s+(\S+)\s+(\S+)\s+(all|exchanges|queues)?\s+(\S+)\s+(\d+)$}
-        applyto_index, pattern_index = 4, 3
+        applyto_index = 4
+        pattern_index = 3
       else
         regex = %r{^(\S+)\s+(\S+)\s+(all|exchanges|queues)?\s*(\S+)\s+(\S+)\s+(\d+)$}
-        applyto_index, pattern_index = 3, 4
+        applyto_index = 3
+        pattern_index = 4
       end
 
       policy_list.split(%r{\n}).each do |line|
