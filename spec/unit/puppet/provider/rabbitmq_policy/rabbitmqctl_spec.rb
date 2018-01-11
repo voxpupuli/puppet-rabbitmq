@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-provider_class = Puppet::Type.type(:rabbitmq_policy).provider(:rabbitmqctl)
-describe provider_class do
+describe Puppet::Type.type(:rabbitmq_policy).provider(:rabbitmqctl) do
   let(:resource) do
     Puppet::Type.type(:rabbitmq_policy).new(
       name: 'ha-all@/',
@@ -11,7 +10,7 @@ describe provider_class do
       }
     )
   end
-  let(:provider) { provider_class.new(resource) }
+  let(:provider) { described_class.new(resource) }
 
   after do
     described_class.instance_variable_set(:@policies, nil)
