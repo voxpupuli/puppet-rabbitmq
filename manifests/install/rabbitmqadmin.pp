@@ -30,6 +30,7 @@ class rabbitmq::install::rabbitmqadmin {
     $management_ip_address = $rabbitmq::management_ip_address
     $extra_opts = $rabbitmq::archive_options
 
+
     if !($management_ip_address) {
       # Pull from localhost if we don't have an explicit bind address
       $curl_prefix = ''
