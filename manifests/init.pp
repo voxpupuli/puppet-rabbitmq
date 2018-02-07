@@ -277,7 +277,7 @@ class rabbitmq(
   Stdlib::Absolutepath $inetrc_config_path                         = $rabbitmq::params::inetrc_config_path,
   Boolean $ssl_erl_dist                                            = $rabbitmq::params::ssl_erl_dist,
   Optional[String] $rabbitmqadmin_package                          = $rabbitmq::params::rabbitmqadmin_package,
-  Optional[Array] mqa_download_opts                                = $rabbitmq::params::mqa_download_opts,
+  Optional[Array] $mqa_download_opts                               = $rabbitmq::params::mqa_download_opts,
 ) inherits rabbitmq::params {
 
   if $ssl_only and ! $ssl {
