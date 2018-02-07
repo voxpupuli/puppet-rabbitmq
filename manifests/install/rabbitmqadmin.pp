@@ -28,7 +28,7 @@ class rabbitmq::install::rabbitmqadmin {
     $default_user = $rabbitmq::default_user
     $default_pass = $rabbitmq::default_pass
     $management_ip_address = $rabbitmq::management_ip_address
-    $extra_opts = $rabbitmq::archive_options
+    $archive_options= $rabbitmq::archive_options
 
 
     if !($management_ip_address) {
