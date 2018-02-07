@@ -274,7 +274,7 @@ describe 'rabbitmq' do
           it 'we use the correct archive_options to rabbitmqadmin' do
             is_expected.to contain_archive('rabbitmqadmin').with(
               source: 'http://1.1.1.1:15672/cli/rabbitmqadmin',
-              archive_options: %w[fizz pop]
+              download_options: %w[fizz pop]
             )
           end
         end
