@@ -265,6 +265,7 @@ describe 'rabbitmq' do
         end
         context 'with service_manage set to true and archive_options set' do
           let(:params) do
+
           {
             admin_enable: true,
             management_ip_address: '1.1.1.1',
