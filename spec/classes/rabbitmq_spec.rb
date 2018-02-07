@@ -288,7 +288,12 @@ describe 'rabbitmq' do
           end
         end
         context 'with service_manage set to true and mqa_download_opts specified' do
-          let(:params) { { admin_enable: true, mqa_download_opts: ['blah', 'blig'] } }
+          let(:params) do
+            {
+              admin_enable: true,
+              mqa_download_opts: ['blah', 'blig']
+            }
+          end
 
           it 'we use the correct extra options to download rabbitmqadmin' do
             is_expected.to contain_archive('rabbitmqadmin').with(
