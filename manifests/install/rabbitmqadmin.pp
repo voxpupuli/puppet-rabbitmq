@@ -28,6 +28,7 @@ class rabbitmq::install::rabbitmqadmin {
     $default_user = $rabbitmq::default_user
     $default_pass = $rabbitmq::default_pass
     $management_ip_address = $rabbitmq::management_ip_address
+    $archive_options = $rabbitmq::archive_options
 
     if !($management_ip_address) {
       # Pull from localhost if we don't have an explicit bind address
@@ -42,13 +43,14 @@ class rabbitmq::install::rabbitmqadmin {
     }
 
     archive { 'rabbitmqadmin':
-      path           => "${rabbitmq::rabbitmq_home}/rabbitmqadmin",
-      source         => "${protocol}://${sanitized_ip}:${management_port}/cli/rabbitmqadmin",
-      username       => $default_user,
-      password       => $default_pass,
-      allow_insecure => true,
-      cleanup        => false,
-      require        => [
+      path             => "${rabbitmq::rabbitmq_home}/rabbitmqadmin",
+      source           => "${protocol}://${sanitized_ip}:${management_port}/cli/rabbitmqadmin",
+      username         => $default_user,
+      password         => $default_pass,
+      allow_insecure   => true,
+      download_options => $archive_options,
+      cleanup          => false,
+      require          => [
         Class['rabbitmq::service'],
         Rabbitmq_plugin['rabbitmq_management']
       ],
