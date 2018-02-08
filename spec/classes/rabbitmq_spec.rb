@@ -263,6 +263,22 @@ describe 'rabbitmq' do
             )
           end
         end
+        context 'with service_manage set to true and archive_options set' do
+          let(:params) do
+            {
+              admin_enable: true,
+              management_ip_address: '1.1.1.1',
+              archive_options: %w[fizz pop]
+            }
+          end
+
+          it 'we use the correct archive_options to rabbitmqadmin' do
+            is_expected.to contain_archive('rabbitmqadmin').with(
+              source: 'http://1.1.1.1:15672/cli/rabbitmqadmin',
+              download_options: %w[fizz pop]
+            )
+          end
+        end
         context 'with service_manage set to true and management port specified' do
           # note that the 2.x management port is 55672 not 15672
           let(:params) { { admin_enable: true, management_port: 55_672, management_ip_address: '1.1.1.1' } }

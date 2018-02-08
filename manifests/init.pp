@@ -185,6 +185,7 @@
 # @param rabbitmq_group OS dependent, default defined in param.pp. The system group the rabbitmq daemon runs as.
 # @param rabbitmq_home OS dependent. default defined in param.pp. The home directory of the rabbitmq deamon.
 # @param $rabbitmqadmin_package OS dependent. default defined in param.pp. If undef: install rabbitmqadmin via archive, otherwise via package
+# @param $archive_options. default defined in param.pp.  Extra options to Archive resource to download rabbitmqadmin file
 class rabbitmq(
   Boolean $admin_enable                                            = $rabbitmq::params::admin_enable,
   Enum['ram', 'disk', 'disc'] $cluster_node_type                   = $rabbitmq::params::cluster_node_type,
@@ -276,6 +277,7 @@ class rabbitmq(
   Stdlib::Absolutepath $inetrc_config_path                         = $rabbitmq::params::inetrc_config_path,
   Boolean $ssl_erl_dist                                            = $rabbitmq::params::ssl_erl_dist,
   Optional[String] $rabbitmqadmin_package                          = $rabbitmq::params::rabbitmqadmin_package,
+  Array $archive_options                                           = $rabbitmq::params::archive_options,
 ) inherits rabbitmq::params {
 
   if $ssl_only and ! $ssl {
