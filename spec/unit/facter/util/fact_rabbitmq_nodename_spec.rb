@@ -28,6 +28,16 @@ describe Facter::Util::Fact do
       end
     end
 
+    context 'with dashes in nodename/hostname' do
+      before do
+        allow(Facter::Util::Resolution).to receive(:which).with('rabbitmqctl') { true }
+        allow(Facter::Core::Execution).to receive(:execute).with('rabbitmqctl status 2>&1') { 'Status of node monty-python@rabbit-1 ...' }
+      end
+      it do
+        expect(Facter.fact(:rabbitmq_nodename).value).to eq('monty-python@rabbit-1')
+      end
+    end
+
     context 'with quotes around node name' do
       before do
         allow(Facter::Util::Resolution).to receive(:which).with('rabbitmqctl') { true }
