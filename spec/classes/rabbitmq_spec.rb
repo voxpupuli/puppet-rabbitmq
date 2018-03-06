@@ -27,7 +27,10 @@ describe 'rabbitmq' do
                     end
       has_systemd = (
         (facts[:os]['family'] == 'RedHat' && facts[:os]['release']['major'].to_i >= 7) ||
-        (facts[:os]['family'] == 'Debian' && facts[:os]['release']['full'] == '16.04') ||
+        (facts[:os]['family'] == 'Debian' && facts[:os]['name'] == 'Ubuntu' &&
+          facts[:os]['release']['full'] == '16.04') ||
+        (facts[:os]['family'] == 'Debian' && facts[:os]['name'] == 'Debian' &&
+          facts[:os]['release']['major'].to_i >= 8) ||
         (facts[:os]['family'] == 'Archlinux')
       )
 

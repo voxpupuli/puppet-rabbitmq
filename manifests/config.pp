@@ -194,28 +194,22 @@ class rabbitmq::config {
   }
 
   case $facts['os']['family'] {
+    'Archlinux': {
+      $has_systemd = true
+    }
     'Debian': {
-      if versioncmp($facts['os']['release']['full'], '16.04') >= 0 {
-        file { '/etc/systemd/system/rabbitmq-server.service.d':
-          ensure                  => directory,
-          owner                   => '0',
-          group                   => '0',
-          mode                    => '0755',
-          selinux_ignore_defaults => true,
+      case $facts['os']['name'] {
+        'Debian': {
+          $has_systemd = versioncmp($facts['os']['release']['major'], '8') >= 0
         }
-        -> file { '/etc/systemd/system/rabbitmq-server.service.d/limits.conf':
-          content => template('rabbitmq/rabbitmq-server.service.d/limits.conf'),
-          owner   => '0',
-          group   => '0',
-          mode    => '0644',
-          notify  => Exec['rabbitmq-systemd-reload'],
+        'Ubuntu': {
+          $has_systemd = versioncmp($facts['os']['release']['full'], '16.04') >= 0
         }
-        exec { 'rabbitmq-systemd-reload':
-          command     => '/bin/systemctl daemon-reload',
-          notify      => Class['Rabbitmq::Service'],
-          refreshonly => true,
+        default: {
+          $has_systemd = false
         }
       }
+
       file { '/etc/default/rabbitmq-server':
         ensure  => file,
         content => template('rabbitmq/default.erb'),
@@ -226,27 +220,8 @@ class rabbitmq::config {
       }
     }
     'RedHat': {
-      if versioncmp($facts['os']['release']['major'], '7') >= 0 {
-        file { '/etc/systemd/system/rabbitmq-server.service.d':
-          ensure                  => directory,
-          owner                   => '0',
-          group                   => '0',
-          mode                    => '0755',
-          selinux_ignore_defaults => true,
-        }
-        -> file { '/etc/systemd/system/rabbitmq-server.service.d/limits.conf':
-          content => template('rabbitmq/rabbitmq-server.service.d/limits.conf'),
-          owner   => '0',
-          group   => '0',
-          mode    => '0644',
-          notify  => Exec['rabbitmq-systemd-reload'],
-        }
-        exec { 'rabbitmq-systemd-reload':
-          command     => '/bin/systemctl daemon-reload',
-          notify      => Class['Rabbitmq::Service'],
-          refreshonly => true,
-        }
-      }
+      $has_systemd = versioncmp($facts['os']['release']['major'], '7') >= 0
+
       file { '/etc/security/limits.d/rabbitmq-server.conf':
         content => template('rabbitmq/limits.conf'),
         owner   => '0',
@@ -277,6 +252,29 @@ class rabbitmq::config {
       }
     }
     default: {
+      $has_systemd = false
+    }
+  }
+
+  if $has_systemd {
+    file { '/etc/systemd/system/rabbitmq-server.service.d':
+      ensure                  => directory,
+      owner                   => '0',
+      group                   => '0',
+      mode                    => '0755',
+      selinux_ignore_defaults => true,
+    }
+    -> file { '/etc/systemd/system/rabbitmq-server.service.d/limits.conf':
+      content => template('rabbitmq/rabbitmq-server.service.d/limits.conf'),
+      owner   => '0',
+      group   => '0',
+      mode    => '0644',
+      notify  => Exec['rabbitmq-systemd-reload'],
+    }
+    exec { 'rabbitmq-systemd-reload':
+      command     => '/bin/systemctl daemon-reload',
+      notify      => Class['Rabbitmq::Service'],
+      refreshonly => true,
     }
   }
 
