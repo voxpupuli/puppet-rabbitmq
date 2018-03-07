@@ -19,6 +19,12 @@ describe 'rabbitmq' do
     context "on #{os}" do
       let(:facts) { facts }
 
+      packagename = case facts[:osfamily]
+                    when 'Archlinux'
+                      'rabbitmq'
+                    else
+                      'rabbitmq-server'
+                    end
       has_systemd = (
         (facts[:os]['family'] == 'RedHat' && facts[:os]['release']['major'].to_i >= 7) ||
         (facts[:os]['family'] == 'Debian' && facts[:os]['release']['full'] == '16.04') ||
@@ -30,7 +36,7 @@ describe 'rabbitmq' do
       it { is_expected.to contain_class('rabbitmq::config') }
       it { is_expected.to contain_class('rabbitmq::service') }
 
-      it { is_expected.to contain_package('rabbitmq-server').with_ensure('installed').with_name('rabbitmq-server') }
+      it { is_expected.to contain_package('rabbitmq-server').with_ensure('installed').with_name(packagename) }
 
       context 'with default params' do
         it { is_expected.not_to contain_class('rabbitmq::repo::apt') }
@@ -137,7 +143,7 @@ describe 'rabbitmq' do
 
           if has_systemd
             it do
-              is_expected.to contain_file('/etc/systemd/system/rabbitmq-server.service.d/limits.conf').
+              is_expected.to contain_file("/etc/systemd/system/#{packagename}.service.d/limits.conf").
                 with_owner('0').
                 with_group('0').
                 with_mode('0644').
@@ -162,7 +168,7 @@ describe 'rabbitmq' do
 
       context 'on systems with systemd', if: has_systemd do
         it {
-          is_expected.to contain_file('/etc/systemd/system/rabbitmq-server.service.d').with(
+          is_expected.to contain_file("/etc/systemd/system/#{packagename}.service.d").with(
             'ensure'                  => 'directory',
             'owner'                   => '0',
             'group'                   => '0',
@@ -171,7 +177,7 @@ describe 'rabbitmq' do
           )
         }
 
-        it { is_expected.to contain_file('/etc/systemd/system/rabbitmq-server.service.d/limits.conf') }
+        it { is_expected.to contain_file("/etc/systemd/system/#{packagename}.service.d/limits.conf") }
 
         it {
           is_expected.to contain_exec('rabbitmq-systemd-reload').with(
@@ -205,18 +211,19 @@ describe 'rabbitmq' do
             it 'installs a package called rabbitmqadmin' do
               is_expected.to contain_package('rabbitmqadmin').with_name('rabbitmqadmin')
             end
-          end
-          it 'we enable the admin interface by default' do
-            is_expected.to contain_class('rabbitmq::install::rabbitmqadmin')
-            is_expected.to contain_rabbitmq_plugin('rabbitmq_management').with(
-              notify: 'Class[Rabbitmq::Service]'
-            )
-            is_expected.to contain_archive('rabbitmqadmin').with_source('http://1.1.1.1:15672/cli/rabbitmqadmin')
+          else
+            it 'we enable the admin interface by default' do
+              is_expected.to contain_class('rabbitmq::install::rabbitmqadmin')
+              is_expected.to contain_rabbitmq_plugin('rabbitmq_management').with(
+                notify: 'Class[Rabbitmq::Service]'
+              )
+              is_expected.to contain_archive('rabbitmqadmin').with_source('http://1.1.1.1:15672/cli/rabbitmqadmin')
+            end
           end
           if %w[RedHat Debian SUSE].include?(facts[:os]['family'])
             it { is_expected.to contain_package('python') }
           end
-          if %w[Archlinux FreeBSD OpenBSD].include?(facts[:os]['family'])
+          if %w[FreeBSD OpenBSD].include?(facts[:os]['family'])
             it { is_expected.to contain_package('python2') }
           end
         end
@@ -230,7 +237,7 @@ describe 'rabbitmq' do
           end
         end
 
-        context 'with $management_ip_address undef and service_manage set to true' do
+        context 'with $management_ip_address undef and service_manage set to true', unless: facts[:osfamily] == 'Archlinux' do
           let(:params) { { admin_enable: true, management_ip_address: :undef } }
 
           it 'we enable the admin interface by default' do
@@ -241,7 +248,7 @@ describe 'rabbitmq' do
             is_expected.to contain_archive('rabbitmqadmin').with_source('http://127.0.0.1:15672/cli/rabbitmqadmin')
           end
         end
-        context 'with service_manage set to true, node_ip_address = undef, and default user/pass specified' do
+        context 'with service_manage set to true, node_ip_address = undef, and default user/pass specified', unless: facts[:osfamily] == 'Archlinux' do
           let(:params) { { admin_enable: true, default_user: 'foobar', default_pass: 'hunter2', node_ip_address: :undef } }
 
           it 'we use the correct URL to rabbitmqadmin' do
@@ -252,7 +259,7 @@ describe 'rabbitmq' do
             )
           end
         end
-        context 'with service_manage set to true and default user/pass specified' do
+        context 'with service_manage set to true and default user/pass specified', unless: facts[:osfamily] == 'Archlinux' do
           let(:params) { { admin_enable: true, default_user: 'foobar', default_pass: 'hunter2', management_ip_address: '1.1.1.1' } }
 
           it 'we use the correct URL to rabbitmqadmin' do
@@ -263,7 +270,7 @@ describe 'rabbitmq' do
             )
           end
         end
-        context 'with service_manage set to true and archive_options set' do
+        context 'with service_manage set to true and archive_options set', unless: facts[:osfamily] == 'Archlinux' do
           let(:params) do
             {
               admin_enable: true,
@@ -279,7 +286,7 @@ describe 'rabbitmq' do
             )
           end
         end
-        context 'with service_manage set to true and management port specified' do
+        context 'with service_manage set to true and management port specified', unless: facts[:osfamily] == 'Archlinux' do
           # note that the 2.x management port is 55672 not 15672
           let(:params) { { admin_enable: true, management_port: 55_672, management_ip_address: '1.1.1.1' } }
 
@@ -291,7 +298,7 @@ describe 'rabbitmq' do
             )
           end
         end
-        context 'with ipv6, service_manage set to true and management port specified' do
+        context 'with ipv6, service_manage set to true and management port specified', unless: facts[:osfamily] == 'Archlinux' do
           # note that the 2.x management port is 55672 not 15672
           let(:params) { { admin_enable: true, management_port: 55_672, management_ip_address: '::1' } }
 

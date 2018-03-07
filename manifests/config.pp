@@ -254,6 +254,27 @@ class rabbitmq::config {
         notify  => Class['Rabbitmq::Service'],
       }
     }
+    'Archlinux': {
+      file { '/etc/systemd/system/rabbitmq.service.d':
+        ensure                  => directory,
+        owner                   => '0',
+        group                   => '0',
+        mode                    => '0755',
+        selinux_ignore_defaults => true,
+      }
+      -> file { '/etc/systemd/system/rabbitmq.service.d/limits.conf':
+        content => template('rabbitmq/rabbitmq-server.service.d/limits.conf'),
+        owner   => '0',
+        group   => '0',
+        mode    => '0644',
+        notify  => Exec['rabbitmq-systemd-reload'],
+      }
+      exec { 'rabbitmq-systemd-reload':
+        command     => '/bin/systemctl daemon-reload',
+        notify      => Class['Rabbitmq::Service'],
+        refreshonly => true,
+      }
+    }
     default: {
     }
   }
