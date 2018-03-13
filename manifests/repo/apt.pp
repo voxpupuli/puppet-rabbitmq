@@ -16,7 +16,6 @@ class rabbitmq::repo::apt(
   # ordering / ensure to get the last version of repository
   Class['rabbitmq::repo::apt']
   -> Class['apt::update']
-  -> Package<| title == 'rabbitmq-server' |>
 
   $osname = downcase($facts['os']['name'])
   apt::source { 'rabbitmq':
