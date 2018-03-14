@@ -298,9 +298,11 @@ class rabbitmq(
     case $facts['os']['family'] {
       'RedHat': {
         contain rabbitmq::repo::rhel
+        Class['rabbitmq::repo::rhel'] -> Class['rabbitmq::install']
       }
       'Debian': {
         contain rabbitmq::repo::apt
+        Class['rabbitmq::repo::apt'] -> Class['rabbitmq::install']
       }
       default: {
       }

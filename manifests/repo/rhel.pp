@@ -5,8 +5,6 @@ class rabbitmq::repo::rhel(
     String $key_source = $rabbitmq::package_gpg_key,
   ) {
 
-  Class['rabbitmq::repo::rhel'] -> Package<| title == 'rabbitmq-server' |>
-
   yumrepo { 'rabbitmq':
     ensure   => present,
     name     => 'rabbitmq_rabbitmq-server',

@@ -36,7 +36,10 @@ describe 'rabbitmq' do
       it { is_expected.to contain_class('rabbitmq::config') }
       it { is_expected.to contain_class('rabbitmq::service') }
 
-      it { is_expected.to contain_package('rabbitmq-server').with_ensure('installed').with_name(packagename) }
+      it { is_expected.to contain_package(packagename).with_ensure('installed').with_name(packagename) }
+      if facts[:os]['family'] == 'Suse'
+        it { is_expected.to contain_package('rabbitmq-server-plugins') }
+      end
 
       context 'with default params' do
         it { is_expected.not_to contain_class('rabbitmq::repo::apt') }
