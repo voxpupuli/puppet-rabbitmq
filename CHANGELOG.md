@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v8.2.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v8.2.0) (2018-03-24)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v8.1.0...v8.2.0)
+
+**Implemented enhancements:**
+
+- Add archive\_options parameter for Archive download of rabbitmqadmin [\#681](https://github.com/voxpupuli/puppet-rabbitmq/pull/681) ([paebersold](https://github.com/paebersold))
+
+**Fixed bugs:**
+
+- puppet package install error when running on SLES 12 [\#684](https://github.com/voxpupuli/puppet-rabbitmq/issues/684)
+- Allow dash as valid character for regex [\#687](https://github.com/voxpupuli/puppet-rabbitmq/pull/687) ([crazymind1337](https://github.com/crazymind1337))
+- Install package via title, not name \(\#684\) [\#686](https://github.com/voxpupuli/puppet-rabbitmq/pull/686) ([wyardley](https://github.com/wyardley))
+
+**Closed issues:**
+
+- Failure to install rabbitmq admin via curl when proxy set [\#663](https://github.com/voxpupuli/puppet-rabbitmq/issues/663)
+
+**Merged pull requests:**
+
+- Fixes for Archlinux and modulesync 1.8 [\#685](https://github.com/voxpupuli/puppet-rabbitmq/pull/685) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v8.1.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v8.1.0) (2018-01-11)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v8.0.0...v8.1.0)
@@ -20,7 +42,6 @@ These should not affect the functionality of the module.
 
 **Closed issues:**
 
-- not working with rabbitmq-server 3.7 - Cannot parse invalid user line [\#671](https://github.com/voxpupuli/puppet-rabbitmq/issues/671)
 - Rabbitmq crashing with config\_ranch = true [\#668](https://github.com/voxpupuli/puppet-rabbitmq/issues/668)
 - puppet/rabbitmq 8.0.0 - /etc/apt/sources.list.d/rabbitmq.list not updated/created [\#662](https://github.com/voxpupuli/puppet-rabbitmq/issues/662)
 - rabbitmqadmin install has no way of continuing to use staging in environments using an incompatible archive module [\#659](https://github.com/voxpupuli/puppet-rabbitmq/issues/659)
@@ -32,7 +53,6 @@ These should not affect the functionality of the module.
 - regenerate puppet-strings docs [\#667](https://github.com/voxpupuli/puppet-rabbitmq/pull/667) ([bastelfreak](https://github.com/bastelfreak))
 - Remove EOL operatingsystems [\#666](https://github.com/voxpupuli/puppet-rabbitmq/pull/666) ([ekohl](https://github.com/ekohl))
 - Update README to specify voxpupuli/archive dependency vs. staging [\#660](https://github.com/voxpupuli/puppet-rabbitmq/pull/660) ([wyardley](https://github.com/wyardley))
-- release 8.0.0 [\#655](https://github.com/voxpupuli/puppet-rabbitmq/pull/655) ([bastelfreak](https://github.com/bastelfreak))
 
 ## [v8.0.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v8.0.0) (2017-10-18)
 
@@ -62,7 +82,6 @@ These should not affect the functionality of the module.
 - use correct datatype for port param in README.md [\#652](https://github.com/voxpupuli/puppet-rabbitmq/pull/652) ([bastelfreak](https://github.com/bastelfreak))
 - Make ldap\_user\_dn\_pattern optional [\#645](https://github.com/voxpupuli/puppet-rabbitmq/pull/645) ([sfhardman](https://github.com/sfhardman))
 - Add tags to metadata [\#643](https://github.com/voxpupuli/puppet-rabbitmq/pull/643) ([wyardley](https://github.com/wyardley))
-- 7.1.0 release [\#642](https://github.com/voxpupuli/puppet-rabbitmq/pull/642) ([wyardley](https://github.com/wyardley))
 
 ## [v7.1.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v7.1.0) (2017-10-03)
 
@@ -81,7 +100,6 @@ These should not affect the functionality of the module.
 
 - Switch back to "include foo" \(without leading colons\) syntax [\#639](https://github.com/voxpupuli/puppet-rabbitmq/pull/639) ([wyardley](https://github.com/wyardley))
 - Lower required Puppet version from 4.8.0 to 4.7.1 [\#637](https://github.com/voxpupuli/puppet-rabbitmq/pull/637) ([wyardley](https://github.com/wyardley))
-- 7.0.0 release [\#633](https://github.com/voxpupuli/puppet-rabbitmq/pull/633) ([wyardley](https://github.com/wyardley))
 
 ## [v7.0.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v7.0.0) (2017-09-14)
 
@@ -185,7 +203,6 @@ These should not affect the functionality of the module.
 
 - Replace 'anchor's with 'contain' in server.pp [\#616](https://github.com/voxpupuli/puppet-rabbitmq/pull/616) ([alexjfisher](https://github.com/alexjfisher))
 - Switch to 'contain' vs. anchor pattern, and use Class\['foo'\] vs Class\['::foo'\] [\#613](https://github.com/voxpupuli/puppet-rabbitmq/pull/613) ([wyardley](https://github.com/wyardley))
-- Updates for 6.0.0 release [\#612](https://github.com/voxpupuli/puppet-rabbitmq/pull/612) ([wyardley](https://github.com/wyardley))
 - Fix typo \(.git =\> .github\) in README link [\#608](https://github.com/voxpupuli/puppet-rabbitmq/pull/608) ([wyardley](https://github.com/wyardley))
 - Update README, and remove old CONTRIBUTING.md [\#607](https://github.com/voxpupuli/puppet-rabbitmq/pull/607) ([wyardley](https://github.com/wyardley))
 - Ignore remaining multiple expectations warnings [\#602](https://github.com/voxpupuli/puppet-rabbitmq/pull/602) ([wyardley](https://github.com/wyardley))
@@ -250,7 +267,6 @@ These should not affect the functionality of the module.
 - \(MODULES-3983\) Update parallel\_tests for ruby 2.0.0 moduleSync [\#514](https://github.com/voxpupuli/puppet-rabbitmq/pull/514) ([pmcmaw](https://github.com/pmcmaw))
 - \[FM-5719\] Release prep for unsupported release 5.6.0 [\#513](https://github.com/voxpupuli/puppet-rabbitmq/pull/513) ([wilson208](https://github.com/wilson208))
 - set $real\_package\_source to undef instead of empty [\#507](https://github.com/voxpupuli/puppet-rabbitmq/pull/507) ([bastelfreak](https://github.com/bastelfreak))
-- Release 5.5.0 [\#503](https://github.com/voxpupuli/puppet-rabbitmq/pull/503) ([eputnam](https://github.com/eputnam))
 - Update modulesync\_config \[a3fe424\] [\#501](https://github.com/voxpupuli/puppet-rabbitmq/pull/501) ([DavidS](https://github.com/DavidS))
 - use unless instead of if, and empty? instead of !='' [\#491](https://github.com/voxpupuli/puppet-rabbitmq/pull/491) ([wyardley](https://github.com/wyardley))
 
@@ -603,4 +619,4 @@ not use this class directly, only via the main rabbitmq class.
 - Initial Release.  Manage the package, file and service.
 
 
-\* *This Change Log was automatically generated by [github_changelog_generator](https://github.com/skywinder/Github-Changelog-Generator)*
+\* *This Changelog was automatically generated by [github_changelog_generator](https://github.com/skywinder/Github-Changelog-Generator)*
