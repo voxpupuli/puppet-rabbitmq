@@ -32,6 +32,10 @@ class rabbitmq::service(
       hasrestart => true,
       name       => $service_name,
     }
+
+    if $::facts['systemd'] {
+      Class['systemd::systemctl::daemon_reload'] -> Service['rabbitmq-server']
+    }
   }
 
 }
