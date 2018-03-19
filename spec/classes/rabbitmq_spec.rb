@@ -1438,6 +1438,13 @@ describe 'rabbitmq' do
         }
       end
 
+      context 'on systems with systemd', if: facts[:systemd] do
+        it do
+          is_expected.to contain_service('rabbitmq-server')
+            .that_requires('Class[systemd::systemctl::daemon_reload]')
+        end
+      end
+
       describe 'service with ensure stopped' do
         let :params do
           { service_ensure: 'stopped' }
