@@ -13,11 +13,22 @@ describe 'rabbitmq' do
     end
   end
 
-  # TODO: get Archlinux & OpenBSD facts from facterdb
-
   on_supported_os.each do |os, facts|
     context "on #{os}" do
-      let(:facts) { facts }
+      let(:facts) do
+        # Unfortunately still have to set this fact ourselves for supported
+        # systems as there is no facter run
+        systemd = (
+          (facts[:os]['family'] == 'RedHat' && facts[:os]['release']['major'].to_i >= 7) ||
+          (facts[:os]['family'] == 'Debian' && facts[:os]['name'] == 'Ubuntu' &&
+            facts[:os]['release']['full'] == '16.04') ||
+          (facts[:os]['family'] == 'Debian' && facts[:os]['name'] == 'Debian' &&
+            facts[:os]['release']['major'].to_i >= 8) ||
+          (facts[:os]['family'] == 'Archlinux')
+        )
+
+        facts.merge({:systemd => systemd})
+      end
 
       packagename = case facts[:osfamily]
                     when 'Archlinux'
@@ -25,12 +36,6 @@ describe 'rabbitmq' do
                     else
                       'rabbitmq-server'
                     end
-      has_systemd = (
-        (facts[:os]['family'] == 'RedHat' && facts[:os]['release']['major'].to_i >= 7) ||
-        (facts[:os]['name'] == 'Ubuntu' && facts[:os]['release']['major'].to_i >= 16) ||
-        (facts[:os]['name'] == 'Debian' && facts[:os]['release']['major'].to_i >= 8) ||
-        (facts[:os]['family'] == 'Archlinux')
-      )
 
       it { is_expected.to compile.with_all_deps }
       it { is_expected.to contain_class('rabbitmq::install') }
@@ -145,17 +150,14 @@ describe 'rabbitmq' do
             it { is_expected.not_to contain_file('/etc/default/rabbitmq-server') }
           end
 
-          if has_systemd
+          if facts[:systemd]
             it do
-              is_expected.to contain_file("/etc/systemd/system/#{packagename}.service.d/limits.conf").
-                with_owner('0').
-                with_group('0').
-                with_mode('0644').
-                that_notifies('Exec[rabbitmq-systemd-reload]').
-                with_content("[Service]\nLimitNOFILE=#{value}\n")
+              is_expected.to contain_systemd__service_limits('rabbitmq.service')
+                .with_limits({'LimitNOFILE' => value})
+                .with_restart_service(false)
             end
           else
-            it { is_expected.not_to contain_file('/etc/systemd/system/rabbitmq-server.service.d/limits.conf') }
+            it { is_expected.not_to contain_systemd__service_limits('rabbitmq.service') }
           end
         end
       end
@@ -170,32 +172,15 @@ describe 'rabbitmq' do
         end
       end
 
-      context 'on systems with systemd', if: has_systemd do
-        it {
-          is_expected.to contain_file("/etc/systemd/system/#{packagename}.service.d").with(
-            'ensure'                  => 'directory',
-            'owner'                   => '0',
-            'group'                   => '0',
-            'mode'                    => '0755',
-            'selinux_ignore_defaults' => true
-          )
-        }
-
-        it { is_expected.to contain_file("/etc/systemd/system/#{packagename}.service.d/limits.conf") }
-
-        it {
-          is_expected.to contain_exec('rabbitmq-systemd-reload').with(
-            command: '/bin/systemctl daemon-reload',
-            notify: 'Class[Rabbitmq::Service]',
-            refreshonly: true
-          )
-        }
+      context 'on systems with systemd', if: facts[:systemd] do
+        it do
+          is_expected.to contain_systemd__service_limits('rabbitmq.service')
+            .with_restart_service(false)
+        end
       end
 
-      context 'on systems without systemd', unless: has_systemd do
-        it { is_expected.not_to contain_file('/etc/systemd/system/rabbitmq-server.service.d') }
-        it { is_expected.not_to contain_file('/etc/systemd/system/rabbitmq-server.service.d/limits.conf') }
-        it { is_expected.not_to contain_exec('rabbitmq-systemd-reload') }
+      context 'on systems without systemd', unless: facts[:systemd] do
+        it { is_expected.not_to contain_systemd__service_limits('rabbitmq.service') }
       end
 
       context 'with admin_enable set to true' do
