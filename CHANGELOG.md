@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v8.2.1](https://github.com/voxpupuli/puppet-rabbitmq/tree/v8.2.1) (2018-04-04)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v8.2.0...v8.2.1)
+
+**Fixed bugs:**
+
+- Explicitly set LC\_ALL to C \(\#689\) [\#690](https://github.com/voxpupuli/puppet-rabbitmq/pull/690) ([wyardley](https://github.com/wyardley))
+
+**Merged pull requests:**
+
+- bump puppet to latest supported version 4.10.0 [\#692](https://github.com/voxpupuli/puppet-rabbitmq/pull/692) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v8.2.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v8.2.0) (2018-03-24)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v8.1.0...v8.2.0)
