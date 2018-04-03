@@ -1,6 +1,6 @@
 {
   "name": "puppet-rabbitmq",
-  "version": "8.2.1",
+  "version": "8.2.2-rc0",
   "author": "voxpupuli",
   "summary": "Installs, configures, and manages RabbitMQ.",
   "license": "Apache-2.0",
