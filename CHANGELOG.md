@@ -4,7 +4,20 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
-## [v8.2.1](https://github.com/voxpupuli/puppet-rabbitmq/tree/v8.2.1) (2018-04-04)
+## [v8.2.2](https://github.com/voxpupuli/puppet-rabbitmq/tree/v8.2.2) (2018-04-10)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v8.2.1...v8.2.2)
+
+**Fixed bugs:**
+
+- rabbitmq\_user\_permissions timing out [\#689](https://github.com/voxpupuli/puppet-rabbitmq/issues/689)
+- Set default LC\_ALL =\> en\_US.UTF-8 \(\#671, \#689\) [\#694](https://github.com/voxpupuli/puppet-rabbitmq/pull/694) ([wyardley](https://github.com/wyardley))
+
+**Closed issues:**
+
+- not working with rabbitmq-server 3.7 - Cannot parse invalid user line [\#671](https://github.com/voxpupuli/puppet-rabbitmq/issues/671)
+
+## [v8.2.1](https://github.com/voxpupuli/puppet-rabbitmq/tree/v8.2.1) (2018-04-03)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v8.2.0...v8.2.1)
 
@@ -115,7 +128,11 @@ These should not affect the functionality of the module.
 
 ## [v7.0.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v7.0.0) (2017-09-14)
 
-[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v6.0.0...v7.0.0)
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v5.6.1...v7.0.0)
+
+## [v5.6.1](https://github.com/voxpupuli/puppet-rabbitmq/tree/v5.6.1) (2017-09-14)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v6.0.0...v5.6.1)
 
 **Breaking changes:**
 
