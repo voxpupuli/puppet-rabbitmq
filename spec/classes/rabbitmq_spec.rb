@@ -1411,6 +1411,15 @@ describe 'rabbitmq' do
         end
       end
 
+      describe 'rabbitmq-allow_remote_connections options' do
+        let(:params) { { allow_remote_connections: true } }
+
+        it 'sets the allow_remote_connections paramter in the config file' do
+          is_expected.to contain_file('rabbitmq.config'). \
+            with_content(%r{\{loopback_users, \[\]\}})
+        end
+      end
+
       ##
       ## rabbitmq::service
       ##
