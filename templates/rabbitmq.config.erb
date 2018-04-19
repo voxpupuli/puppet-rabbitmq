@@ -8,6 +8,9 @@
 <%- if @heartbeat -%>
     {heartbeat, <%=@heartbeat%>},
 <% end -%>
+<%- if @allow_remote_connections -%>
+    {loopback_users, []},
+<% end -%>
 <% if @auth_backends -%>
     {auth_backends, [<%= @auth_backends.map { |v| "#{v}" }.join(', ') %>]},
 <% elsif @ldap_auth -%>
