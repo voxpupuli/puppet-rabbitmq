@@ -77,6 +77,7 @@ class rabbitmq::config {
   $inetrc_config                       = $rabbitmq::inetrc_config
   $inetrc_config_path                  = $rabbitmq::inetrc_config_path
   $ssl_erl_dist                        = $rabbitmq::ssl_erl_dist
+  $loopback_users                      = $rabbitmq::loopback_users
 
   if $ssl_only {
     $default_ssl_env_variables = {}

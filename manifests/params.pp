@@ -145,4 +145,5 @@ class rabbitmq::params {
   $inetrc_config                       = 'rabbitmq/inetrc.erb'
   $inetrc_config_path                  = '/etc/rabbitmq/inetrc'
   $archive_options                     = []
+  $loopback_users                      = ['guest']
 }
