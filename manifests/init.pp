@@ -279,7 +279,7 @@ class rabbitmq(
   Boolean $ssl_erl_dist                                            = $rabbitmq::params::ssl_erl_dist,
   Optional[String] $rabbitmqadmin_package                          = $rabbitmq::params::rabbitmqadmin_package,
   Array $archive_options                                           = $rabbitmq::params::archive_options,
-  Optional[Array] $loopback_users                                  = $rabbitmq::params::loopback_users,
+  Array $loopback_users                                            = $rabbitmq::params::loopback_users,
 ) inherits rabbitmq::params {
 
   if $ssl_only and ! $ssl {
