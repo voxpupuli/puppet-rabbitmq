@@ -145,5 +145,5 @@ class rabbitmq::params {
   $inetrc_config                       = 'rabbitmq/inetrc.erb'
   $inetrc_config_path                  = '/etc/rabbitmq/inetrc'
   $archive_options                     = []
-  $allow_remote_guest_connections      = false
+  $loopback_users                      = ['guest']
 }
