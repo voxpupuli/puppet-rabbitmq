@@ -1411,12 +1411,28 @@ describe 'rabbitmq' do
         end
       end
 
-      describe 'rabbitmq-allow_remote_guest_connections options' do
-        let(:params) { { allow_remote_guest_connections: true } }
+      describe 'rabbitmq-loopback_users by default' do
+        it 'sets the loopback_users parameter in the config file' do
+          is_expected.to contain_file('rabbitmq.config'). \
+            with_content(%r{\{loopback_users, \[<<"guest">>\]\}})
+        end
+      end
 
-        it 'sets the allow_remote_connections paramter in the config file' do
+      describe 'rabbitmq-loopback_users allow connections via loopback interfaces' do
+        let(:params) { { loopback_users: [] } }
+
+        it 'sets the loopback_users parameter in the config file' do
           is_expected.to contain_file('rabbitmq.config'). \
             with_content(%r{\{loopback_users, \[\]\}})
+        end
+      end
+
+      describe 'rabbitmq-loopback_users allow connections via loopback interfaces to a group of users' do
+        let(:params) { { loopback_users: ["user1", "user2"] } }
+
+        it 'sets the loopback_users parameter in the config file' do
+          is_expected.to contain_file('rabbitmq.config'). \
+            with_content(%r{\{loopback_users, \[<<\"user1\">>, <<\"user2\">>\]\}})
         end
       end
 
