@@ -1428,7 +1428,7 @@ describe 'rabbitmq' do
       end
 
       describe 'rabbitmq-loopback_users allow connections via loopback interfaces to a group of users' do
-        let(:params) { { loopback_users: ["user1", "user2"] } }
+        let(:params) { { loopback_users: %w[user1 user2] } }
 
         it 'sets the loopback_users parameter in the config file' do
           is_expected.to contain_file('rabbitmq.config'). \
