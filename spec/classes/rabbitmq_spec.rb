@@ -27,7 +27,7 @@ describe 'rabbitmq' do
           (facts[:os]['family'] == 'Archlinux')
         )
 
-        facts.merge({:systemd => systemd})
+        facts.merge(systemd: systemd)
       end
 
       packagename = case facts[:osfamily]
@@ -152,9 +152,9 @@ describe 'rabbitmq' do
 
           if facts[:systemd]
             it do
-              is_expected.to contain_systemd__service_limits('rabbitmq.service')
-                .with_limits({'LimitNOFILE' => value})
-                .with_restart_service(false)
+              is_expected.to contain_systemd__service_limits('rabbitmq.service').
+                with_limits('LimitNOFILE' => value).
+                with_restart_service(false)
             end
           else
             it { is_expected.not_to contain_systemd__service_limits('rabbitmq.service') }
@@ -174,8 +174,8 @@ describe 'rabbitmq' do
 
       context 'on systems with systemd', if: facts[:systemd] do
         it do
-          is_expected.to contain_systemd__service_limits('rabbitmq.service')
-            .with_restart_service(false)
+          is_expected.to contain_systemd__service_limits('rabbitmq.service').
+            with_restart_service(false)
         end
       end
 
@@ -1438,8 +1438,8 @@ describe 'rabbitmq' do
 
       context 'on systems with systemd', if: facts[:systemd] do
         it do
-          is_expected.to contain_service('rabbitmq-server')
-            .that_requires('Class[systemd::systemctl::daemon_reload]')
+          is_expected.to contain_service('rabbitmq-server').
+            that_requires('Class[systemd::systemctl::daemon_reload]')
         end
       end
 
