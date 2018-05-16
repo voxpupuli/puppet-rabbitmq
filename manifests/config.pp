@@ -216,7 +216,7 @@ class rabbitmq::config {
     default: { }
   }
 
-  if $::facts['systemd'] { # systemd fact provided by systemd module
+  if $facts['systemd'] { # systemd fact provided by systemd module
     systemd::service_limits { 'rabbitmq.service':
       limits          => {'LimitNOFILE' => $file_limit},
       # The service will be notified when config changes
