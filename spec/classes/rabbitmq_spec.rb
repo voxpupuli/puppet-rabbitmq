@@ -15,19 +15,10 @@ describe 'rabbitmq' do
 
   on_supported_os.each do |os, facts|
     context "on #{os}" do
-      let(:facts) do
-        # Unfortunately still have to set this fact ourselves for supported
-        # systems as there is no facter run
-        systemd = (
-          (facts[:os]['family'] == 'RedHat' && facts[:os]['release']['major'].to_i >= 7) ||
-          (facts[:os]['family'] == 'Debian' && facts[:os]['name'] == 'Ubuntu' &&
-            facts[:os]['release']['full'] == '16.04') ||
-          (facts[:os]['family'] == 'Debian' && facts[:os]['name'] == 'Debian' &&
-            facts[:os]['release']['major'].to_i >= 8) ||
-          (facts[:os]['family'] == 'Archlinux')
-        )
-
-        facts.merge(systemd: systemd)
+      systemd_facts = os_specific_facts(facts)
+      facts = facts.merge(systemd_facts)
+      let :facts do
+        facts
       end
 
       packagename = case facts[:osfamily]
