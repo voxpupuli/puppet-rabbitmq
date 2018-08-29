@@ -1,9 +1,5 @@
 require 'spec_helper'
 
-RSpec.configure do |config|
-  config.mock_with :rspec
-end
-
 describe Facter::Util::Fact do
   before { Facter.clear }
 
