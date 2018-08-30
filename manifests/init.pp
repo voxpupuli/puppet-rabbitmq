@@ -74,6 +74,10 @@
 #
 # @example Use RabbitMQ clustering facilities
 #  class { 'rabbitmq':
+#    cluster                  => {
+#      'name'      => 'test_cluster',
+#      'init_node' => 'hostname'
+#    },
 #    config_cluster           => true,
 #    cluster_nodes            => ['rabbit1', 'rabbit2'],
 #    cluster_node_type        => 'ram',
@@ -83,6 +87,7 @@
 #
 # @param admin_enable If enabled sets up the management interface/plugin for RabbitMQ.
 # @param auth_backends An array specifying authorization/authentication backend to use. Single quotes should be placed around array entries, ex. ['{foo, baz}', 'baz'] Defaults to [rabbit_auth_backend_internal], and if using LDAP defaults to [rabbit_auth_backend_internal, rabbit_auth_backend_ldap].
+# @param cluster Join cluster and change name of cluster.
 # @param cluster_node_type Choose between disc and ram nodes.
 # @param cluster_nodes An array of nodes for clustering.
 # @param cluster_partition_handling Value to set for `cluster_partition_handling` RabbitMQ configuration variable.
@@ -190,6 +195,7 @@
 # @param $loopback_users. default defined in param.pp. This option configures a list of users to allow access via the loopback interfaces
 class rabbitmq(
   Boolean $admin_enable                                                                            = $rabbitmq::params::admin_enable,
+  Hash $cluster                                                                                    = $rabbitmq::params::cluster,
   Enum['ram', 'disk', 'disc'] $cluster_node_type                                                   = $rabbitmq::params::cluster_node_type,
   Array $cluster_nodes                                                                             = $rabbitmq::params::cluster_nodes,
   String $config                                                                                   = $rabbitmq::params::config,
@@ -283,11 +289,11 @@ class rabbitmq(
   Array $loopback_users                                                                            = $rabbitmq::params::loopback_users,
 ) inherits rabbitmq::params {
 
-  if $ssl_only and ! $ssl {
+  if $ssl_only and !$ssl {
     fail('$ssl_only => true requires that $ssl => true')
   }
 
-  if $config_stomp and $stomp_ssl_only and ! $ssl_stomp_port  {
+  if $config_stomp and $stomp_ssl_only and !$ssl_stomp_port {
     fail('$stomp_ssl_only requires that $ssl_stomp_port be set')
   }
 
@@ -360,12 +366,16 @@ class rabbitmq(
     }
   }
 
+  if $config_cluster and $cluster {
+    create_resources('rabbitmq_cluster', $cluster)
+  }
+
   Class['rabbitmq::install']
   -> Class['rabbitmq::config']
   ~> Class['rabbitmq::service']
   -> Class['rabbitmq::management']
 
   # Make sure the various providers have their requirements in place.
-  Class['rabbitmq::install'] -> Rabbitmq_plugin<| |>
+  Class['rabbitmq::install'] -> Rabbitmq_plugin<| |> -> Rabbitmq_cluster<| |>
 
 }
