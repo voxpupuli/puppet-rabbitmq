@@ -2,6 +2,7 @@
 rabbitmq::admin_enable: true
 rabbitmq::management_enable: false
 rabbitmq::use_config_file_for_plugins: false
+rabbitmq::cluster: {}
 rabbitmq::cluster_node_type: 'disc'
 rabbitmq::cluster_nodes: []
 rabbitmq::config: 'rabbitmq/rabbitmq.config.erb'

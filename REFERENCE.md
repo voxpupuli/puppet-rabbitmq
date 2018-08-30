@@ -22,6 +22,7 @@ _Private Classes_
 **Resource types**
 
 * [`rabbitmq_binding`](#rabbitmq_binding): Native type for managing rabbitmq bindings  rabbitmq_binding { 'binding 1':   ensure           => present,   source           => 'myexchange'
+* [`rabbitmq_cluster`](#rabbitmq_cluster): Type to manage a rabbitmq cluster
 * [`rabbitmq_erlang_cookie`](#rabbitmq_erlang_cookie): Type to manage the rabbitmq erlang cookie securely  This is essentially a private type used by the rabbitmq::config class to manage the erlan
 * [`rabbitmq_exchange`](#rabbitmq_exchange): Native type for managing rabbitmq exchanges
 * [`rabbitmq_parameter`](#rabbitmq_parameter): Type for managing rabbitmq parameters
@@ -148,6 +149,21 @@ class { 'rabbitmq':
 }
 ```
 
+To create and join the cluster:
+```puppet
+class { 'rabbitmq':
+  config_cluster           => true,
+  cluster_nodes            => ['rabbit1', 'rabbit2'],
+  cluster                  => {
+    'name'      => 'test_cluster',
+    'init_node' => 'hostname'
+  },
+  cluster_node_type        => 'ram',
+  erlang_cookie            => 'A_SECRET_COOKIE_STRING',
+  wipe_db_on_cookie_change => true,
+}
+```
+
 #### Parameters
 
 The following parameters are available in the `rabbitmq` class.
@@ -212,6 +228,17 @@ Data type: `String`
 Value to set for `cluster_partition_handling` RabbitMQ configuration variable.
 
 Default value: 'ignore'
+
+##### `cluster`
+
+Data type: `Hash`
+
+If both `name` and `init_node` keys are set then the rabbitmq node is added to
+a cluster named after the corresponding key by joining `init_node`.
+Note: `init_node` must be included in the [`cluster_nodes`](#cluster_nodes)
+parameter.
+
+Default value: '{}'
 
 ##### `collect_statistics_interval`
 
@@ -1131,6 +1158,30 @@ Valid values: %r{\S+}
 The password to use to connect to rabbitmq
 
 Default value: guest
+
+### rabbitmq_cluster
+
+Type to manage a rabbitmq cluster
+
+#### Properties
+
+The following properties are available in the `rabbitmq_cluster` type.
+
+#### `init_node`
+
+Data type: `String`
+
+The node to join to initiate the cluster. It is mandatory.
+
+Default value: unset
+
+#### `node_disc_type`
+
+Data type: `Enum['ram', 'disc']`
+
+Choose between disc and ram cluster nodes.
+
+Default value: disc
 
 ### rabbitmq_erlang_cookie
 
