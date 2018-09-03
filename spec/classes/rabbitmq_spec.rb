@@ -118,7 +118,7 @@ describe 'rabbitmq' do
         end
       end
 
-      ['unlimited', 'infinity', -1, 1234].each do |value|
+      ['infinity', -1, 1234].each do |value|
         context "with file_limit => '#{value}'" do
           let(:params) { { file_limit: value } }
 
@@ -153,7 +153,7 @@ describe 'rabbitmq' do
         end
       end
 
-      [-42, '-42', 'foo', '42'].each do |value|
+      [-42, '-42', 'foo'].each do |value|
         context "with file_limit => '#{value}'" do
           let(:params) { { file_limit: value } }
 
