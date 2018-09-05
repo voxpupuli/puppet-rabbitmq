@@ -64,6 +64,9 @@ class { 'rabbitmq':
 }
 ```
 
+For RabbitMQ versions < 3.6.0 (which don't use Ranch), you will need to
+manually set `config_ranch` to `false`.
+
 ### Environment Variables
 To use RabbitMQ Environment Variables, use the parameters `environment_variables` e.g.:
 

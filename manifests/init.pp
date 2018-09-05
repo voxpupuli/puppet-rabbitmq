@@ -92,6 +92,7 @@
 # @param config_cluster Enable or disable clustering support.
 # @param config_kernel_variables Hash of Erlang kernel configuration variables to set (see [Variables Configurable in rabbitmq.config](#variables-configurable-in-rabbitmq.config)).
 # @param config_path The path to write the RabbitMQ configuration file to.
+# @param config_ranch When true, suppress config directives needed for older (<3.6) RabbitMQ versions.
 # @param config_management_variables Hash of configuration variables for the [Management Plugin](https://www.rabbitmq.com/management.html).
 # @param config_stomp Enable or disable stomp.
 # @param config_shovel Enable or disable shovel.
