@@ -21,19 +21,19 @@ describe 'rabbitmq' do
         facts
       end
 
-      packagename = case facts[:osfamily]
-                    when 'Archlinux'
-                      'rabbitmq'
-                    else
-                      'rabbitmq-server'
-                    end
+      name = case facts[:osfamily]
+             when 'Archlinux', 'OpenBSD', 'FreeBSD'
+               'rabbitmq'
+             else
+               'rabbitmq-server'
+             end
 
       it { is_expected.to compile.with_all_deps }
       it { is_expected.to contain_class('rabbitmq::install') }
       it { is_expected.to contain_class('rabbitmq::config') }
       it { is_expected.to contain_class('rabbitmq::service') }
 
-      it { is_expected.to contain_package(packagename).with_ensure('installed').with_name(packagename) }
+      it { is_expected.to contain_package(name).with_ensure('installed').with_name(name) }
       if facts[:os]['family'] == 'Suse'
         it { is_expected.to contain_package('rabbitmq-server-plugins') }
       end
@@ -143,12 +143,12 @@ describe 'rabbitmq' do
 
           if facts[:systemd]
             it do
-              is_expected.to contain_systemd__service_limits('rabbitmq.service').
+              is_expected.to contain_systemd__service_limits("#{name}.service").
                 with_limits('LimitNOFILE' => value).
                 with_restart_service(false)
             end
           else
-            it { is_expected.not_to contain_systemd__service_limits('rabbitmq.service') }
+            it { is_expected.not_to contain_systemd__service_limits("#{name}.service") }
           end
         end
       end
@@ -165,13 +165,13 @@ describe 'rabbitmq' do
 
       context 'on systems with systemd', if: facts[:systemd] do
         it do
-          is_expected.to contain_systemd__service_limits('rabbitmq.service').
+          is_expected.to contain_systemd__service_limits("#{name}.service").
             with_restart_service(false)
         end
       end
 
       context 'on systems without systemd', unless: facts[:systemd] do
-        it { is_expected.not_to contain_systemd__service_limits('rabbitmq.service') }
+        it { is_expected.not_to contain_systemd__service_limits("#{name}.service") }
       end
 
       context 'with admin_enable set to true' do
@@ -1422,7 +1422,8 @@ describe 'rabbitmq' do
             'ensure'     => 'running',
             'enable'     => 'true',
             'hasstatus'  => 'true',
-            'hasrestart' => 'true'
+            'hasrestart' => 'true',
+            'name'       => name
           )
         }
       end
