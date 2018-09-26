@@ -146,4 +146,5 @@ class rabbitmq::params {
   $inetrc_config_path                  = '/etc/rabbitmq/inetrc'
   $archive_options                     = []
   $loopback_users                      = ['guest']
+  $service_restart                     = true
 }

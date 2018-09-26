@@ -158,7 +158,6 @@ class rabbitmq::config {
     owner   => '0',
     group   => $rabbitmq_group,
     mode    => '0640',
-    notify  => Class['rabbitmq::service'],
   }
 
   file { 'rabbitmq-env.config':
@@ -168,7 +167,6 @@ class rabbitmq::config {
     owner   => '0',
     group   => $rabbitmq_group,
     mode    => '0640',
-    notify  => Class['rabbitmq::service'],
   }
 
   file { 'rabbitmq-inetrc':
@@ -178,7 +176,6 @@ class rabbitmq::config {
     owner   => '0',
     group   => $rabbitmq_group,
     mode    => '0640',
-    notify  => Class['rabbitmq::service'],
   }
 
   if $admin_enable {
@@ -201,7 +198,6 @@ class rabbitmq::config {
         mode    => '0644',
         owner   => '0',
         group   => '0',
-        notify  => Class['rabbitmq::service'],
       }
     }
     'RedHat': {
@@ -210,7 +206,6 @@ class rabbitmq::config {
         owner   => '0',
         group   => '0',
         mode    => '0644',
-        notify  => Class['Rabbitmq::Service'],
       }
     }
     default: { }
@@ -235,7 +230,6 @@ class rabbitmq::config {
       rabbitmq_home  => $rabbitmq_home,
       service_name   => $service_name,
       before         => File['rabbitmq.config'],
-      notify         => Class['rabbitmq::service'],
     }
   }
 }
