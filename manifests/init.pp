@@ -146,6 +146,7 @@
 # @param service_ensure The state of the service.
 # @param service_manage Determines if the service is managed.
 # @param service_name The name of the service to manage.
+# @param $service_restart. Default defined in param.pp. Whether to resetart the service on config change.
 # @param ssl Configures the service for using SSL.
 #  port => UNSET
 # @param ssl_cacert CA cert path to use for SSL.
@@ -281,6 +282,7 @@ class rabbitmq(
   Optional[String] $rabbitmqadmin_package                                                          = $rabbitmq::params::rabbitmqadmin_package,
   Array $archive_options                                                                           = $rabbitmq::params::archive_options,
   Array $loopback_users                                                                            = $rabbitmq::params::loopback_users,
+  Boolean $service_restart                                                                         = $rabbitmq::params::service_restart,
 ) inherits rabbitmq::params {
 
   if $ssl_only and ! $ssl {
@@ -360,9 +362,13 @@ class rabbitmq(
     }
   }
 
+  if ($service_restart) {
+    Class['rabbitmq::config'] ~> Class['rabbitmq::service']
+  }
+
   Class['rabbitmq::install']
   -> Class['rabbitmq::config']
-  ~> Class['rabbitmq::service']
+  -> Class['rabbitmq::service']
   -> Class['rabbitmq::management']
 
   # Make sure the various providers have their requirements in place.

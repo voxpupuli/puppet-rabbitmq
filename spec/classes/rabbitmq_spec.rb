@@ -30,7 +30,7 @@ describe 'rabbitmq' do
 
       it { is_expected.to compile.with_all_deps }
       it { is_expected.to contain_class('rabbitmq::install') }
-      it { is_expected.to contain_class('rabbitmq::config') }
+      it { is_expected.to contain_class('rabbitmq::config').that_notifies('Class[rabbitmq::service]') }
       it { is_expected.to contain_class('rabbitmq::service') }
 
       it { is_expected.to contain_package(name).with_ensure('installed').with_name(name) }
@@ -43,6 +43,12 @@ describe 'rabbitmq' do
         it { is_expected.not_to contain_apt__source('rabbitmq') }
         it { is_expected.not_to contain_class('rabbitmq::repo::rhel') }
         it { is_expected.not_to contain_yumrepo('rabbitmq') }
+      end
+
+      context 'with service_restart => false' do
+        let(:params) { { service_restart: false } }
+
+        it { is_expected.not_to contain_class('rabbitmq::config').that_notifies('Class[rabbitmq::service]') }
       end
 
       context 'with repos_ensure => true' do
