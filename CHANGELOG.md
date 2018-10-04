@@ -19,6 +19,7 @@ These should not affect the functionality of the module.
 
 **Closed issues:**
 
+- Allow Puppet 6.X [\#733](https://github.com/voxpupuli/puppet-rabbitmq/issues/733)
 - tcp\_listen\_options is causing clients not to be able to connect [\#719](https://github.com/voxpupuli/puppet-rabbitmq/issues/719)
 
 **Merged pull requests:**
