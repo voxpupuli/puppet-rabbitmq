@@ -12,19 +12,15 @@ By participating in this project you agree to abide by its terms.
 
 1. Create a separate branch for your change.
 
-1. We only take pull requests with passing tests, and documentation. [travis-ci](http://travis-ci.org)
-   runs the tests for us. You can also execute them locally. This is explained
-   in a later section.
-
-1. Checkout the docs we use to review a module. They provide some guidance for
-   new code that might help you before you submit a pull request.
+1. Run the tests. We only take pull requests with passing tests, and
+   documentation.
 
 1. Add a test for your change. Only refactoring and documentation
    changes require no new tests. If you are adding functionality
    or fixing a bug, please add a test.
 
 1. Squash your commits down into logical components. Make sure to rebase
-   against our current master.
+   against the current master.
 
 1. Push the branch to your fork and submit a pull request.
 
@@ -42,9 +38,7 @@ By default the tests use a baseline version of Puppet.
 If you have Ruby 2.x or want a specific version of Puppet,
 you must set an environment variable such as:
 
-```sh
-export PUPPET_VERSION="~> 5.5.6"
-```
+    export PUPPET_VERSION="~> 4.2.0"
 
 You can install all needed gems for spec tests into the modules directory by
 running:
@@ -71,17 +65,13 @@ The test suite will run [Puppet Lint](http://puppet-lint.com/) and
 [Puppet Syntax](https://github.com/gds-operations/puppet-syntax) to
 check various syntax and style things. You can run these locally with:
 
-```sh
-bundle exec rake lint
-bundle exec rake validate
-```
+    bundle exec rake lint
+    bundle exec rake validate
 
 It will also run some [Rubocop](http://batsov.com/rubocop/) tests
 against it. You can run those locally ahead of time with:
 
-```sh
-bundle exec rake rubocop
-```
+    bundle exec rake rubocop
 
 ## Running the unit tests
 
@@ -92,21 +82,15 @@ about how best to test your new feature.
 
 To run the linter, the syntax checker and the unit tests:
 
-```sh
-bundle exec rake test
-```
+    bundle exec rake test
 
 To run your all the unit tests
 
-```sh
-bundle exec rake spec
-```
+    bundle exec rake spec SPEC_OPTS='--format documentation'
 
 To run a specific spec test set the `SPEC` variable:
 
-```sh
-bundle exec rake spec SPEC=spec/foo_spec.rb
-```
+    bundle exec rake spec SPEC=spec/foo_spec.rb
 
 ## Integration tests
 
@@ -118,51 +102,23 @@ This fires up a new virtual machine (using vagrant) and runs a series of
 simple tests against it after applying the module. You can run this
 with:
 
-```sh
-bundle exec rake acceptance
-```
+    bundle exec rake acceptance
 
 This will run the tests on the module's default nodeset. You can override the
 nodeset used, e.g.,
 
-```sh
-BEAKER_set=centos-7-x64 bundle exec rake acceptance
-```
+    BEAKER_set=centos-7-x64 bundle exec rake acceptance
 
 There are default rake tasks for the various acceptance test modules, e.g.,
 
-```sh
-bundle exec rake beaker:centos-7-x64
-bundle exec rake beaker:ssh:centos-7-x64
-```
+    bundle exec rake beaker:centos-7-x64
+    bundle exec rake beaker:ssh:centos-7-x64
 
 If you don't want to have to recreate the virtual machine every time you can
 use `BEAKER_destroy=no` and `BEAKER_provision=no`. On the first run you will at
 least need `BEAKER_provision` set to yes (the default). The Vagrantfile for the
 created virtual machines will be in `.vagrant/beaker_vagrant_files`.
 
-Beaker also supports docker containers. We also use that in our automated CI
-pipeline at [travis-ci](http://travis-ci.org). To use that instead of Vagrant:
-
-```
-PUPPET_INSTALL_TYPE=agent BEAKER_IS_PE=no BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_debug=true BEAKER_setfile=debian9-64{hypervisor=docker} BEAKER_destroy=yes bundle exec rake beaker
-```
-
-You can replace the string `debian9` with any common operating system.
-The following strings are known to work:
-
-* ubuntu1604
-* ubuntu1804
-* debian8
-* debian9
-* centos6
-* centos7
-
 The easiest way to debug in a docker container is to open a shell:
 
-```sh
-docker exec -it -u root ${container_id_or_name} bash
-```
-
-The source of this file is in our [modulesync_config](https://github.com/voxpupuli/modulesync_config/blob/master/moduleroot/.github/CONTRIBUTING.md.erb)
-repository.
+    docker exec -it -u root ${container_id_or_name} bash
