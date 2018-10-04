@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v8.4.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v8.4.0) (2018-10-04)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v8.3.0...v8.4.0)
+
+**Implemented enhancements:**
+
+- Make restarting services optional [\#727](https://github.com/voxpupuli/puppet-rabbitmq/issues/727)
+- Add service\_restart option to prevent automatic service reload [\#728](https://github.com/voxpupuli/puppet-rabbitmq/pull/728) ([spuder](https://github.com/spuder))
+
+**Fixed bugs:**
+
+- Fix service name in systemd service limits config [\#726](https://github.com/voxpupuli/puppet-rabbitmq/pull/726) ([JayH5](https://github.com/JayH5))
+
+**Closed issues:**
+
+- tcp\_listen\_options is causing clients not to be able to connect [\#719](https://github.com/voxpupuli/puppet-rabbitmq/issues/719)
+
+**Merged pull requests:**
+
+- Add docs for config\_ranch parameter [\#725](https://github.com/voxpupuli/puppet-rabbitmq/pull/725) ([wyardley](https://github.com/wyardley))
+
 ## [v8.3.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v8.3.0) (2018-09-05)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v8.2.2...v8.3.0)
