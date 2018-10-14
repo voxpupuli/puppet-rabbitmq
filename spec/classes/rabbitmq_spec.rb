@@ -91,12 +91,18 @@ describe 'rabbitmq' do
       context 'with no pin', if: facts[:os]['family'] == 'Debian' do
         let(:params) { { repos_ensure: true, package_apt_pin: '' } }
 
+        if Puppet.version =~ %r{^6} # https://tickets.puppetlabs.com/browse/PUP-9112 and https://tickets.puppetlabs.com/browse/PUP-9180
+          let(:expected_key_apt_source_key_content) { 'nil' }
+        else
+          let(:expected_key_apt_source_key_content) { ':undef' }
+        end
+
         describe 'it sets up an apt::source' do
           it {
             is_expected.to contain_apt__source('rabbitmq').with(
               'location'    => "https://packagecloud.io/rabbitmq/rabbitmq-server/#{facts[:os]['name'].downcase}",
               'repos'       => 'main',
-              'key'         => '{"id"=>"418A7F2FB0E1E6E7EABF6FE8C2E73424D59097AB", "source"=>"https://packagecloud.io/gpg.key", "content"=>:undef}'
+              'key'         => "{\"id\"=>\"418A7F2FB0E1E6E7EABF6FE8C2E73424D59097AB\", \"source\"=>\"https://packagecloud.io/gpg.key\", \"content\"=>#{expected_key_apt_source_key_content}}"
             )
           }
         end
@@ -105,12 +111,18 @@ describe 'rabbitmq' do
       context 'with pin', if: facts[:os]['family'] == 'Debian' do
         let(:params) { { repos_ensure: true, package_apt_pin: '700' } }
 
+        if Puppet.version =~ %r{^6} # https://tickets.puppetlabs.com/browse/PUP-9112 and https://tickets.puppetlabs.com/browse/PUP-9180
+          let(:expected_key_apt_source_key_content) { 'nil' }
+        else
+          let(:expected_key_apt_source_key_content) { ':undef' }
+        end
+
         describe 'it sets up an apt::source and pin' do
           it {
             is_expected.to contain_apt__source('rabbitmq').with(
               'location'    => "https://packagecloud.io/rabbitmq/rabbitmq-server/#{facts[:os]['name'].downcase}",
               'repos'       => 'main',
-              'key'         => '{"id"=>"418A7F2FB0E1E6E7EABF6FE8C2E73424D59097AB", "source"=>"https://packagecloud.io/gpg.key", "content"=>:undef}'
+              'key'         => "{\"id\"=>\"418A7F2FB0E1E6E7EABF6FE8C2E73424D59097AB\", \"source\"=>\"https://packagecloud.io/gpg.key\", \"content\"=>#{expected_key_apt_source_key_content}}"
             )
           }
 
