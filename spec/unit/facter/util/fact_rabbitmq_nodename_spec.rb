@@ -5,57 +5,47 @@ describe Facter::Util::Fact do
 
   describe 'rabbitmq_nodename' do
     context 'with value' do
-      before do
-        allow(Facter::Util::Resolution).to receive(:which).with('rabbitmqctl') { true }
-        allow(Facter::Core::Execution).to receive(:execute).with('rabbitmqctl status 2>&1') { 'Status of node monty@rabbit1 ...' }
-      end
       it do
+        Facter::Util::Resolution.expects(:which).with('rabbitmqctl').returns(true)
+        Facter::Core::Execution.expects(:execute).with('rabbitmqctl status 2>&1').returns('Status of node monty@rabbit1 ...')
         expect(Facter.fact(:rabbitmq_nodename).value).to eq('monty@rabbit1')
       end
     end
 
     context 'with dashes in hostname' do
-      before do
-        allow(Facter::Util::Resolution).to receive(:which).with('rabbitmqctl') { true }
-        allow(Facter::Core::Execution).to receive(:execute).with('rabbitmqctl status 2>&1') { 'Status of node monty@rabbit-1 ...' }
-      end
       it do
+        Facter::Util::Resolution.expects(:which).with('rabbitmqctl').returns(true)
+        Facter::Core::Execution.expects(:execute).with('rabbitmqctl status 2>&1').returns('Status of node monty@rabbit-1 ...')
         expect(Facter.fact(:rabbitmq_nodename).value).to eq('monty@rabbit-1')
       end
     end
 
     context 'with dashes in nodename/hostname' do
-      before do
-        allow(Facter::Util::Resolution).to receive(:which).with('rabbitmqctl') { true }
-        allow(Facter::Core::Execution).to receive(:execute).with('rabbitmqctl status 2>&1') { 'Status of node monty-python@rabbit-1 ...' }
-      end
       it do
+        Facter::Util::Resolution.expects(:which).with('rabbitmqctl').returns(true)
+        Facter::Core::Execution.expects(:execute).with('rabbitmqctl status 2>&1').returns('Status of node monty-python@rabbit-1 ...')
         expect(Facter.fact(:rabbitmq_nodename).value).to eq('monty-python@rabbit-1')
       end
     end
 
     context 'with quotes around node name' do
-      before do
-        allow(Facter::Util::Resolution).to receive(:which).with('rabbitmqctl') { true }
-        allow(Facter::Core::Execution).to receive(:execute).with('rabbitmqctl status 2>&1') { 'Status of node \'monty@rabbit-1\' ...' }
-      end
       it do
+        Facter::Util::Resolution.expects(:which).with('rabbitmqctl').returns(true)
+        Facter::Core::Execution.expects(:execute).with('rabbitmqctl status 2>&1').returns('Status of node \'monty@rabbit-1\' ...')
         expect(Facter.fact(:rabbitmq_nodename).value).to eq('monty@rabbit-1')
       end
     end
 
     context 'without trailing points' do
-      before do
-        allow(Facter::Util::Resolution).to receive(:which).with('rabbitmqctl') { true }
-        allow(Facter::Core::Execution).to receive(:execute).with('rabbitmqctl status 2>&1') { 'Status of node monty@rabbit-1' }
-      end
       it do
+        Facter::Util::Resolution.expects(:which).with('rabbitmqctl').returns(true)
+        Facter::Core::Execution.expects(:execute).with('rabbitmqctl status 2>&1').returns('Status of node monty@rabbit-1')
         expect(Facter.fact(:rabbitmq_nodename).value).to eq('monty@rabbit-1')
       end
     end
 
     context 'rabbitmq is not running' do
-      before do
+      it do
         error_string = <<-EOS
 Status of node 'monty@rabbit-1' ...
 Error: unable to connect to node 'monty@rabbit-1': nodedown
@@ -77,19 +67,15 @@ current node details:
 - cookie hash: 6WdP0nl6d3HYqA5vTKMkIg==
 
         EOS
-        allow(Facter::Util::Resolution).to receive(:which).with('rabbitmqctl') { true }
-        allow(Facter::Core::Execution).to receive(:execute).with('rabbitmqctl status 2>&1') { error_string }
-      end
-      it do
+        Facter::Util::Resolution.expects(:which).with('rabbitmqctl').returns(true)
+        Facter::Core::Execution.expects(:execute).with('rabbitmqctl status 2>&1').returns(error_string)
         expect(Facter.fact(:rabbitmq_nodename).value).to eq('monty@rabbit-1')
       end
     end
 
     context 'rabbitmqctl is not in path' do
-      before do
-        allow(Facter::Util::Resolution).to receive(:which).with('rabbitmqctl') { false }
-      end
       it do
+        Facter::Util::Resolution.expects(:which).with('rabbitmqctl').returns(false)
         expect(Facter.fact(:rabbitmq_nodename).value).to be_nil
       end
     end

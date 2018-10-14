@@ -13,4 +13,4 @@ appveyor.yml:
 spec/spec_helper.rb:
   allow_deprecations: true
   spec_overrides: "require 'spec_helper_local'"
-  mock_with: ':rspec'
+  mock_with: ':mocha'
