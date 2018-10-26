@@ -34,7 +34,7 @@ class rabbitmq::install::rabbitmqadmin {
       # Pull from localhost if we don't have an explicit bind address
       $curl_prefix = ''
       $sanitized_ip = '127.0.0.1'
-    } elsif is_ipv6_address($management_ip_address) {
+    } elsif $management_ip_address =~ Stdlib::Compat::Ipv6 {
       $curl_prefix  = "--noproxy ${management_ip_address} -g -6"
       $sanitized_ip = join(enclose_ipv6(any2array($management_ip_address)), ',')
     } else {
