@@ -61,7 +61,7 @@ describe Puppet::Type.type(:rabbitmq_parameter) do
 
   it 'does not accept an array for definition' do
     expect do
-      parameter[:value] = { 'message-ttl' => %w[999 100] }
+      parameter[:value] = { 'message-ttl' => Object.new }
     end.to raise_error(Puppet::Error, %r{Invalid value})
   end
 
