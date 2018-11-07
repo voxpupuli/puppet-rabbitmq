@@ -71,7 +71,7 @@ DESC
   def validate_value(value)
     raise ArgumentError, 'Invalid value' unless [Hash].include?(value.class)
     value.each do |_k, v|
-      unless [String, TrueClass, FalseClass].include?(v.class)
+      unless [String, TrueClass, FalseClass, Array].include?(v.class)
         raise ArgumentError, 'Invalid value'
       end
     end
