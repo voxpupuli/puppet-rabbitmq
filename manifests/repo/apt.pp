@@ -5,7 +5,7 @@ class rabbitmq::repo::apt(
   String $location               = 'https://packagecloud.io/rabbitmq/rabbitmq-server',
   String $repos                  = 'main',
   Boolean $include_src           = false,
-  String $key                    = '418A7F2FB0E1E6E7EABF6FE8C2E73424D59097AB',
+  String $key                    = '8C695B0219AFDEB04A058ED8F4E789204D206F89',
   String $key_source             = $rabbitmq::package_gpg_key,
   Optional[String] $key_content  = $rabbitmq::key_content,
   Optional[String] $architecture = undef,
