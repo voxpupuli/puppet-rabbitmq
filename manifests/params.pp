@@ -26,7 +26,7 @@ class rabbitmq::params {
       $rabbitmq_user         = 'rabbitmq'
       $rabbitmq_group        = 'rabbitmq'
       $rabbitmq_home         = '/var/lib/rabbitmq'
-      $package_gpg_key       = 'https://packagecloud.io/gpg.key'
+      $package_gpg_key       = 'https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey'
       $rabbitmqadmin_package = undef
     }
     'OpenBSD': {
