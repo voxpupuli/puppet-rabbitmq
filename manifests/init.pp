@@ -137,8 +137,9 @@
 # @param package_apt_pin Whether to pin the package to a particular source
 # @param package_ensure Determines the ensure state of the package.  Set to installed by default, but could be changed to latest.
 # @param package_gpg_key RPM package GPG key to import. Uses source method. Should be a URL for Debian/RedHat OS family, or a file name for
-#  RedHat OS family. Set to https://packagecloud.io/gpg.key by default. Note, that `key_content`, if specified, would override this
-#  parameter for Debian OS family.
+#  RedHat OS family. Set to https://www.rabbitmq.com/rabbitmq-release-signing-key.asc for RedHat OS Family and
+#  https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey for Debian OS Family by default.. Note, that `key_content`, if specified, would
+#  override this parameter for Debian OS family.
 # @param package_name Name(s) of the package(s) to install
 # @param port The RabbitMQ port.
 # @param repos_ensure Ensure that a repo with the official (and newer) RabbitMQ package is configured, along with its signing key.
