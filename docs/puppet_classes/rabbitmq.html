@@ -996,7 +996,7 @@ to bind to all interfaces.</p>
       
       
         <em class="default">(defaults to: <tt>$rabbitmq::params::package_ensure</tt>)</em>
-      
+
       
         &mdash;
         <div class='inline'><p>Determines the ensure state of the package.  Set to installed by default, but could be changed to latest.</p>
@@ -1017,9 +1017,10 @@ to bind to all interfaces.</p>
       
         &mdash;
         <div class='inline'><p>RPM package GPG key to import. Uses source method. Should be a URL for Debian/RedHat OS family, or a file name for
-RedHat OS family. Set to <a href="https://packagecloud.io/gpg.key">https://packagecloud.io/gpg.key</a> by default. Note, that <code>key_content</code>, if specified, would override this
-parameter for Debian OS family.</p>
-</div>
+          RedHat OS family. Set to <a href="https://www.rabbitmq.com/rabbitmq-release-signing-key.asc">https://www.rabbitmq.com/rabbitmq-release-signing-key.asc</a>
+          for RedHat OS Family and
+          <a href="https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey">https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey</a> for Debian OS Family by default.</p>
+        </div>
       
     </li>
   
