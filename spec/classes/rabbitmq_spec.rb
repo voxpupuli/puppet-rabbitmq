@@ -57,7 +57,7 @@ describe 'rabbitmq' do
         if facts[:os]['family'] == 'Debian'
           it 'includes rabbitmq::repo::apt' do
             is_expected.to contain_class('rabbitmq::repo::apt').
-              with_key_source('https://packagecloud.io/gpg.key').
+              with_key_source('https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey').
               with_key_content(nil)
           end
 
@@ -102,7 +102,7 @@ describe 'rabbitmq' do
             is_expected.to contain_apt__source('rabbitmq').with(
               'location'    => "https://packagecloud.io/rabbitmq/rabbitmq-server/#{facts[:os]['name'].downcase}",
               'repos'       => 'main',
-              'key'         => "{\"id\"=>\"418A7F2FB0E1E6E7EABF6FE8C2E73424D59097AB\", \"source\"=>\"https://packagecloud.io/gpg.key\", \"content\"=>#{expected_key_apt_source_key_content}}"
+              'key'         => "{\"id\"=>\"8C695B0219AFDEB04A058ED8F4E789204D206F89\", \"source\"=>\"https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey\", \"content\"=>#{expected_key_apt_source_key_content}}"
             )
           }
         end
@@ -122,7 +122,7 @@ describe 'rabbitmq' do
             is_expected.to contain_apt__source('rabbitmq').with(
               'location'    => "https://packagecloud.io/rabbitmq/rabbitmq-server/#{facts[:os]['name'].downcase}",
               'repos'       => 'main',
-              'key'         => "{\"id\"=>\"418A7F2FB0E1E6E7EABF6FE8C2E73424D59097AB\", \"source\"=>\"https://packagecloud.io/gpg.key\", \"content\"=>#{expected_key_apt_source_key_content}}"
+              'key'         => "{\"id\"=>\"8C695B0219AFDEB04A058ED8F4E789204D206F89\", \"source\"=>\"https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey\", \"content\"=>#{expected_key_apt_source_key_content}}"
             )
           }
 
