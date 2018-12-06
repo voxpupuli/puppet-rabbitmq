@@ -1,6 +1,8 @@
 # requires
 #   puppetlabs-apt
 #   puppetlabs-stdlib
+#
+# @api private
 class rabbitmq::repo::apt(
   String $location               = 'https://packagecloud.io/rabbitmq/rabbitmq-server',
   String $repos                  = 'main',

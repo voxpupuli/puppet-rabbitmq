@@ -5,16 +5,21 @@
 
 **Classes**
 
+_Public Classes_
+
 * [`rabbitmq`](#rabbitmq): A module to manage RabbitMQ
-* [`rabbitmq::config`](#rabbitmqconfig): Class: rabbitmq::config Sets all the configuration values for RabbitMQ and creates the directories for config and ssl.
-* [`rabbitmq::install`](#rabbitmqinstall): Class rabbitmq::install Ensures that rabbitmq-server exists
-* [`rabbitmq::install::rabbitmqadmin`](#rabbitmqinstallrabbitmqadmin): 
 * [`rabbitmq::management`](#rabbitmqmanagement): 
-* [`rabbitmq::params`](#rabbitmqparams): OS Specific parameters and other settings
-* [`rabbitmq::repo::apt`](#rabbitmqrepoapt): requires   puppetlabs-apt   puppetlabs-stdlib
-* [`rabbitmq::repo::rhel`](#rabbitmqreporhel): Class: rabbitmq::repo::rhel Makes sure that the Packagecloud repo is installed
 * [`rabbitmq::server`](#rabbitmqserver): Class: rabbitmq::server  This module manages the installation and config of the rabbitmq server   it has only been tested on certain version 
-* [`rabbitmq::service`](#rabbitmqservice): Class: rabbitmq::service    This class manages the rabbitmq server service itself.  Parameters:  Actions:  Requires:  Sample Usage:
+
+_Private Classes_
+
+* `rabbitmq::config`: Sets all the configuration values for RabbitMQ and creates the directories for config and ssl.
+* `rabbitmq::install`: Ensures that rabbitmq-server exists
+* `rabbitmq::install::rabbitmqadmin`: Install rabbitmq admin
+* `rabbitmq::params`: OS Specific parameters and other settings
+* `rabbitmq::repo::apt`: requires   puppetlabs-apt   puppetlabs-stdlib
+* `rabbitmq::repo::rhel`: Makes sure that the Packagecloud repo is installed
+* `rabbitmq::service`: This class manages the rabbitmq server service itself.
 
 **Resource types**
 
@@ -33,9 +38,7 @@
 
 ### rabbitmq
 
-rabbitmq
-
- @param $loopback_users. default defined in param.pp. This option configures a list of users to allow access via the loopback interfaces
+A module to manage RabbitMQ
 
 #### Examples
 
@@ -58,7 +61,6 @@ class { 'rabbitmq':
 ##### Offline installation from local mirror:
 
 ```puppet
-
 class { 'rabbitmq':
   key_content     => template('openstack/rabbit.pub.key'),
   package_gpg_key => '/tmp/rabbit.pub.key',
@@ -76,7 +78,6 @@ class { 'rabbitmq':
 ##### To use RabbitMQ Environment Variables, use the parameters `environment_variables` e.g.:
 
 ```puppet
-
 class { 'rabbitmq':
   port                  => '5672',
   environment_variables => {
@@ -89,7 +90,6 @@ class { 'rabbitmq':
 ##### Change RabbitMQ Config Variables in rabbitmq.config:
 
 ```puppet
-
 class { 'rabbitmq':
   port             => '5672',
   config_variables => {
@@ -131,6 +131,7 @@ class { 'rabbitmq':
     'foo'         => '[{bar, "baz"}]'
   }
 }
+
 This will result in the following config appended to the config file:
 {autocluster, [{consul_service, "rabbit"},{cluster_name, "rabbit"}]},
  {foo, [{bar, "baz"}]}
@@ -165,7 +166,9 @@ Default value: $rabbitmq::params::admin_enable
 
 Data type: `Optional[Array]`
 
-An array specifying authorization/authentication backend to use. Single quotes should be placed around array entries, ex. ['{foo, baz}', 'baz'] Defaults to [rabbit_auth_backend_internal], and if using LDAP defaults to [rabbit_auth_backend_internal, rabbit_auth_backend_ldap].
+An array specifying authorization/authentication backend to use. Single quotes should be placed around array entries,
+ex. `['{foo, baz}', 'baz']` Defaults to [rabbit_auth_backend_internal], and if using LDAP defaults to [rabbit_auth_backend_internal,
+rabbit_auth_backend_ldap].
 
 Default value: `undef`
 
@@ -240,6 +243,14 @@ Data type: `Stdlib::Absolutepath`
 The path to write the RabbitMQ configuration file to.
 
 Default value: $rabbitmq::params::config_path
+
+##### `config_ranch`
+
+Data type: `Boolean`
+
+When true, suppress config directives needed for older (<3.6) RabbitMQ versions.
+
+Default value: $rabbitmq::params::config_ranch
 
 ##### `config_management_variables`
 
@@ -343,8 +354,7 @@ Default value: `undef`
 
 Data type: `Variant[Integer[-1],Enum['unlimited'],Pattern[/^(infinity|\d+(:(infinity|\d+))?)$/]]`
 
-Set rabbitmq file ulimit. Defaults to 16384. Only available on systems with `$::osfamily == 'Debian'` or
-`$::osfamily == 'RedHat'`.
+Set rabbitmq file ulimit. Defaults to 16384. Only available on systems with `$::osfamily == 'Debian'` or `$::osfamily == 'RedHat'`.
 
 Default value: $rabbitmq::params::file_limit
 
@@ -535,8 +545,8 @@ Data type: `Optional[String]`
 
 RPM package GPG key to import. Uses source method. Should be a URL for Debian/RedHat OS family, or a file name for
 RedHat OS family. Set to https://www.rabbitmq.com/rabbitmq-release-signing-key.asc for RedHat OS Family and
-https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey for Debian OS Family by default. Note, that `key_content`, if
-specified, would override this parameter for Debian OS family.
+https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey for Debian OS Family by default. Note, that `key_content`, if specified, would
+override this parameter for Debian OS family.
 
 Default value: $rabbitmq::params::package_gpg_key
 
@@ -589,12 +599,19 @@ The name of the service to manage.
 
 Default value: $rabbitmq::params::service_name
 
+##### `service_restart`
+
+Data type: `Boolean`
+
+Default defined in param.pp. Whether to restart the service on config change.
+
+Default value: $rabbitmq::params::service_restart
+
 ##### `ssl`
 
 Data type: `Boolean`
 
 Configures the service for using SSL.
-port => UNSET
 
 Default value: $rabbitmq::params::ssl
 
@@ -674,7 +691,8 @@ Default value: `undef`
 
 Data type: `Boolean`
 
-Configures the service to only use SSL.  No cleartext TCP listeners will be created. Requires that ssl => true and
+Configures the service to only use SSL. No cleartext TCP listeners will be created. Requires that ssl => true and
+port => undef
 
 Default value: $rabbitmq::params::ssl_only
 
@@ -742,17 +760,14 @@ rabbitmq.config SSL verify setting for rabbitmq_management.
 
 Default value: $rabbitmq::params::ssl_management_verify
 
-##### `ssl_manaagement_fail_if_no_peer_cert`
-
-rabbitmq.config `fail_if_no_peer_cert` setting for rabbitmq_management.
-
 ##### `ssl_versions`
 
 Data type: `Optional[Array]`
 
-Choose which SSL versions to enable. Example: `['tlsv1.2', 'tlsv1.1']` Note that it is recommended to disable `sslv3
-and `tlsv1` to prevent against POODLE and BEAST attacks. Please see the [RabbitMQ SSL](https://www.rabbitmq.com/ssl.html) documentation
-for more information.
+Choose which SSL versions to enable. Example: `['tlsv1.2', 'tlsv1.1']` Note
+that it is recommended to disable `sslv3 and `tlsv1` to prevent against
+POODLE and BEAST attacks. Please see the
+[RabbitMQ SSL](https://www.rabbitmq.com/ssl.html) documentation for more information.
 
 Default value: `undef`
 
@@ -760,8 +775,7 @@ Default value: `undef`
 
 Data type: `Array`
 
-Support only a given list of SSL ciphers. Example: `['dhe_rsa,aes_256_cbc,sha','dhe_dss,aes_256_cbc,sha',
-'ecdhe_rsa,aes_256_cbc,sha']`. Supported ciphers in your install can be listed with: rabbitmqctl eval 'ssl:cipher_suites().'
+Support only a given list of SSL ciphers. Example: `['dhe_rsa,aes_256_cbc,sha','dhe_dss,aes_256_cbc,sha', 'ecdhe_rsa,aes_256_cbc,sha']`. Supported ciphers in your install can be listed with: rabbitmqctl eval 'ssl:cipher_suites().'
 Functionality can be tested with cipherscan or similar tool: https://github.com/jvehent/cipherscan.git
 
 Default value: $rabbitmq::params::ssl_ciphers
@@ -778,8 +792,7 @@ Default value: $rabbitmq::params::stomp_port
 
 Data type: `Boolean`
 
-Configures STOMP to only use SSL.  No cleartext STOMP TCP listeners will be created. Requires setting
-ssl_stomp_port also.
+Configures STOMP to only use SSL. No cleartext STOMP TCP listeners will be created. Requires setting ssl_stomp_port also.
 
 Default value: $rabbitmq::params::stomp_ssl_only
 
@@ -835,7 +848,7 @@ Default value: $rabbitmq::params::wipe_db_on_cookie_change
 
 Data type: `String`
 
-OS dependent, default defined in param.pp. The system user the rabbitmq daemon runs as.
+OS dependent The system user the rabbitmq daemon runs as.
 
 Default value: $rabbitmq::params::rabbitmq_user
 
@@ -843,7 +856,7 @@ Default value: $rabbitmq::params::rabbitmq_user
 
 Data type: `String`
 
-OS dependent, default defined in param.pp. The system group the rabbitmq daemon runs as.
+OS dependent The system group the rabbitmq daemon runs as.
 
 Default value: $rabbitmq::params::rabbitmq_group
 
@@ -851,25 +864,33 @@ Default value: $rabbitmq::params::rabbitmq_group
 
 Data type: `Stdlib::Absolutepath`
 
-OS dependent. default defined in param.pp. The home directory of the rabbitmq deamon.
+OS dependent The home directory of the rabbitmq deamon.
 
 Default value: $rabbitmq::params::rabbitmq_home
 
-##### `$rabbitmqadmin_package`
+##### `rabbitmqadmin_package`
 
-OS dependent. default defined in param.pp. If undef: install rabbitmqadmin via archive, otherwise via package
+Data type: `Optional[String]`
 
-##### `$archive_options.`
+OS dependent If undef: install rabbitmqadmin via archive, otherwise via package
 
-default defined in param.pp.  Extra options to Archive resource to download rabbitmqadmin file
+Default value: $rabbitmq::params::rabbitmqadmin_package
 
-##### `config_ranch`
+##### `archive_options`
 
-Data type: `Boolean`
+Data type: `Array`
 
+Extra options to Archive resource to download rabbitmqadmin file
 
+Default value: $rabbitmq::params::archive_options
 
-Default value: $rabbitmq::params::config_ranch
+##### `loopback_users`
+
+Data type: `Array`
+
+This option configures a list of users to allow access via the loopback interfaces
+
+Default value: $rabbitmq::params::loopback_users
 
 ##### `package_source`
 
@@ -895,143 +916,9 @@ Data type: `Boolean`
 
 Default value: $rabbitmq::params::ssl_management_fail_if_no_peer_cert
 
-##### `rabbitmqadmin_package`
-
-Data type: `Optional[String]`
-
-
-
-Default value: $rabbitmq::params::rabbitmqadmin_package
-
-##### `archive_options`
-
-Data type: `Array`
-
-
-
-Default value: $rabbitmq::params::archive_options
-
-##### `loopback_users`
-
-Data type: `Array`
-
-
-
-Default value: $rabbitmq::params::loopback_users
-
-### rabbitmq::config
-
-Class: rabbitmq::config
-Sets all the configuration values for RabbitMQ and creates the directories for
-config and ssl.
-
-### rabbitmq::install
-
-Class rabbitmq::install
-Ensures that rabbitmq-server exists
-
-### rabbitmq::install::rabbitmqadmin
-
-The rabbitmq::install::rabbitmqadmin class.
-
 ### rabbitmq::management
 
 The rabbitmq::management class.
-
-### rabbitmq::params
-
-rabbitmq::params
-
-### rabbitmq::repo::apt
-
-requires
-  puppetlabs-apt
-  puppetlabs-stdlib
-
-#### Parameters
-
-The following parameters are available in the `rabbitmq::repo::apt` class.
-
-##### `location`
-
-Data type: `String`
-
-
-
-Default value: 'https://packagecloud.io/rabbitmq/rabbitmq-server'
-
-##### `repos`
-
-Data type: `String`
-
-
-
-Default value: 'main'
-
-##### `include_src`
-
-Data type: `Boolean`
-
-
-
-Default value: `false`
-
-##### `key`
-
-Data type: `String`
-
-
-
-Default value: '8C695B0219AFDEB04A058ED8F4E789204D206F89'
-
-##### `key_source`
-
-Data type: `String`
-
-
-
-Default value: $rabbitmq::package_gpg_key
-
-##### `key_content`
-
-Data type: `Optional[String]`
-
-
-
-Default value: $rabbitmq::key_content
-
-##### `architecture`
-
-Data type: `Optional[String]`
-
-
-
-Default value: `undef`
-
-### rabbitmq::repo::rhel
-
-Class: rabbitmq::repo::rhel
-Makes sure that the Packagecloud repo is installed
-
-#### Parameters
-
-The following parameters are available in the `rabbitmq::repo::rhel` class.
-
-##### `location`
-
-Data type: `Any`
-
-
-
-Default value: "https://packagecloud.io/rabbitmq/rabbitmq-server/el/${facts['os'][release][major]}/\$basearch"
-
-##### `key_source`
-
-Data type: `String`
-
-
-
-Default value: $rabbitmq::package_gpg_key
 
 ### rabbitmq::server
 
@@ -1201,48 +1088,6 @@ Data type: `Any`
 
 
 Default value: $rabbitmq::params::wipe_db_on_cookie_change
-
-### rabbitmq::service
-
-Class: rabbitmq::service
-
-  This class manages the rabbitmq server service itself.
-
-Parameters:
-
-Actions:
-
-Requires:
-
-Sample Usage:
-
-#### Parameters
-
-The following parameters are available in the `rabbitmq::service` class.
-
-##### `service_ensure`
-
-Data type: `Enum['running', 'stopped']`
-
-
-
-Default value: $rabbitmq::service_ensure
-
-##### `service_manage`
-
-Data type: `Boolean`
-
-
-
-Default value: $rabbitmq::service_manage
-
-##### `service_name`
-
-Data type: `Any`
-
-
-
-Default value: $rabbitmq::service_name
 
 ## Resource types
 

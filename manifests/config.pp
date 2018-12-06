@@ -1,6 +1,7 @@
-# Class: rabbitmq::config
 # Sets all the configuration values for RabbitMQ and creates the directories for
 # config and ssl.
+#
+# @api private
 class rabbitmq::config {
 
   $admin_enable                        = $rabbitmq::admin_enable
