@@ -8,14 +8,14 @@
 _Public Classes_
 
 * [`rabbitmq`](#rabbitmq): A module to manage RabbitMQ
-* [`rabbitmq::management`](#rabbitmqmanagement): 
-* [`rabbitmq::server`](#rabbitmqserver): Class: rabbitmq::server  This module manages the installation and config of the rabbitmq server   it has only been tested on certain version 
+* [`rabbitmq::server`](#rabbitmqserver): Backwards compatibility layer to support including `rabbitmq::server` directly.
 
 _Private Classes_
 
 * `rabbitmq::config`: Sets all the configuration values for RabbitMQ and creates the directories for config and ssl.
 * `rabbitmq::install`: Ensures that rabbitmq-server exists
 * `rabbitmq::install::rabbitmqadmin`: Install rabbitmq admin
+* `rabbitmq::management`: Manage presence / absence of user resource for guest management user.
 * `rabbitmq::params`: OS Specific parameters and other settings
 * `rabbitmq::repo::apt`: requires   puppetlabs-apt   puppetlabs-stdlib
 * `rabbitmq::repo::rhel`: Makes sure that the Packagecloud repo is installed
@@ -916,46 +916,10 @@ Data type: `Boolean`
 
 Default value: $rabbitmq::params::ssl_management_fail_if_no_peer_cert
 
-### rabbitmq::management
-
-The rabbitmq::management class.
-
 ### rabbitmq::server
 
-Class: rabbitmq::server
-
-This module manages the installation and config of the rabbitmq server
-  it has only been tested on certain version of debian-ish systems
-Parameters:
- [*port*] - port where rabbitmq server is hosted
- [*delete_guest_user*] - rather or not to delete the default user
- [*version*] - deprecated -- does nothing
- [*package_name*] - name of rabbitmq package
- [*service_name*] - name of rabbitmq service
- [*service_ensure*] - desired ensure state for service
- [*stomp_port*] - port stomp should be listening on
- [*node_ip_address*] - ip address for rabbitmq to bind to
- [*config*] - contents of config file
- [*env_config*] - contents of env-config file
- [*config_cluster*] - whether to configure a RabbitMQ cluster
- [*cluster_nodes*] - which nodes to cluster with (including the current one)
- [*cluster_node_type*] - Type of cluster node (disc/disk or ram)
- [*erlang_cookie*] - erlang cookie, must be the same for all nodes in a cluster
- [*wipe_db_on_cookie_change*] - whether to wipe the RabbitMQ data if the specified
-   erlang_cookie differs from the current one. This is a sad parameter: actually,
-   if the cookie indeed differs, then wiping the database is the *only* thing you
-   can do. You're only required to set this parameter to true as a sign that you
-   realise this.
-Requires:
- stdlib
-Sample Usage:
-
-This module is used as backward compability layer for modules
-which require rabbitmq::server instead of rabbitmq class.
-It's still common uasge in many modules.
-
-
-[Remember: No empty lines between comments and class definition]
+This module manages the installation and config of the rabbitmq server. It is used as backward compability layer for modules which
+  require rabbitmq::server instead of rabbitmq class.
 
 #### Parameters
 
@@ -963,129 +927,131 @@ The following parameters are available in the `rabbitmq::server` class.
 
 ##### `port`
 
-Data type: `Any`
+Data type: `Integer`
 
-
+Port that rabbitmq server should listen to
 
 Default value: $rabbitmq::params::port
 
 ##### `delete_guest_user`
 
-Data type: `Any`
+Data type: `Boolean`
 
-
+Whether or not to delete the default user
 
 Default value: $rabbitmq::params::delete_guest_user
 
 ##### `package_name`
 
-Data type: `Any`
+Data type: `Variant[String, Array]`
 
-
+Name of rabbitmq package
 
 Default value: $rabbitmq::params::package_name
 
 ##### `service_name`
 
-Data type: `Any`
+Data type: `String`
 
-
+Name of rabbitmq service
 
 Default value: $rabbitmq::params::service_name
 
 ##### `service_ensure`
 
-Data type: `Any`
+Data type: `Enum['running', 'stopped']`
 
-
+Desired ensure state for service
 
 Default value: $rabbitmq::params::service_ensure
 
 ##### `service_manage`
 
-Data type: `Any`
+Data type: `Boolean`
 
-
+Determines if the service is managed
 
 Default value: $rabbitmq::params::service_manage
 
 ##### `config_stomp`
 
-Data type: `Any`
+Data type: `Boolean`
 
-
+Enable or disable stomp
 
 Default value: $rabbitmq::params::config_stomp
 
 ##### `stomp_port`
 
-Data type: `Any`
+Data type: `Integer[1, 65535]`
 
-
+Port stomp should be listening on
 
 Default value: $rabbitmq::params::stomp_port
 
-##### `config_cluster`
-
-Data type: `Any`
-
-
-
-Default value: $rabbitmq::params::config_cluster
-
-##### `cluster_nodes`
-
-Data type: `Any`
-
-
-
-Default value: $rabbitmq::params::cluster_nodes
-
-##### `cluster_node_type`
-
-Data type: `Any`
-
-
-
-Default value: $rabbitmq::params::cluster_node_type
-
 ##### `node_ip_address`
 
-Data type: `Any`
+Data type: `Optional[String]`
 
-
+IP address for rabbitmq to bind to
 
 Default value: $rabbitmq::params::node_ip_address
 
 ##### `config`
 
-Data type: `Any`
+Data type: `String`
 
-
+Contents of config file
 
 Default value: $rabbitmq::params::config
 
 ##### `env_config`
 
-Data type: `Any`
+Data type: `String`
 
-
+Contents of env-config file
 
 Default value: $rabbitmq::params::env_config
 
+##### `config_cluster`
+
+Data type: `Boolean`
+
+Whether to configure a RabbitMQ cluster
+
+Default value: $rabbitmq::params::config_cluster
+
+##### `cluster_nodes`
+
+Data type: `Array`
+
+Which nodes to cluster with (including the current one)
+
+Default value: $rabbitmq::params::cluster_nodes
+
+##### `cluster_node_type`
+
+Data type: `Enum['ram', 'disk', 'disc']`
+
+Type of cluster node (disc/disk or ram)
+
+Default value: $rabbitmq::params::cluster_node_type
+
 ##### `erlang_cookie`
 
-Data type: `Any`
+Data type: `Optional[String]`
 
-
+Erlang cookie, must be the same for all nodes in a cluster
 
 Default value: $rabbitmq::params::erlang_cookie
 
 ##### `wipe_db_on_cookie_change`
 
-Data type: `Any`
+Data type: `Boolean`
 
-
+Whether to wipe the RabbitMQ data if the specified erlang_cookie differs from the current one. This is a sad parameter: actually, if
+the cookie indeed differs, then wiping the database is the *only* thing you can do.  You're only required to set this parameter to
+true as a sign that you realise this.
 
 Default value: $rabbitmq::params::wipe_db_on_cookie_change
 

@@ -1,4 +1,6 @@
+# Manage presence / absence of user resource for guest management user.
 #
+# @api private
 class rabbitmq::management {
 
   $delete_guest_user = $rabbitmq::delete_guest_user
