@@ -1,15 +1,6 @@
-# Class: rabbitmq::service
+# This class manages the rabbitmq server service itself.
 #
-#   This class manages the rabbitmq server service itself.
-#
-# Parameters:
-#
-# Actions:
-#
-# Requires:
-#
-# Sample Usage:
-#
+# @api private
 class rabbitmq::service(
   Enum['running', 'stopped'] $service_ensure  = $rabbitmq::service_ensure,
   Boolean $service_manage                     = $rabbitmq::service_manage,

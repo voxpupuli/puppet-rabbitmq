@@ -1,5 +1,6 @@
-# Class rabbitmq::install
 # Ensures that rabbitmq-server exists
+#
+# @api private
 class rabbitmq::install {
 
   $package_ensure   = $rabbitmq::package_ensure

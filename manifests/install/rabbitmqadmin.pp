@@ -1,4 +1,6 @@
+# Install rabbitmq admin
 #
+# @api private
 class rabbitmq::install::rabbitmqadmin {
 
   if $rabbitmq::rabbitmqadmin_package {

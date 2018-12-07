@@ -1,7 +1,6 @@
-# rabbitmq::params
-#
 # @summary OS Specific parameters and other settings
 #
+# @api private
 class rabbitmq::params {
 
   case $facts['os']['family'] {
