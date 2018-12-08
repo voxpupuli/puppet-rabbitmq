@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v8.4.1](https://github.com/voxpupuli/puppet-rabbitmq/tree/v8.4.1) (2018-12-08)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v8.4.0...v8.4.1)
+
+**Fixed bugs:**
+
+- Update APT GPG Key [\#743](https://github.com/voxpupuli/puppet-rabbitmq/pull/743) ([Mezzle](https://github.com/Mezzle))
+
+**Closed issues:**
+
+- Package cloud APT GPG key changed? [\#742](https://github.com/voxpupuli/puppet-rabbitmq/issues/742)
+
+**Merged pull requests:**
+
+- Remove duplicated / outdated docs in README [\#747](https://github.com/voxpupuli/puppet-rabbitmq/pull/747) ([wyardley](https://github.com/wyardley))
+- Updates to rabbitmq::server docs [\#745](https://github.com/voxpupuli/puppet-rabbitmq/pull/745) ([wyardley](https://github.com/wyardley))
+- Update REFERENCE.md, remove docs dir from master [\#744](https://github.com/voxpupuli/puppet-rabbitmq/pull/744) ([wyardley](https://github.com/wyardley))
+- Replace is\_ipv6\_address with Puppet 4 native comparision [\#738](https://github.com/voxpupuli/puppet-rabbitmq/pull/738) ([baurmatt](https://github.com/baurmatt))
+- modulesync 2.2.0 and allow puppet 6.x [\#735](https://github.com/voxpupuli/puppet-rabbitmq/pull/735) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v8.4.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v8.4.0) (2018-10-04)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v8.3.0...v8.4.0)
