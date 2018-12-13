@@ -8,6 +8,14 @@ class Puppet::Provider::Rabbitmqctl < Puppet::Provider
     version[1] if version
   end
 
+  # rabbitmqctl version 3.7.9 introduced --no-table-headers flag
+  # which began causing problems for parsing. This resolves the issue
+  # by automatically adding the required flag in the event the RabbitMQ
+  # version is at or above 3.7.9
+  if Puppet::Util::Package.versioncmp(rabbitmq_version, '3.7.9') >= 0
+    commands rabbitmqctl: 'rabbitmqctl --no-table-headers'
+  end
+
   # Retry the given code block 'count' retries or until the
   # command suceeeds. Use 'step' delay between retries.
   # Limit each query time by 'timeout'.
