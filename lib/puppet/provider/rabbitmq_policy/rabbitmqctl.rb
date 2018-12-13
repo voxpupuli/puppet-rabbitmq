@@ -10,8 +10,14 @@ Puppet::Type.type(:rabbitmq_policy).provide(:rabbitmqctl, parent: Puppet::Provid
     @policies = {} unless @policies
     unless @policies[vhost]
       @policies[vhost] = {}
-      policy_list = run_with_retries do
-        rabbitmqctl('list_policies', '--no-table-headers', '-q', '-p', vhost)
+      if Puppet::Util::Package.versioncmp(rabbitmq_version, '3.7') >= 0
+        policy_list = run_with_retries do
+          rabbitmqctl('list_policies', '--no-table-headers', '-q', '-p', vhost)
+	end
+      else
+        policy_list = run_with_retries do
+          rabbitmqctl('list_policies', '-q', '-p', vhost)
+	end
       end
 
       # rabbitmq<3.2 does not support the applyto field
