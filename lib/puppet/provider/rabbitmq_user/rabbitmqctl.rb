@@ -15,9 +15,16 @@ Puppet::Type.type(:rabbitmq_user).provide(
   end
 
   def self.instances
-    user_list = run_with_retries do
-      rabbitmqctl('-q', '--no-table-headers', 'list_users')
+    if Puppet::Util::Package.versioncmp(rabbitmq_version, '3.7') >= 0
+      user_list = run_with_retries do
+        rabbitmqctl('-q', '--no-table-headers', 'list_users')
+      end
+    else
+      user_list = run_with_retries do
+        rabbitmqctl('-q', 'list_users')
+      end
     end
+
 
     user_list.split(%r{\n}).map do |line|
       raise Puppet::Error, "Cannot parse invalid user line: #{line}" unless line =~ %r{^(\S+)\s+\[(.*?)\]$}
