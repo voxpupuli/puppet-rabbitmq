@@ -366,7 +366,7 @@ class rabbitmq(
   Optional[Integer] $collect_statistics_interval                                                   = undef,
   Boolean $ipv6                                                                                    = $rabbitmq::params::ipv6,
   String $inetrc_config                                                                            = $rabbitmq::params::inetrc_config,
-  Rabbitmq::Absolutepath $inetrc_config_path                                                         = $rabbitmq::params::inetrc_config_path,
+  Variant[Rabbitmq::Absolutepath, String] $inetrc_config_path                                                         = $rabbitmq::params::inetrc_config_path,
   Boolean $ssl_erl_dist                                                                            = $rabbitmq::params::ssl_erl_dist,
   Optional[String] $rabbitmqadmin_package                                                          = $rabbitmq::params::rabbitmqadmin_package,
   Array $archive_options                                                                           = $rabbitmq::params::archive_options,
