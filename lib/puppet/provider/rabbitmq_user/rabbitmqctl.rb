@@ -15,7 +15,7 @@ Puppet::Type.type(:rabbitmq_user).provide(
   end
 
   def self.instances
-    if Puppet::Util::Package.versioncmp(rabbitmq_version, '3.7') >= 0
+    if Puppet::Util::Package.versioncmp(rabbitmq_version, '3.7.9') >= 0
       user_list = run_with_retries do
         rabbitmqctl('-q', '--no-table-headers', 'list_users')
       end
