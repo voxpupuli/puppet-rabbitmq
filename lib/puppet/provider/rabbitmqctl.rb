@@ -5,7 +5,14 @@ class Puppet::Provider::Rabbitmqctl < Puppet::Provider
   def self.rabbitmq_version
     output = rabbitmqctl('-q', 'status')
     version = output.match(%r{\{rabbit,"RabbitMQ","([\d\.]+)"\}})
-    version[1] if version
+    if version
+      if Puppet::Util::Package.versioncmp(version[1], '3.7.9') >= 0
+        @format_table_headers = '--no-table-headers'
+      else
+        @format_table_headers = nil
+      end
+      version[1]
+    end
   end
 
   # Retry the given code block 'count' retries or until the

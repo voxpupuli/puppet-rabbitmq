@@ -10,7 +10,7 @@ Puppet::Type.type(:rabbitmq_vhost).provide(:rabbitmqctl, parent: Puppet::Provide
 
   def self.instances
     vhost_list = run_with_retries do
-      rabbitmqctl('-q', 'list_vhosts')
+      rabbitmqctl("#{@format_table_headers} -q list_vhosts".split(' '))
     end
 
     vhost_list.split(%r{\n}).map do |line|
@@ -28,6 +28,6 @@ Puppet::Type.type(:rabbitmq_vhost).provide(:rabbitmqctl, parent: Puppet::Provide
   end
 
   def exists?
-    self.class.run_with_retries { rabbitmqctl('-q', 'list_vhosts') }.split(%r{\n}).include? resource[:name]
+    self.class.run_with_retries { rabbitmqctl("#{@format_table_headers} -q list_vhosts".split(' ')) }.split(%r{\n}).include? resource[:name]
   end
 end

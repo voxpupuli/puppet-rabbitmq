@@ -25,14 +25,14 @@ Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin) do
 
   def self.all_vhosts
     vhosts = []
-    rabbitmqctl('list_vhosts', '-q').split(%r{\n}).map do |vhost|
+    rabbitmqctl("#{@format_table_headers} -q list_vhosts".split(' ')).split(%r{\n}).map do |vhost|
       vhosts.push(vhost)
     end
     vhosts
   end
 
   def self.all_bindings(vhost)
-    rabbitmqctl('list_bindings', '-q', '-p', vhost, 'source_name', 'destination_name', 'destination_kind', 'routing_key', 'arguments').split(%r{\n})
+    rabbitmqctl("#{@format_table_headers} list_bindings -q -p #{vhost} source_name destination_name destination_kind routing_key arguments".split(' ')).split(%r{\n})
   end
 
   def self.instances
