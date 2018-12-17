@@ -23,7 +23,7 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, parent: Puppet::Pr
   end
 
   def self.all_vhosts
-    run_with_retries { rabbitmqctl(format_table_headers, '-q', 'list_vhosts') }.split(%r{\n})
+    run_with_retries { rabbitmqctl(exec_args, '-q', 'list_vhosts') }.split(%r{\n})
   end
 
   def self.all_exchanges(vhost)
