@@ -2,16 +2,29 @@ class Puppet::Provider::Rabbitmqctl < Puppet::Provider
   initvars
   commands rabbitmqctl: 'rabbitmqctl'
 
-  $format_table_headers = ''
+  #@rabbit_version = nil
 
   def self.rabbitmq_version
     output = rabbitmqctl('-q', 'status')
     version = output.match(%r{\{rabbit,"RabbitMQ","([\d\.]+)"\}})
     if version
-      if Gem::Version.new(version[1]) >= Gem::Version.new('3.7.9')
-        $format_table_headers = '--no-table-headers'
-      end
+      @rabbit_version = version[1]
       version[1]
+    end
+  end
+
+  def self.format_table_headers
+    if @rabbit_version
+      if Gem::Version.new(@rabbit_version) >= Gem::Version.new('3.7.9')
+        '--no-table-headers'
+      else
+        return
+      end
+    else
+      # rabbit_version is unknown, run rabbitmq_version function
+      # to update the local instance variable rabbit_version
+      rabbitmq_version
+      format_table_headers
     end
   end
 
