@@ -10,7 +10,7 @@ Puppet::Type.type(:rabbitmq_vhost).provide(:rabbitmqctl, parent: Puppet::Provide
 
   def self.instances
     vhost_list = run_with_retries do
-      rabbitmqctl('-q', 'list_vhosts')
+      rabbitmqctl($format_table_headers, '-q', 'list_vhosts')
     end
 
     vhost_list.split(%r{\n}).map do |line|

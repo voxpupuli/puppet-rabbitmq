@@ -16,7 +16,7 @@ Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl, parent: Pupp
     unless @users[name]
       @users[name] = {}
       user_permission_list = run_with_retries do
-        rabbitmqctl('-q', 'list_user_permissions', name)
+        rabbitmqctl($format_table_headers, '-q', 'list_user_permissions', name)
       end
       user_permission_list.split(%r{\n}).each do |line|
         line = strip_backslashes(line)

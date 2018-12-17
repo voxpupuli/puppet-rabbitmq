@@ -2,10 +2,16 @@ class Puppet::Provider::Rabbitmqctl < Puppet::Provider
   initvars
   commands rabbitmqctl: 'rabbitmqctl'
 
+  $format_table_headers = ''
+
   def self.rabbitmq_version
     output = rabbitmqctl('-q', 'status')
     version = output.match(%r{\{rabbit,"RabbitMQ","([\d\.]+)"\}})
-    version[1] if version
+    if version
+      if Gem::Version.new(version[1]) >= Gem::Version.new('3.7.9')
+        $format_table_headers = '--no-table-headers'
+      version[1]
+    end
   end
 
   # Retry the given code block 'count' retries or until the

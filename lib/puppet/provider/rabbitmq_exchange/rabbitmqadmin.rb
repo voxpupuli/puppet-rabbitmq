@@ -23,12 +23,12 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, parent: Puppet::Pr
   end
 
   def self.all_vhosts
-    run_with_retries { rabbitmqctl('-q', 'list_vhosts') }.split(%r{\n})
+    run_with_retries { rabbitmqctl($format_table_headers, '-q', 'list_vhosts') }.split(%r{\n})
   end
 
   def self.all_exchanges(vhost)
     exchange_list = run_with_retries do
-      rabbitmqctl('-q', 'list_exchanges', '-p', vhost, 'name', 'type', 'internal', 'durable', 'auto_delete', 'arguments')
+      rabbitmqctl($format_table_headers, '-q', 'list_exchanges', '-p', vhost, 'name', 'type', 'internal', 'durable', 'auto_delete', 'arguments')
     end
     exchange_list.split(%r{\n}).reject { |exchange| exchange =~ %r{^federation:} }
   end
