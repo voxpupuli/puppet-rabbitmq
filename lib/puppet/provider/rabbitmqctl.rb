@@ -10,6 +10,7 @@ class Puppet::Provider::Rabbitmqctl < Puppet::Provider
     if version
       if Gem::Version.new(version[1]) >= Gem::Version.new('3.7.9')
         $format_table_headers = '--no-table-headers'
+      end
       version[1]
     end
   end
