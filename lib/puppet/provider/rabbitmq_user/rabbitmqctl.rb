@@ -16,7 +16,7 @@ Puppet::Type.type(:rabbitmq_user).provide(
 
   def self.instances
     user_list = run_with_retries do
-      rabbitmqctl(format_table_headers, '-q', 'list_users')
+      rabbitmqctl(exec_args, 'list_users')
     end
 
     user_list.split(%r{\n}).map do |line|

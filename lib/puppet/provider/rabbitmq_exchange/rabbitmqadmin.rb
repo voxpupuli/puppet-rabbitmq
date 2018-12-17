@@ -28,7 +28,7 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, parent: Puppet::Pr
 
   def self.all_exchanges(vhost)
     exchange_list = run_with_retries do
-      rabbitmqctl(format_table_headers, '-q', 'list_exchanges', '-p', vhost, 'name', 'type', 'internal', 'durable', 'auto_delete', 'arguments')
+      rabbitmqctl(exec_args, 'list_exchanges', '-p', vhost, 'name', 'type', 'internal', 'durable', 'auto_delete', 'arguments')
     end
     exchange_list.split(%r{\n}).reject { |exchange| exchange =~ %r{^federation:} }
   end

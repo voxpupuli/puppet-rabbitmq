@@ -11,7 +11,7 @@ Puppet::Type.type(:rabbitmq_policy).provide(:rabbitmqctl, parent: Puppet::Provid
     unless @policies[vhost]
       @policies[vhost] = {}
       policy_list = run_with_retries do
-        rabbitmqctl(format_table_headers, 'list_policies', '-q', '-p', vhost)
+        rabbitmqctl(exec_args, 'list_policies', '-p', vhost)
       end
 
       # rabbitmq<3.2 does not support the applyto field
