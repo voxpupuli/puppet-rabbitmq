@@ -39,8 +39,8 @@ describe Puppet::Type.type(:rabbitmq_policy).provider(:rabbitmqctl) do
   end
 
   it 'fails with invalid output from list' do
-    provider.class.expects(:rabbitmqctl).with('-q', 'status').returns '{rabbit,"RabbitMQ","3.1.5"}'
     provider.class.expects(:rabbitmqctl_list).with('policies', '-p', '/').returns 'foobar'
+    provider.class.expects(:rabbitmq_version).returns '3.1.5'
     expect { provider.exists? }.to raise_error(Puppet::Error, %r{cannot parse line from list_policies})
   end
 
@@ -96,8 +96,8 @@ EOT
   end
 
   it 'does not match an empty list' do
-    provider.class.expects(:rabbitmqctl).with('-q', 'status').returns '{rabbit,"RabbitMQ","3.1.5"}'
     provider.class.expects(:rabbitmqctl_list).with('policies', '-p', '/').returns ''
+    provider.class.expects(:rabbitmq_version).returns '3.1.5'
     expect(provider.exists?).to eq(nil)
   end
 
