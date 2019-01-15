@@ -1,17 +1,6 @@
 require 'puppet'
-require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmqctl'))
-Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, parent: Puppet::Provider::Rabbitmqctl) do
-  if Puppet::PUPPETVERSION.to_f < 3
-    commands rabbitmqctl: 'rabbitmqctl'
-    commands rabbitmqadmin: '/usr/local/bin/rabbitmqadmin'
-  else
-    has_command(:rabbitmqctl, 'rabbitmqctl') do
-      environment HOME: '/tmp'
-    end
-    has_command(:rabbitmqadmin, '/usr/local/bin/rabbitmqadmin') do
-      environment HOME: '/tmp'
-    end
-  end
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmq_cli'))
+Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, parent: Puppet::Provider::RabbitmqCli) do
   confine feature: :posix
 
   def should_vhost

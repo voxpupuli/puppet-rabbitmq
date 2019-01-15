@@ -178,11 +178,11 @@ DESC
   # Validate that we have both source and destination now that these are not
   # necessarily only coming from the resource title.
   validate do
-    if !self[:source] && !defined? provider.source
+    if !self[:source] && provider.source == :absent
       raise ArgumentError, '`source` must be defined'
     end
 
-    if !self[:destination] && !defined? provider.destination
+    if !self[:destination] && provider.destination == :absent
       raise ArgumentError, '`destination` must be defined'
     end
   end

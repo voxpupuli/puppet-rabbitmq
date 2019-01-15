@@ -1,13 +1,5 @@
-require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmqctl'))
-Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl, parent: Puppet::Provider::Rabbitmqctl) do
-  if Puppet::PUPPETVERSION.to_f < 3
-    commands rabbitmqctl: 'rabbitmqctl'
-  else
-    has_command(:rabbitmqctl, 'rabbitmqctl') do
-      environment HOME: '/tmp'
-    end
-  end
-
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmq_cli'))
+Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl, parent: Puppet::Provider::RabbitmqCli) do
   confine feature: :posix
 
   # cache users permissions

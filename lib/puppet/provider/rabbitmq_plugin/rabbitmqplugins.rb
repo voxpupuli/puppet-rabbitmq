@@ -1,16 +1,5 @@
-require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmqctl'))
-Puppet::Type.type(:rabbitmq_plugin).provide(:rabbitmqplugins, parent: Puppet::Provider::Rabbitmqctl) do
-  # Prefer rabbitmq-plugins if it's in $PATH, but fall back to /usr/lib/rabbitmq/bin
-  if Puppet::Util.which('rabbitmq-plugins')
-    has_command(:rabbitmqplugins, 'rabbitmq-plugins') do
-      environment HOME: '/tmp'
-    end
-  else
-    has_command(:rabbitmqplugins, '/usr/lib/rabbitmq/bin/rabbitmq-plugins') do
-      environment HOME: '/tmp'
-    end
-  end
-
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmq_cli'))
+Puppet::Type.type(:rabbitmq_plugin).provide(:rabbitmqplugins, parent: Puppet::Provider::RabbitmqCli) do
   confine feature: :posix
 
   def self.instances

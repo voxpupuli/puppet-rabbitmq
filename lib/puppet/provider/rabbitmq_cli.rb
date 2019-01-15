@@ -1,6 +1,21 @@
-class Puppet::Provider::Rabbitmqctl < Puppet::Provider
+class Puppet::Provider::RabbitmqCli < Puppet::Provider
   initvars
-  commands rabbitmqctl: 'rabbitmqctl'
+
+  def self.rabbitmq_command(name, binary)
+    path = Puppet::Util.which(binary) || "/usr/lib/rabbitmq/bin/#{binary}"
+    home_tmp_command name, path
+  end
+
+  def self.home_tmp_command(name, path)
+    has_command name, path do
+      environment HOME: '/tmp'
+    end
+  end
+
+  rabbitmq_command :rabbitmqctl, 'rabbitmqctl'
+  rabbitmq_command :rabbitmqplugins, 'rabbitmq-plugins'
+
+  home_tmp_command :rabbitmqadmin, '/usr/local/bin/rabbitmqadmin'
 
   def self.rabbitmq_version
     output = rabbitmqctl('-q', 'status')

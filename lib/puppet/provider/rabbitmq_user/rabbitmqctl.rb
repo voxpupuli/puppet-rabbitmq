@@ -1,12 +1,8 @@
-require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmqctl'))
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmq_cli'))
 Puppet::Type.type(:rabbitmq_user).provide(
   :rabbitmqctl,
-  parent: Puppet::Provider::Rabbitmqctl
+  parent: Puppet::Provider::RabbitmqCli
 ) do
-  has_command(:rabbitmqctl, 'rabbitmqctl') do
-    environment HOME: '/tmp'
-  end
-
   confine feature: :posix
 
   def initialize(value = {})

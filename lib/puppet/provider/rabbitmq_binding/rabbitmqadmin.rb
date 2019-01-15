@@ -2,14 +2,8 @@ require 'json'
 require 'puppet'
 require 'digest'
 
-Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin) do
-  has_command(:rabbitmqctl, 'rabbitmqctl') do
-    environment HOME: '/tmp'
-  end
-  has_command(:rabbitmqadmin, '/usr/local/bin/rabbitmqadmin') do
-    environment HOME: '/tmp'
-  end
-
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmq_cli'))
+Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin, parent: Puppet::Provider::RabbitmqCli) do
   confine feature: :posix
 
   # Without this, the composite namevar stuff doesn't work properly.
