@@ -18,9 +18,11 @@ class Puppet::Provider::RabbitmqCli < Puppet::Provider
   home_tmp_command :rabbitmqadmin, '/usr/local/bin/rabbitmqadmin'
 
   def self.rabbitmq_version
+    return @rabbitmq_version if defined? @rabbitmq_version
+
     output = rabbitmqctl('-q', 'status')
     version = output.match(%r{\{rabbit,"RabbitMQ","([\d\.]+)"\}})
-    version[1] if version
+    @rabbitmq_version = version[1] if version
   end
 
   def self.rabbitmqctl_list(resource, *opts)
