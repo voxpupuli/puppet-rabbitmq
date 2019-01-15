@@ -13,25 +13,25 @@ describe 'Puppet::Type.type(:rabbitmq_user_permissions).provider(:rabbitmqctl)' 
     provider_class.instance_variable_set(:@users, nil)
   end
   it 'matches user permissions from list' do
-    provider.class.expects(:rabbitmqctl).with('-q', 'list_user_permissions', 'foo').returns <<-EOT
+    provider.class.expects(:rabbitmqctl_list).with('user_permissions', 'foo').returns <<-EOT
 bar 1 2 3
 EOT
     expect(provider.exists?).to eq(configure: '1', write: '2', read: '3')
   end
   it 'matches user permissions with empty columns' do
-    provider.class.expects(:rabbitmqctl).with('-q', 'list_user_permissions', 'foo').returns <<-EOT
+    provider.class.expects(:rabbitmqctl_list).with('user_permissions', 'foo').returns <<-EOT
 bar			3
 EOT
     expect(provider.exists?).to eq(configure: '', write: '', read: '3')
   end
   it 'does not match user permissions with more than 3 columns' do
-    provider.class.expects(:rabbitmqctl).with('-q', 'list_user_permissions', 'foo').returns <<-EOT
+    provider.class.expects(:rabbitmqctl_list).with('user_permissions', 'foo').returns <<-EOT
 bar 1 2 3 4
 EOT
     expect { provider.exists? }.to raise_error(Puppet::Error, %r{cannot parse line from list_user_permissions})
   end
   it 'does not match an empty list' do
-    provider.class.expects(:rabbitmqctl).with('-q', 'list_user_permissions', 'foo').returns <<-EOT
+    provider.class.expects(:rabbitmqctl_list).with('user_permissions', 'foo').returns <<-EOT
 EOT
     expect(provider.exists?).to eq(nil)
   end
@@ -49,7 +49,7 @@ EOT
   end
   { configure_permission: '1', write_permission: '2', read_permission: '3' }.each do |k, v|
     it "should be able to retrieve #{k}" do
-      provider.class.expects(:rabbitmqctl).with('-q', 'list_user_permissions', 'foo').returns <<-EOT
+      provider.class.expects(:rabbitmqctl_list).with('user_permissions', 'foo').returns <<-EOT
 bar 1 2 3
 EOT
       expect(provider.send(k)).to eq(v)
@@ -57,7 +57,7 @@ EOT
   end
   { configure_permission: '1', write_permission: '2', read_permission: '3' }.each do |k, v|
     it "should be able to retrieve #{k} after exists has been called" do
-      provider.class.expects(:rabbitmqctl).with('-q', 'list_user_permissions', 'foo').returns <<-EOT
+      provider.class.expects(:rabbitmqctl_list).with('user_permissions', 'foo').returns <<-EOT
 bar 1 2 3
 EOT
       provider.exists?
@@ -68,7 +68,7 @@ EOT
     read_permission: %w[1 2 foo],
     write_permission: %w[1 foo 3] }.each do |perm, columns|
     it "should be able to sync #{perm}" do
-      provider.class.expects(:rabbitmqctl).with('-q', 'list_user_permissions', 'foo').returns <<-EOT
+      provider.class.expects(:rabbitmqctl_list).with('user_permissions', 'foo').returns <<-EOT
 bar 1 2 3
 EOT
       provider.resource[perm] = 'foo'
@@ -77,7 +77,7 @@ EOT
     end
   end
   it 'onlies call set_permissions once' do
-    provider.class.expects(:rabbitmqctl).with('-q', 'list_user_permissions', 'foo').returns <<-EOT
+    provider.class.expects(:rabbitmqctl_list).with('user_permissions', 'foo').returns <<-EOT
 bar 1 2 3
 EOT
     provider.resource[:configure_permission] = 'foo'

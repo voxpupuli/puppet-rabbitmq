@@ -10,7 +10,7 @@ describe provider_class do
   let(:provider) { provider_class.new(resource) }
 
   it 'matches vhost names' do
-    provider.expects(:rabbitmqctl).with('-q', 'list_vhosts').returns <<-EOT
+    provider.expects(:rabbitmqctl_list).with('vhosts').returns <<-EOT
 Listing vhosts ...
 foo
 ...done.
@@ -18,14 +18,14 @@ EOT
     expect(provider.exists?).to eq(true)
   end
   it 'does not match if no vhosts on system' do
-    provider.expects(:rabbitmqctl).with('-q', 'list_vhosts').returns <<-EOT
+    provider.expects(:rabbitmqctl_list).with('vhosts').returns <<-EOT
 Listing vhosts ...
 ...done.
 EOT
     expect(provider.exists?).to eq(false)
   end
   it 'does not match if no matching vhosts on system' do
-    provider.expects(:rabbitmqctl).with('-q', 'list_vhosts').returns <<-EOT
+    provider.expects(:rabbitmqctl_list).with('vhosts').returns <<-EOT
 Listing vhosts ...
 fooey
 ...done.
