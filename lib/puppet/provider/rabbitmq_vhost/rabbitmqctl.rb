@@ -22,6 +22,6 @@ Puppet::Type.type(:rabbitmq_vhost).provide(:rabbitmqctl, parent: Puppet::Provide
   end
 
   def exists?
-    self.class.run_with_retries { self.class.rabbitmqctl_list('vhosts') }.split(%r{\n}).include? resource[:name]
+    run_with_retries { rabbitmqctl_list('vhosts') }.split(%r{\n}).include? resource[:name]
   end
 end

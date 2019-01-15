@@ -54,4 +54,16 @@ class Puppet::Provider::RabbitmqCli < Puppet::Provider
     end
     raise Puppet::Error, "Command is still failing after #{count * step} seconds expired!"
   end
+
+  def self.define_instance_method(name)
+    unless method_defined?(name)
+      define_method(name) do |*args, &block|
+        self.class.send(name, *args, &block)
+      end
+    end
+  end
+  private_class_method :define_instance_method
+
+  define_instance_method :rabbitmqctl_list
+  define_instance_method :run_with_retries
 end
