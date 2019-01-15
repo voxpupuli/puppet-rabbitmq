@@ -46,12 +46,12 @@ describe Puppet::Type.type(:rabbitmq_parameter).provider(:rabbitmqctl) do
   end
 
   it 'fails with invalid output from list' do
-    provider.class.expects(:rabbitmqctl).with('list_parameters', '-q', '-p', '/').returns 'foobar'
+    provider.class.expects(:rabbitmqctl_list).with('parameters', '-p', '/').returns 'foobar'
     expect { provider.exists? }.to raise_error(Puppet::Error, %r{cannot parse line from list_parameter})
   end
 
   it 'matches parameters from list' do
-    provider.class.expects(:rabbitmqctl).with('list_parameters', '-q', '-p', '/').returns <<-EOT
+    provider.class.expects(:rabbitmqctl_list).with('parameters', '-p', '/').returns <<-EOT
 shovel  documentumShovel  {"src-uri":"amqp://","src-queue":"my-queue","dest-uri":"amqp://remote-server","dest-queue":"another-queue"}
 EOT
     expect(provider.exists?).to eq(component_name: 'shovel',
@@ -64,7 +64,7 @@ EOT
   end
 
   it 'does not match an empty list' do
-    provider.class.expects(:rabbitmqctl).with('list_parameters', '-q', '-p', '/').returns ''
+    provider.class.expects(:rabbitmqctl_list).with('parameters', '-p', '/').returns ''
     expect(provider.exists?).to eq(nil)
   end
 

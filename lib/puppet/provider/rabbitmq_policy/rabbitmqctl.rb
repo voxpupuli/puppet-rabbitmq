@@ -1,8 +1,8 @@
 require 'json'
 require 'puppet/util/package'
 
-require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmqctl'))
-Puppet::Type.type(:rabbitmq_policy).provide(:rabbitmqctl, parent: Puppet::Provider::Rabbitmqctl) do
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmq_cli'))
+Puppet::Type.type(:rabbitmq_policy).provide(:rabbitmqctl, parent: Puppet::Provider::RabbitmqCli) do
   confine feature: :posix
 
   # cache policies
@@ -11,7 +11,7 @@ Puppet::Type.type(:rabbitmq_policy).provide(:rabbitmqctl, parent: Puppet::Provid
     unless @policies[vhost]
       @policies[vhost] = {}
       policy_list = run_with_retries do
-        rabbitmqctl('list_policies', '-q', '-p', vhost)
+        rabbitmqctl_list('policies', '-p', vhost)
       end
 
       # rabbitmq<3.2 does not support the applyto field

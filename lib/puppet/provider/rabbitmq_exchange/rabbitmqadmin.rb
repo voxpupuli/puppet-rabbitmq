@@ -1,17 +1,6 @@
 require 'puppet'
-require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmqctl'))
-Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, parent: Puppet::Provider::Rabbitmqctl) do
-  if Puppet::PUPPETVERSION.to_f < 3
-    commands rabbitmqctl: 'rabbitmqctl'
-    commands rabbitmqadmin: '/usr/local/bin/rabbitmqadmin'
-  else
-    has_command(:rabbitmqctl, 'rabbitmqctl') do
-      environment HOME: '/tmp'
-    end
-    has_command(:rabbitmqadmin, '/usr/local/bin/rabbitmqadmin') do
-      environment HOME: '/tmp'
-    end
-  end
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmq_cli'))
+Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, parent: Puppet::Provider::RabbitmqCli) do
   confine feature: :posix
 
   def should_vhost
@@ -23,12 +12,12 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, parent: Puppet::Pr
   end
 
   def self.all_vhosts
-    run_with_retries { rabbitmqctl('-q', 'list_vhosts') }.split(%r{\n})
+    run_with_retries { rabbitmqctl_list('vhosts') }.split(%r{\n})
   end
 
   def self.all_exchanges(vhost)
     exchange_list = run_with_retries do
-      rabbitmqctl('-q', 'list_exchanges', '-p', vhost, 'name', 'type', 'internal', 'durable', 'auto_delete', 'arguments')
+      rabbitmqctl_list('exchanges', '-p', vhost, 'name', 'type', 'internal', 'durable', 'auto_delete', 'arguments')
     end
     exchange_list.split(%r{\n}).reject { |exchange| exchange =~ %r{^federation:} }
   end

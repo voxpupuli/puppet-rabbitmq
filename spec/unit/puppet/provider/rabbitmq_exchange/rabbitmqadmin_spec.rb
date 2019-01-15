@@ -17,10 +17,10 @@ describe provider_class do
   let(:provider) { provider_class.new(resource) }
 
   it 'returns instances' do
-    provider_class.expects(:rabbitmqctl).with('-q', 'list_vhosts').returns <<-EOT
+    provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<-EOT
 /
 EOT
-    provider_class.expects(:rabbitmqctl).with('-q', 'list_exchanges', '-p', '/', 'name', 'type', 'internal', 'durable', 'auto_delete', 'arguments').returns <<-EOT
+    provider_class.expects(:rabbitmqctl_list).with('exchanges', '-p', '/', 'name', 'type', 'internal', 'durable', 'auto_delete', 'arguments').returns <<-EOT
         direct  false   true    false   []
 amq.direct      direct  false   true    false   []
 amq.fanout      fanout  false   true    false   []

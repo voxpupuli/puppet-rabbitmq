@@ -39,15 +39,15 @@ describe Puppet::Type.type(:rabbitmq_policy).provider(:rabbitmqctl) do
   end
 
   it 'fails with invalid output from list' do
-    provider.class.expects(:rabbitmqctl).with('-q', 'status').returns '{rabbit,"RabbitMQ","3.1.5"}'
-    provider.class.expects(:rabbitmqctl).with('list_policies', '-q', '-p', '/').returns 'foobar'
+    provider.class.expects(:rabbitmqctl_list).with('policies', '-p', '/').returns 'foobar'
+    provider.class.expects(:rabbitmq_version).returns '3.1.5'
     expect { provider.exists? }.to raise_error(Puppet::Error, %r{cannot parse line from list_policies})
   end
 
   context 'with RabbitMQ version >=3.7.0' do
     it 'matches policies from list' do
       provider.class.expects(:rabbitmq_version).returns '3.7.0'
-      provider.class.expects(:rabbitmqctl).with('list_policies', '-q', '-p', '/').returns <<-EOT
+      provider.class.expects(:rabbitmqctl_list).with('policies', '-p', '/').returns <<-EOT
 / ha-all .* all {"ha-mode":"all","ha-sync-mode":"automatic"} 0
 / test .* exchanges {"ha-mode":"all"} 0
 EOT
@@ -64,7 +64,7 @@ EOT
   context 'with RabbitMQ version >=3.2.0 and < 3.7.0' do
     it 'matches policies from list' do
       provider.class.expects(:rabbitmq_version).returns '3.6.9'
-      provider.class.expects(:rabbitmqctl).with('list_policies', '-q', '-p', '/').returns <<-EOT
+      provider.class.expects(:rabbitmqctl_list).with('policies', '-p', '/').returns <<-EOT
 / ha-all all .* {"ha-mode":"all","ha-sync-mode":"automatic"} 0
 / test exchanges .* {"ha-mode":"all"} 0
 EOT
@@ -81,7 +81,7 @@ EOT
   context 'with RabbitMQ version <3.2.0' do
     it 'matches policies from list (<3.2.0)' do
       provider.class.expects(:rabbitmq_version).returns '3.1.5'
-      provider.class.expects(:rabbitmqctl).with('list_policies', '-q', '-p', '/').returns <<-EOT
+      provider.class.expects(:rabbitmqctl_list).with('policies', '-p', '/').returns <<-EOT
 / ha-all .* {"ha-mode":"all","ha-sync-mode":"automatic"} 0
 / test .* {"ha-mode":"all"} 0
 EOT
@@ -96,8 +96,8 @@ EOT
   end
 
   it 'does not match an empty list' do
-    provider.class.expects(:rabbitmqctl).with('-q', 'status').returns '{rabbit,"RabbitMQ","3.1.5"}'
-    provider.class.expects(:rabbitmqctl).with('list_policies', '-q', '-p', '/').returns ''
+    provider.class.expects(:rabbitmqctl_list).with('policies', '-p', '/').returns ''
+    provider.class.expects(:rabbitmq_version).returns '3.1.5'
     expect(provider.exists?).to eq(nil)
   end
 

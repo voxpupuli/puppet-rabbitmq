@@ -13,10 +13,10 @@ describe provider_class do
   let(:provider) { provider_class.new(resource) }
 
   it 'returns instances' do
-    provider_class.expects(:rabbitmqctl).with('list_vhosts', '-q').returns <<-EOT
+    provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<-EOT
 /
 EOT
-    provider_class.expects(:rabbitmqctl).with('list_queues', '-q', '-p', '/', 'name', 'durable', 'auto_delete', 'arguments').returns <<-EOT
+    provider_class.expects(:rabbitmqctl_list).with('queues', '-p', '/', 'name', 'durable', 'auto_delete', 'arguments').returns <<-EOT
 test  true  false []
 test2 true  false [{"x-message-ttl",342423},{"x-expires",53253232},{"x-max-length",2332},{"x-max-length-bytes",32563324242},{"x-dead-letter-exchange","amq.direct"},{"x-dead-letter-routing-key","test.routing"}]
 EOT

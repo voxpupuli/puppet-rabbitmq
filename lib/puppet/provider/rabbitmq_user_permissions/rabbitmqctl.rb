@@ -1,13 +1,5 @@
-require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmqctl'))
-Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl, parent: Puppet::Provider::Rabbitmqctl) do
-  if Puppet::PUPPETVERSION.to_f < 3
-    commands rabbitmqctl: 'rabbitmqctl'
-  else
-    has_command(:rabbitmqctl, 'rabbitmqctl') do
-      environment HOME: '/tmp'
-    end
-  end
-
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmq_cli'))
+Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl, parent: Puppet::Provider::RabbitmqCli) do
   confine feature: :posix
 
   # cache users permissions
@@ -16,7 +8,7 @@ Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl, parent: Pupp
     unless @users[name]
       @users[name] = {}
       user_permission_list = run_with_retries do
-        rabbitmqctl('-q', 'list_user_permissions', name)
+        rabbitmqctl_list('user_permissions', name)
       end
       user_permission_list.split(%r{\n}).each do |line|
         line = strip_backslashes(line)

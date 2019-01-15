@@ -1,17 +1,8 @@
 require 'json'
 require 'puppet'
-Puppet::Type.type(:rabbitmq_queue).provide(:rabbitmqadmin) do
-  if Puppet::PUPPETVERSION.to_f < 3
-    commands rabbitmqctl: 'rabbitmqctl'
-    commands rabbitmqadmin: '/usr/local/bin/rabbitmqadmin'
-  else
-    has_command(:rabbitmqctl, 'rabbitmqctl') do
-      environment HOME: '/tmp'
-    end
-    has_command(:rabbitmqadmin, '/usr/local/bin/rabbitmqadmin') do
-      environment HOME: '/tmp'
-    end
-  end
+
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmq_cli'))
+Puppet::Type.type(:rabbitmq_queue).provide(:rabbitmqadmin, parent: Puppet::Provider::RabbitmqCli) do
   confine feature: :posix
 
   def should_vhost
@@ -23,11 +14,11 @@ Puppet::Type.type(:rabbitmq_queue).provide(:rabbitmqadmin) do
   end
 
   def self.all_vhosts
-    rabbitmqctl('list_vhosts', '-q').split(%r{\n})
+    rabbitmqctl_list('vhosts').split(%r{\n})
   end
 
   def self.all_queues(vhost)
-    rabbitmqctl('list_queues', '-q', '-p', vhost, 'name', 'durable', 'auto_delete', 'arguments').split(%r{\n})
+    rabbitmqctl_list('queues', '-p', vhost, 'name', 'durable', 'auto_delete', 'arguments').split(%r{\n})
   end
 
   def self.instances

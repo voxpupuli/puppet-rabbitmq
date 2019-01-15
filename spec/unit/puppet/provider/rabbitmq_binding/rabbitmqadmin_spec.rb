@@ -15,11 +15,11 @@ describe provider_class do
   # rubocop:disable RSpec/MultipleExpectations
   describe '#instances' do
     it 'returns instances' do
-      provider_class.expects(:rabbitmqctl).with('list_vhosts', '-q').returns <<-EOT
+      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<-EOT
 /
 EOT
-      provider_class.expects(:rabbitmqctl).with(
-        'list_bindings', '-q', '-p', '/', 'source_name', 'destination_name', 'destination_kind', 'routing_key', 'arguments'
+      provider_class.expects(:rabbitmqctl_list).with(
+        'bindings', '-p', '/', 'source_name', 'destination_name', 'destination_kind', 'routing_key', 'arguments'
       ).returns <<-EOT
 exchange\tdst_queue\tqueue\t*\t[]
 EOT
@@ -45,11 +45,11 @@ EOT
 
     # rubocop:disable RSpec/MultipleExpectations
     it 'returns multiple instances' do
-      provider_class.expects(:rabbitmqctl).with('list_vhosts', '-q').returns <<-EOT
+      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<-EOT
 /
 EOT
-      provider_class.expects(:rabbitmqctl).with(
-        'list_bindings', '-q', '-p', '/', 'source_name', 'destination_name', 'destination_kind', 'routing_key', 'arguments'
+      provider_class.expects(:rabbitmqctl_list).with(
+        'bindings', '-p', '/', 'source_name', 'destination_name', 'destination_kind', 'routing_key', 'arguments'
       ).returns <<-EOT
 exchange\tdst_queue\tqueue\trouting_one\t[]
 exchange\tdst_queue\tqueue\trouting_two\t[]
@@ -94,11 +94,11 @@ EOT
     end
 
     it 'exists' do
-      provider_class.expects(:rabbitmqctl).with('list_vhosts', '-q').returns <<-EOT
+      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<-EOT
 /
 EOT
-      provider_class.expects(:rabbitmqctl).with(
-        'list_bindings', '-q', '-p', '/', 'source_name', 'destination_name', 'destination_kind', 'routing_key', 'arguments'
+      provider_class.expects(:rabbitmqctl_list).with(
+        'bindings', '-p', '/', 'source_name', 'destination_name', 'destination_kind', 'routing_key', 'arguments'
       ).returns <<-EOT
 exchange\tdst_queue\tqueue\t*\t[]
 EOT
@@ -108,11 +108,11 @@ EOT
 
     it 'matches' do
       # Test resource to match against
-      provider_class.expects(:rabbitmqctl).with('list_vhosts', '-q').returns <<-EOT
+      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<-EOT
 /
 EOT
-      provider_class.expects(:rabbitmqctl).with(
-        'list_bindings', '-q', '-p', '/', 'source_name', 'destination_name', 'destination_kind', 'routing_key', 'arguments'
+      provider_class.expects(:rabbitmqctl_list).with(
+        'bindings', '-p', '/', 'source_name', 'destination_name', 'destination_kind', 'routing_key', 'arguments'
       ).returns <<-EOT
 exchange\tdst_queue\tqueue\t*\t[]
 EOT

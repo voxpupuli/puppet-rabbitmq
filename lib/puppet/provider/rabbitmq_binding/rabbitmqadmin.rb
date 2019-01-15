@@ -2,14 +2,8 @@ require 'json'
 require 'puppet'
 require 'digest'
 
-Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin) do
-  has_command(:rabbitmqctl, 'rabbitmqctl') do
-    environment HOME: '/tmp'
-  end
-  has_command(:rabbitmqadmin, '/usr/local/bin/rabbitmqadmin') do
-    environment HOME: '/tmp'
-  end
-
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmq_cli'))
+Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin, parent: Puppet::Provider::RabbitmqCli) do
   confine feature: :posix
 
   # Without this, the composite namevar stuff doesn't work properly.
@@ -25,14 +19,14 @@ Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin) do
 
   def self.all_vhosts
     vhosts = []
-    rabbitmqctl('list_vhosts', '-q').split(%r{\n}).map do |vhost|
+    rabbitmqctl_list('vhosts').split(%r{\n}).map do |vhost|
       vhosts.push(vhost)
     end
     vhosts
   end
 
   def self.all_bindings(vhost)
-    rabbitmqctl('list_bindings', '-q', '-p', vhost, 'source_name', 'destination_name', 'destination_kind', 'routing_key', 'arguments').split(%r{\n})
+    rabbitmqctl_list('bindings', '-p', vhost, 'source_name', 'destination_name', 'destination_kind', 'routing_key', 'arguments').split(%r{\n})
   end
 
   def self.instances
