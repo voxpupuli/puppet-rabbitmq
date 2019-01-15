@@ -4,6 +4,32 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v8.5.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v8.5.0) (2019-01-20)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v8.4.1...v8.5.0)
+
+**Implemented enhancements:**
+
+- Officially support Ubuntu 18.04 [\#758](https://github.com/voxpupuli/puppet-rabbitmq/pull/758) ([baurmatt](https://github.com/baurmatt))
+
+**Fixed bugs:**
+
+- rabbitmqctl -q status fails [\#763](https://github.com/voxpupuli/puppet-rabbitmq/issues/763)
+- Wrong rabbitmq-plugins command is used installing plugins [\#748](https://github.com/voxpupuli/puppet-rabbitmq/issues/748)
+- Error 765 after latest update [\#741](https://github.com/voxpupuli/puppet-rabbitmq/issues/741)
+- rabbitmqctl 'broken' in 3.7.9 [\#740](https://github.com/voxpupuli/puppet-rabbitmq/issues/740)
+- Override the PATH for providers to include /usr/lib/rabbitmq/bin [\#766](https://github.com/voxpupuli/puppet-rabbitmq/pull/766) ([JayH5](https://github.com/JayH5))
+- RabbitMQ 3.7.9+ list compatibility and provider cleanup [\#759](https://github.com/voxpupuli/puppet-rabbitmq/pull/759) ([JayH5](https://github.com/JayH5))
+
+**Closed issues:**
+
+- Officially support Ubuntu 18.04 [\#757](https://github.com/voxpupuli/puppet-rabbitmq/issues/757)
+
+**Merged pull requests:**
+
+- Make Ubuntu 18.04 persistent for modulesync [\#767](https://github.com/voxpupuli/puppet-rabbitmq/pull/767) ([baurmatt](https://github.com/baurmatt))
+- Remove trailing whitespace in HISTORY [\#762](https://github.com/voxpupuli/puppet-rabbitmq/pull/762) ([wyardley](https://github.com/wyardley))
+
 ## [v8.4.1](https://github.com/voxpupuli/puppet-rabbitmq/tree/v8.4.1) (2018-12-08)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v8.4.0...v8.4.1)
@@ -285,7 +311,7 @@ These should not affect the functionality of the module.
 - \[Bugfix\] convert $ssl\_depth from string to integer [\#539](https://github.com/voxpupuli/puppet-rabbitmq/pull/539) ([bastelfreak](https://github.com/bastelfreak))
 - Extend rabbitmqadmin config template with SSL options. [\#526](https://github.com/voxpupuli/puppet-rabbitmq/pull/526) ([justahero](https://github.com/justahero))
 - \[MODULES-4223\] don't set NODE\_PORT and NODE\_IP\_ADDRESS if ssl\_only [\#524](https://github.com/voxpupuli/puppet-rabbitmq/pull/524) ([JAORMX](https://github.com/JAORMX))
-- \[MODULES-3733\] rabbitmq provider env\_path does not locate ruby gem installed puppet binary [\#517](https://github.com/voxpupuli/puppet-rabbitmq/pull/517) ([nzverev](https://github.com/nzverev))
+- \[MODULES-3733\] rabbitmq provider env\_path does not locate ruby gem installed puppet binary [\#517](https://github.com/voxpupuli/puppet-rabbitmq/pull/517) ([lowstorage](https://github.com/lowstorage))
 
 **Closed issues:**
 
