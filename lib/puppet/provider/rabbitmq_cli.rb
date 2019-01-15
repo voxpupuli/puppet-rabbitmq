@@ -23,6 +23,16 @@ class Puppet::Provider::RabbitmqCli < Puppet::Provider
     version[1] if version
   end
 
+  def self.rabbitmqctl_list(resource, *opts)
+    list_opts =
+      if Puppet::Util::Package.versioncmp(rabbitmq_version, '3.7.9') >= 0
+        ['-q', '--no-table-headers']
+      else
+        ['-q']
+      end
+    rabbitmqctl("list_#{resource}", *list_opts, *opts)
+  end
+
   # Retry the given code block 'count' retries or until the
   # command suceeeds. Use 'step' delay between retries.
   # Limit each query time by 'timeout'.

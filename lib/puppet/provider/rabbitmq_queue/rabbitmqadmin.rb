@@ -14,11 +14,11 @@ Puppet::Type.type(:rabbitmq_queue).provide(:rabbitmqadmin, parent: Puppet::Provi
   end
 
   def self.all_vhosts
-    rabbitmqctl('list_vhosts', '-q').split(%r{\n})
+    rabbitmqctl_list('vhosts').split(%r{\n})
   end
 
   def self.all_queues(vhost)
-    rabbitmqctl('list_queues', '-q', '-p', vhost, 'name', 'durable', 'auto_delete', 'arguments').split(%r{\n})
+    rabbitmqctl_list('queues', '-p', vhost, 'name', 'durable', 'auto_delete', 'arguments').split(%r{\n})
   end
 
   def self.instances
