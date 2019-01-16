@@ -18,7 +18,7 @@ RSpec.configure do |c|
   c.formatter = :documentation
   c.before :suite do
     hosts.each do |host|
-      install_package(host, 'iproute2') if fact('os.release.major').to_i == 18
+      install_package(host, 'iproute2') if fact('os.release.major').to_i == 18 || fact('os.release.major') == 'buster/sid'
       if fact('os.family') == 'RedHat' && fact('selinux') == 'true'
         # Make sure selinux is disabled so the tests work.
         on host, puppet('apply', '-e',
