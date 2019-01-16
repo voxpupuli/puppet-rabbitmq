@@ -254,7 +254,7 @@ the README for more information on how to configure this.
 - exchanges no longer recreated on each puppet run if non-default vhost is used
 - Allow port to be UNSET
 - Re-added rabbitmq::server class
-- Deprecated previously unused manage\_service variable in favor of 
+- Deprecated previously unused manage\_service variable in favor of
   service\_manage
 - Use correct key for rabbitmq apt::source
 - config\_mirrored\_queues variable removed
