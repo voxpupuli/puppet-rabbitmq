@@ -2,7 +2,18 @@ class Puppet::Provider::RabbitmqCli < Puppet::Provider
   initvars
 
   def self.rabbitmq_command(name, binary)
-    path = Puppet::Util.which(binary) || "/usr/lib/rabbitmq/bin/#{binary}"
+    path = if Puppet::Util.which(binary)
+             Puppet::Util.which(binary)
+           # Work around problems on first run with provider not picking up
+           # programs in PATH
+           elsif File.file?("/usr/sbin/#{binary}")
+             "/usr/sbin/#{binary}"
+           else
+             # With certain RabbitMQ versions / distributions still don't have
+             # the wrapper.
+             "/usr/lib/rabbitmq/bin/#{binary}"
+           end
+
     home_tmp_command name, path
   end
 
