@@ -9,6 +9,12 @@ manages rabbitmq plugins
  rabbitmq_plugin {'rabbitmq_stomp':
    ensure => present,
  }
+
+@example Ensure a rabbitmq_plugin offline resource (with RabbitMQ version >=3.4.0)
+ rabbitmq_plugin {'rabbitmq_stomp':
+   ensure => present,
+   mode   => 'offline',
+ }
 DESC
 
   ensurable do
@@ -24,6 +30,12 @@ DESC
   newparam(:name, namevar: true) do
     desc 'The name of the plugin to enable'
     newvalues(%r{^\S+$})
+  end
+
+  newparam(:mode) do
+    desc 'Define how the plugin should be enabled regarding node status.'
+    newvalues(:online, :offline, :best)
+    defaultto(:best)
   end
 
   newparam(:umask) do
