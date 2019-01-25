@@ -53,7 +53,7 @@ class Puppet::Provider::RabbitmqCli < Puppet::Provider
   end
 
   # Retry the given code block 'count' retries or until the
-  # command suceeeds. Use 'step' delay between retries.
+  # command succeeds. Use 'step' delay between retries.
   # Limit each query time by 'timeout'.
   # For example:
   #   users = self.class.run_with_retries { rabbitmqctl 'list_users' }
