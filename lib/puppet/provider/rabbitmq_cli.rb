@@ -52,6 +52,13 @@ class Puppet::Provider::RabbitmqCli < Puppet::Provider
     rabbitmqctl("list_#{resource}", *list_opts, *opts)
   end
 
+  def self.rabbitmq_running
+    rabbitmqctl('-q', 'status')
+    return true
+  rescue Puppet::ExecutionFailure, Timeout::Error
+    return false
+  end
+
   # Retry the given code block 'count' retries or until the
   # command succeeds. Use 'step' delay between retries.
   # Limit each query time by 'timeout'.
