@@ -4,7 +4,19 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
-## [v8.5.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v8.5.0) (2019-01-20)
+## [v9.0.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v9.0.0) (2019-01-29)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v8.5.0...v9.0.0)
+
+**Breaking changes:**
+
+- modulesync 2.5.1 and drop Puppet4 [\#761](https://github.com/voxpupuli/puppet-rabbitmq/pull/761) ([bastelfreak](https://github.com/bastelfreak))
+
+**Implemented enhancements:**
+
+- Allow offline and online mode for plugins [\#765](https://github.com/voxpupuli/puppet-rabbitmq/pull/765) ([ahmet2mir](https://github.com/ahmet2mir))
+
+## [v8.5.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v8.5.0) (2019-01-25)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v8.4.1...v8.5.0)
 
