@@ -81,6 +81,10 @@
 #
 # @param admin_enable
 #   If enabled sets up the management interface/plugin for RabbitMQ.
+#   This also install the rabbitmqadmin command line tool.
+# @param management_enable
+#   If enabled sets up the management interface/plugin for RabbitMQ.
+#   NOTE: This does not install the rabbitmqadmin command line tool.
 # @param auth_backends
 #   An array specifying authorization/authentication backend to use. Single quotes should be placed around array entries,
 #   ex. `['{foo, baz}', 'baz']` Defaults to [rabbit_auth_backend_internal], and if using LDAP defaults to [rabbit_auth_backend_internal,
@@ -280,6 +284,7 @@
 #
 class rabbitmq(
   Boolean $admin_enable                                                                            = $rabbitmq::params::admin_enable,
+  Boolean $management_enable                                                                       = $rabbitmq::params::management_enable,
   Enum['ram', 'disk', 'disc'] $cluster_node_type                                                   = $rabbitmq::params::cluster_node_type,
   Array $cluster_nodes                                                                             = $rabbitmq::params::cluster_nodes,
   String $config                                                                                   = $rabbitmq::params::config,
@@ -408,14 +413,16 @@ class rabbitmq(
   contain rabbitmq::service
   contain rabbitmq::management
 
-  if $admin_enable and $service_manage {
-    include 'rabbitmq::install::rabbitmqadmin'
-
+  if ($management_enable or $admin_enable) and $service_manage {
     rabbitmq_plugin { 'rabbitmq_management':
       ensure   => present,
       notify   => Class['rabbitmq::service'],
       provider => 'rabbitmqplugins',
     }
+  }
+
+  if $admin_enable and $service_manage {
+    include 'rabbitmq::install::rabbitmqadmin'
 
     Class['rabbitmq::service'] -> Class['rabbitmq::install::rabbitmqadmin']
     Class['rabbitmq::install::rabbitmqadmin'] -> Rabbitmq_exchange<| |>

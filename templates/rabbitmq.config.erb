@@ -96,12 +96,12 @@
     <%= @config_kernel_variables.sort.map{|k,v| "{#{k}, #{v}}"}.join(",\n    ") %>
   ]}
 <%- end -%>
-<%- if @admin_enable or !@config_management_variables.empty? -%>,
+<%- if @admin_enable or @management_enable or !@config_management_variables.empty? -%>,
   {rabbitmq_management, [
     <%- if !@config_management_variables.empty? -%>
     <%= @config_management_variables.sort.map{|k,v| "{#{k}, #{v}}"}.join(",\n    ") %>
     <%- end -%>
-<%- if @admin_enable -%>
+<%- if @admin_enable or @management_enable -%>
 <%- if  !@config_management_variables.empty? -%>,<%-end-%>
     {listener, [
 <%- if @ssl && @management_ssl -%>

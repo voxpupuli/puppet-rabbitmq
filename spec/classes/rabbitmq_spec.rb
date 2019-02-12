@@ -615,6 +615,50 @@ describe 'rabbitmq' do
         end
       end
 
+      describe 'configure management plugin' do
+        let :params do
+          {
+            admin_enable: true,
+            management_enable: false
+          }
+        end
+
+        it { is_expected.to contain_rabbitmq_plugin('rabbitmq_management') }
+        it 'sets rabbitmq_managment opts to specified values' do
+          is_expected.to contain_file('rabbitmq.config').with_content(%r{rabbitmq_management, \[})
+          is_expected.to contain_file('rabbitmq.config').with_content(%r{listener, \[})
+          is_expected.to contain_file('rabbitmq.config').with_content(%r{port, 15672\}})
+        end
+
+        describe 'with admin_enable false' do
+          let :params do
+            {
+              admin_enable: false,
+              management_enable: false
+            }
+          end
+
+          it { is_expected.not_to contain_rabbitmq_plugin('rabbitmq_management') }
+        end
+
+        describe 'with admin_enable false and management_enable true' do
+          let :params do
+            {
+              admin_enable: false,
+              management_enable: true
+            }
+          end
+
+          it { is_expected.to contain_rabbitmq_plugin('rabbitmq_management') }
+          it 'sets rabbitmq_managment opts to specified values' do
+            is_expected.to contain_file('rabbitmq.config').with_content(%r{rabbitmq_management, \[})
+            is_expected.to contain_file('rabbitmq.config').with_content(%r{listener, \[})
+            is_expected.to contain_file('rabbitmq.config').with_content(%r{port, 15672\}})
+          end
+        end
+      end
+
+
       describe 'configuring shovel plugin' do
         let :params do
           {
