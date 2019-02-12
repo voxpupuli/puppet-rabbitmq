@@ -83,6 +83,7 @@ class rabbitmq::params {
 
   #install
   $admin_enable                        = true
+  $management_enable                   = false
   $management_port                     = 15672
   $management_ssl                      = true
   $repos_ensure                        = false

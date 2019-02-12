@@ -5,6 +5,7 @@
 class rabbitmq::config {
 
   $admin_enable                        = $rabbitmq::admin_enable
+  $management_enable                   = $rabbitmq::management_enable
   $cluster_node_type                   = $rabbitmq::cluster_node_type
   $cluster_nodes                       = $rabbitmq::cluster_nodes
   $config                              = $rabbitmq::config
