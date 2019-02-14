@@ -5,6 +5,8 @@
 class rabbitmq::config {
 
   $admin_enable                        = $rabbitmq::admin_enable
+  $management_enable                   = $rabbitmq::management_enable
+  $use_config_file_for_plugins         = $rabbitmq::use_config_file_for_plugins
   $cluster_node_type                   = $rabbitmq::cluster_node_type
   $cluster_nodes                       = $rabbitmq::cluster_nodes
   $config                              = $rabbitmq::config
@@ -12,6 +14,7 @@ class rabbitmq::config {
   $config_path                         = $rabbitmq::config_path
   $config_ranch                        = $rabbitmq::config_ranch
   $config_stomp                        = $rabbitmq::config_stomp
+  $stomp_ensure                        = $rabbitmq::stomp_ensure
   $config_shovel                       = $rabbitmq::config_shovel
   $config_shovel_statics               = $rabbitmq::config_shovel_statics
   $default_user                        = $rabbitmq::default_user
@@ -177,6 +180,18 @@ class rabbitmq::config {
     owner   => '0',
     group   => $rabbitmq_group,
     mode    => '0640',
+  }
+
+  if $use_config_file_for_plugins {
+    file { 'enabled_plugins':
+      ensure  => file,
+      path    => '/etc/rabbitmq/enabled_plugins',
+      content => template('rabbitmq/enabled_plugins.erb'),
+      owner   => '0',
+      group   => $rabbitmq_group,
+      mode    => '0640',
+      require => File['/etc/rabbitmq'],
+    }
   }
 
   if $admin_enable {

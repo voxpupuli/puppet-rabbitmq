@@ -44,6 +44,12 @@ class rabbitmq::install::rabbitmqadmin {
       $sanitized_ip = $management_ip_address
     }
 
+    if !($rabbitmq::use_config_file_for_plugins) {
+      $rabbitmqadmin_archive_require = [Class['rabbitmq::service'], Rabbitmq_plugin['rabbitmq_management']]
+    } else {
+      $rabbitmqadmin_archive_require = [Class['rabbitmq::service'], File['enabled_plugins']]
+    }
+
     archive { 'rabbitmqadmin':
       path             => "${rabbitmq::rabbitmq_home}/rabbitmqadmin",
       source           => "${protocol}://${sanitized_ip}:${management_port}/cli/rabbitmqadmin",
@@ -52,10 +58,7 @@ class rabbitmq::install::rabbitmqadmin {
       allow_insecure   => true,
       download_options => $archive_options,
       cleanup          => false,
-      require          => [
-        Class['rabbitmq::service'],
-        Rabbitmq_plugin['rabbitmq_management']
-      ],
+      require          => $rabbitmqadmin_archive_require,
     }
 
     file { '/usr/local/bin/rabbitmqadmin':

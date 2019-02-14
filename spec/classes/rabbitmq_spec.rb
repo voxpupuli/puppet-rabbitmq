@@ -615,6 +615,99 @@ describe 'rabbitmq' do
         end
       end
 
+      context 'use config file for plugins' do
+        describe 'config_plugins_file: true' do
+          let :params do
+            { use_config_file_for_plugins: true }
+          end
+
+          it 'does not use rabbitmqplugin provider' do
+            is_expected.not_to contain_rabbitmq_plugin('rabbitmq_management')
+            is_expected.not_to contain_rabbitmq_plugin('rabbitmq_shovel_management')
+            is_expected.not_to contain_rabbitmq_plugin('rabbitmq_stomp')
+            is_expected.not_to contain_rabbitmq_plugin('rabbitmq_auth_backend_ldap')
+            is_expected.not_to contain_rabbitmq_plugin('rabbitmq_shovel')
+          end
+
+          it 'configures enabled_plugins' do
+            is_expected.to contain_file('enabled_plugins').with_content(%r{\[rabbitmq_management\]\.})
+          end
+        end
+
+        describe 'with all plugins enabled admin_enable: false, manamgent_enable: true' do
+          let :params do
+            {
+              use_config_file_for_plugins: true,
+              admin_enable: false,
+              management_enable: true,
+              stomp_ensure: true,
+              ldap_auth: true,
+              config_shovel: true
+            }
+          end
+
+          it 'does not use rabbitmqplugin provider' do
+            is_expected.not_to contain_rabbitmq_plugin('rabbitmq_management')
+            is_expected.not_to contain_rabbitmq_plugin('rabbitmq_shovel_management')
+            is_expected.not_to contain_rabbitmq_plugin('rabbitmq_stomp')
+            is_expected.not_to contain_rabbitmq_plugin('rabbitmq_auth_backend_ldap')
+            is_expected.not_to contain_rabbitmq_plugin('rabbitmq_shovel')
+          end
+
+          it 'configures enabled_plugins' do
+            is_expected.to contain_file('enabled_plugins').with_content(%r{rabbitmq_management})
+            is_expected.to contain_file('enabled_plugins').with_content(%r{rabbitmq_stomp})
+            is_expected.to contain_file('enabled_plugins').with_content(%r{rabbitmq_auth_backend_ldap})
+            is_expected.to contain_file('enabled_plugins').with_content(%r{rabbitmq_shovel})
+            is_expected.to contain_file('enabled_plugins').with_content(%r{rabbitmq_shovel_management})
+            is_expected.to contain_file('enabled_plugins').with_content(%r{\[rabbitmq_management,rabbitmq_stomp,rabbitmq_auth_backend_ldap,rabbitmq_shovel,rabbitmq_shovel_management\]\.})
+          end
+        end
+      end
+
+      describe 'configure management plugin' do
+        let :params do
+          {
+            admin_enable: true,
+            management_enable: false
+          }
+        end
+
+        it { is_expected.to contain_rabbitmq_plugin('rabbitmq_management') }
+        it 'sets rabbitmq_managment opts to specified values' do
+          is_expected.to contain_file('rabbitmq.config').with_content(%r{rabbitmq_management, \[})
+          is_expected.to contain_file('rabbitmq.config').with_content(%r{listener, \[})
+          is_expected.to contain_file('rabbitmq.config').with_content(%r{port, 15672\}})
+        end
+
+        describe 'with admin_enable false' do
+          let :params do
+            {
+              admin_enable: false,
+              management_enable: false
+            }
+          end
+
+          it { is_expected.not_to contain_rabbitmq_plugin('rabbitmq_management') }
+        end
+
+        describe 'with admin_enable false and management_enable true' do
+          let :params do
+            {
+              admin_enable: false,
+              management_enable: true
+            }
+          end
+
+          it { is_expected.to contain_rabbitmq_plugin('rabbitmq_management') }
+          it 'sets rabbitmq_managment opts to specified values' do
+            is_expected.to contain_file('rabbitmq.config').with_content(%r{rabbitmq_management, \[})
+            is_expected.to contain_file('rabbitmq.config').with_content(%r{listener, \[})
+            is_expected.to contain_file('rabbitmq.config').with_content(%r{port, 15672\}})
+          end
+        end
+      end
+
       describe 'configuring shovel plugin' do
         let :params do
           {
