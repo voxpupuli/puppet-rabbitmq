@@ -52,11 +52,11 @@ describe Puppet::Type.type(:rabbitmq_parameter).provider(:rabbitmqctl) do
 
   it 'matches parameters from list' do
     provider.class.expects(:rabbitmqctl_list).with('parameters', '-p', '/').returns <<-EOT
-shovel  documentumShovel  {"src-uri":"amqp://","src-queue":"my-queue","dest-uri":"amqp://remote-server","dest-queue":"another-queue"}
+shovel  documentumShovel  {"src-uri":["amqp://cl1","amqp://cl2"],"src-queue":"my-queue","dest-uri":"amqp://remote-server","dest-queue":"another-queue"}
 EOT
     expect(provider.exists?).to eq(component_name: 'shovel',
                                    value: {
-                                     'src-uri' => 'amqp://',
+                                     'src-uri' => ['amqp://cl1', 'amqp://cl2'],
                                      'src-queue'  => 'my-queue',
                                      'dest-uri'   => 'amqp://remote-server',
                                      'dest-queue' => 'another-queue'
