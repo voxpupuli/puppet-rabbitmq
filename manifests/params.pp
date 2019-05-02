@@ -15,6 +15,9 @@ class rabbitmq::params {
       $rabbitmq_home         = '/var/lib/rabbitmq'
       $package_gpg_key       = undef
       $rabbitmqadmin_package = 'rabbitmqadmin'
+      $config_path           = '/etc/rabbitmq/rabbitmq.config'
+      $env_config_path       = '/etc/rabbitmq/rabbitmq-env.conf'
+      $inetrc_config_path    = '/etc/rabbitmq/inetrc'
     }
     'Debian': {
       $manage_python         = true
@@ -27,6 +30,9 @@ class rabbitmq::params {
       $rabbitmq_home         = '/var/lib/rabbitmq'
       $package_gpg_key       = 'https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey'
       $rabbitmqadmin_package = undef
+      $config_path           = '/etc/rabbitmq/rabbitmq.config'
+      $env_config_path       = '/etc/rabbitmq/rabbitmq-env.conf'
+      $inetrc_config_path    = '/etc/rabbitmq/inetrc'
     }
     'OpenBSD': {
       $manage_python         = true
@@ -39,6 +45,9 @@ class rabbitmq::params {
       $rabbitmq_home         = '/var/rabbitmq'
       $package_gpg_key       = undef
       $rabbitmqadmin_package = undef
+      $config_path           = '/etc/rabbitmq/rabbitmq.config'
+      $env_config_path       = '/etc/rabbitmq/rabbitmq-env.conf'
+      $inetrc_config_path    = '/etc/rabbitmq/inetrc'
     }
     'FreeBSD': {
       $manage_python         = true
@@ -51,6 +60,9 @@ class rabbitmq::params {
       $rabbitmq_home         = '/var/db/rabbitmq'
       $package_gpg_key       = undef
       $rabbitmqadmin_package = undef
+      $config_path           = '/usr/local/etc/rabbitmq/rabbitmq.config'
+      $env_config_path       = '/usr/local/etc/rabbitmq/rabbitmq-env.conf'
+      $inetrc_config_path    = '/usr/local/etc/rabbitmq/inetrc'
     }
     'RedHat': {
       $manage_python         = true
@@ -63,6 +75,9 @@ class rabbitmq::params {
       $rabbitmq_home         = '/var/lib/rabbitmq'
       $package_gpg_key       = 'https://www.rabbitmq.com/rabbitmq-release-signing-key.asc'
       $rabbitmqadmin_package = undef
+      $config_path           = '/etc/rabbitmq/rabbitmq.config'
+      $env_config_path       = '/etc/rabbitmq/rabbitmq-env.conf'
+      $inetrc_config_path    = '/etc/rabbitmq/inetrc'
     }
     'SUSE': {
       $manage_python         = true
@@ -75,6 +90,9 @@ class rabbitmq::params {
       $rabbitmq_home         = '/var/lib/rabbitmq'
       $package_gpg_key       = undef
       $rabbitmqadmin_package = undef
+      $config_path           = '/etc/rabbitmq/rabbitmq.config'
+      $env_config_path       = '/etc/rabbitmq/rabbitmq-env.conf'
+      $inetrc_config_path    = '/etc/rabbitmq/inetrc'
     }
     default: {
       fail("The ${module_name} module is not supported on an ${facts['os']['family']} based system.")
@@ -95,7 +113,6 @@ class rabbitmq::params {
   $cluster_nodes                       = []
   $config                              = 'rabbitmq/rabbitmq.config.erb'
   $config_cluster                      = false
-  $config_path                         = '/etc/rabbitmq/rabbitmq.config'
   $config_ranch                        = true
   $config_stomp                        = false
   $config_shovel                       = false
@@ -104,7 +121,6 @@ class rabbitmq::params {
   $default_pass                        = 'guest'
   $delete_guest_user                   = false
   $env_config                          = 'rabbitmq/rabbitmq-env.conf.erb'
-  $env_config_path                     = '/etc/rabbitmq/rabbitmq-env.conf'
   $port                                = 5672
   $tcp_keepalive                       = false
   $tcp_backlog                         = 128
@@ -144,7 +160,6 @@ class rabbitmq::params {
   $file_limit                          = 16384
   $ipv6                                = false
   $inetrc_config                       = 'rabbitmq/inetrc.erb'
-  $inetrc_config_path                  = '/etc/rabbitmq/inetrc'
   $archive_options                     = []
   $loopback_users                      = ['guest']
   $service_restart                     = true
