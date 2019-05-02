@@ -37,7 +37,7 @@ class rabbitmq::repo::apt(
     apt::pin { 'rabbitmq':
       packages => '*',
       priority => $pin,
-      origin   => 'packagecloud.io',
+      origin   => inline_template('<%= require \'uri\'; URI(@location).host %>'),
     }
   }
 }
