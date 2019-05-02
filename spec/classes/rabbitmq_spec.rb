@@ -322,7 +322,7 @@ describe 'rabbitmq' do
         it {
           is_expected.to contain_file('/etc/rabbitmq').with(
             'ensure' => 'directory',
-            'mode'   => '0755'
+            'mode'   => '2755'
           )
         }
       end
@@ -332,7 +332,7 @@ describe 'rabbitmq' do
           is_expected.to contain_file('rabbitmq.config').with(
             'owner' => '0',
             'group' => 'rabbitmq',
-            'mode'  => '0640'
+            'mode'  => '0644'
           )
         }
       end
