@@ -1,14 +1,14 @@
-# Ensures that rabbitmq-server exists
+# @summary
+#   This class handles the RabbitMQ package.
 #
 # @api private
+#
 class rabbitmq::install {
 
-  $package_ensure   = $rabbitmq::package_ensure
-  $package_name     = $rabbitmq::package_name
-  $rabbitmq_group   = $rabbitmq::rabbitmq_group
+  assert_private()
 
-  package { $package_name:
-    ensure => $package_ensure,
+  package { $rabbitmq::package_name:
+    ensure => $rabbitmq::package_ensure,
     notify => Class['rabbitmq::service'],
   }
 
@@ -16,9 +16,9 @@ class rabbitmq::install {
     file { $rabbitmq::environment_variables['MNESIA_BASE']:
       ensure  => 'directory',
       owner   => 'root',
-      group   => $rabbitmq_group,
+      group   => $rabbitmq::rabbitmq_group,
       mode    => '0775',
-      require => Package[$package_name],
+      require => Package[$rabbitmq::package_name],
     }
   }
 }
