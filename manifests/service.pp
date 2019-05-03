@@ -1,14 +1,14 @@
-# This class manages the rabbitmq server service itself.
+# @summary
+#   This class handles the RabbitMQ service.
 #
 # @api private
-class rabbitmq::service(
-  Enum['running', 'stopped'] $service_ensure  = $rabbitmq::service_ensure,
-  Boolean $service_manage                     = $rabbitmq::service_manage,
-  $service_name                               = $rabbitmq::service_name,
-) inherits rabbitmq {
+#
+class rabbitmq::service {
 
-  if ($service_manage) {
-    if $service_ensure == 'running' {
+  assert_private()
+
+  if ($rabbitmq::service_manage) {
+    if $rabbitmq::service_ensure == 'running' {
       $ensure_real = 'running'
       $enable_real = true
     } else {
@@ -21,12 +21,11 @@ class rabbitmq::service(
       enable     => $enable_real,
       hasstatus  => true,
       hasrestart => true,
-      name       => $service_name,
+      name       => $rabbitmq::service_name,
     }
 
     if $facts['systemd'] {
       Class['systemd::systemctl::daemon_reload'] -> Service['rabbitmq-server']
     }
   }
-
 }
