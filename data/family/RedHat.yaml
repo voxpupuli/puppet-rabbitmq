@@ -1,0 +1,4 @@
+---
+rabbitmq::package_name: 'rabbitmq-server'
+rabbitmq::service_name: 'rabbitmq-server'
+rabbitmq::package_gpg_key: 'https://www.rabbitmq.com/rabbitmq-release-signing-key.asc'

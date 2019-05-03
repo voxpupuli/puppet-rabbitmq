@@ -1,0 +1,5 @@
+---
+rabbitmq::python_package: 'python2'
+rabbitmq::rabbitmq_user: '_rabbitmq'
+rabbitmq::rabbitmq_group: '_rabbitmq'
+rabbitmq::rabbitmq_home: '/var/rabbitmq'

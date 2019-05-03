@@ -39,23 +39,23 @@
 #   true as a sign that you realise this.
 #
 class rabbitmq::server(
-  Integer $port                                  = $rabbitmq::params::port,
-  Boolean $delete_guest_user                     = $rabbitmq::params::delete_guest_user,
-  Variant[String, Array] $package_name           = $rabbitmq::params::package_name,
-  String $service_name                           = $rabbitmq::params::service_name,
-  Enum['running', 'stopped'] $service_ensure     = $rabbitmq::params::service_ensure,
-  Boolean $service_manage                        = $rabbitmq::params::service_manage,
-  Boolean $config_stomp                          = $rabbitmq::params::config_stomp,
-  Integer[1, 65535] $stomp_port                  = $rabbitmq::params::stomp_port,
-  Boolean $config_cluster                        = $rabbitmq::params::config_cluster,
-  Array $cluster_nodes                           = $rabbitmq::params::cluster_nodes,
-  Enum['ram', 'disk', 'disc'] $cluster_node_type = $rabbitmq::params::cluster_node_type,
-  Optional[String] $node_ip_address              = $rabbitmq::params::node_ip_address,
-  String $config                                 = $rabbitmq::params::config,
-  String $env_config                             = $rabbitmq::params::env_config,
-  Optional[String] $erlang_cookie                = $rabbitmq::params::erlang_cookie,
-  Boolean $wipe_db_on_cookie_change              = $rabbitmq::params::wipe_db_on_cookie_change,
-) inherits rabbitmq::params {
+  Integer $port                                  = $rabbitmq::port,
+  Boolean $delete_guest_user                     = $rabbitmq::delete_guest_user,
+  Variant[String, Array] $package_name           = $rabbitmq::package_name,
+  String $service_name                           = $rabbitmq::service_name,
+  Enum['running', 'stopped'] $service_ensure     = $rabbitmq::service_ensure,
+  Boolean $service_manage                        = $rabbitmq::service_manage,
+  Boolean $config_stomp                          = $rabbitmq::config_stomp,
+  Integer[1, 65535] $stomp_port                  = $rabbitmq::stomp_port,
+  Boolean $config_cluster                        = $rabbitmq::config_cluster,
+  Array $cluster_nodes                           = $rabbitmq::cluster_nodes,
+  Enum['ram', 'disk', 'disc'] $cluster_node_type = $rabbitmq::cluster_node_type,
+  Optional[String] $node_ip_address              = $rabbitmq::node_ip_address,
+  String $config                                 = $rabbitmq::config,
+  String $env_config                             = $rabbitmq::env_config,
+  Optional[String] $erlang_cookie                = $rabbitmq::erlang_cookie,
+  Boolean $wipe_db_on_cookie_change              = $rabbitmq::wipe_db_on_cookie_change,
+) {
 
   class { 'rabbitmq':
     port                     => $port,
