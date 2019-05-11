@@ -8,7 +8,6 @@
 _Public Classes_
 
 * [`rabbitmq`](#rabbitmq): A module to manage RabbitMQ
-* [`rabbitmq::server`](#rabbitmqserver): Backwards compatibility layer to support including `rabbitmq::server` directly.
 
 _Private Classes_
 
@@ -16,7 +15,6 @@ _Private Classes_
 * `rabbitmq::install`: Ensures that rabbitmq-server exists
 * `rabbitmq::install::rabbitmqadmin`: Install rabbitmq admin
 * `rabbitmq::management`: Manage presence / absence of user resource for guest management user.
-* `rabbitmq::params`: OS Specific parameters and other settings
 * `rabbitmq::repo::apt`: requires   puppetlabs-apt   puppetlabs-stdlib
 * `rabbitmq::repo::rhel`: Makes sure that the Packagecloud repo is installed
 * `rabbitmq::service`: This class manages the rabbitmq server service itself.
@@ -159,8 +157,27 @@ The following parameters are available in the `rabbitmq` class.
 Data type: `Boolean`
 
 If enabled sets up the management interface/plugin for RabbitMQ.
+This also install the rabbitmqadmin command line tool.
 
-Default value: $rabbitmq::params::admin_enable
+Default value: `true`
+
+##### `management_enable`
+
+Data type: `Boolean`
+
+If enabled sets up the management interface/plugin for RabbitMQ.
+NOTE: This does not install the rabbitmqadmin command line tool.
+
+Default value: `false`
+
+##### `use_config_file_for_plugins`
+
+Data type: `Boolean`
+
+If enabled the /etc/rabbitmq/enabled_plugins config file is created,
+replacing the use of the rabbitmqplugins provider to enable plugins.
+
+Default value: `false`
 
 ##### `auth_backends`
 
@@ -178,7 +195,7 @@ Data type: `Enum['ram', 'disk', 'disc']`
 
 Choose between disc and ram nodes.
 
-Default value: $rabbitmq::params::cluster_node_type
+Default value: 'disc'
 
 ##### `cluster_nodes`
 
@@ -186,7 +203,7 @@ Data type: `Array`
 
 An array of nodes for clustering.
 
-Default value: $rabbitmq::params::cluster_nodes
+Default value: []
 
 ##### `cluster_partition_handling`
 
@@ -194,7 +211,7 @@ Data type: `String`
 
 Value to set for `cluster_partition_handling` RabbitMQ configuration variable.
 
-Default value: $rabbitmq::params::cluster_partition_handling
+Default value: 'ignore'
 
 ##### `collect_statistics_interval`
 
@@ -210,7 +227,7 @@ Data type: `String`
 
 The file to use as the rabbitmq.config template.
 
-Default value: $rabbitmq::params::config
+Default value: 'rabbitmq/rabbitmq.config.erb'
 
 ##### `config_additional_variables`
 
@@ -218,7 +235,7 @@ Data type: `Hash`
 
 Additional config variables in rabbitmq.config
 
-Default value: $rabbitmq::params::config_additional_variables
+Default value: {}
 
 ##### `config_cluster`
 
@@ -226,7 +243,7 @@ Data type: `Boolean`
 
 Enable or disable clustering support.
 
-Default value: $rabbitmq::params::config_cluster
+Default value: `false`
 
 ##### `config_kernel_variables`
 
@@ -234,7 +251,7 @@ Data type: `Hash`
 
 Hash of Erlang kernel configuration variables to set (see [Variables Configurable in rabbitmq.config](#variables-configurable-in-rabbitmq.config)).
 
-Default value: $rabbitmq::params::config_kernel_variables
+Default value: {}
 
 ##### `config_path`
 
@@ -242,7 +259,7 @@ Data type: `Stdlib::Absolutepath`
 
 The path to write the RabbitMQ configuration file to.
 
-Default value: $rabbitmq::params::config_path
+Default value: '/etc/rabbitmq/rabbitmq.config'
 
 ##### `config_ranch`
 
@@ -250,7 +267,7 @@ Data type: `Boolean`
 
 When true, suppress config directives needed for older (<3.6) RabbitMQ versions.
 
-Default value: $rabbitmq::params::config_ranch
+Default value: `true`
 
 ##### `config_management_variables`
 
@@ -258,7 +275,7 @@ Data type: `Hash`
 
 Hash of configuration variables for the [Management Plugin](https://www.rabbitmq.com/management.html).
 
-Default value: $rabbitmq::params::config_management_variables
+Default value: {}
 
 ##### `config_stomp`
 
@@ -266,7 +283,7 @@ Data type: `Boolean`
 
 Enable or disable stomp.
 
-Default value: $rabbitmq::params::config_stomp
+Default value: `false`
 
 ##### `config_shovel`
 
@@ -274,7 +291,7 @@ Data type: `Boolean`
 
 Enable or disable shovel.
 
-Default value: $rabbitmq::params::config_shovel
+Default value: `false`
 
 ##### `config_shovel_statics`
 
@@ -282,7 +299,7 @@ Data type: `Hash`
 
 Hash of static shovel configurations
 
-Default value: $rabbitmq::params::config_shovel_statics
+Default value: {}
 
 ##### `config_variables`
 
@@ -290,7 +307,7 @@ Data type: `Hash`
 
 To set config variables in rabbitmq.config
 
-Default value: $rabbitmq::params::config_variables
+Default value: {}
 
 ##### `default_user`
 
@@ -298,7 +315,7 @@ Data type: `String`
 
 Username to set for the `default_user` in rabbitmq.config.
 
-Default value: $rabbitmq::params::default_user
+Default value: 'guest'
 
 ##### `default_pass`
 
@@ -306,7 +323,7 @@ Data type: `String`
 
 Password to set for the `default_user` in rabbitmq.config.
 
-Default value: $rabbitmq::params::default_pass
+Default value: 'guest'
 
 ##### `delete_guest_user`
 
@@ -314,7 +331,7 @@ Data type: `Boolean`
 
 Controls whether default guest user is deleted.
 
-Default value: $rabbitmq::params::delete_guest_user
+Default value: `false`
 
 ##### `env_config`
 
@@ -322,7 +339,7 @@ Data type: `String`
 
 The template file to use for rabbitmq_env.config.
 
-Default value: $rabbitmq::params::env_config
+Default value: 'rabbitmq/rabbitmq-env.conf.erb'
 
 ##### `env_config_path`
 
@@ -330,7 +347,7 @@ Data type: `Stdlib::Absolutepath`
 
 The path to write the rabbitmq_env.config file to.
 
-Default value: $rabbitmq::params::env_config_path
+Default value: '/etc/rabbitmq/rabbitmq-env.conf'
 
 ##### `environment_variables`
 
@@ -338,7 +355,7 @@ Data type: `Hash`
 
 RabbitMQ Environment Variables in rabbitmq_env.config
 
-Default value: $rabbitmq::params::environment_variables
+Default value: { 'LC_ALL' => 'en_US.UTF-8' }
 
 ##### `erlang_cookie`
 
@@ -356,7 +373,7 @@ Data type: `Variant[Integer[-1],Enum['unlimited'],Pattern[/^(infinity|\d+(:(infi
 
 Set rabbitmq file ulimit. Defaults to 16384. Only available on systems with `$::osfamily == 'Debian'` or `$::osfamily == 'RedHat'`.
 
-Default value: $rabbitmq::params::file_limit
+Default value: 16384
 
 ##### `heartbeat`
 
@@ -372,7 +389,7 @@ Data type: `String`
 
 Template to use for the inetrc config
 
-Default value: $rabbitmq::params::inetrc_config
+Default value: 'rabbitmq/inetrc.erb'
 
 ##### `inetrc_config_path`
 
@@ -380,7 +397,7 @@ Data type: `Stdlib::Absolutepath`
 
 Path of the file to push the inetrc config to.
 
-Default value: $rabbitmq::params::inetrc_config_path
+Default value: '/etc/rabbitmq/inetrc'
 
 ##### `ipv6`
 
@@ -388,7 +405,7 @@ Data type: `Boolean`
 
 Whether to listen on ipv6
 
-Default value: $rabbitmq::params::ipv6
+Default value: `false`
 
 ##### `interface`
 
@@ -414,7 +431,7 @@ Data type: `Boolean`
 
 Set to true to enable LDAP auth.
 
-Default value: $rabbitmq::params::ldap_auth
+Default value: `false`
 
 ##### `ldap_server`
 
@@ -422,7 +439,7 @@ Data type: `String`
 
 LDAP server to use for auth.
 
-Default value: $rabbitmq::params::ldap_server
+Default value: 'ldap'
 
 ##### `ldap_user_dn_pattern`
 
@@ -430,7 +447,7 @@ Data type: `Optional[String]`
 
 User DN pattern for LDAP auth.
 
-Default value: $rabbitmq::params::ldap_user_dn_pattern
+Default value: `undef`
 
 ##### `ldap_other_bind`
 
@@ -438,7 +455,7 @@ Data type: `String`
 
 How to bind to the LDAP server. Defaults to 'anon'.
 
-Default value: $rabbitmq::params::ldap_other_bind
+Default value: 'anon'
 
 ##### `ldap_config_variables`
 
@@ -446,7 +463,7 @@ Data type: `Hash`
 
 Hash of other LDAP config variables.
 
-Default value: $rabbitmq::params::ldap_config_variables
+Default value: {}
 
 ##### `ldap_use_ssl`
 
@@ -454,7 +471,7 @@ Data type: `Boolean`
 
 Set to true to use SSL for the LDAP server.
 
-Default value: $rabbitmq::params::ldap_use_ssl
+Default value: `false`
 
 ##### `ldap_port`
 
@@ -462,7 +479,7 @@ Data type: `Integer[1, 65535]`
 
 Numeric port for LDAP server.
 
-Default value: $rabbitmq::params::ldap_port
+Default value: 389
 
 ##### `ldap_log`
 
@@ -470,7 +487,7 @@ Data type: `Boolean`
 
 Set to true to log LDAP auth.
 
-Default value: $rabbitmq::params::ldap_log
+Default value: `false`
 
 ##### `manage_python`
 
@@ -479,7 +496,7 @@ Data type: `Boolean`
 If enabled, on platforms that don't provide a Python 2 package by default, ensure that the python package is
 installed (for rabbitmqadmin). This will only apply if `admin_enable` and `service_manage` are set.
 
-Default value: $rabbitmq::params::manage_python
+Default value: `true`
 
 ##### `management_hostname`
 
@@ -495,7 +512,7 @@ Data type: `Integer[1, 65535]`
 
 The port for the RabbitMQ management interface.
 
-Default value: $rabbitmq::params::management_port
+Default value: 15672
 
 ##### `management_ip_address`
 
@@ -512,7 +529,7 @@ Data type: `Boolean`
 
 Enable/Disable SSL for the management port. Has an effect only if ssl => true.
 
-Default value: $rabbitmq::params::management_ssl
+Default value: `true`
 
 ##### `node_ip_address`
 
@@ -537,7 +554,7 @@ Data type: `String`
 
 Determines the ensure state of the package.  Set to installed by default, but could be changed to latest.
 
-Default value: $rabbitmq::params::package_ensure
+Default value: 'installed'
 
 ##### `package_gpg_key`
 
@@ -548,7 +565,7 @@ RedHat OS family. Set to https://www.rabbitmq.com/rabbitmq-release-signing-key.a
 https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey for Debian OS Family by default. Note, that `key_content`, if specified, would
 override this parameter for Debian OS family.
 
-Default value: $rabbitmq::params::package_gpg_key
+Default value: `undef`
 
 ##### `package_name`
 
@@ -556,7 +573,7 @@ Data type: `Variant[String, Array]`
 
 Name(s) of the package(s) to install
 
-Default value: $rabbitmq::params::package_name
+Default value: 'rabbitmq'
 
 ##### `port`
 
@@ -564,7 +581,15 @@ Data type: `Integer`
 
 The RabbitMQ port.
 
-Default value: $rabbitmq::params::port
+Default value: 5672
+
+##### `python_package`
+
+Data type: `String`
+
+Name of the package required by rabbitmqadmin.
+
+Default value: 'python'
 
 ##### `repos_ensure`
 
@@ -572,8 +597,10 @@ Data type: `Boolean`
 
 Ensure that a repo with the official (and newer) RabbitMQ package is configured, along with its signing key.
 Defaults to false (use system packages). This does not ensure that soft dependencies (like EPEL on RHEL systems) are present.
+It also does not solve the erlang dependency.  See https://www.rabbitmq.com/which-erlang.html for a good breakdown of the
+different ways of handling the erlang deps.  See also https://github.com/voxpupuli/puppet-rabbitmq/issues/788
 
-Default value: $rabbitmq::params::repos_ensure
+Default value: `false`
 
 ##### `service_ensure`
 
@@ -581,7 +608,7 @@ Data type: `Enum['running', 'stopped']`
 
 The state of the service.
 
-Default value: $rabbitmq::params::service_ensure
+Default value: 'running'
 
 ##### `service_manage`
 
@@ -589,7 +616,7 @@ Data type: `Boolean`
 
 Determines if the service is managed.
 
-Default value: $rabbitmq::params::service_manage
+Default value: `true`
 
 ##### `service_name`
 
@@ -597,7 +624,7 @@ Data type: `String`
 
 The name of the service to manage.
 
-Default value: $rabbitmq::params::service_name
+Default value: 'rabbitmq'
 
 ##### `service_restart`
 
@@ -605,7 +632,7 @@ Data type: `Boolean`
 
 Default defined in param.pp. Whether to restart the service on config change.
 
-Default value: $rabbitmq::params::service_restart
+Default value: `true`
 
 ##### `ssl`
 
@@ -613,7 +640,7 @@ Data type: `Boolean`
 
 Configures the service for using SSL.
 
-Default value: $rabbitmq::params::ssl
+Default value: `false`
 
 ##### `ssl_cacert`
 
@@ -661,7 +688,7 @@ Data type: `Boolean`
 
 Whether to use the erlang package's SSL (relies on the ssl_erl_path fact)
 
-Default value: $rabbitmq::params::ssl_erl_dist
+Default value: `false`
 
 ##### `ssl_honor_cipher_order`
 
@@ -669,7 +696,7 @@ Data type: `Boolean`
 
 Force use of server cipher order
 
-Default value: $rabbitmq::params::ssl_honor_cipher_order
+Default value: `true`
 
 ##### `ssl_interface`
 
@@ -694,7 +721,7 @@ Data type: `Boolean`
 Configures the service to only use SSL. No cleartext TCP listeners will be created. Requires that ssl => true and
 port => undef
 
-Default value: $rabbitmq::params::ssl_only
+Default value: `false`
 
 ##### `ssl_management_port`
 
@@ -702,7 +729,7 @@ Data type: `Integer[1, 65535]`
 
 SSL management port.
 
-Default value: $rabbitmq::params::ssl_management_port
+Default value: 15671
 
 ##### `ssl_port`
 
@@ -710,7 +737,7 @@ Data type: `Integer[1, 65535]`
 
 SSL port for RabbitMQ
 
-Default value: $rabbitmq::params::ssl_port
+Default value: 5671
 
 ##### `ssl_reuse_sessions`
 
@@ -718,7 +745,7 @@ Data type: `Boolean`
 
 Reuse ssl sessions
 
-Default value: $rabbitmq::params::ssl_reuse_sessions
+Default value: `true`
 
 ##### `ssl_secure_renegotiate`
 
@@ -726,7 +753,7 @@ Data type: `Boolean`
 
 Use ssl secure renegotiate
 
-Default value: $rabbitmq::params::ssl_secure_renegotiate
+Default value: `true`
 
 ##### `ssl_stomp_port`
 
@@ -734,7 +761,7 @@ Data type: `Integer[1, 65535]`
 
 SSL stomp port.
 
-Default value: $rabbitmq::params::ssl_stomp_port
+Default value: 6164
 
 ##### `ssl_verify`
 
@@ -742,7 +769,7 @@ Data type: `Enum['verify_none','verify_peer']`
 
 rabbitmq.config SSL verify setting.
 
-Default value: $rabbitmq::params::ssl_verify
+Default value: 'verify_none'
 
 ##### `ssl_fail_if_no_peer_cert`
 
@@ -750,7 +777,7 @@ Data type: `Boolean`
 
 rabbitmq.config `fail_if_no_peer_cert` setting.
 
-Default value: $rabbitmq::params::ssl_fail_if_no_peer_cert
+Default value: `false`
 
 ##### `ssl_management_verify`
 
@@ -758,7 +785,7 @@ Data type: `Enum['verify_none','verify_peer']`
 
 rabbitmq.config SSL verify setting for rabbitmq_management.
 
-Default value: $rabbitmq::params::ssl_management_verify
+Default value: 'verify_none'
 
 ##### `ssl_versions`
 
@@ -778,7 +805,7 @@ Data type: `Array`
 Support only a given list of SSL ciphers. Example: `['dhe_rsa,aes_256_cbc,sha','dhe_dss,aes_256_cbc,sha', 'ecdhe_rsa,aes_256_cbc,sha']`. Supported ciphers in your install can be listed with: rabbitmqctl eval 'ssl:cipher_suites().'
 Functionality can be tested with cipherscan or similar tool: https://github.com/jvehent/cipherscan.git
 
-Default value: $rabbitmq::params::ssl_ciphers
+Default value: []
 
 ##### `stomp_port`
 
@@ -786,7 +813,7 @@ Data type: `Integer[1, 65535]`
 
 The port to use for Stomp.
 
-Default value: $rabbitmq::params::stomp_port
+Default value: 6163
 
 ##### `stomp_ssl_only`
 
@@ -794,7 +821,7 @@ Data type: `Boolean`
 
 Configures STOMP to only use SSL. No cleartext STOMP TCP listeners will be created. Requires setting ssl_stomp_port also.
 
-Default value: $rabbitmq::params::stomp_ssl_only
+Default value: `false`
 
 ##### `stomp_ensure`
 
@@ -802,7 +829,7 @@ Data type: `Boolean`
 
 Enable to install the stomp plugin.
 
-Default value: $rabbitmq::params::stomp_ensure
+Default value: `false`
 
 ##### `tcp_backlog`
 
@@ -810,7 +837,7 @@ Data type: `Integer`
 
 The size of the backlog on TCP connections.
 
-Default value: $rabbitmq::params::tcp_backlog
+Default value: 128
 
 ##### `tcp_keepalive`
 
@@ -818,7 +845,7 @@ Data type: `Boolean`
 
 Enable TCP connection keepalive for RabbitMQ service.
 
-Default value: $rabbitmq::params::tcp_keepalive
+Default value: `false`
 
 ##### `tcp_recbuf`
 
@@ -842,7 +869,7 @@ Data type: `Boolean`
 
 Boolean to determine if we should DESTROY AND DELETE the RabbitMQ database.
 
-Default value: $rabbitmq::params::wipe_db_on_cookie_change
+Default value: `false`
 
 ##### `rabbitmq_user`
 
@@ -850,7 +877,7 @@ Data type: `String`
 
 OS dependent The system user the rabbitmq daemon runs as.
 
-Default value: $rabbitmq::params::rabbitmq_user
+Default value: 'rabbitmq'
 
 ##### `rabbitmq_group`
 
@@ -858,7 +885,7 @@ Data type: `String`
 
 OS dependent The system group the rabbitmq daemon runs as.
 
-Default value: $rabbitmq::params::rabbitmq_group
+Default value: 'rabbitmq'
 
 ##### `rabbitmq_home`
 
@@ -866,7 +893,7 @@ Data type: `Stdlib::Absolutepath`
 
 OS dependent The home directory of the rabbitmq deamon.
 
-Default value: $rabbitmq::params::rabbitmq_home
+Default value: '/var/lib/rabbitmq'
 
 ##### `rabbitmqadmin_package`
 
@@ -874,7 +901,7 @@ Data type: `Optional[String]`
 
 OS dependent If undef: install rabbitmqadmin via archive, otherwise via package
 
-Default value: $rabbitmq::params::rabbitmqadmin_package
+Default value: `undef`
 
 ##### `archive_options`
 
@@ -882,7 +909,7 @@ Data type: `Array`
 
 Extra options to Archive resource to download rabbitmqadmin file
 
-Default value: $rabbitmq::params::archive_options
+Default value: []
 
 ##### `loopback_users`
 
@@ -890,7 +917,7 @@ Data type: `Array`
 
 This option configures a list of users to allow access via the loopback interfaces
 
-Default value: $rabbitmq::params::loopback_users
+Default value: ['guest']
 
 ##### `package_source`
 
@@ -914,146 +941,7 @@ Data type: `Boolean`
 
 
 
-Default value: $rabbitmq::params::ssl_management_fail_if_no_peer_cert
-
-### rabbitmq::server
-
-This module manages the installation and config of the rabbitmq server. It is used as backward compability layer for modules which
-  require rabbitmq::server instead of rabbitmq class.
-
-#### Parameters
-
-The following parameters are available in the `rabbitmq::server` class.
-
-##### `port`
-
-Data type: `Integer`
-
-Port that rabbitmq server should listen to
-
-Default value: $rabbitmq::params::port
-
-##### `delete_guest_user`
-
-Data type: `Boolean`
-
-Whether or not to delete the default user
-
-Default value: $rabbitmq::params::delete_guest_user
-
-##### `package_name`
-
-Data type: `Variant[String, Array]`
-
-Name of rabbitmq package
-
-Default value: $rabbitmq::params::package_name
-
-##### `service_name`
-
-Data type: `String`
-
-Name of rabbitmq service
-
-Default value: $rabbitmq::params::service_name
-
-##### `service_ensure`
-
-Data type: `Enum['running', 'stopped']`
-
-Desired ensure state for service
-
-Default value: $rabbitmq::params::service_ensure
-
-##### `service_manage`
-
-Data type: `Boolean`
-
-Determines if the service is managed
-
-Default value: $rabbitmq::params::service_manage
-
-##### `config_stomp`
-
-Data type: `Boolean`
-
-Enable or disable stomp
-
-Default value: $rabbitmq::params::config_stomp
-
-##### `stomp_port`
-
-Data type: `Integer[1, 65535]`
-
-Port stomp should be listening on
-
-Default value: $rabbitmq::params::stomp_port
-
-##### `node_ip_address`
-
-Data type: `Optional[String]`
-
-IP address for rabbitmq to bind to
-
-Default value: $rabbitmq::params::node_ip_address
-
-##### `config`
-
-Data type: `String`
-
-Contents of config file
-
-Default value: $rabbitmq::params::config
-
-##### `env_config`
-
-Data type: `String`
-
-Contents of env-config file
-
-Default value: $rabbitmq::params::env_config
-
-##### `config_cluster`
-
-Data type: `Boolean`
-
-Whether to configure a RabbitMQ cluster
-
-Default value: $rabbitmq::params::config_cluster
-
-##### `cluster_nodes`
-
-Data type: `Array`
-
-Which nodes to cluster with (including the current one)
-
-Default value: $rabbitmq::params::cluster_nodes
-
-##### `cluster_node_type`
-
-Data type: `Enum['ram', 'disk', 'disc']`
-
-Type of cluster node (disc/disk or ram)
-
-Default value: $rabbitmq::params::cluster_node_type
-
-##### `erlang_cookie`
-
-Data type: `Optional[String]`
-
-Erlang cookie, must be the same for all nodes in a cluster
-
-Default value: $rabbitmq::params::erlang_cookie
-
-##### `wipe_db_on_cookie_change`
-
-Data type: `Boolean`
-
-Whether to wipe the RabbitMQ data if the specified erlang_cookie differs from the current one. This is a sad parameter: actually, if
-the cookie indeed differs, then wiping the database is the *only* thing you can do.  You're only required to set this parameter to
-true as a sign that you realise this.
-
-Default value: $rabbitmq::params::wipe_db_on_cookie_change
+Default value: `false`
 
 ## Resource types
 
@@ -1428,6 +1316,15 @@ rabbitmq_plugin {'rabbitmq_stomp':
 }
 ```
 
+##### Ensure a rabbitmq_plugin offline resource (with RabbitMQ version >=3.4.0)
+
+```puppet
+rabbitmq_plugin {'rabbitmq_stomp':
+  ensure => present,
+  mode   => 'offline',
+}
+```
+
 #### Properties
 
 The following properties are available in the `rabbitmq_plugin` type.
@@ -1451,6 +1348,14 @@ Valid values: %r{^\S+$}
 namevar
 
 The name of the plugin to enable
+
+##### `mode`
+
+Valid values: online, offline, best
+
+Define how the plugin should be enabled regarding node status.
+
+Default value: best
 
 ##### `umask`
 

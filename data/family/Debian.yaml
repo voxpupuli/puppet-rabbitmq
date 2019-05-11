@@ -1,0 +1,4 @@
+---
+rabbitmq::package_name: 'rabbitmq-server'
+rabbitmq::service_name: 'rabbitmq-server'
+rabbitmq::package_gpg_key: 'https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey'
