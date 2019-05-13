@@ -1,18 +1,6 @@
 require 'spec_helper'
 
 describe 'rabbitmq' do
-  context 'on unsupported distributions' do
-    let(:facts) do
-      {
-        os: { family: 'Unsupported' }
-      }
-    end
-
-    it 'we fail' do
-      expect { catalogue }.to raise_error(Puppet::Error, %r{not supported on an Unsupported})
-    end
-  end
-
   on_supported_os.each do |os, facts|
     context "on #{os}" do
       systemd_facts = os_specific_facts(facts)

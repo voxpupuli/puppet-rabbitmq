@@ -1,0 +1,5 @@
+---
+rabbitmq::package_name:
+  - 'rabbitmq-server'
+  - 'rabbitmq-server-plugins'
+rabbitmq::service_name: 'rabbitmq-server'
