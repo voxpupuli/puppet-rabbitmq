@@ -10,7 +10,7 @@ install_module
 install_module_dependencies
 
 # Install aditional modules for soft deps
-install_module_from_forge('puppetlabs-apt', '>= 4.1.0 < 7.0.0') if fact('os.family') == 'Debian'
+install_module_from_forge('puppetlabs-apt', '>= 4.1.0 < 8.0.0') if fact('os.family') == 'Debian'
 install_module_from_forge('garethr-erlang', '>= 0.3.0 < 1.0.0') if fact('os.family') == 'RedHat'
 
 RSpec.configure do |c|
