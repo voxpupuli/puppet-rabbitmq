@@ -238,6 +238,12 @@
 #   port => undef
 # @param ssl_management_port
 #   SSL management port.
+# @param ssl_management_cacert
+#   SSL management cacert. If unset set to ssl_cacert for backwards compatibility.
+# @param ssl_management_cert
+#   SSL management cert. If unset set to ssl_cert for backwards compatibility.
+# @param ssl_management_key
+#   SSL management key. If unset set to ssl_key for backwards compatibility.
 # @param ssl_port
 #   SSL port for RabbitMQ
 # @param ssl_reuse_sessions
@@ -345,6 +351,9 @@ class rabbitmq(
   Integer[1, 65535] $ssl_port                                                                      = 5671,
   Optional[String] $ssl_interface                                                                  = undef,
   Integer[1, 65535] $ssl_management_port                                                           = 15671,
+  Optional[Stdlib::Absolutepath] $ssl_management_cacert                                            = $ssl_cacert,
+  Optional[Stdlib::Absolutepath] $ssl_management_cert                                              = $ssl_cert,
+  Optional[Stdlib::Absolutepath] $ssl_management_key                                               = $ssl_key,
   Integer[1, 65535] $ssl_stomp_port                                                                = 6164,
   Enum['verify_none','verify_peer'] $ssl_verify                                                    = 'verify_none',
   Boolean $ssl_fail_if_no_peer_cert                                                                = false,

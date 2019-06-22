@@ -110,11 +110,11 @@
   <%- end -%>
       {port, <%= @ssl_management_port %>},
       {ssl, true},
-      {ssl_opts, [<%- if @ssl_cacert %>
-                  {cacertfile, "<%= @ssl_cacert %>"},
+      {ssl_opts, [<%- if @ssl_management_cacert %>
+                  {cacertfile, "<%= @ssl_management_cacert %>"},
                   <%- end -%>
-                  {certfile, "<%= @ssl_cert %>"},
-                  {keyfile, "<%= @ssl_key %>"},
+                  {certfile, "<%= @ssl_management_cert %>"},
+                  {keyfile, "<%= @ssl_management_key %>"},
                   {verify,<%= @ssl_management_verify %>},
                   {fail_if_no_peer_cert,<%= @ssl_management_fail_if_no_peer_cert %>}
                    <%- if @ssl_versions -%>
