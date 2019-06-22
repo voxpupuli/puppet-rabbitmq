@@ -47,6 +47,9 @@ class rabbitmq::config {
   $ssl_port                            = $rabbitmq::ssl_port
   $ssl_interface                       = $rabbitmq::ssl_interface
   $ssl_management_port                 = $rabbitmq::ssl_management_port
+  $ssl_management_cacert               = $rabbitmq::ssl_management_cacert
+  $ssl_management_cert                 = $rabbitmq::ssl_management_cert
+  $ssl_management_key                  = $rabbitmq::ssl_management_key
   $ssl_management_verify               = $rabbitmq::ssl_management_verify
   $ssl_management_fail_if_no_peer_cert = $rabbitmq::ssl_management_fail_if_no_peer_cert
   $ssl_stomp_port                      = $rabbitmq::ssl_stomp_port
