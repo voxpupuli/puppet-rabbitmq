@@ -34,8 +34,8 @@ DESC
   autorequire(:service) { 'rabbitmq-server' }
 
   validate do
-    raise('component_name parameter is required.') if self[:ensure] == :present && self[:component_name].nil?
-    raise('value parameter is required.') if self[:ensure] == :present && self[:value].nil?
+    raise('component_name parameter is required.') if self[:ensure] == :present && provider.component_name.nil?
+    raise('value parameter is required.') if self[:ensure] == :present && provider.value.nil?
   end
 
   newparam(:name, namevar: true) do
