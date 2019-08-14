@@ -133,7 +133,7 @@ class { 'rabbitmq':
 This will result in the following config appended to the config file:
 {autocluster, [{consul_service, "rabbit"},{cluster_name, "rabbit"}]},
  {foo, [{bar, "baz"}]}
-(This is required for the [autocluster plugin](https://github.com/aweber/rabbitmq-autocluster)
+(This is required for the [autocluster plugin](https://github.com/rabbitmq/rabbitmq-autocluster)
 ```
 
 ##### Use RabbitMQ clustering facilities
