@@ -731,6 +731,30 @@ SSL management port.
 
 Default value: 15671
 
+##### `ssl_management_cacert`
+
+Data type: `Optional[Stdlib::Absolutepath]`
+
+SSL management cacert. If unset set to ssl_cacert for backwards compatibility.
+
+Default value: $ssl_cacert
+
+##### `ssl_management_cert`
+
+Data type: `Optional[Stdlib::Absolutepath]`
+
+SSL management cert. If unset set to ssl_cert for backwards compatibility.
+
+Default value: $ssl_cert
+
+##### `ssl_management_key`
+
+Data type: `Optional[Stdlib::Absolutepath]`
+
+SSL management key. If unset set to ssl_key for backwards compatibility.
+
+Default value: $ssl_key
+
 ##### `ssl_port`
 
 Data type: `Integer[1, 65535]`

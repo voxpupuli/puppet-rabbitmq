@@ -4,6 +4,44 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v9.1.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v9.1.0) (2019-08-17)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v9.0.0...v9.1.0)
+
+**Implemented enhancements:**
+
+- add vars to manage management ssl certs separately. [\#564](https://github.com/voxpupuli/puppet-rabbitmq/issues/564)
+- Refactor rabbitmq\_parameter provider [\#806](https://github.com/voxpupuli/puppet-rabbitmq/pull/806) ([jlutran](https://github.com/jlutran))
+- Add a custom fact for rabbitmq's plugins folder. [\#778](https://github.com/voxpupuli/puppet-rabbitmq/pull/778) ([TomRitserveldt](https://github.com/TomRitserveldt))
+- Add support for enabled plugins config using enabled\_plugins file [\#777](https://github.com/voxpupuli/puppet-rabbitmq/pull/777) ([hjensas](https://github.com/hjensas))
+- Allow Array values in rabbitmq\_parameter [\#774](https://github.com/voxpupuli/puppet-rabbitmq/pull/774) ([vStone](https://github.com/vStone))
+- Add optional variables for SSL management-console [\#648](https://github.com/voxpupuli/puppet-rabbitmq/pull/648) ([Slm0n87](https://github.com/Slm0n87))
+
+**Fixed bugs:**
+
+- Fact rabbitmq\_plugins\_dirs can crash the puppet run [\#783](https://github.com/voxpupuli/puppet-rabbitmq/issues/783)
+- Package manager update is not triggered before installing package [\#780](https://github.com/voxpupuli/puppet-rabbitmq/issues/780)
+- Packagecloud Apt Pin is hardcoded  [\#779](https://github.com/voxpupuli/puppet-rabbitmq/issues/779)
+
+**Closed issues:**
+
+- rabbitmqadmin install broke with ipv6 [\#799](https://github.com/voxpupuli/puppet-rabbitmq/issues/799)
+- admin\_enable - controles both rabbitmq\_management plugin and install of rabbitmqadmin [\#775](https://github.com/voxpupuli/puppet-rabbitmq/issues/775)
+- unexpected token at 'arguments' [\#772](https://github.com/voxpupuli/puppet-rabbitmq/issues/772)
+
+**Merged pull requests:**
+
+- docs: Updates autocluster plugin link [\#809](https://github.com/voxpupuli/puppet-rabbitmq/pull/809) ([wyardley](https://github.com/wyardley))
+- Update link to rabbitmq-autocluster [\#808](https://github.com/voxpupuli/puppet-rabbitmq/pull/808) ([makmarius](https://github.com/makmarius))
+- Allow `puppetlabs/stdlib` 6.x and `puppet/archive` 4.x [\#803](https://github.com/voxpupuli/puppet-rabbitmq/pull/803) ([alexjfisher](https://github.com/alexjfisher))
+- Remove unused curl\_prefix variable [\#800](https://github.com/voxpupuli/puppet-rabbitmq/pull/800) ([mbaldessari](https://github.com/mbaldessari))
+- Use data-in-modules instead of params.pp [\#797](https://github.com/voxpupuli/puppet-rabbitmq/pull/797) ([dhoppe](https://github.com/dhoppe))
+- Remove ordering of classes [\#795](https://github.com/voxpupuli/puppet-rabbitmq/pull/795) ([dhoppe](https://github.com/dhoppe))
+- Fetch domain from URL and use it as origin [\#794](https://github.com/voxpupuli/puppet-rabbitmq/pull/794) ([dhoppe](https://github.com/dhoppe))
+- make config path distribution-dependent [\#793](https://github.com/voxpupuli/puppet-rabbitmq/pull/793) ([olevole](https://github.com/olevole))
+- Slightly improved documentation of the ensure\_repos parameter. [\#789](https://github.com/voxpupuli/puppet-rabbitmq/pull/789) ([tobixen](https://github.com/tobixen))
+- Don't crash on rabbitmq\_plugins\_dirs fact if rabbitmqctl is not present [\#784](https://github.com/voxpupuli/puppet-rabbitmq/pull/784) ([jistr](https://github.com/jistr))
+
 ## [v9.0.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v9.0.0) (2019-01-29)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v8.5.0...v9.0.0)
@@ -110,7 +148,7 @@ These should not affect the functionality of the module.
 - Rebase of \#683 / mock systemd fact properly [\#715](https://github.com/voxpupuli/puppet-rabbitmq/pull/715) ([bastelfreak](https://github.com/bastelfreak))
 - Fixing puppet apt module requirement to \< 6.0.0 [\#714](https://github.com/voxpupuli/puppet-rabbitmq/pull/714) ([meltingrobot](https://github.com/meltingrobot))
 - Updated comment symbol on inetrc.erb [\#709](https://github.com/voxpupuli/puppet-rabbitmq/pull/709) ([covidium](https://github.com/covidium))
-- Ensure version fact does not throw an error for invalid match [\#705](https://github.com/voxpupuli/puppet-rabbitmq/pull/705) ([CTrox](https://github.com/CTrox))
+- Ensure version fact does not throw an error for invalid match [\#705](https://github.com/voxpupuli/puppet-rabbitmq/pull/705) ([ctrox](https://github.com/ctrox))
 - Rely on beaker-hostgenerator for docker nodesets [\#702](https://github.com/voxpupuli/puppet-rabbitmq/pull/702) ([ekohl](https://github.com/ekohl))
 
 ## [v8.2.2](https://github.com/voxpupuli/puppet-rabbitmq/tree/v8.2.2) (2018-04-11)
@@ -254,6 +292,7 @@ These should not affect the functionality of the module.
 **Fixed bugs:**
 
 - Resolve issue with "puppet resource rabbitmq\_user" failing \(\#147\) [\#629](https://github.com/voxpupuli/puppet-rabbitmq/pull/629) ([wyardley](https://github.com/wyardley))
+- Avoid error when rabbitmqctl is not present\), update spec syntax \(\#614\) [\#615](https://github.com/voxpupuli/puppet-rabbitmq/pull/615) ([wyardley](https://github.com/wyardley))
 - Switch back to using rabbitmq-plugins from system path \(\#566\) [\#570](https://github.com/voxpupuli/puppet-rabbitmq/pull/570) ([wyardley](https://github.com/wyardley))
 
 **Merged pull requests:**
@@ -314,7 +353,6 @@ These should not affect the functionality of the module.
 
 - Look into "error while resolving custom fact" error [\#614](https://github.com/voxpupuli/puppet-rabbitmq/issues/614)
 - repos\_ensure and version on RHEL 7 [\#573](https://github.com/voxpupuli/puppet-rabbitmq/issues/573)
-- Avoid error when rabbitmqctl is not present\), update spec syntax \(\#614\) [\#615](https://github.com/voxpupuli/puppet-rabbitmq/pull/615) ([wyardley](https://github.com/wyardley))
 - fix a couple of problems with erl\_ssl\_path fact [\#609](https://github.com/voxpupuli/puppet-rabbitmq/pull/609) ([costela](https://github.com/costela))
 - Switch $releasevar to ${::os\[release\]\[major\]} [\#577](https://github.com/voxpupuli/puppet-rabbitmq/pull/577) ([wyardley](https://github.com/wyardley))
 - Fix regex double escaping of rabbitmqctl list\_policies [\#561](https://github.com/voxpupuli/puppet-rabbitmq/pull/561) ([wyardley](https://github.com/wyardley))
