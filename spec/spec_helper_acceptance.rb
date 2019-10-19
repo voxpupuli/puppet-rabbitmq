@@ -3,20 +3,21 @@ require 'beaker-puppet'
 require 'beaker/puppet_install_helper'
 require 'beaker/module_install_helper'
 
-UNSUPPORTED_PLATFORMS = [].freeze
-
-run_puppet_install_helper
-install_module
-install_module_dependencies
-
-# Install aditional modules for soft deps
-install_module_from_forge('puppetlabs-apt', '>= 4.1.0 < 8.0.0') if fact('os.family') == 'Debian'
-install_module_from_forge('garethr-erlang', '>= 0.3.0 < 1.0.0') if fact('os.family') == 'RedHat'
+run_puppet_install_helper unless ENV['BEAKER_provision'] == 'no'
 
 RSpec.configure do |c|
   # Readable test descriptions
   c.formatter = :documentation
+
+  # Configure all nodes in nodeset
   c.before :suite do
+    install_module
+    install_module_dependencies
+
+    # Install aditional modules for soft deps
+    install_module_from_forge('puppetlabs-apt', '>= 4.1.0 < 8.0.0') if fact('os.family') == 'Debian'
+    install_module_from_forge('garethr-erlang', '>= 0.3.0 < 1.0.0') if fact('os.family') == 'RedHat'
+
     hosts.each do |host|
       install_package(host, 'iproute2') if fact('os.release.major').to_i == 18 || fact('os.release.major') == 'buster/sid'
       if fact('os.family') == 'RedHat' && fact('selinux') == 'true'
