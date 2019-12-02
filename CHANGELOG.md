@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v10.0.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v10.0.0) (2019-12-02)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v9.1.0...v10.0.0)
+
+**Breaking changes:**
+
+- drop Ubuntu 14.04 support [\#818](https://github.com/voxpupuli/puppet-rabbitmq/pull/818) ([bastelfreak](https://github.com/bastelfreak))
+- Update the ssl\_ciphers parameter to support the OpenSSL style [\#785](https://github.com/voxpupuli/puppet-rabbitmq/pull/785) ([jamgregory](https://github.com/jamgregory))
+
+**Implemented enhancements:**
+
+- Extend version regex for RabbitMQ 3.8 [\#814](https://github.com/voxpupuli/puppet-rabbitmq/pull/814) ([codeinthehole](https://github.com/codeinthehole))
+
+**Merged pull requests:**
+
+- Clean up acceptance spec helper [\#815](https://github.com/voxpupuli/puppet-rabbitmq/pull/815) ([ekohl](https://github.com/ekohl))
+
 ## [v9.1.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v9.1.0) (2019-08-17)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v9.0.0...v9.1.0)
@@ -292,7 +309,6 @@ These should not affect the functionality of the module.
 **Fixed bugs:**
 
 - Resolve issue with "puppet resource rabbitmq\_user" failing \(\#147\) [\#629](https://github.com/voxpupuli/puppet-rabbitmq/pull/629) ([wyardley](https://github.com/wyardley))
-- Avoid error when rabbitmqctl is not present\), update spec syntax \(\#614\) [\#615](https://github.com/voxpupuli/puppet-rabbitmq/pull/615) ([wyardley](https://github.com/wyardley))
 - Switch back to using rabbitmq-plugins from system path \(\#566\) [\#570](https://github.com/voxpupuli/puppet-rabbitmq/pull/570) ([wyardley](https://github.com/wyardley))
 
 **Merged pull requests:**
@@ -353,6 +369,7 @@ These should not affect the functionality of the module.
 
 - Look into "error while resolving custom fact" error [\#614](https://github.com/voxpupuli/puppet-rabbitmq/issues/614)
 - repos\_ensure and version on RHEL 7 [\#573](https://github.com/voxpupuli/puppet-rabbitmq/issues/573)
+- Avoid error when rabbitmqctl is not present\), update spec syntax \(\#614\) [\#615](https://github.com/voxpupuli/puppet-rabbitmq/pull/615) ([wyardley](https://github.com/wyardley))
 - fix a couple of problems with erl\_ssl\_path fact [\#609](https://github.com/voxpupuli/puppet-rabbitmq/pull/609) ([costela](https://github.com/costela))
 - Switch $releasevar to ${::os\[release\]\[major\]} [\#577](https://github.com/voxpupuli/puppet-rabbitmq/pull/577) ([wyardley](https://github.com/wyardley))
 - Fix regex double escaping of rabbitmqctl list\_policies [\#561](https://github.com/voxpupuli/puppet-rabbitmq/pull/561) ([wyardley](https://github.com/wyardley))
@@ -407,7 +424,7 @@ These should not affect the functionality of the module.
 - \(MODULES-5187\) mysnc puppet 5 and ruby 2.4 [\#554](https://github.com/voxpupuli/puppet-rabbitmq/pull/554) ([eputnam](https://github.com/eputnam))
 - \(MODULES-5144\) Prep for puppet 5 [\#553](https://github.com/voxpupuli/puppet-rabbitmq/pull/553) ([hunner](https://github.com/hunner))
 - Fix unit tests on \#535 [\#550](https://github.com/voxpupuli/puppet-rabbitmq/pull/550) ([hunner](https://github.com/hunner))
-- Fix error text in `rabbitmq\_vhost` provider [\#549](https://github.com/voxpupuli/puppet-rabbitmq/pull/549) ([hybby](https://github.com/hybby))
+- Fix error text in `rabbitmq_vhost` provider [\#549](https://github.com/voxpupuli/puppet-rabbitmq/pull/549) ([hybby](https://github.com/hybby))
 - Improve distro fact handling in tests [\#548](https://github.com/voxpupuli/puppet-rabbitmq/pull/548) ([jeckersb](https://github.com/jeckersb))
 - Simplify "all\_vhosts" in rabbitmq\_queue provider [\#544](https://github.com/voxpupuli/puppet-rabbitmq/pull/544) ([KarolisL](https://github.com/KarolisL))
 - Upstream staging module released 2.2.0. Allow using it. [\#543](https://github.com/voxpupuli/puppet-rabbitmq/pull/543) ([vStone](https://github.com/vStone))
