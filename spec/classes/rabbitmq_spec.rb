@@ -1089,7 +1089,7 @@ describe 'rabbitmq' do
         end
       end
 
-      describe 'ssl options with ssl ciphers' do
+      describe 'ssl options with ssl ciphers (in Erlang [pre-3.7.9] format)' do
         let(:params) do
           { ssl: true,
             ssl_port: 3141,
@@ -1100,7 +1100,22 @@ describe 'rabbitmq' do
         end
 
         it 'sets ssl ciphers to specified values' do
-          is_expected.to contain_file('rabbitmq.config').with_content(%r{ciphers,\[[[:space:]]+{dhe_rsa,aes_256_cbc,sha},[[:space:]]+{ecdhe_rsa,aes_256_cbc,sha}[[:space:]]+\]})
+          is_expected.to contain_file('rabbitmq.config').with_content(%r{ciphers,\[[[:space:]]+{ecdhe_rsa,aes_256_cbc,sha},[[:space:]]+{dhe_rsa,aes_256_cbc,sha}[[:space:]]+\]})
+        end
+      end
+
+      describe 'ssl options with ssl ciphers (in OpenSSL style)' do
+        let(:params) do
+          { ssl: true,
+            ssl_port: 3141,
+            ssl_cacert: '/path/to/cacert',
+            ssl_cert: '/path/to/cert',
+            ssl_key: '/path/to/key',
+            ssl_ciphers: ['ECDHE-RSA-AES256-SHA', 'DHE-RSA-AES256-SHA'] }
+        end
+
+        it 'sets ssl ciphers to specified values' do
+          is_expected.to contain_file('rabbitmq.config').with_content(%r{ciphers,\[[[:space:]]+"ECDHE-RSA-AES256-SHA",[[:space:]]+"DHE-RSA-AES256-SHA"[[:space:]]+\]})
         end
       end
 

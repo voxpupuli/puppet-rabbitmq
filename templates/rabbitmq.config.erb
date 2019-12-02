@@ -1,6 +1,19 @@
 % This file managed by Puppet
 % Template Path: <%= @module_name %>/templates/rabbitmq.config
 [
+<%-
+if @ssl_ciphers && @ssl_ciphers.size > 0
+  ssl_ciphers = @ssl_ciphers.map do |cipher|
+    if cipher.split(',').size > 1
+      "{#{cipher}}"
+    else
+      "\"#{cipher}\""
+    end
+  end.join(",\n                      ")
+else
+  ssl_ciphers = nil
+end
+-%>
 <%- if @ssl and @ssl_versions -%>
   {ssl, [{versions, [<%= @ssl_versions.sort.map { |v| "'#{v}'" }.join(', ') %>]}]},
 <%- end -%>
@@ -79,7 +92,7 @@
                    <%- end -%>
                    <%- if @ssl_ciphers and @ssl_ciphers.size > 0 -%>
                    ,{ciphers,[
-                     <%= @ssl_ciphers.sort.map{|k| "{#{k}}"}.join(",\n                     ") %>
+                     <%= ssl_ciphers %>
                    ]}
                    <%- end -%>
                   ]},
@@ -122,7 +135,7 @@
                    <%- end -%>
                   <%- if @ssl_ciphers and @ssl_ciphers.size > 0 -%>
                   ,{ciphers,[
-                      <%= @ssl_ciphers.sort.map{|k| "{#{k}}"}.join(",\n                      ") %>
+                      <%= ssl_ciphers %>
                   ]}
                   <%- end -%>
                  ]}
