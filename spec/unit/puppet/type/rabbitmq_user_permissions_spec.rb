@@ -18,7 +18,7 @@ describe Puppet::Type.type(:rabbitmq_user_permissions) do
       perms[:name] = 'bar'
     end.to raise_error(Puppet::Error, %r{Valid values match})
   end
-  [:configure_permission, :read_permission, :write_permission].each do |param|
+  %i[configure_permission read_permission write_permission].each do |param|
     it 'does not default to anything' do
       expect(perms[param]).to eq(nil)
     end
