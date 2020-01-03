@@ -8,6 +8,7 @@
     - set: ubuntu1804-64
     - set: centos6-64
     - set: centos7-64
+    - set: centos8-64
 appveyor.yml:
   delete: true
 spec/spec_helper.rb:
