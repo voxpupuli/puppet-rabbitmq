@@ -2,5 +2,5 @@
 rabbitmq::python_package: 'python2'
 rabbitmq::rabbitmq_home: '/var/db/rabbitmq'
 rabbitmq::config_path: '/usr/local/etc/rabbitmq/rabbitmq.config'
-rabbitmq::env_config_path: '/usr/loca/etc/rabbitmq/rabbitmq-env.conf'
+rabbitmq::env_config_path: '/usr/local/etc/rabbitmq/rabbitmq-env.conf'
 rabbitmq::inetrc_config_path: '/usr/local/etc/rabbitmq/inetrc'
