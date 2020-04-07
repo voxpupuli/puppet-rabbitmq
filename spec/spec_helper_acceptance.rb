@@ -1,33 +1,21 @@
-require 'beaker-rspec'
-require 'beaker-puppet'
-require 'beaker/puppet_install_helper'
-require 'beaker/module_install_helper'
+require 'voxpupuli/acceptance/spec_helper_acceptance'
 
-run_puppet_install_helper unless ENV['BEAKER_provision'] == 'no'
+configure_beaker do |host|
+  case fact_on(host, 'os.family')
+  when 'Debian'
+    install_module_from_forge_on(host, 'puppetlabs-apt', '>= 4.1.0 < 8.0.0')
+  when 'RedHat'
+    install_module_from_forge_on(host, 'garethr-erlang', '>= 0.3.0 < 1.0.0')
+    if fact_on(host, 'os.selinux.enabled')
+      # Make sure selinux is disabled so the tests work.
+      on host, puppet('resource', 'exec', 'setenforce 0', 'path=/bin:/sbin:/usr/bin:/usr/sbin', 'onlyif=which setenforce && getenforce | grep Enforcing')
+    end
+  end
 
-RSpec.configure do |c|
-  # Readable test descriptions
-  c.formatter = :documentation
+  install_package(host, 'iproute2') if fact('os.release.major').to_i == 18 || fact('os.release.major') == 'buster/sid'
 
-  # Configure all nodes in nodeset
-  c.before :suite do
-    install_module
-    install_module_dependencies
-
-    # Install aditional modules for soft deps
-    install_module_from_forge('puppetlabs-apt', '>= 4.1.0 < 8.0.0') if fact('os.family') == 'Debian'
-    install_module_from_forge('garethr-erlang', '>= 0.3.0 < 1.0.0') if fact('os.family') == 'RedHat'
-
-    hosts.each do |host|
-      install_package(host, 'iproute2') if fact('os.release.major').to_i == 18 || fact('os.release.major') == 'buster/sid'
-      if fact('os.family') == 'RedHat' && fact('selinux') == 'true'
-        # Make sure selinux is disabled so the tests work.
-        on host, puppet('apply', '-e',
-                        %("exec { 'setenforce 0': path   => '/bin:/sbin:/usr/bin:/usr/sbin', onlyif => 'which setenforce && getenforce | grep Enforcing', }"))
-      end
-
-      # Fake certs
-      on host, 'echo "-----BEGIN RSA PRIVATE KEY-----
+  # Fake certs
+  on host, 'echo "-----BEGIN RSA PRIVATE KEY-----
 MIICXAIBAAKBgQDw1uXI+EAgxk4dOxArPqMNnnCQqmXeQ61XQQXoAgWWjRvY4LAJ
 4ALoACYWFlWVKQkLLQfQ2YYM3vNDG/eYfL2tjhp9APeJrJYJEcbmr5COURtuIh/Z
 fVKRgV5vtOMdlAHS0HFpk/DP1g520Da9wKwv2nDbfRui0y0ImPWz1uqK8wIDAQAB
@@ -42,7 +30,7 @@ FzE0oR37pPKtwbOAxEFwZYsgD3XW5Fwhp/cbqjc7fyMxZqHoRUDl+pesx1j6FhIf
 7MXMJnZ8vYHthwbAm+kCQHFH0HULyNcki4zEYSqiLaVMcbB7QybQmBBDA0mJR2HO
 KYdYDeFG3kfeBOReFM9jOt39OBS/nNP0GXFBJU2ahpQ=
 -----END RSA PRIVATE KEY-----" > /tmp/rabbitmq.key'
-      on host, 'echo "-----BEGIN CERTIFICATE-----
+  on host, 'echo "-----BEGIN CERTIFICATE-----
 MIIEYTCCAkmgAwIBAgIQVAIiKvJ6YmTSszWEfassuDANBgkqhkiG9w0BAQUFADCB
 qjELMAkGA1UEBhMCVVMxEzARBgNVBAgMCkNhbGlmb3JuaWExFDASBgNVBAcMC0xv
 cyBBbmdlbGVzMRUwEwYDVQQKDAxBY21lIFdpZGdldHMxETAPBgNVBAsMCFNlY3Vy
@@ -68,7 +56,7 @@ TCQc43SF2rqpYs3ZE4fPNlyQR3ZCUcYwjv99s6Nz0Ue4vD9+PuT0McE8NtMgiAMf
 DQqmYIMEiYNm15qKW6jJaY7VMUPGNohfEvubsWPlXPQ6/I7e9bNyk5OnA6OGi4qz
 M2Fcgn+pqLU7M+epynzgz4bsPsEw
 -----END CERTIFICATE-----" > /tmp/rabbitmq.crt'
-      on host, 'echo "-----BEGIN CERTIFICATE-----
+  on host, 'echo "-----BEGIN CERTIFICATE-----
 MIIGKTCCBBGgAwIBAgIJAMCISMDHjBJpMA0GCSqGSIb3DQEBBQUAMIGqMQswCQYD
 VQQGEwJVUzETMBEGA1UECAwKQ2FsaWZvcm5pYTEUMBIGA1UEBwwLTG9zIEFuZ2Vs
 ZXMxFTATBgNVBAoMDEFjbWUgV2lkZ2V0czERMA8GA1UECwwIU2VjdXJpdHkxHTAb
@@ -103,8 +91,6 @@ pct+50AzBHUSn0zpB6QRBow2MddivGmTs1IOFdWaSj+Mfdb6phln1Hkv+KW2Wizv
 I28L690yK+Bnk1ezGs+ln6yxiWOdnurckaLkTj6/JFw2x5q/uaTXOxjG/YKKpMQE
 Fq8uI2+DbX/zW18ZIEv6UloGEEWbLO1427+Yyb/THMczWYyH20PTyzT8zFOt
 -----END CERTIFICATE-----" > /tmp/cacert.crt'
-    end
-  end
 end
 
 shared_examples 'an idempotent resource' do
