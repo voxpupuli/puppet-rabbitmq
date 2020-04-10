@@ -133,6 +133,46 @@ EOT
         ]
       )
     end
+
+    it 'return different instances' do
+      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<-EOT
+/
+EOT
+      provider_class.expects(:rabbitmqctl_list).with('parameters', '-p', '/').returns <<-EOT
+shovel  documentumShovel1  {"src-uri":"amqp://","src-queue":"my-queue","dest-uri":"amqp://remote-server","dest-queue":"another-queue"}
+federation  documentumFederation2  {"uri":"amqp://","expires":"360000"}
+EOT
+      instances = provider_class.instances
+      expect(instances.size).to eq(2)
+      expect(instances.map do |prov|
+        {
+          name: prov.get(:name),
+          component_name: prov.get(:component_name),
+          value: prov.get(:value)
+        }
+      end).to eq(
+        [
+          {
+            name: 'documentumShovel1@/',
+            component_name: 'shovel',
+            value: {
+              'src-uri'    => 'amqp://',
+              'src-queue'  => 'my-queue',
+              'dest-uri'   => 'amqp://remote-server',
+              'dest-queue' => 'another-queue'
+            }
+          },
+          {
+            name: 'documentumFederation2@/',
+            component_name: 'federation',
+            value: {
+              'uri'        => 'amqp://',
+              'expires'    => '360000'
+            }
+          }
+        ]
+      )
+    end
     # rubocop:enable RSpec/MultipleExpectations
   end
 
