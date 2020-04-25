@@ -66,7 +66,7 @@ Puppet::Type.type(:rabbitmq_parameter).provide(:rabbitmqctl, parent: Puppet::Pro
     key = resource[:name].rpartition('@').first
 
     if @property_flush[:ensure] == :absent
-      rabbitmqctl('clear_parameter', '-p', vhost, 'shovel', key)
+      rabbitmqctl('clear_parameter', '-p', vhost, resource[:component_name], key)
     else
       rabbitmqctl('set_parameter', '-p', vhost, resource[:component_name], key, resource[:value].to_json)
     end
