@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v10.0.1](https://github.com/voxpupuli/puppet-rabbitmq/tree/v10.0.1) (2020-04-25)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v10.0.0...v10.0.1)
+
+**Fixed bugs:**
+
+- Problem removing \(ensure =\> 'absent'\) federation upstream [\#832](https://github.com/voxpupuli/puppet-rabbitmq/issues/832)
+- Fix env\_config\_path on FreeBSD [\#828](https://github.com/voxpupuli/puppet-rabbitmq/pull/828) ([olivermussell](https://github.com/olivermussell))
+
+**Merged pull requests:**
+
+- Fix issue \#832 - removing federation upstream [\#833](https://github.com/voxpupuli/puppet-rabbitmq/pull/833) ([fiksn](https://github.com/fiksn))
+- Use voxpupuli-acceptance [\#831](https://github.com/voxpupuli/puppet-rabbitmq/pull/831) ([ekohl](https://github.com/ekohl))
+- delete legacy travis directory [\#823](https://github.com/voxpupuli/puppet-rabbitmq/pull/823) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v10.0.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v10.0.0) (2019-12-02)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v9.1.0...v10.0.0)
