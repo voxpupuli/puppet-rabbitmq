@@ -829,7 +829,6 @@ Data type: `Array`
 Support only a given list of SSL ciphers, using either the Erlang or OpenSSL styles.
 Supported ciphers in your install can be listed with: `rabbitmqctl eval 'ssl:cipher_suites().'`
 Functionality can be tested with cipherscan or similar tool: https://github.com/mozilla/cipherscan
-
 * Erlang style: `['ecdhe_rsa,aes_256_cbc,sha', 'dhe_rsa,aes_256_cbc,sha']`
 * OpenSSL style: `['ECDHE-RSA-AES256-SHA', 'DHE-RSA-AES256-SHA']`
 
@@ -1710,3 +1709,4 @@ Valid values: %r{^\S+$}
 namevar
 
 The name of the vhost to add
+
