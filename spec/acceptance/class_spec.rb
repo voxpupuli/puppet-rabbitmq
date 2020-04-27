@@ -37,6 +37,19 @@ describe 'rabbitmq class:' do
       it { is_expected.to be_enabled }
       it { is_expected.to be_running }
     end
+
+    describe file('/etc/rabbitmq') do
+      it { is_expected.to be_directory }
+      it { is_expected.to be_owned_by 'rabbitmq' }
+      it { is_expected.to be_grouped_into 'rabbitmq' }
+    end
+
+    describe file('/etc/rabbitmq/ssl') do
+      it { is_expected.to be_directory }
+      it { is_expected.to be_owned_by 'rabbitmq' }
+      it { is_expected.to be_grouped_into 'rabbitmq' }
+      it { is_expected.not_to be_readable.by('others') }
+    end
   end
 
   context 'disable and stop service' do

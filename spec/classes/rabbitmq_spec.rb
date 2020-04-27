@@ -310,7 +310,9 @@ describe 'rabbitmq' do
         it {
           is_expected.to contain_file('/etc/rabbitmq').with(
             'ensure' => 'directory',
-            'mode'   => '0755'
+            'owner'  => 'rabbitmq',
+            'group'  => 'rabbitmq',
+            'mode'   => '2755'
           )
         }
       end
@@ -318,9 +320,20 @@ describe 'rabbitmq' do
       describe 'manages configuration file correctly' do
         it {
           is_expected.to contain_file('rabbitmq.config').with(
-            'owner' => '0',
+            'owner' => 'rabbitmq',
             'group' => 'rabbitmq',
             'mode'  => '0640'
+          )
+        }
+      end
+
+      describe 'manages SSL directory correctly' do
+        it {
+          is_expected.to contain_file('/etc/rabbitmq/ssl').with(
+            'ensure' => 'directory',
+            'owner'  => 'rabbitmq',
+            'group'  => 'rabbitmq',
+            'mode'   => '2750'
           )
         }
       end

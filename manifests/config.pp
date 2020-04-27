@@ -146,23 +146,23 @@ class rabbitmq::config {
 
   file { '/etc/rabbitmq':
     ensure => directory,
-    owner  => '0',
-    group  => '0',
-    mode   => '0755',
+    owner  => $rabbitmq_user,
+    group  => $rabbitmq_group,
+    mode   => '2755',
   }
 
   file { '/etc/rabbitmq/ssl':
     ensure => directory,
-    owner  => '0',
-    group  => '0',
-    mode   => '0755',
+    owner  => $rabbitmq_user,
+    group  => $rabbitmq_group,
+    mode   => '2750',
   }
 
   file { 'rabbitmq.config':
     ensure  => file,
     path    => $config_path,
     content => template($config),
-    owner   => '0',
+    owner   => $rabbitmq_user,
     group   => $rabbitmq_group,
     mode    => '0640',
   }
@@ -171,7 +171,7 @@ class rabbitmq::config {
     ensure  => file,
     path    => $env_config_path,
     content => template($env_config),
-    owner   => '0',
+    owner   => $rabbitmq_user,
     group   => $rabbitmq_group,
     mode    => '0640',
   }
@@ -180,7 +180,7 @@ class rabbitmq::config {
     ensure  => file,
     path    => $inetrc_config_path,
     content => template($inetrc_config),
-    owner   => '0',
+    owner   => $rabbitmq_user,
     group   => $rabbitmq_group,
     mode    => '0640',
   }
@@ -190,7 +190,7 @@ class rabbitmq::config {
       ensure  => file,
       path    => '/etc/rabbitmq/enabled_plugins',
       content => template('rabbitmq/enabled_plugins.erb'),
-      owner   => '0',
+      owner   => $rabbitmq_user,
       group   => $rabbitmq_group,
       mode    => '0640',
       require => File['/etc/rabbitmq'],
@@ -202,7 +202,7 @@ class rabbitmq::config {
       ensure  => file,
       path    => '/etc/rabbitmq/rabbitmqadmin.conf',
       content => template('rabbitmq/rabbitmqadmin.conf.erb'),
-      owner   => '0',
+      owner   => $rabbitmq_user,
       group   => $rabbitmq_group,
       mode    => '0640',
       require => File['/etc/rabbitmq'],
