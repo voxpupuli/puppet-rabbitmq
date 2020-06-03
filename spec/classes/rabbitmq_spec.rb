@@ -148,8 +148,11 @@ describe 'rabbitmq' do
           end
 
           if facts[:systemd]
+            selinux_ignore_defaults = facts[:os]['family'] == 'RedHat'
+
             it do
               is_expected.to contain_systemd__service_limits("#{name}.service").
+                with_selinux_ignore_defaults(selinux_ignore_defaults).
                 with_limits('LimitNOFILE' => value).
                 with_restart_service(false)
             end
