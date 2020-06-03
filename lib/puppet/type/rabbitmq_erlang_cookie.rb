@@ -16,8 +16,19 @@ DESC
   newproperty(:content) do
     desc 'Content of cookie'
     newvalues(%r{^\S+$})
+
     def change_to_s(_current, _desired)
       'The rabbitmq erlang cookie was changed'
+    end
+
+    # rubocop:disable Style/PredicateName
+    def is_to_s(_value)
+      '[old content redacted]'
+    end
+    # rubocop:enable Style/PredicateName
+
+    def should_to_s(_value)
+      '[new content redacted]'
     end
   end
 
