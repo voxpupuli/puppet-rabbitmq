@@ -125,7 +125,7 @@ class rabbitmq::config {
       $proto_dist = 'inet6_tcp'
       $ssl_path = ''
     }
-    $ipv6_or_tls_env = ['SERVER', 'CTL'].reduce({}) |$memo, $item| {
+    $ipv6_or_tls_env = ['SERVER_ADDITIONAL', 'CTL'].reduce({}) |$memo, $item| {
       $orig = $_environment_variables["RABBITMQ_${item}_ERL_ARGS"]
       $munged = $orig ? {
         # already quoted, keep quoting
