@@ -8,6 +8,8 @@
     - set: ubuntu1804-64
     - set: centos6-64
     - set: centos7-64
+    # RabbitMQ fails to start via systemd unless /sys/fs/cgroup is mounted through from to base host
+    - set: centos8-64{mount_folders={sysfscgroup={host_path=/sys/fs/cgroup\,container_path=/sys/fs/cgroup\,opts=ro}}}
 appveyor.yml:
   delete: true
 spec/spec_helper.rb:

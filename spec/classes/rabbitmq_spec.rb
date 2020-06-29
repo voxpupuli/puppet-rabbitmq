@@ -185,6 +185,19 @@ describe 'rabbitmq' do
 
         context 'with service_manage set to true' do
           let(:params) { { admin_enable: true, management_ip_address: '1.1.1.1', service_manage: true } }
+          let(:python_package) do
+            if %w[Debian SUSE].include?(facts[:os]['family'])
+              'python'
+            elsif %w[FreeBSD OpenBSD].include?(facts[:os]['family'])
+              'python2'
+            elsif facts[:os]['family'] == 'RedHat'
+              if facts[:os]['release']['major'] == '8'
+                'python3'
+              else
+                'python'
+              end
+            end
+          end
 
           context 'with rabbitmqadmin_package set to blub' do
             let(:params) { { rabbitmqadmin_package: 'blub' } }
@@ -206,12 +219,7 @@ describe 'rabbitmq' do
               is_expected.to contain_archive('rabbitmqadmin').with_source('http://1.1.1.1:15672/cli/rabbitmqadmin')
             end
           end
-          if %w[RedHat Debian SUSE].include?(facts[:os]['family'])
-            it { is_expected.to contain_package('python') }
-          end
-          if %w[FreeBSD OpenBSD].include?(facts[:os]['family'])
-            it { is_expected.to contain_package('python2') }
-          end
+          it { is_expected.to contain_package(python_package) if python_package }
         end
         context 'with manage_python false' do
           let(:params) { { manage_python: false } }
@@ -220,6 +228,7 @@ describe 'rabbitmq' do
             is_expected.to contain_class('rabbitmq::install::rabbitmqadmin')
             is_expected.not_to contain_package('python')
             is_expected.not_to contain_package('python2')
+            is_expected.not_to contain_package('python3')
           end
         end
 

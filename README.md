@@ -18,7 +18,6 @@
 4. [Usage - Configuration options and additional functionality](#usage)
 5. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
 5. [Limitations - OS compatibility, etc.](#limitations)
-   * [RedHat module dependencies](#redhat-module-dependecies)
 6. [Development - Guide for contributing to the module](#development)
 
 ## Overview
@@ -53,6 +52,38 @@ You can view example usage in [REFERENCE](REFERENCE.md).
 ## Reference
 
 See [REFERENCE](REFERENCE.md).
+
+## Limitations
+
+If running CentOS/RHEL, ensure the `epel` repo, or another repo containing a
+suitable Erlang version, is present. On Debian systems, puppetlabs/apt
+(>=2.0.0 < 5.0.0) is a soft dependency.
+
+To have a suitable erlang version installed on RedHat and Debian systems,
+you have to install another puppet module from https://forge.puppetlabs.com/garethr/erlang with:
+
+    puppet module install garethr-erlang
+
+This module handles the packages for erlang.
+To use the module, add the following snippet to your site.pp or an appropriate profile class:
+
+For RedHat systems:
+```puppet
+include 'erlang'
+class { 'erlang':
+  epel_enable => true,
+}
+```
+
+For Debian systems:
+```puppet
+include 'erlang'
+package { 'erlang-base':
+  ensure => 'latest',
+}
+```
+
+This module also depends on voxpupuli/archive to install rabbitmqadmin.
 
 ## Development
 
