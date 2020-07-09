@@ -128,10 +128,16 @@ DESC
         raise ArgumentError, "Invalid shards-per-node value '#{shards_per_node_val}'"
       end
     end
-    if definition.key? 'ha-sync-batch-size' # rubocop:disable Style/GuardClause
+    if definition.key? 'ha-sync-batch-size'
       ha_sync_batch_size_val = definition['ha-sync-batch-size']
       unless ha_sync_batch_size_val.to_i.to_s == ha_sync_batch_size_val
         raise ArgumentError, "Invalid ha-sync-batch-size value '#{ha_sync_batch_size_val}'"
+      end
+    end
+    if definition.key? 'delivery-limit' # rubocop:disable Style/GuardClause
+      delivery_limit_val = definition['delivery-limit']
+      unless delivery_limit_val.to_i.to_s == delivery_limit_val
+        raise ArgumentError, "Invalid delivery-limit value '#{delivery_limit_val}'"
       end
     end
   end
@@ -157,6 +163,9 @@ DESC
     end
     if definition.key? 'ha-sync-batch-size'
       definition['ha-sync-batch-size'] = definition['ha-sync-batch-size'].to_i
+    end
+    if definition.key? 'delivery-limit'
+      definition['delivery-limit'] = definition['delivery-limit'].to_i
     end
     definition
   end
