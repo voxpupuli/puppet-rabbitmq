@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v10.1.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v10.1.0) (2020-07-10)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v10.0.1...v10.1.0)
+
+**Implemented enhancements:**
+
+- Don't use RABBITMQ\_SERVER\_ERL\_ARGS [\#841](https://github.com/voxpupuli/puppet-rabbitmq/pull/841) ([jeckersb](https://github.com/jeckersb))
+
+**Fixed bugs:**
+
+- Cannot set delivery-limit policy [\#846](https://github.com/voxpupuli/puppet-rabbitmq/issues/846)
+- rabbitmq\_user resource displays password when needed changed in noop [\#839](https://github.com/voxpupuli/puppet-rabbitmq/issues/839)
+- erlang\_cookie echo'ed to agent output [\#837](https://github.com/voxpupuli/puppet-rabbitmq/issues/837)
+- breaks /etc/rabbitmq ownership under ubuntu [\#813](https://github.com/voxpupuli/puppet-rabbitmq/issues/813)
+- Owner of /etc/rabbitmq [\#703](https://github.com/voxpupuli/puppet-rabbitmq/issues/703)
+
+**Merged pull requests:**
+
+- Allow delivery-limit policy to be set [\#847](https://github.com/voxpupuli/puppet-rabbitmq/pull/847) ([philomory](https://github.com/philomory))
+- Hide user password [\#840](https://github.com/voxpupuli/puppet-rabbitmq/pull/840) ([tobias-urdin](https://github.com/tobias-urdin))
+- Hide erlang cookie content [\#838](https://github.com/voxpupuli/puppet-rabbitmq/pull/838) ([tobias-urdin](https://github.com/tobias-urdin))
+- \[fix\] ownership and permissions on conf files [\#835](https://github.com/voxpupuli/puppet-rabbitmq/pull/835) ([wyardley](https://github.com/wyardley))
+
 ## [v10.0.1](https://github.com/voxpupuli/puppet-rabbitmq/tree/v10.0.1) (2020-04-25)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v10.0.0...v10.0.1)
