@@ -69,7 +69,7 @@ Puppet::Type.type(:rabbitmq_user).provide(
     check_access_control = [
       'rabbit_access_control:check_user_pass_login(',
       %[list_to_binary("#{@resource[:name]}"), ],
-      %[list_to_binary("#{password}")).]
+      %[list_to_binary("#{password.to_s.gsub('"', '\\"')}")).]
     ]
 
     response = rabbitmqctl('eval', check_access_control.join)
