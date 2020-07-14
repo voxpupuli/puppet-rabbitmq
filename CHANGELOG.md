@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v10.1.1](https://github.com/voxpupuli/puppet-rabbitmq/tree/v10.1.1) (2020-07-13)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v10.1.0...v10.1.1)
+
+**Fixed bugs:**
+
+- Password comparison error in Rabbitmq\_user when password contains double quotes [\#850](https://github.com/voxpupuli/puppet-rabbitmq/issues/850)
+
+**Merged pull requests:**
+
+- Escape double quotes in password during comparison [\#851](https://github.com/voxpupuli/puppet-rabbitmq/pull/851) ([jplindquist](https://github.com/jplindquist))
+- Remove facter rabbitmq\_nodename error message [\#849](https://github.com/voxpupuli/puppet-rabbitmq/pull/849) ([mbaldessari](https://github.com/mbaldessari))
+
 ## [v10.1.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v10.1.0) (2020-07-10)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v10.0.1...v10.1.0)
