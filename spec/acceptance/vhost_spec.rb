@@ -23,8 +23,6 @@ describe 'rabbitmq vhost:' do
       apply_manifest(pp, catch_failures: true)
       apply_manifest(pp, catch_changes: true)
     end
-
-    # rubocop:disable RSpec/MultipleExpectations
     it 'has the vhost' do
       shell('rabbitmqctl list_vhosts') do |r|
         expect(r.stdout).to match(%r{myhost})

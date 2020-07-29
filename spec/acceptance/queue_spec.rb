@@ -59,8 +59,6 @@ describe 'rabbitmq binding:' do
       apply_manifest(pp, catch_failures: true)
       apply_manifest(pp, catch_changes: true)
     end
-
-    # rubocop:disable RSpec/MultipleExpectations
     it 'has the binding' do
       shell('rabbitmqctl list_bindings -q -p host1') do |r|
         expect(r.stdout).to match(%r{exchange1\sexchange\squeue1\squeue\s#})
@@ -149,8 +147,6 @@ describe 'rabbitmq binding:' do
       apply_manifest(pp, catch_failures: true)
       apply_manifest(pp, catch_changes: true)
     end
-
-    # rubocop:disable RSpec/MultipleExpectations
     it 'has the bindings' do
       shell('rabbitmqctl list_bindings -q -p host1') do |r|
         expect(r.stdout).to match(%r{exchange1\sexchange\squeue1\squeue\stest1})
@@ -226,8 +222,6 @@ describe 'rabbitmq binding:' do
       apply_manifest(pp, catch_failures: true)
       apply_manifest(pp, catch_changes: true)
     end
-
-    # rubocop:disable RSpec/MultipleExpectations
     it 'has the binding' do
       shell('rabbitmqctl list_bindings -q -p host2') do |r|
         expect(r.stdout).to match(%r{exchange2\sexchange\squeue2\squeue\s#})

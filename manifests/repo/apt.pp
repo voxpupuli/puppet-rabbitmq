@@ -3,7 +3,7 @@
 #   puppetlabs-stdlib
 #
 # @api private
-class rabbitmq::repo::apt(
+class rabbitmq::repo::apt (
   String $location               = 'https://packagecloud.io/rabbitmq/rabbitmq-server',
   String $repos                  = 'main',
   Boolean $include_src           = false,
@@ -11,8 +11,7 @@ class rabbitmq::repo::apt(
   String $key_source             = $rabbitmq::package_gpg_key,
   Optional[String] $key_content  = $rabbitmq::key_content,
   Optional[String] $architecture = undef,
-  ) {
-
+) {
   $osname = downcase($facts['os']['name'])
   $pin    = $rabbitmq::package_apt_pin
 

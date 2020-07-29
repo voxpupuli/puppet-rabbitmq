@@ -24,8 +24,6 @@ describe 'rabbitmq user:' do
       apply_manifest(pp, catch_failures: true)
       apply_manifest(pp, catch_changes: true)
     end
-
-    # rubocop:disable RSpec/MultipleExpectations
     it 'has the user' do
       shell('rabbitmqctl list_users -q') do |r|
         expect(r.stdout).to match(%r{dan.*administrator})

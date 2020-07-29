@@ -1,11 +1,10 @@
 # Makes sure that the Packagecloud repo is installed
 #
 # @api private
-class rabbitmq::repo::rhel(
-    $location          = "https://packagecloud.io/rabbitmq/rabbitmq-server/el/${facts['os'][release][major]}/\$basearch",
-    String $key_source = $rabbitmq::package_gpg_key,
-  ) {
-
+class rabbitmq::repo::rhel (
+  $location          = "https://packagecloud.io/rabbitmq/rabbitmq-server/el/${facts['os'][release][major]}/\$basearch",
+  String $key_source = $rabbitmq::package_gpg_key,
+) {
   yumrepo { 'rabbitmq':
     ensure   => present,
     name     => 'rabbitmq_rabbitmq-server',
