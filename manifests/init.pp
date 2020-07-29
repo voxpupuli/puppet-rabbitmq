@@ -298,7 +298,7 @@
 # @param loopback_users
 #   This option configures a list of users to allow access via the loopback interfaces
 #
-class rabbitmq(
+class rabbitmq (
   Boolean $admin_enable                                                                            = true,
   Boolean $management_enable                                                                       = false,
   Boolean $use_config_file_for_plugins                                                             = false,
@@ -399,12 +399,11 @@ class rabbitmq(
   Array $loopback_users                                                                            = ['guest'],
   Boolean $service_restart                                                                         = true,
 ) {
-
   if $ssl_only and ! $ssl {
     fail('$ssl_only => true requires that $ssl => true')
   }
 
-  if $config_stomp and $stomp_ssl_only and ! $ssl_stomp_port  {
+  if $config_stomp and $stomp_ssl_only and ! $ssl_stomp_port {
     fail('$stomp_ssl_only requires that $ssl_stomp_port be set')
   }
 
@@ -498,5 +497,4 @@ class rabbitmq(
 
   # Make sure the various providers have their requirements in place.
   Class['rabbitmq::install'] -> Rabbitmq_plugin<| |>
-
 }

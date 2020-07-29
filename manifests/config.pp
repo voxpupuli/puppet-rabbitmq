@@ -3,7 +3,6 @@
 #
 # @api private
 class rabbitmq::config {
-
   $admin_enable                        = $rabbitmq::admin_enable
   $management_enable                   = $rabbitmq::management_enable
   $use_config_file_for_plugins         = $rabbitmq::use_config_file_for_plugins
@@ -104,7 +103,7 @@ class rabbitmq::config {
     $management_ip_address = $rabbitmq::node_ip_address
   }
 
-  $inetrc_env = {'export ERL_INETRC' => $inetrc_config_path}
+  $inetrc_env = { 'export ERL_INETRC' => $inetrc_config_path }
 
   # Handle env variables.
   $_environment_variables = $default_ssl_env_variables + $inetrc_env + $rabbitmq::environment_variables
@@ -125,7 +124,7 @@ class rabbitmq::config {
       $proto_dist = 'inet6_tcp'
       $ssl_path = ''
     }
-    $ipv6_or_tls_env = ['SERVER_ADDITIONAL', 'CTL'].reduce({}) |$memo, $item| {
+    $ipv6_or_tls_env = ['SERVER_ADDITIONAL', 'CTL'].reduce( {}) |$memo, $item| {
       $orig = $_environment_variables["RABBITMQ_${item}_ERL_ARGS"]
       $munged = $orig ? {
         # already quoted, keep quoting
@@ -136,7 +135,7 @@ class rabbitmq::config {
         default           => "\"${orig}${ssl_path} -proto_dist ${proto_dist}\"",
       }
 
-      merge($memo, {"RABBITMQ_${item}_ERL_ARGS" => $munged})
+      merge($memo, { "RABBITMQ_${item}_ERL_ARGS" => $munged })
     }
 
     $environment_variables = $_environment_variables + $ipv6_or_tls_env
@@ -227,12 +226,12 @@ class rabbitmq::config {
         mode    => '0644',
       }
     }
-    default: { }
+    default: {}
   }
 
   if $facts['systemd'] { # systemd fact provided by systemd module
     systemd::service_limits { "${service_name}.service":
-      limits          => {'LimitNOFILE' => $file_limit},
+      limits          => { 'LimitNOFILE' => $file_limit },
       # The service will be notified when config changes
       restart_service => false,
     }

@@ -2,14 +2,12 @@
 #
 # @api private
 class rabbitmq::install::rabbitmqadmin {
-
   if $rabbitmq::rabbitmqadmin_package {
-    package{'rabbitmqadmin':
+    package { 'rabbitmqadmin':
       ensure => 'present',
       name   => $rabbitmq::rabbitmqadmin_package,
     }
   } else {
-
     $python_package = $rabbitmq::python_package
     # Some systems (e.g., Ubuntu 16.04) don't ship Python 2 by default
     if $rabbitmq::manage_python {

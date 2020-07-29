@@ -12,7 +12,6 @@ describe provider_class do
   end
   let(:provider) { provider_class.new(resource) }
 
-  # rubocop:disable RSpec/MultipleExpectations
   describe '#instances' do
     it 'returns instances' do
       provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<-EOT
@@ -42,8 +41,6 @@ EOT
                  ])
     end
     # rubocop:enable RSpec/MultipleExpectations
-
-    # rubocop:disable RSpec/MultipleExpectations
     it 'returns multiple instances' do
       provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<-EOT
 /

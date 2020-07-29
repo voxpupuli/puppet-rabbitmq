@@ -36,7 +36,6 @@ describe Puppet::Type.type(:rabbitmq_user_permissions) do
       end.to raise_error(Puppet::Error, %r{Invalid regexp})
     end
   end
-  # rubocop:disable RSpec/MultipleExpectations
   { rabbitmq_vhost: 'dan@test', rabbitmq_user: 'test@dan' }.each do |k, v|
     it "should autorequire #{k}" do
       vhost = if k == :rabbitmq_vhost

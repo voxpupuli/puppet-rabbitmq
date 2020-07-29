@@ -1,4 +1,4 @@
-$rabbitmq_plugins = [ 'amqp_client', 'rabbitmq_stomp' ]
+$rabbitmq_plugins = ['amqp_client', 'rabbitmq_stomp']
 
 class { 'rabbitmq':
   config_stomp => true,

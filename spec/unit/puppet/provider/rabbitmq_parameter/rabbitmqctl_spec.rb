@@ -57,8 +57,6 @@ EOT
       instances = provider_class.instances
       expect(instances.size).to eq(0)
     end
-
-    # rubocop:disable RSpec/MultipleExpectations
     it 'return one instance' do
       provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<-EOT
 /
@@ -90,8 +88,6 @@ EOT
       )
     end
     # rubocop:enable RSpec/MultipleExpectations
-
-    # rubocop:disable RSpec/MultipleExpectations
     it 'return multiple instances' do
       provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<-EOT
 /
