@@ -1,4 +1,5 @@
 FROM ruby:2.5.3
+ENV LANG C.UTF-8
 
 WORKDIR /opt/puppet
 
