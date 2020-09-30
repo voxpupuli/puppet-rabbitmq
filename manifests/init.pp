@@ -302,7 +302,7 @@ class rabbitmq (
   Boolean $admin_enable                                                                            = true,
   Boolean $management_enable                                                                       = false,
   Boolean $use_config_file_for_plugins                                                             = false,
-  Enum['ram', 'disk', 'disc'] $cluster_node_type                                                   = 'disc',
+  Enum['ram', 'disc'] $cluster_node_type                                                           = 'disc',
   Array $cluster_nodes                                                                             = [],
   String $config                                                                                   = 'rabbitmq/rabbitmq.config.erb',
   Boolean $config_cluster                                                                          = false,
