@@ -4,7 +4,20 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
-## [v10.1.1](https://github.com/voxpupuli/puppet-rabbitmq/tree/v10.1.1) (2020-07-13)
+## [v10.1.2](https://github.com/voxpupuli/puppet-rabbitmq/tree/v10.1.2) (2020-10-01)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v10.1.1...v10.1.2)
+
+**Fixed bugs:**
+
+- Not idempotent again on RHEL based platforms since move to systemd module [\#836](https://github.com/voxpupuli/puppet-rabbitmq/issues/836)
+- remove invalid cluster\_node\_type 'disk' [\#859](https://github.com/voxpupuli/puppet-rabbitmq/pull/859) ([danoe](https://github.com/danoe))
+
+**Merged pull requests:**
+
+- Ignore SELinux defaults for systemd on RHEL based [\#856](https://github.com/voxpupuli/puppet-rabbitmq/pull/856) ([tobias-urdin](https://github.com/tobias-urdin))
+
+## [v10.1.1](https://github.com/voxpupuli/puppet-rabbitmq/tree/v10.1.1) (2020-07-15)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v10.1.0...v10.1.1)
 
@@ -482,7 +495,7 @@ These should not affect the functionality of the module.
 - Scope config\_variables for Puppet 4 [\#541](https://github.com/voxpupuli/puppet-rabbitmq/pull/541) ([jarro2783](https://github.com/jarro2783))
 - \[msync\] 786266 Implement puppet-module-gems, a45803 Remove metadata.json from locales config [\#540](https://github.com/voxpupuli/puppet-rabbitmq/pull/540) ([wilson208](https://github.com/wilson208))
 - \[MODULES-4528\] Replace Puppet.version.to\_f version comparison from spec\_helper.rb [\#538](https://github.com/voxpupuli/puppet-rabbitmq/pull/538) ([wilson208](https://github.com/wilson208))
-- Systemd open files limit [\#535](https://github.com/voxpupuli/puppet-rabbitmq/pull/535) ([arteal](https://github.com/arteal))
+- Systemd open files limit [\#535](https://github.com/voxpupuli/puppet-rabbitmq/pull/535) ([tomashejatko](https://github.com/tomashejatko))
 - \[MODULES-4450\] don't set ssl depth if undef [\#534](https://github.com/voxpupuli/puppet-rabbitmq/pull/534) ([JAORMX](https://github.com/JAORMX))
 - moved username:password to separate parameter [\#532](https://github.com/voxpupuli/puppet-rabbitmq/pull/532) ([vdmkenny](https://github.com/vdmkenny))
 - \(maint\) parallel\_spec maintenance: spec\_helper [\#531](https://github.com/voxpupuli/puppet-rabbitmq/pull/531) ([eputnam](https://github.com/eputnam))

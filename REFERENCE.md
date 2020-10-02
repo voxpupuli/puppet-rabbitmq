@@ -191,7 +191,7 @@ Default value: `undef`
 
 ##### `cluster_node_type`
 
-Data type: `Enum['ram', 'disk', 'disc']`
+Data type: `Enum['ram', 'disc']`
 
 Choose between disc and ram nodes.
 
