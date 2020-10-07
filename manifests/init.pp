@@ -157,7 +157,7 @@
 # @param ldap_auth
 #   Set to true to enable LDAP auth.
 # @param ldap_server
-#   LDAP server to use for auth.
+#   LDAP server or servers to use for auth.
 # @param ldap_user_dn_pattern
 #   User DN pattern for LDAP auth.
 # @param ldap_other_bind
@@ -370,7 +370,7 @@ class rabbitmq (
   Array $ssl_ciphers                                                                               = [],
   Boolean $stomp_ensure                                                                            = false,
   Boolean $ldap_auth                                                                               = false,
-  String $ldap_server                                                                              = 'ldap',
+  Variant[String[1],Array[String[1]]] $ldap_server                                                 = 'ldap',
   Optional[String] $ldap_user_dn_pattern                                                           = undef,
   String $ldap_other_bind                                                                          = 'anon',
   Boolean $ldap_use_ssl                                                                            = false,
