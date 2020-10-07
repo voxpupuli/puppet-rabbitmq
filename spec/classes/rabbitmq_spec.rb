@@ -596,6 +596,32 @@ describe 'rabbitmq' do
         end
       end
 
+      describe 'configuring ldap authentication' do
+        let :params do
+          { config_stomp: false,
+            ldap_auth: true,
+            ldap_server: ['ldap1.example.com', 'ldap2.example.com'],
+            ldap_other_bind: 'as_user',
+            ldap_use_ssl: false,
+            ldap_port: 389,
+            ldap_log: true,
+            ldap_config_variables: { 'foo' => 'bar' } }
+        end
+
+        it { is_expected.to contain_rabbitmq_plugin('rabbitmq_auth_backend_ldap') }
+
+        it 'does not set user_dn_pattern when none is specified' do
+          verify_contents(catalogue, 'rabbitmq.config',
+                          ['[', '  {rabbit, [', '    {auth_backends, [rabbit_auth_backend_internal, rabbit_auth_backend_ldap]},', '  ]}',
+                           '  {rabbitmq_auth_backend_ldap, [', '    {other_bind, as_user},',
+                           '    {servers, ["ldap1.example.com", "ldap2.example.com"]},',
+                           '    {use_ssl, false},',
+                           '    {port, 389},', '    {foo, bar},', '    {log, true}'])
+          content = catalogue.resource('file', 'rabbitmq.config').send(:parameters)[:content]
+          expect(content).not_to include 'user_dn_pattern'
+        end
+      end
+
       describe 'configuring auth_backends' do
         let :params do
           { auth_backends: ['{baz, foo}', 'bar'] }
