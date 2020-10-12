@@ -1,4 +1,5 @@
 ---
+# yamllint disable rule:line-length
 # This file is managed via modulesync
 # https://github.com/voxpupuli/modulesync
 # https://github.com/voxpupuli/modulesync_config
