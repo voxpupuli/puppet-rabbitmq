@@ -8,8 +8,6 @@
     - set: ubuntu1804-64
     - set: centos6-64
     - set: centos7-64
-appveyor.yml:
-  delete: true
 spec/spec_helper.rb:
   allow_deprecations: true
   spec_overrides: "require 'spec_helper_local'"
