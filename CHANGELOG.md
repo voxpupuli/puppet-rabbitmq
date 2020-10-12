@@ -4,7 +4,17 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
-## [v10.1.2](https://github.com/voxpupuli/puppet-rabbitmq/tree/v10.1.2) (2020-10-01)
+## [v10.2.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v10.2.0) (2020-10-12)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v10.1.2...v10.2.0)
+
+Debian 8 is EOL since some months now. Release 10.2.0 will be the last one with Debian 8 support. Aftwards we will do a 11.0.0 release.
+
+**Implemented enhancements:**
+
+- Add support for multiple LDAP servers [\#679](https://github.com/voxpupuli/puppet-rabbitmq/pull/679) ([skrussell](https://github.com/skrussell))
+
+## [v10.1.2](https://github.com/voxpupuli/puppet-rabbitmq/tree/v10.1.2) (2020-10-02)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v10.1.1...v10.1.2)
 
