@@ -435,9 +435,9 @@ Default value: `false`
 
 ##### `ldap_server`
 
-Data type: `String`
+Data type: `Variant[String[1],Array[String[1]]]`
 
-LDAP server to use for auth.
+LDAP server or servers to use for auth.
 
 Default value: 'ldap'
 
