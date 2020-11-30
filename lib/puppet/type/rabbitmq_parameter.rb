@@ -82,6 +82,12 @@ DESC
     [self[:name].split('@')[1]]
   end
 
+  def set_parameters(hash) # rubocop:disable Style/AccessorMethodName
+    # Hack to ensure :autoconvert is initialized before :value
+    self[:autoconvert] = hash[:autoconvert] if hash.key?(:autoconvert)
+    super
+  end
+
   def validate_component_name(value)
     raise ArgumentError, 'component_name must be defined' if value.empty?
   end
@@ -96,7 +102,7 @@ DESC
   end
 
   def munge_value(value)
-    return value if self[:autoconvert] == :false
+    return value if value(:autoconvert) == :false
     value.each do |k, v|
       value[k] = v.to_i if v =~ %r{\A[-+]?[0-9]+\z}
     end
