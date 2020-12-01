@@ -4,7 +4,19 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
-## [v10.2.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v10.2.0) (2020-10-12)
+## [v10.3.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v10.3.0) (2020-12-01)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v10.2.0...v10.3.0)
+
+**Implemented enhancements:**
+
+- Add new parameter autoconvert for rabbitmq\_parameter [\#865](https://github.com/voxpupuli/puppet-rabbitmq/pull/865) ([joec4i](https://github.com/joec4i))
+
+**Fixed bugs:**
+
+- Ensure :autoconvert is initialized before :value for rabbitmq\_parameter [\#867](https://github.com/voxpupuli/puppet-rabbitmq/pull/867) ([joec4i](https://github.com/joec4i))
+
+## [v10.2.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v10.2.0) (2020-10-13)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v10.1.2...v10.2.0)
 

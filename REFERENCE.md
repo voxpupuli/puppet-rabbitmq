@@ -1289,6 +1289,18 @@ rabbitmq_parameter { 'documentumFed@/':
       'expires' => '360000',
   },
 }
+rabbitmq_parameter { 'documentumShovelNoMunging@/':
+  component_name => '',
+  value          => {
+      'src-uri'    => 'amqp://',
+      'src-exchange'  => 'my-exchange',
+      'src-exchange-key' => '6',
+      'src-queue'  => 'my-queue',
+      'dest-uri'   => 'amqp://remote-server',
+      'dest-exchange' => 'another-exchange',
+  },
+  autoconvert   => false,
+}
 ```
 
 #### Properties
@@ -1322,6 +1334,14 @@ Valid values: %r{^\S+@\S+$}
 namevar
 
 combination of name@vhost to set parameter for
+
+##### `autoconvert`
+
+Valid values: `true`, `false`
+
+whether numeric strings from `value` should be converted to int automatically
+
+Default value: `true`
 
 ### rabbitmq_plugin
 
