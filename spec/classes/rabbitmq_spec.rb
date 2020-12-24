@@ -1168,7 +1168,7 @@ describe 'rabbitmq' do
             ssl_cacert: '/path/to/cacert',
             ssl_cert: '/path/to/cert',
             ssl_key: '/path/to/key',
-            ssl_crl_check: 'true'
+            ssl_crl_check: 'true' }
         end
 
         it 'sets ssl crl check setting to specified value' do
@@ -1183,12 +1183,13 @@ describe 'rabbitmq' do
             ssl_cacert: '/path/to/cacert',
             ssl_cert: '/path/to/cert',
             ssl_key: '/path/to/key',
-            ssl_crl_cache_hash_dir: '/path/to/crl_cache/dir'
+            ssl_crl_check: 'true',
+            ssl_crl_cache_hash_dir: '/path/to/crl_cache/dir' }
         end
 
         it 'sets ssl crl check setting to specified value' do
           is_expected.to contain_file('rabbitmq.config').with_content(%r{crl_check,true})
-          is_expected.to contain_file('rabbitmq.config').with_content(%r{\[crl_cache,\s+{ssl_crl_hash_dir,\s+{internal,\s+[{dir, "/path/to/crl_cache/dir"}]}}\]})
+          is_expected.to contain_file('rabbitmq.config').with_content(%r{crl_cache,\s+{ssl_crl_hash_dir,\s+{internal,\s+\[{dir, "/path/to/crl_cache/dir"}\]}}})
         end
       end
 
@@ -1199,13 +1200,13 @@ describe 'rabbitmq' do
             ssl_cacert: '/path/to/cacert',
             ssl_cert: '/path/to/cert',
             ssl_key: '/path/to/key',
-            ssl_crl_check: 'true'
-            ssl_crl_cache_http_timeout: 5000
+            ssl_crl_check: 'true',
+            ssl_crl_cache_http_timeout: 5000 }
         end
 
         it 'sets ssl crl check setting to specified value' do
           is_expected.to contain_file('rabbitmq.config').with_content(%r{crl_check,true})
-          is_expected.to contain_file('rabbitmq.config').with_content(%r{\[crl_cache,\s+{ssl_crl_cache,\s+{internal,\s+[{http, 5000}]}}\]})
+          is_expected.to contain_file('rabbitmq.config').with_content(%r{crl_cache,\s+{ssl_crl_cache,\s+{internal,\s+\[{http, 5000}\]}}})
         end
       end
 
@@ -1216,7 +1217,7 @@ describe 'rabbitmq' do
             ssl_cacert: '/path/to/cacert',
             ssl_cert: '/path/to/cert',
             ssl_key: '/path/to/key',
-            ssl_crl_check: 'true'
+            ssl_crl_check: 'true' }
         end
 
         it 'fails' do
@@ -1232,11 +1233,11 @@ describe 'rabbitmq' do
             ssl_cert: '/path/to/cert',
             ssl_key: '/path/to/key',
             ssl_crl_check: 'false',
-            ssl_crl_cache_hash_dir: '/path/to/crl_cache/dir'
+            ssl_crl_cache_hash_dir: '/path/to/crl_cache/dir' }
         end
 
         it 'fails' do
-          expect { catalogue }.to raise_error(Puppet::Error, %r{\$$ssl_crl_cache_hash_dir requires that \$ssl_crl_check => true|peer|best_effort})
+          expect { catalogue }.to raise_error(Puppet::Error, %r{\$ssl_crl_cache_hash_dir requires that \$ssl_crl_check => true|peer|best_effort})
         end
       end
 
@@ -1248,11 +1249,11 @@ describe 'rabbitmq' do
             ssl_cert: '/path/to/cert',
             ssl_key: '/path/to/key',
             ssl_crl_check: 'false',
-            ssl_crl_cache_http_timeout: 5000,
+            ssl_crl_cache_http_timeout: 5000 }
         end
 
         it 'fails' do
-          expect { catalogue }.to raise_error(Puppet::Error,, %r{\$$ssl_crl_cache_http_timeout requires that \$ssl_crl_check => true|peer|best_effort})
+          expect { catalogue }.to raise_error(Puppet::Error, %r{\$ssl_crl_cache_http_timeout requires that \$ssl_crl_check => true|peer|best_effort})
         end
       end
 

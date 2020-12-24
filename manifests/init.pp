@@ -425,7 +425,7 @@ class rabbitmq (
     }
   }
 
-  if $ssl_crl_check != "false" {
+  if $ssl_crl_check != 'false' {
     unless $ssl {
       fail('$ssl_crl_check requires that $ssl => true')
     }
@@ -435,7 +435,7 @@ class rabbitmq (
     unless $ssl {
       fail('$ssl_crl_cache_hash_dir requires that $ssl => true')
     }
-    if $ssl_crl_check == "false" {
+    if $ssl_crl_check == 'false' {
       fail('$ssl_crl_cache_http_timeout requires that $ssl_crl_check => true|peer|best_effort')
     }
   }
@@ -444,7 +444,7 @@ class rabbitmq (
     unless $ssl {
       fail('$ssl_crl_cache_http_timeout requires that $ssl => true')
     }
-    if $ssl_crl_check == "false" {
+    if $ssl_crl_check == 'false' {
       fail('$ssl_crl_cache_http_timeout requires that $ssl_crl_check => true|peer|best_effort')
     }
   }

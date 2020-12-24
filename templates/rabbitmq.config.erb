@@ -95,7 +95,7 @@ end
                      <%= ssl_ciphers %>
                    ]}
                    <%- end -%>
-                   <%- if @ssl_crl_check != "false" -%>
+                   <%- if @ssl_crl_check != 'false' -%>
                    ,{crl_check,<%= @ssl_crl_check %>}
                    <%- end -%>
                    <%- if @ssl_crl_cache_hash_dir -%>
