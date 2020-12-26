@@ -378,7 +378,7 @@ class rabbitmq (
   Optional[Stdlib::Absolutepath] $ssl_dhfile                                                       = undef,
   Array $ssl_ciphers                                                                               = [],
   Enum['true','false','peer','best_effort'] $ssl_crl_check                                         = 'false',
-  Optional[String] $ssl_crl_cache_hash_dir                                                         = undef,
+  Optional[Stdlib::Absolutepath] $ssl_crl_cache_hash_dir                                                         = undef,
   Optional[Integer] $ssl_crl_cache_http_timeout                                                    = undef,
   Boolean $stomp_ensure                                                                            = false,
   Boolean $ldap_auth                                                                               = false,
