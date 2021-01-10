@@ -269,6 +269,15 @@
 #   Functionality can be tested with cipherscan or similar tool: https://github.com/mozilla/cipherscan
 #   * Erlang style: `['ecdhe_rsa,aes_256_cbc,sha', 'dhe_rsa,aes_256_cbc,sha']`
 #   * OpenSSL style: `['ECDHE-RSA-AES256-SHA', 'DHE-RSA-AES256-SHA']`
+# @param ssl_crl_check
+#   Perform CRL (Certificate Revocation List) verification
+#   Please see the [Erlang SSL](https://erlang.org/doc/man/ssl.html#type-crl_check) module documentation for more information.
+# @param ssl_crl_cache_hash_dir
+#   This setting makes use of a directory where CRLs are stored in files named by the hash of the issuer name.
+#   Please see the [Erlang SSL](https://erlang.org/doc/man/ssl.html#type-crl_cache_opts) module documentation for more information.
+# @param ssl_crl_cache_http_timeout
+#   This setting enables use of internal CRLs cache and sets HTTP timeout interval on fetching CRLs from distributino URLs defined inside certificate.
+#   Please see the [Erlang SSL](https://erlang.org/doc/man/ssl.html#type-crl_cache_opts) module documentation for more information.
 # @param stomp_port
 #   The port to use for Stomp.
 # @param stomp_ssl_only
@@ -368,6 +377,9 @@ class rabbitmq (
   Boolean $ssl_honor_cipher_order                                                                  = true,
   Optional[Stdlib::Absolutepath] $ssl_dhfile                                                       = undef,
   Array $ssl_ciphers                                                                               = [],
+  Enum['true','false','peer','best_effort'] $ssl_crl_check                                         = 'false',
+  Optional[Stdlib::Absolutepath] $ssl_crl_cache_hash_dir                                                         = undef,
+  Optional[Integer] $ssl_crl_cache_http_timeout                                                    = undef,
   Boolean $stomp_ensure                                                                            = false,
   Boolean $ldap_auth                                                                               = false,
   Variant[String[1],Array[String[1]]] $ldap_server                                                 = 'ldap',
@@ -410,6 +422,30 @@ class rabbitmq (
   if $ssl_versions {
     unless $ssl {
       fail('$ssl_versions requires that $ssl => true')
+    }
+  }
+
+  if $ssl_crl_check != 'false' {
+    unless $ssl {
+      fail('$ssl_crl_check requires that $ssl => true')
+    }
+  }
+
+  if $ssl_crl_cache_hash_dir {
+    unless $ssl {
+      fail('$ssl_crl_cache_hash_dir requires that $ssl => true')
+    }
+    if $ssl_crl_check == 'false' {
+      fail('$ssl_crl_cache_http_timeout requires that $ssl_crl_check => true|peer|best_effort')
+    }
+  }
+
+  if $ssl_crl_cache_http_timeout {
+    unless $ssl {
+      fail('$ssl_crl_cache_http_timeout requires that $ssl => true')
+    }
+    if $ssl_crl_check == 'false' {
+      fail('$ssl_crl_cache_http_timeout requires that $ssl_crl_check => true|peer|best_effort')
     }
   }
 

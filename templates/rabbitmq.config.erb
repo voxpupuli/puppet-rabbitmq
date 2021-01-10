@@ -95,6 +95,15 @@ end
                      <%= ssl_ciphers %>
                    ]}
                    <%- end -%>
+                   <%- if @ssl_crl_check != 'false' -%>
+                   ,{crl_check,<%= @ssl_crl_check %>}
+                   <%- end -%>
+                   <%- if @ssl_crl_cache_hash_dir -%>
+                   ,{crl_cache, {ssl_crl_hash_dir, {internal, [{dir, "<%= @ssl_crl_cache_hash_dir %>"}]}}}
+                   <%- end -%>
+                   <%- if @ssl_crl_cache_http_timeout -%>
+                   ,{crl_cache, {ssl_crl_cache, {internal, [{http, <%= @ssl_crl_cache_http_timeout %>}]}}}
+                   <%- end -%>
                   ]},
 <%- end -%>
 <% if scope['rabbitmq::config_variables'] -%>

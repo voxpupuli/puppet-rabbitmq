@@ -60,6 +60,9 @@ class rabbitmq::config {
   $ssl_dhfile                          = $rabbitmq::ssl_dhfile
   $ssl_versions                        = $rabbitmq::ssl_versions
   $ssl_ciphers                         = $rabbitmq::ssl_ciphers
+  $ssl_crl_check                       = $rabbitmq::ssl_crl_check
+  $ssl_crl_cache_hash_dir              = $rabbitmq::ssl_crl_cache_hash_dir
+  $ssl_crl_cache_http_timeout          = $rabbitmq::ssl_crl_cache_http_timeout
   $stomp_port                          = $rabbitmq::stomp_port
   $stomp_ssl_only                      = $rabbitmq::stomp_ssl_only
   $ldap_auth                           = $rabbitmq::ldap_auth
