@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v11.0.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v11.0.0) (2021-01-16)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v10.3.0...v11.0.0)
+
+**Breaking changes:**
+
+- Remove support for CentOS 6 [\#870](https://github.com/voxpupuli/puppet-rabbitmq/pull/870) ([towo](https://github.com/towo))
+
+**Implemented enhancements:**
+
+- Add optional variables to support SSL CRL check configuration [\#869](https://github.com/voxpupuli/puppet-rabbitmq/pull/869) ([dimonzozo](https://github.com/dimonzozo))
+
 ## [v10.3.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v10.3.0) (2020-12-01)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v10.2.0...v10.3.0)

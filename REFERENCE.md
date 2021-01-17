@@ -834,6 +834,33 @@ Functionality can be tested with cipherscan or similar tool: https://github.com/
 
 Default value: []
 
+##### `ssl_crl_check`
+
+Data type: `Enum['true','false','peer','best_effort']`
+
+Perform CRL (Certificate Revocation List) verification
+Please see the [Erlang SSL](https://erlang.org/doc/man/ssl.html#type-crl_check) module documentation for more information.
+
+Default value: 'false'
+
+##### `ssl_crl_cache_hash_dir`
+
+Data type: `Optional[Stdlib::Absolutepath]`
+
+This setting makes use of a directory where CRLs are stored in files named by the hash of the issuer name.
+Please see the [Erlang SSL](https://erlang.org/doc/man/ssl.html#type-crl_cache_opts) module documentation for more information.
+
+Default value: `undef`
+
+##### `ssl_crl_cache_http_timeout`
+
+Data type: `Optional[Integer]`
+
+This setting enables use of internal CRLs cache and sets HTTP timeout interval on fetching CRLs from distributino URLs defined inside certificate.
+Please see the [Erlang SSL](https://erlang.org/doc/man/ssl.html#type-crl_cache_opts) module documentation for more information.
+
+Default value: `undef`
+
 ##### `stomp_port`
 
 Data type: `Integer[1, 65535]`
