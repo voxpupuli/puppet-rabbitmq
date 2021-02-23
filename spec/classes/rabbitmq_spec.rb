@@ -3,8 +3,6 @@ require 'spec_helper'
 describe 'rabbitmq' do
   on_supported_os.each do |os, facts|
     context "on #{os}" do
-      systemd_facts = os_specific_facts(facts)
-      facts = facts.merge(systemd_facts)
       let :facts do
         facts
       end
