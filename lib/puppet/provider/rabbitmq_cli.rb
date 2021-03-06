@@ -40,6 +40,7 @@ class Puppet::Provider::RabbitmqCli < Puppet::Provider
     output = rabbitmqctl('-q', 'status')
     version = output.match(%r{RabbitMQ.*?([\d\.]+)})
     @rabbitmq_version = version[1] if version
+    @rabbitmq_version
   end
 
   def self.rabbitmqctl_list(resource, *opts)
