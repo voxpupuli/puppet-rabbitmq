@@ -3,12 +3,22 @@
 # @api private
 class rabbitmq::repo::rhel (
   $location          = "https://packagecloud.io/rabbitmq/rabbitmq-server/el/${facts['os'][release][major]}/\$basearch",
+  $erlang_location   = "https://packagecloud.io/rabbitmq/erlang/el/${facts['os'][release][major]}/\$basearch",
   String $key_source = $rabbitmq::package_gpg_key,
 ) {
   yumrepo { 'rabbitmq':
     ensure   => present,
     name     => 'rabbitmq_rabbitmq-server',
     baseurl  => $location,
+    gpgkey   => $key_source,
+    enabled  => 1,
+    gpgcheck => 1,
+  }
+
+  yumrepo { 'erlang':
+    ensure   => present,
+    name     => 'rabbitmq_erlang',
+    baseurl  => $erlang_location,
     gpgkey   => $key_source,
     enabled  => 1,
     gpgcheck => 1,
