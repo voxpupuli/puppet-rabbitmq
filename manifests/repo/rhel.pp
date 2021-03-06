@@ -15,14 +15,14 @@ class rabbitmq::repo::rhel (
     gpgcheck => 1,
   }
 
-  yumrepo { 'erlang':
-    ensure   => present,
-    name     => 'rabbitmq_erlang',
-    baseurl  => $erlang_location,
-    gpgkey   => $key_source,
-    enabled  => 1,
-    gpgcheck => 1,
-  }
+  # yumrepo { 'erlang':
+  #   ensure   => present,
+  #   name     => 'rabbitmq_erlang',
+  #   baseurl  => $erlang_location,
+  #   gpgkey   => $key_source,
+  #   enabled  => 1,
+  #   gpgcheck => 1,
+  # }
 
   # This may still be needed to prevent warnings
   # packagecloud key is gpg-pubkey-d59097ab-52d46e88
