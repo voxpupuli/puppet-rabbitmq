@@ -15,6 +15,8 @@ class rabbitmq::repo::rhel (
     gpgcheck => 1,
   }
 
+  # This is required because when using the latest version of rabbitmq because the latest version in EPEL
+  # for Erlang is 22.0.7 which is not compatible: https://www.rabbitmq.com/which-erlang.html
   # yumrepo { 'erlang':
   #   ensure   => present,
   #   name     => 'rabbitmq_erlang',
