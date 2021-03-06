@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+
+## [v11.0.2](https://github.com/voxpupuli/puppet-rabbitmq/tree/v11.0.2) (2021-03-6)
+
+ - Updated the environment to unclude LANG and LC_ALL vairables to fix issues with trying to run with the incorrect encoding
+ - Fixed issues with when managing repos the Erlang repo was not managed and the required version was not available in EPEL
+
 ## [v11.0.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v11.0.0) (2021-01-16)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v10.3.0...v11.0.0)

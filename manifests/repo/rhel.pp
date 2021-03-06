@@ -17,14 +17,14 @@ class rabbitmq::repo::rhel (
 
   # This is required because when using the latest version of rabbitmq because the latest version in EPEL
   # for Erlang is 22.0.7 which is not compatible: https://www.rabbitmq.com/which-erlang.html
-  # yumrepo { 'erlang':
-  #   ensure   => present,
-  #   name     => 'rabbitmq_erlang',
-  #   baseurl  => $erlang_location,
-  #   gpgkey   => $key_source,
-  #   enabled  => 1,
-  #   gpgcheck => 1,
-  # }
+  yumrepo { 'erlang':
+    ensure   => present,
+    name     => 'rabbitmq_erlang',
+    baseurl  => $erlang_location,
+    gpgkey   => $key_source,
+    enabled  => 1,
+    gpgcheck => 1,
+  }
 
   # This may still be needed to prevent warnings
   # packagecloud key is gpg-pubkey-d59097ab-52d46e88
