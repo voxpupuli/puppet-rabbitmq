@@ -25,7 +25,7 @@ class Puppet::Provider::RabbitmqCli < Puppet::Provider
 
   def self.home_tmp_command(name, path)
     has_command name, path do
-      environment HOME: '/tmp', LANG: 'en_US.UTF-8', LC_ALL: 'en_US.UTF-8'
+      environment HOME: '/tmp', LC_ALL: 'en_US.UTF-8'
     end
   end
 
