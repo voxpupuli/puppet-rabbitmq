@@ -170,6 +170,40 @@ describe 'rabbitmq' do
         end
       end
 
+      [-1000, 0, 1000].each do |value|
+        context "with oom_score_adj => '#{value}'" do
+          let(:params) { { oom_score_adj: value } }
+
+          if facts[:os]['family'] == 'Debian'
+            it { is_expected.to contain_file('/etc/default/rabbitmq-server').with_content(/^echo #{value} > \/proc\/\$\$\/oom_score_adj$/) }
+          else
+            it { is_expected.not_to contain_file('/etc/default/rabbitmq-server') }
+          end
+
+          if facts[:systemd]
+            selinux_ignore_defaults = facts[:os]['family'] == 'RedHat'
+
+            it do
+              is_expected.to contain_systemd__service_limits("#{name}.service").
+                with_limits('OOMScoreAdjust' => value).
+                with_restart_service(false)
+            end
+          else
+            it { is_expected.not_to contain_systemd__service_limits("#{name}.service") }
+          end
+        end
+      end
+
+      [-2000, 2000, '500', 'foo'].each do |value|
+        context "with oom_score_adj => '#{value}'" do
+          let(:params) { { oom_score_adj: value } }
+
+          it 'does not compile' do
+            expect { catalogue }.to raise_error(Puppet::PreformattedError, %r{Error while evaluating a Resource Statement})
+          end
+        end
+      end
+
       context 'on systems with systemd', if: facts[:systemd] do
         it do
           is_expected.to contain_systemd__service_limits("#{name}.service").
