@@ -77,7 +77,7 @@ describe 'rabbitmq' do
       context 'with no pin', if: facts[:os]['family'] == 'Debian' do
         let(:params) { { repos_ensure: true, package_apt_pin: '' } }
 
-        if Puppet.version =~ %r{^6} # https://tickets.puppetlabs.com/browse/PUP-9112 and https://tickets.puppetlabs.com/browse/PUP-9180
+        if Puppet.version =~ %r{^[6,7]} # https://tickets.puppetlabs.com/browse/PUP-9112 and https://tickets.puppetlabs.com/browse/PUP-9180
           let(:expected_key_apt_source_key_content) { 'nil' }
         else
           let(:expected_key_apt_source_key_content) { ':undef' }
@@ -97,7 +97,7 @@ describe 'rabbitmq' do
       context 'with pin', if: facts[:os]['family'] == 'Debian' do
         let(:params) { { repos_ensure: true, package_apt_pin: '700' } }
 
-        if Puppet.version =~ %r{^6} # https://tickets.puppetlabs.com/browse/PUP-9112 and https://tickets.puppetlabs.com/browse/PUP-9180
+        if Puppet.version =~ %r{^[6,7]} # https://tickets.puppetlabs.com/browse/PUP-9112 and https://tickets.puppetlabs.com/browse/PUP-9180
           let(:expected_key_apt_source_key_content) { 'nil' }
         else
           let(:expected_key_apt_source_key_content) { ':undef' }
