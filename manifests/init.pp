@@ -140,6 +140,8 @@
 #   to 'False' and set 'erlang_cookie'.
 # @param file_limit
 #   Set rabbitmq file ulimit. Defaults to 16384. Only available on systems with `$::osfamily == 'Debian'` or `$::osfamily == 'RedHat'`.
+# @param oom_score_adj
+#   Set rabbitmq-server process OOM score. Defaults to 0.
 # @param heartbeat
 #   Set the heartbeat timeout interval, default is unset which uses the builtin server defaults of 60 seconds. Setting this
 # @param inetrc_config
@@ -394,6 +396,7 @@ class rabbitmq (
   Boolean $wipe_db_on_cookie_change                                                                = false,
   String $cluster_partition_handling                                                               = 'ignore',
   Variant[Integer[-1],Enum['unlimited'],Pattern[/^(infinity|\d+(:(infinity|\d+))?)$/]] $file_limit = 16384,
+  Integer[-1000, 1000] $oom_score_adj                                                              = 0,
   Hash $environment_variables                                                                      = { 'LC_ALL' => 'en_US.UTF-8' },
   Hash $config_variables                                                                           = {},
   Hash $config_kernel_variables                                                                    = {},
