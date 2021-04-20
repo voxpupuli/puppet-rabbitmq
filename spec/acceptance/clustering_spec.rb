@@ -5,9 +5,11 @@ describe 'rabbitmq clustering' do
     it 'runs successfully' do
       pp = <<-EOS
       class { 'rabbitmq':
+        cluster                  => { 'name' => 'rabbit_cluster', 'init_node' => $facts['fqdn'] },
         config_cluster           => true,
         cluster_nodes            => ['rabbit1', 'rabbit2'],
         cluster_node_type        => 'ram',
+        environment_variables    => { 'RABBITMQ_USE_LONGNAME' => true },
         erlang_cookie            => 'TESTCOOKIE',
         wipe_db_on_cookie_change => false,
       }
@@ -28,9 +30,11 @@ describe 'rabbitmq clustering' do
     it 'runs successfully' do
       pp = <<-EOS
       class { 'rabbitmq':
+        cluster                  => { 'name' => 'rabbit_cluster', 'init_node' => $facts['fqdn'] },
         config_cluster           => true,
         cluster_nodes            => ['rabbit1', 'rabbit2'],
         cluster_node_type        => 'ram',
+        environment_variables    => { 'RABBITMQ_USE_LONGNAME' => true },
         erlang_cookie            => 'TESTCOOKIE',
         wipe_db_on_cookie_change => true,
       }
@@ -54,6 +58,18 @@ describe 'rabbitmq clustering' do
     describe file('/var/lib/rabbitmq/.erlang.cookie') do
       it { is_expected.to be_file }
       it { is_expected.to contain 'TESTCOOKIE' }
+    end
+
+    describe 'rabbitmq_cluster' do
+      context 'cluster_name => rabbit_cluster' do
+        it 'cluster has name' do
+          shell('rabbitmqctl -q cluster_status') do |r|
+            expect(r.stdout).to match(%r!({cluster_name,<<"rabbit_cluster">>}|^Cluster name: rabbit_cluster$)!)
+            expect(r.exit_code).to be_zero
+          end
+          # rubocop:enable RSpec/MultipleExpectations
+        end
+      end
     end
   end
 end
