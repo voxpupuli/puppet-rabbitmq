@@ -11,7 +11,6 @@
     {
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [
-        "6",
         "7"
       ]
     },
@@ -53,7 +52,7 @@
   "requirements": [
     {
       "name": "puppet",
-      "version_requirement": ">= 5.5.8 < 8.0.0"
+      "version_requirement": ">= 6.1.0 < 8.0.0"
     }
   ],
   "dependencies": [
