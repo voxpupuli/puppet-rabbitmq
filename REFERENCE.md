@@ -22,7 +22,7 @@ _Private Classes_
 **Resource types**
 
 * [`rabbitmq_binding`](#rabbitmq_binding): Native type for managing rabbitmq bindings  rabbitmq_binding { 'binding 1':   ensure           => present,   source           => 'myexchange'
-* [`rabbitmq_cluster`](#rabbitmq_cluster): Type to manage a rabbitmq cluster
+* [`rabbitmq_cluster`](#rabbitmq_cluster): Native type for managing rabbitmq cluster
 * [`rabbitmq_erlang_cookie`](#rabbitmq_erlang_cookie): Type to manage the rabbitmq erlang cookie securely  This is essentially a private type used by the rabbitmq::config class to manage the erlan
 * [`rabbitmq_exchange`](#rabbitmq_exchange): Native type for managing rabbitmq exchanges
 * [`rabbitmq_parameter`](#rabbitmq_parameter): Type for managing rabbitmq parameters
@@ -141,23 +141,12 @@ This will result in the following config appended to the config file:
 
 ```puppet
 class { 'rabbitmq':
-  config_cluster           => true,
-  cluster_nodes            => ['rabbit1', 'rabbit2'],
-  cluster_node_type        => 'ram',
-  erlang_cookie            => 'A_SECRET_COOKIE_STRING',
-  wipe_db_on_cookie_change => true,
-}
-```
-
-To create and join the cluster:
-```puppet
-class { 'rabbitmq':
-  config_cluster           => true,
-  cluster_nodes            => ['rabbit1', 'rabbit2'],
   cluster                  => {
     'name'      => 'test_cluster',
     'init_node' => 'hostname'
   },
+  config_cluster           => true,
+  cluster_nodes            => ['rabbit1', 'rabbit2'],
   cluster_node_type        => 'ram',
   erlang_cookie            => 'A_SECRET_COOKIE_STRING',
   wipe_db_on_cookie_change => true,
@@ -205,6 +194,14 @@ rabbit_auth_backend_ldap].
 
 Default value: `undef`
 
+##### `cluster`
+
+Data type: `Hash`
+
+Join cluster and change name of cluster.
+
+Default value: $rabbitmq::cluster
+
 ##### `cluster_node_type`
 
 Data type: `Enum['ram', 'disc']`
@@ -228,17 +225,6 @@ Data type: `String`
 Value to set for `cluster_partition_handling` RabbitMQ configuration variable.
 
 Default value: 'ignore'
-
-##### `cluster`
-
-Data type: `Hash`
-
-If both `name` and `init_node` keys are set then the rabbitmq node is added to
-a cluster named after the corresponding key by joining `init_node`.
-Note: `init_node` must be included in the [`cluster_nodes`](#cluster_nodes)
-parameter.
-
-Default value: '{}'
 
 ##### `collect_statistics_interval`
 
@@ -401,6 +387,14 @@ Data type: `Variant[Integer[-1],Enum['unlimited'],Pattern[/^(infinity|\d+(:(infi
 Set rabbitmq file ulimit. Defaults to 16384. Only available on systems with `$::osfamily == 'Debian'` or `$::osfamily == 'RedHat'`.
 
 Default value: 16384
+
+##### `oom_score_adj`
+
+Data type: `Integer[-1000, 1000]`
+
+Set rabbitmq-server process OOM score. Defaults to 0.
+
+Default value: 0
 
 ##### `heartbeat`
 
@@ -1161,25 +1155,59 @@ Default value: guest
 
 ### rabbitmq_cluster
 
-Type to manage a rabbitmq cluster
+Native type for managing rabbitmq cluster
+
+#### Examples
+
+##### Configure a cluster, rabbit_cluster
+
+```puppet
+rabbitmq_cluster { 'rabbit_cluster':
+  init_node      => 'host1'
+}
+```
+
+##### Optional parameter tags will set further rabbitmq tags like monitoring, policymaker, etc.
+
+```puppet
+To set the cluster name use cluster_name.
+rabbitmq_cluster { 'rabbit_cluster':
+  init_node      => 'host1',
+  node_disc_type => 'ram',
+}
+```
 
 #### Properties
 
 The following properties are available in the `rabbitmq_cluster` type.
 
-#### `init_node`
+##### `ensure`
 
-Data type: `String`
+Valid values: present, absent
 
-The node to join to initiate the cluster. It is mandatory.
+The basic property that the resource should be in.
 
-Default value: unset
+Default value: present
 
-#### `node_disc_type`
+#### Parameters
 
-Data type: `Enum['ram', 'disc']`
+The following parameters are available in the `rabbitmq_cluster` type.
 
-Choose between disc and ram cluster nodes.
+##### `name`
+
+namevar
+
+The cluster name
+
+##### `init_node`
+
+Name of which cluster node to join.
+
+##### `node_disc_type`
+
+Valid values: %r{disc|ram}
+
+Storage type of node, default disc.
 
 Default value: disc
 
