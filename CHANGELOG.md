@@ -4,7 +4,34 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
-## [v11.0.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v11.0.0) (2021-01-16)
+## [v11.1.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v11.1.0) (2021-05-06)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v11.0.0...v11.1.0)
+
+**Implemented enhancements:**
+
+- Compatibility with camptocamp/systemd 3.x [\#886](https://github.com/voxpupuli/puppet-rabbitmq/pull/886) ([TheMeier](https://github.com/TheMeier))
+- camptocamp/systemd: Allow 3.x [\#884](https://github.com/voxpupuli/puppet-rabbitmq/pull/884) ([bastelfreak](https://github.com/bastelfreak))
+- Add auto cluster configuration support [\#883](https://github.com/voxpupuli/puppet-rabbitmq/pull/883) ([fatpat](https://github.com/fatpat))
+- puppet/archive: Allow 5.x [\#882](https://github.com/voxpupuli/puppet-rabbitmq/pull/882) ([bastelfreak](https://github.com/bastelfreak))
+- Enable Puppet 7 support \(where applicable\) [\#881](https://github.com/voxpupuli/puppet-rabbitmq/pull/881) ([bastelfreak](https://github.com/bastelfreak))
+- puppetlabs/stdlib: allow 7.x [\#880](https://github.com/voxpupuli/puppet-rabbitmq/pull/880) ([bastelfreak](https://github.com/bastelfreak))
+- Add support for oom\_score\_adj [\#877](https://github.com/voxpupuli/puppet-rabbitmq/pull/877) ([jlutran](https://github.com/jlutran))
+
+**Fixed bugs:**
+
+- CLI Environment Fixes [\#876](https://github.com/voxpupuli/puppet-rabbitmq/pull/876) ([bishopbm1](https://github.com/bishopbm1))
+- make sure the rabbitmq\_version method actually returns the version. [\#874](https://github.com/voxpupuli/puppet-rabbitmq/pull/874) ([TomRitserveldt](https://github.com/TomRitserveldt))
+
+**Closed issues:**
+
+- Auto Clustering of nodes should be enabled [\#792](https://github.com/voxpupuli/puppet-rabbitmq/issues/792)
+
+**Merged pull requests:**
+
+- Use mocked facts in tests [\#873](https://github.com/voxpupuli/puppet-rabbitmq/pull/873) ([ekohl](https://github.com/ekohl))
+
+## [v11.0.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v11.0.0) (2021-01-17)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v10.3.0...v11.0.0)
 
