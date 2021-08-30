@@ -120,10 +120,10 @@ class rabbitmq::config {
     # is "inet_tls".
     if $ipv6 and $ssl_erl_dist {
       $proto_dist = 'inet6_tls'
-      $ssl_path = " -pa ${::erl_ssl_path} "
+      $ssl_path = " -pa ${facts['erl_ssl_path']} "
     } elsif $ssl_erl_dist {
       $proto_dist = 'inet_tls'
-      $ssl_path = " -pa ${::erl_ssl_path} "
+      $ssl_path = " -pa ${facts['erl_ssl_path']} "
     } else {
       $proto_dist = 'inet6_tcp'
       $ssl_path = ''
