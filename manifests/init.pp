@@ -540,6 +540,9 @@ class rabbitmq (
   if $admin_enable and $service_manage {
     include 'rabbitmq::install::rabbitmqadmin'
 
+    # Trigger upgrade of rabbitmqadmin on package upgrade (Issue #804)
+    Class['rabbitmq::install'] ~> Class['rabbitmq::install::rabbitmqadmin']
+
     Class['rabbitmq::service'] -> Class['rabbitmq::install::rabbitmqadmin']
     Class['rabbitmq::install::rabbitmqadmin'] -> Rabbitmq_exchange<| |>
   }
