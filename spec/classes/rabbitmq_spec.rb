@@ -175,14 +175,12 @@ describe 'rabbitmq' do
           let(:params) { { oom_score_adj: value } }
 
           if facts[:os]['family'] == 'Debian'
-            it { is_expected.to contain_file('/etc/default/rabbitmq-server').with_content(/^echo #{value} > \/proc\/\$\$\/oom_score_adj$/) }
+            it { is_expected.to contain_file('/etc/default/rabbitmq-server').with_content(%r{^echo #{value} > /proc/\$\$/oom_score_adj$}) }
           else
             it { is_expected.not_to contain_file('/etc/default/rabbitmq-server') }
           end
 
           if facts[:systemd]
-            selinux_ignore_defaults = facts[:os]['family'] == 'RedHat'
-
             it do
               is_expected.to contain_systemd__service_limits("#{name}.service").
                 with_limits('OOMScoreAdjust' => value).

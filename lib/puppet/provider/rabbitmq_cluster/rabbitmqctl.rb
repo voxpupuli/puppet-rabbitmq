@@ -31,7 +31,7 @@ Puppet::Type.type(:rabbitmq_cluster).provide(
 
   def cluster_name
     cluster_status = rabbitmqctl('-q', 'cluster_status')
-    [%r!{cluster_name,<<"(\S+)">>}!, %r!^Cluster name: (\S+)$!].each do |r|
+    [%r!{cluster_name,<<"(\S+)">>}!, %r{^Cluster name: (\S+)$}].each do |r|
       if (data = r.match(cluster_status))
         return data[1]
       end
