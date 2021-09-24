@@ -37,7 +37,20 @@
 #     config_variables => {
 #       'hipe_compile' => true,
 #       'frame_max'    => 131072,
-#       'log_levels'   => "[{connection, info}]"
+#     }
+#   }
+#
+# @example Change RabbitMQ log level in rabbitmq.config for RabbitMQ version < 3.7.x :
+#   class { 'rabbitmq':
+#     config_variables => {
+#       'log_levels'   => "[{queue, info}]"
+#     }
+#   }
+#
+# @example Change RabbitMQ log level in rabbitmq.config for RabbitMQ version since 3.7.x :
+#   class { 'rabbitmq':
+#     config_variables => {
+#       'log'          => "[{file, [{level,debug}]},{categories, [{queue, [{level,info},{file,'queue.log'}]}]}]"
 #     }
 #   }
 #
