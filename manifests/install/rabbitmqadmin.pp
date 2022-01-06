@@ -40,9 +40,24 @@ class rabbitmq::install::rabbitmqadmin {
     }
 
     if !($rabbitmq::use_config_file_for_plugins) {
-      $rabbitmqadmin_archive_require = [Class['rabbitmq::service'], Rabbitmq_plugin['rabbitmq_management']]
+      $rabbitmqadmin_archive_require = [
+        Class['rabbitmq::service'],
+        Rabbitmq_plugin['rabbitmq_management'],
+        Exec['remove_old_rabbitmqadmin_on_upgrade']
+      ]
     } else {
-      $rabbitmqadmin_archive_require = [Class['rabbitmq::service'], File['enabled_plugins']]
+      $rabbitmqadmin_archive_require = [
+        Class['rabbitmq::service'],
+        File['enabled_plugins'],
+        Exec['remove_old_rabbitmqadmin_on_upgrade']
+      ]
+    }
+
+    Exec { 'remove_old_rabbitmqadmin_on_upgrade':
+      path        => ['/bin','/usr/bin','/sbin','/usr/sbin'],
+      command     => "rm ${rabbitmq::rabbitmq_home}/rabbitmqadmin",
+      onlyif      => ["test -f ${rabbitmq::rabbitmq_home}/rabbitmqadmin"],
+      refreshonly => true,
     }
 
     archive { 'rabbitmqadmin':
