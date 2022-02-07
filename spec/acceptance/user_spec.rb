@@ -3,14 +3,17 @@
 require 'spec_helper_acceptance'
 
 describe 'rabbitmq user:' do
+  repos_ensure = (fact('os.family') == 'RedHat')
+
   context 'create user resource' do
     it 'runs successfully' do
       pp = <<-EOS
       if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true }
+        class { 'erlang': repo_source => 'packagecloud' }
         Class['erlang'] -> Class['rabbitmq']
       }
       class { 'rabbitmq':
+        repos_ensure      => #{repos_ensure},
         service_manage    => true,
         port              => 5672,
         delete_guest_user => true,
@@ -38,6 +41,10 @@ describe 'rabbitmq user:' do
   context 'destroy user resource' do
     it 'runs successfully' do
       pp = <<-EOS
+      if $facts['os']['family'] == 'RedHat' {
+        class { 'erlang': repo_source => 'packagecloud' }
+        Class['erlang'] -> Class['rabbitmq']
+      }
       rabbitmq_user { 'dan':
         ensure => absent,
       }

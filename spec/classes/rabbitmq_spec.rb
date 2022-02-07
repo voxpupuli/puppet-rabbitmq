@@ -12,7 +12,7 @@ describe 'rabbitmq' do
         facts
       end
 
-      name = case facts[:osfamily]
+      name = case facts[:os]['family']
              when 'Archlinux', 'OpenBSD', 'FreeBSD'
                'rabbitmq'
              else
@@ -239,8 +239,9 @@ describe 'rabbitmq' do
             is_expected.to contain_archive('rabbitmqadmin').with_source('http://1.1.1.1:15672/cli/rabbitmqadmin')
           end
 
-          it { is_expected.to contain_package('python') } if %w[RedHat Debian SUSE Archlinux].include?(facts[:os]['family'])
+          it { is_expected.to contain_package('python') } if %w[Debian SUSE Archlinux].include?(facts[:os]['family'])
           it { is_expected.to contain_package('python2') } if %w[FreeBSD OpenBSD].include?(facts[:os]['family'])
+          it { is_expected.to contain_package('python3') } if %w[RedHat].include?(facts[:os]['family'])
         end
 
         context 'with manage_python false' do
@@ -250,6 +251,7 @@ describe 'rabbitmq' do
             is_expected.to contain_class('rabbitmq::install::rabbitmqadmin')
             is_expected.not_to contain_package('python')
             is_expected.not_to contain_package('python2')
+            is_expected.not_to contain_package('python3')
           end
         end
 

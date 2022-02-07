@@ -3,15 +3,18 @@
 require 'spec_helper_acceptance'
 
 describe 'rabbitmq::install::rabbitmqadmin class' do
+  repos_ensure = (fact('os.family') == 'RedHat')
+
   context 'downloads the cli tools' do
     it 'runs successfully' do
       pp = <<-EOS
       class { 'rabbitmq':
+        repos_ensure   => #{repos_ensure},
         admin_enable   => true,
         service_manage => true,
       }
       if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true}
+        class { 'erlang': repo_source => 'packagecloud' }
         Class['erlang'] -> Class['rabbitmq']
       }
       EOS
@@ -28,11 +31,12 @@ describe 'rabbitmq::install::rabbitmqadmin class' do
     it 'runs successfully' do
       pp = <<-EOS
       class { 'rabbitmq':
+        repos_ensure   => #{repos_ensure},
         admin_enable   => true,
         service_manage => false,
       }
       if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true}
+        class { 'erlang': repo_source => 'packagecloud' }
         Class['erlang'] -> Class['rabbitmq']
       }
       EOS
@@ -51,25 +55,27 @@ describe 'rabbitmq::install::rabbitmqadmin class' do
       # make sure credential change takes effect before admin_enable
       pp_pre = <<-EOS
       class { 'rabbitmq':
+        repos_ensure   => #{repos_ensure},
         service_manage => true,
         default_user   => 'foobar',
         default_pass   => 'bazblam',
       }
       if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true}
+        class { 'erlang': repo_source => 'packagecloud' }
         Class['erlang'] -> Class['rabbitmq']
       }
       EOS
 
       pp = <<-EOS
       class { 'rabbitmq':
+        repos_ensure   => #{repos_ensure},
         admin_enable   => true,
         service_manage => true,
         default_user   => 'foobar',
         default_pass   => 'bazblam',
       }
       if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true}
+        class { 'erlang': repo_source => 'packagecloud' }
         Class['erlang'] -> Class['rabbitmq']
       }
       EOS

@@ -3,10 +3,13 @@
 require 'spec_helper_acceptance'
 
 describe 'rabbitmq clustering' do
+  repos_ensure = (fact('os.family') == 'RedHat')
+
   context 'rabbitmq::wipe_db_on_cookie_change => false' do
     it 'runs successfully' do
       pp = <<-EOS
       class { 'rabbitmq':
+        repos_ensure             => #{repos_ensure},
         cluster                  => { 'name' => 'rabbit_cluster', 'init_node' => $facts['fqdn'] },
         config_cluster           => true,
         cluster_nodes            => ['rabbit1', 'rabbit2'],
@@ -16,7 +19,7 @@ describe 'rabbitmq clustering' do
         wipe_db_on_cookie_change => false,
       }
       if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true}
+        class { 'erlang': repo_source => 'packagecloud' }
         Class['erlang'] -> Class['rabbitmq']
       }
       EOS
@@ -33,6 +36,7 @@ describe 'rabbitmq clustering' do
     it 'runs successfully' do
       pp = <<-EOS
       class { 'rabbitmq':
+        repos_ensure             => #{repos_ensure},
         cluster                  => { 'name' => 'rabbit_cluster', 'init_node' => $facts['fqdn'] },
         config_cluster           => true,
         cluster_nodes            => ['rabbit1', 'rabbit2'],
@@ -42,7 +46,7 @@ describe 'rabbitmq clustering' do
         wipe_db_on_cookie_change => true,
       }
       if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true}
+        class { 'erlang': repo_source => 'packagecloud' }
         Class['erlang'] -> Class['rabbitmq']
       }
       EOS
