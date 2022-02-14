@@ -582,9 +582,8 @@ Default value: 'installed'
 Data type: `Optional[String]`
 
 RPM package GPG key to import. Uses source method. Should be a URL for Debian/RedHat OS family, or a file name for
-RedHat OS family. Set to https://www.rabbitmq.com/rabbitmq-release-signing-key.asc for RedHat OS Family and
-https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey for Debian OS Family by default. Note, that `key_content`, if specified, would
-override this parameter for Debian OS family.
+RedHat OS family. Set to https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey for Debian/RedHat OS Family by
+default. Note, that `key_content`, if specified, would override this parameter for Debian OS family.
 
 Default value: `undef`
 
