@@ -66,7 +66,7 @@ describe 'rabbitmq' do
             is_expected.to contain_yumrepo('rabbitmq').
               with_ensure('present').
               with_baseurl(%r{https://packagecloud.io/rabbitmq/rabbitmq-server/el/\d+/\$basearch$}).
-              with_gpgkey('https://www.rabbitmq.com/rabbitmq-release-signing-key.asc')
+              with_gpgkey('https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey')
           end
         else
           it { is_expected.not_to contain_class('rabbitmq::repo::rhel') }
