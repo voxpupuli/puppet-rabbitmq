@@ -1,14 +1,12 @@
+# frozen_string_literal: true
+
 require 'puppet'
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmq_cli'))
 Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, parent: Puppet::Provider::RabbitmqCli) do
   confine feature: :posix
 
   def should_vhost
-    if @should_vhost
-      @should_vhost
-    else
-      @should_vhost = resource[:name].split('@')[1]
-    end
+    @should_vhost || @should_vhost = resource[:name].split('@')[1]
   end
 
   def self.all_vhosts
@@ -19,7 +17,7 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, parent: Puppet::Pr
     exchange_list = run_with_retries do
       rabbitmqctl_list('exchanges', '-p', vhost, 'name', 'type', 'internal', 'durable', 'auto_delete', 'arguments')
     end
-    exchange_list.split(%r{\n}).reject { |exchange| exchange =~ %r{^federation:} }
+    exchange_list.split(%r{\n}).grep_v(%r{^federation:})
   end
 
   def self.instances
@@ -34,11 +32,11 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, parent: Puppet::Pr
           name = ''
         end
         # Convert output of arguments from the rabbitmqctl command to a json string.
-        if !arguments.nil?
+        if arguments.nil?
+          arguments = '{}'
+        else
           arguments = arguments.gsub(%r{^\[(.*)\]$}, '').gsub(%r{\{("(?:.|\\")*?"),}, '{\1:').gsub(%r{\},\{}, ',')
           arguments = '{}' if arguments == ''
-        else
-          arguments = '{}'
         end
         exchange = {
           type: type,
@@ -57,7 +55,7 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, parent: Puppet::Pr
 
   def self.prefetch(resources)
     packages = instances
-    resources.keys.each do |name|
+    resources.each_key do |name|
       if (provider = packages.find { |pkg| pkg.name == name })
         resources[name].provider = provider
       end

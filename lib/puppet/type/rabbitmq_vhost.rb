@@ -1,15 +1,17 @@
+# frozen_string_literal: true
+
 Puppet::Type.newtype(:rabbitmq_vhost) do
-  desc <<-DESC
-Native type for managing rabbitmq vhosts
+  desc <<~DESC
+    Native type for managing rabbitmq vhosts
 
-@example query all current vhosts
- $ puppet resource rabbitmq_vhost`
+    @example query all current vhosts
+     $ puppet resource rabbitmq_vhost`
 
-@example Create a rabbitmq_vhost
- rabbitmq_vhost { 'myvhost':
-   ensure => present,
- }
-DESC
+    @example Create a rabbitmq_vhost
+     rabbitmq_vhost { 'myvhost':
+       ensure => present,
+     }
+  DESC
 
   ensurable do
     defaultto(:present)

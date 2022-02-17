@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper_acceptance'
 
 describe 'rabbitmq class:' do
@@ -121,12 +123,15 @@ describe 'rabbitmq class:' do
     describe service(service_name) do
       it { is_expected.to be_running }
     end
+
     describe port(5672) do
       it { is_expected.to be_listening.on('0.0.0.0').with('tcp') }
     end
+
     describe port(15_672) do
       it { is_expected.to be_listening.on('0.0.0.0').with('tcp') }
     end
+
     describe port(25_672) do
       xit 'Is on 55672 instead on older rmq versions' do
         is_expected.to be_listening.on('0.0.0.0').with('tcp')
@@ -151,13 +156,16 @@ describe 'rabbitmq class:' do
     describe service(service_name) do
       it { is_expected.to be_running }
     end
+
     describe port(5672) do
       it { is_expected.to be_listening.on('127.0.0.1').with('tcp') }
     end
+
     describe port(15_672) do
       it { is_expected.to be_listening.on('127.0.0.1').with('tcp') }
     end
     # This listens on all interfaces regardless of these settings
+
     describe port(25_672) do
       xit 'Is on 55672 instead on older rmq versions' do
         is_expected.to be_listening.on('0.0.0.0').with('tcp')
@@ -186,9 +194,11 @@ describe 'rabbitmq class:' do
     describe service(service_name) do
       it { is_expected.to be_running }
     end
+
     describe port(5671) do
       it { is_expected.to be_listening.on('0.0.0.0').with('tcp') }
     end
+
     describe port(15_671) do
       it { is_expected.to be_listening.on('0.0.0.0').with('tcp') }
     end
@@ -212,12 +222,15 @@ describe 'rabbitmq class:' do
     describe service(service_name) do
       it { is_expected.to be_running }
     end
+
     describe port(5672) do
       it { is_expected.to be_listening.on('0.0.0.0').with('tcp') }
     end
+
     describe port(15_672) do
       it { is_expected.to be_listening.on('127.0.0.1').with('tcp') }
     end
+
     describe port(25_672) do
       xit 'Is on 55672 instead on older rmq versions' do
         is_expected.to be_listening.on('0.0.0.0').with('tcp')

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper_acceptance'
 
 describe 'rabbitmq policy on a vhost:' do
@@ -46,6 +48,7 @@ describe 'rabbitmq policy on a vhost:' do
       apply_manifest(pp, catch_failures: true)
       expect(apply_manifest(pp, catch_changes: true).exit_code).to be_zero
     end
+
     it 'has the policy' do
       shell('rabbitmqctl list_policies -p myhost') do |r|
         expect(r.stdout).to match(%r{myhost.*ha-all.*ha-sync-mode})
@@ -53,6 +56,5 @@ describe 'rabbitmq policy on a vhost:' do
         expect(r.exit_code).to be_zero
       end
     end
-    # rubocop:enable RSpec/MultipleExpectations
   end
 end

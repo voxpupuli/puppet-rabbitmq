@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper_acceptance'
 
 describe 'rabbitmq binding:' do
@@ -59,6 +61,7 @@ describe 'rabbitmq binding:' do
       apply_manifest(pp, catch_failures: true)
       apply_manifest(pp, catch_changes: true)
     end
+
     it 'has the binding' do
       shell('rabbitmqctl list_bindings -q -p host1') do |r|
         expect(r.stdout).to match(%r{exchange1\sexchange\squeue1\squeue\s#})
@@ -72,7 +75,6 @@ describe 'rabbitmq binding:' do
         expect(r.exit_code).to be_zero
       end
     end
-    # rubocop:enable RSpec/MultipleExpectations
   end
 
   context 'create multiple bindings when same source / destination / vhost but different routing keys' do
@@ -147,6 +149,7 @@ describe 'rabbitmq binding:' do
       apply_manifest(pp, catch_failures: true)
       apply_manifest(pp, catch_changes: true)
     end
+
     it 'has the bindings' do
       shell('rabbitmqctl list_bindings -q -p host1') do |r|
         expect(r.stdout).to match(%r{exchange1\sexchange\squeue1\squeue\stest1})
@@ -154,7 +157,6 @@ describe 'rabbitmq binding:' do
         expect(r.exit_code).to be_zero
       end
     end
-    # rubocop:enable RSpec/MultipleExpectations
 
     it 'puppet resource shows a binding' do
       shell('puppet resource rabbitmq_binding') do |r|
@@ -222,6 +224,7 @@ describe 'rabbitmq binding:' do
       apply_manifest(pp, catch_failures: true)
       apply_manifest(pp, catch_changes: true)
     end
+
     it 'has the binding' do
       shell('rabbitmqctl list_bindings -q -p host2') do |r|
         expect(r.stdout).to match(%r{exchange2\sexchange\squeue2\squeue\s#})
@@ -235,6 +238,5 @@ describe 'rabbitmq binding:' do
         expect(r.exit_code).to be_zero
       end
     end
-    # rubocop:enable RSpec/MultipleExpectations
   end
 end

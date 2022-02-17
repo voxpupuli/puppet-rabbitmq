@@ -1,37 +1,39 @@
-Puppet::Type.newtype(:rabbitmq_parameter) do
-  desc <<-DESC
-Type for managing rabbitmq parameters
+# frozen_string_literal: true
 
-@example Create some rabbitmq_parameter resources
-   rabbitmq_parameter { 'documentumShovel@/':
-     component_name => '',
-     value          => {
-         'src-uri'    => 'amqp://',
-         'src-queue'  => 'my-queue',
-         'dest-uri'   => 'amqp://remote-server',
-         'dest-queue' => 'another-queue',
-     },
-   }
-   rabbitmq_parameter { 'documentumFed@/':
-     component_name => 'federation-upstream',
-     value          => {
-         'uri'     => 'amqp://myserver',
-         'expires' => '360000',
-     },
-   }
-   rabbitmq_parameter { 'documentumShovelNoMunging@/':
-     component_name => '',
-     value          => {
-         'src-uri'    => 'amqp://',
-         'src-exchange'  => 'my-exchange',
-         'src-exchange-key' => '6',
-         'src-queue'  => 'my-queue',
-         'dest-uri'   => 'amqp://remote-server',
-         'dest-exchange' => 'another-exchange',
-     },
-     autoconvert   => false,
-   }
-DESC
+Puppet::Type.newtype(:rabbitmq_parameter) do
+  desc <<~DESC
+    Type for managing rabbitmq parameters
+
+    @example Create some rabbitmq_parameter resources
+       rabbitmq_parameter { 'documentumShovel@/':
+         component_name => '',
+         value          => {
+             'src-uri'    => 'amqp://',
+             'src-queue'  => 'my-queue',
+             'dest-uri'   => 'amqp://remote-server',
+             'dest-queue' => 'another-queue',
+         },
+       }
+       rabbitmq_parameter { 'documentumFed@/':
+         component_name => 'federation-upstream',
+         value          => {
+             'uri'     => 'amqp://myserver',
+             'expires' => '360000',
+         },
+       }
+       rabbitmq_parameter { 'documentumShovelNoMunging@/':
+         component_name => '',
+         value          => {
+             'src-uri'    => 'amqp://',
+             'src-exchange'  => 'my-exchange',
+             'src-exchange-key' => '6',
+             'src-queue'  => 'my-queue',
+             'dest-uri'   => 'amqp://remote-server',
+             'dest-exchange' => 'another-exchange',
+         },
+         autoconvert   => false,
+       }
+  DESC
 
   ensurable do
     defaultto(:present)
@@ -94,15 +96,15 @@ DESC
 
   def validate_value(value)
     raise ArgumentError, 'Invalid value' unless [Hash].include?(value.class)
+
     value.each do |_k, v|
-      unless [String, TrueClass, FalseClass, Array].include?(v.class)
-        raise ArgumentError, 'Invalid value'
-      end
+      raise ArgumentError, 'Invalid value' unless [String, TrueClass, FalseClass, Array].include?(v.class)
     end
   end
 
   def munge_value(value)
     return value if value(:autoconvert) == :false
+
     value.each do |k, v|
       value[k] = v.to_i if v =~ %r{\A[-+]?[0-9]+\z}
     end

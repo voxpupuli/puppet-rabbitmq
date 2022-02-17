@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 provider_class = Puppet::Type.type(:rabbitmq_user).provider(:rabbitmqctl)
@@ -21,10 +23,12 @@ describe provider_class do
 
   describe '#self.instances' do
     it { expect(provider.class.instances.size).to eq(3) }
+
     it 'returns an array of users' do
       users = provider.class.instances.map(&:name)
       expect(users).to match_array(%w[rmq_x rmq_y rmq_z])
     end
+
     it 'returns the expected tags' do
       tags = provider.class.instances.first.get(:tags)
       expect(tags).to match_array(%w[disk storage])
@@ -40,6 +44,7 @@ describe provider_class do
       provider.expects(:rabbitmqctl).with('add_user', 'rmq_x', 'secret')
       provider.create
     end
+
     context 'no password supplied' do
       let(:resource) do
         Puppet::Type.type(:rabbitmq_user).new(
@@ -69,13 +74,13 @@ describe provider_class do
         provider.class.stubs(:rabbitmqctl).with(
           'eval',
           'rabbit_access_control:check_user_pass_login(list_to_binary("rmq_x"), list_to_binary("secret")).'
-        ).returns <<-EOT
-{ok,{user,<<"rmq_x">>,[],rabbit_auth_backend_internal,
-          {internal_user,<<"rmq_x">>,
-                         <<193,81,62,182,129,135,196,89,148,87,227,48,86,2,154,
-                           192,52,119,214,177>>,
-                         []}}}
-EOT
+        ).returns <<~EOT
+          {ok,{user,<<"rmq_x">>,[],rabbit_auth_backend_internal,
+                    {internal_user,<<"rmq_x">>,
+                                   <<193,81,62,182,129,135,196,89,148,87,227,48,86,2,154,
+                                     192,52,119,214,177>>,
+                                   []}}}
+        EOT
       end
 
       it do
@@ -88,10 +93,10 @@ EOT
         provider.class.stubs(:rabbitmqctl).with(
           'eval',
           'rabbit_access_control:check_user_pass_login(list_to_binary("rmq_x"), list_to_binary("nottherightone")).'
-        ).returns <<-EOT
-{refused,"user '~s' - invalid credentials",[<<"rmq_x">>]}
-...done.
-EOT
+        ).returns <<~EOT
+          {refused,"user '~s' - invalid credentials",[<<"rmq_x">>]}
+          ...done.
+        EOT
       end
 
       it do

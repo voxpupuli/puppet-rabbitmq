@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmq_cli'))
 Puppet::Type.type(:rabbitmq_user).provide(
   :rabbitmqctl,
@@ -17,6 +19,7 @@ Puppet::Type.type(:rabbitmq_user).provide(
 
     user_list.split(%r{\n}).map do |line|
       raise Puppet::Error, "Cannot parse invalid user line: #{line}" unless line =~ %r{^(\S+)\s+\[(.*?)\]$}
+
       user = Regexp.last_match(1)
       tags = Regexp.last_match(2).split(%r{,\s*})
       new(
@@ -88,6 +91,7 @@ Puppet::Type.type(:rabbitmq_user).provide(
   def admin
     usertags = get_user_tags
     raise Puppet::Error, "Could not match line '#{resource[:name]} (true|false)' from list_users (perhaps you are running on an older version of rabbitmq that does not support admin users?)" unless usertags
+
     (:true if usertags.include?('administrator')) || :false
   end
 
@@ -111,6 +115,7 @@ Puppet::Type.type(:rabbitmq_user).provide(
 
   def flush
     return if @property_flush.empty?
+
     tags = @property_flush[:tags] || @resource[:tags]
     tags << admin_tag if @resource[:admin] == :true
     rabbitmqctl('set_user_tags', @resource[:name], tags)

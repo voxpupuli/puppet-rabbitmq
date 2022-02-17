@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmq_cli'))
 Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl, parent: Puppet::Provider::RabbitmqCli) do
   confine feature: :posix
 
   # cache users permissions
   def self.users(name, vhost)
-    @users = {} unless @users
+    @users ||= {}
     unless @users[name]
       @users[name] = {}
       user_permission_list = run_with_retries do
@@ -13,6 +15,7 @@ Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl, parent: Pupp
       user_permission_list.split(%r{\n}).each do |line|
         line = strip_backslashes(line)
         raise Puppet::Error, "cannot parse line from list_user_permissions:#{line}" unless line =~ %r{^(\S+)\s+(\S*)\s+(\S*)\s+(\S*)$}
+
         @users[name][Regexp.last_match(1)] =
           { configure: Regexp.last_match(2), read: Regexp.last_match(4), write: Regexp.last_match(3) }
       end
@@ -25,19 +28,11 @@ Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl, parent: Pupp
   end
 
   def should_user
-    if @should_user
-      @should_user
-    else
-      @should_user = resource[:name].split('@')[0]
-    end
+    @should_user || @should_user = resource[:name].split('@')[0]
   end
 
   def should_vhost
-    if @should_vhost
-      @should_vhost
-    else
-      @should_vhost = resource[:name].split('@')[1]
-    end
+    @should_vhost || @should_vhost = resource[:name].split('@')[1]
   end
 
   def create

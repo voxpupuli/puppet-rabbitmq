@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Fact to get the ssl path for the erlang distribution in the current
 # system as described in the RabbitMQ docs [1].
 #
