@@ -4,6 +4,36 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v12.0.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v12.0.0) (2022-03-28)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v11.1.0...v12.0.0)
+
+**Breaking changes:**
+
+- breaking: remove support for debian 8 [\#888](https://github.com/voxpupuli/puppet-rabbitmq/pull/888) ([TheMeier](https://github.com/TheMeier))
+- Drop Puppet 5 support; require 6.1.0 / Drop RedHat 6 support [\#878](https://github.com/voxpupuli/puppet-rabbitmq/pull/878) ([bastelfreak](https://github.com/bastelfreak))
+
+**Fixed bugs:**
+
+- change default python version for FreeBSD: 3.8 [\#904](https://github.com/voxpupuli/puppet-rabbitmq/pull/904) ([olevole](https://github.com/olevole))
+- RedHat: Fix outdated gpgkey for packagecloud repo [\#901](https://github.com/voxpupuli/puppet-rabbitmq/pull/901) ([kajinamit](https://github.com/kajinamit))
+- Fix Bug \#804 'rabbitmqadmin will not be upgraded' [\#897](https://github.com/voxpupuli/puppet-rabbitmq/pull/897) ([s-johansson](https://github.com/s-johansson))
+
+**Closed issues:**
+
+- Reference for log\_levels does not apply [\#894](https://github.com/voxpupuli/puppet-rabbitmq/issues/894)
+- Adding rabbitmq-delayed-message-exchange plugin [\#890](https://github.com/voxpupuli/puppet-rabbitmq/issues/890)
+- rabbitmqadmin will not be upgraded [\#804](https://github.com/voxpupuli/puppet-rabbitmq/issues/804)
+- fix or eliminate remaining "multiple expectations" warnings [\#603](https://github.com/voxpupuli/puppet-rabbitmq/issues/603)
+
+**Merged pull requests:**
+
+- Adjust docu for RabbitMQ log level \#894 [\#896](https://github.com/voxpupuli/puppet-rabbitmq/pull/896) ([s-johansson](https://github.com/s-johansson))
+- puppet-lint: fix top\_scope\_facts warnings [\#893](https://github.com/voxpupuli/puppet-rabbitmq/pull/893) ([bastelfreak](https://github.com/bastelfreak))
+- Allow archive 6.0.0 [\#892](https://github.com/voxpupuli/puppet-rabbitmq/pull/892) ([smortex](https://github.com/smortex))
+- Allow stdlib 8.0.0 [\#891](https://github.com/voxpupuli/puppet-rabbitmq/pull/891) ([smortex](https://github.com/smortex))
+- switch from camptocamp/systemd to voxpupuli/systemd [\#889](https://github.com/voxpupuli/puppet-rabbitmq/pull/889) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v11.1.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v11.1.0) (2021-05-06)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v11.0.0...v11.1.0)

@@ -94,7 +94,26 @@ class { 'rabbitmq':
   config_variables => {
     'hipe_compile' => true,
     'frame_max'    => 131072,
-    'log_levels'   => "[{connection, info}]"
+  }
+}
+```
+
+##### Change RabbitMQ log level in rabbitmq.config for RabbitMQ version < 3.7.x :
+
+```puppet
+class { 'rabbitmq':
+  config_variables => {
+    'log_levels'   => "[{queue, info}]"
+  }
+}
+```
+
+##### Change RabbitMQ log level in rabbitmq.config for RabbitMQ version since 3.7.x :
+
+```puppet
+class { 'rabbitmq':
+  config_variables => {
+    'log'          => "[{file, [{level,debug}]},{categories, [{queue, [{level,info},{file,'queue.log'}]}]}]"
   }
 }
 ```
@@ -1126,6 +1145,8 @@ Default value: queue
 
 binding arguments
 
+Default value: {}
+
 #### Parameters
 
 The following parameters are available in the `rabbitmq_binding` type.
@@ -1352,6 +1373,8 @@ Default value: `false`
 ##### `arguments`
 
 Exchange arguments example: {"hash-header": "message-distribution-hash"}
+
+Default value: {}
 
 ##### `user`
 
@@ -1648,6 +1671,8 @@ Default value: `false`
 ##### `arguments`
 
 Queue arguments example: {x-message-ttl => 60, x-expires => 10}
+
+Default value: {}
 
 ##### `user`
 
