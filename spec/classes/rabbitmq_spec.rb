@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# rubocop:disable RSpec/RepeatedExampleGroupDescription
+# rubocop:disable RSpec/RepeatedExampleGroupBody
+
 require 'spec_helper'
 
 describe 'rabbitmq' do
@@ -1788,3 +1791,6 @@ describe 'rabbitmq' do
     end
   end
 end
+
+# rubocop:enable RSpec/RepeatedExampleGroupDescription
+# rubocop:enable RSpec/RepeatedExampleGroupBody

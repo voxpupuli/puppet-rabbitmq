@@ -59,7 +59,7 @@ Puppet::Type.newtype(:rabbitmq_exchange) do
 
   newparam(:arguments) do
     desc 'Exchange arguments example: {"hash-header": "message-distribution-hash"}'
-    defaultto {}
+    defaultto({})
   end
 
   newparam(:user) do

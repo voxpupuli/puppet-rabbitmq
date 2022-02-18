@@ -49,11 +49,9 @@ Puppet::Type.newtype(:rabbitmq_user) do
       'password has been changed'
     end
 
-    # rubocop:disable Style/PredicateName
     def is_to_s(_value)
       '[old password redacted]'
     end
-    # rubocop:enable Style/PredicateName
 
     def should_to_s(_value)
       '[new password redacted]'

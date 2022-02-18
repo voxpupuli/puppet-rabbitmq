@@ -23,11 +23,9 @@ Puppet::Type.newtype(:rabbitmq_erlang_cookie) do
       'The rabbitmq erlang cookie was changed'
     end
 
-    # rubocop:disable Style/PredicateName
     def is_to_s(_value)
       '[old content redacted]'
     end
-    # rubocop:enable Style/PredicateName
 
     def should_to_s(_value)
       '[new content redacted]'

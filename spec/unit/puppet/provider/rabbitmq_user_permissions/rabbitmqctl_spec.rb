@@ -63,8 +63,7 @@ describe 'Puppet::Type.type(:rabbitmq_user_permissions).provider(:rabbitmqctl)' 
       EOT
       expect(provider.send(k)).to eq(v)
     end
-  end
-  { configure_permission: '1', write_permission: '2', read_permission: '3' }.each do |k, v|
+
     it "is able to retrieve #{k} after exists has been called" do
       provider.class.expects(:rabbitmqctl_list).with('user_permissions', 'foo').returns <<~EOT
         bar 1 2 3

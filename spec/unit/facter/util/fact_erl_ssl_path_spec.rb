@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+# rubocop:disable Style/FrozenStringLiteralComment
 
 require 'spec_helper'
 
@@ -30,3 +30,5 @@ describe Facter::Util::Fact do
     end
   end
 end
+
+# rubocop:enable Style/FrozenStringLiteralComment

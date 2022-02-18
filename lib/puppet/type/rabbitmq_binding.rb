@@ -115,7 +115,7 @@ Puppet::Type.newtype(:rabbitmq_binding) do
 
   newproperty(:arguments) do
     desc 'binding arguments'
-    defaultto {}
+    defaultto({})
     validate do |value|
       resource.validate_argument(value)
     end

@@ -47,7 +47,7 @@ Puppet::Type.newtype(:rabbitmq_queue) do
 
   newparam(:arguments) do
     desc 'Queue arguments example: {x-message-ttl => 60, x-expires => 10}'
-    defaultto {}
+    defaultto({})
     validate do |value|
       resource.validate_argument(value)
     end
