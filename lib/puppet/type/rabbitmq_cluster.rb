@@ -1,19 +1,21 @@
+# frozen_string_literal: true
+
 Puppet::Type.newtype(:rabbitmq_cluster) do
-  desc <<-DESC
-Native type for managing rabbitmq cluster
+  desc <<~DESC
+    Native type for managing rabbitmq cluster
 
-@example Configure a cluster, rabbit_cluster
- rabbitmq_cluster { 'rabbit_cluster':
-   init_node      => 'host1'
- }
+    @example Configure a cluster, rabbit_cluster
+     rabbitmq_cluster { 'rabbit_cluster':
+       init_node      => 'host1'
+     }
 
-@example Optional parameter tags will set further rabbitmq tags like monitoring, policymaker, etc.
- To set the cluster name use cluster_name.
- rabbitmq_cluster { 'rabbit_cluster':
-   init_node      => 'host1',
-   node_disc_type => 'ram',
- }
-DESC
+    @example Optional parameter tags will set further rabbitmq tags like monitoring, policymaker, etc.
+     To set the cluster name use cluster_name.
+     rabbitmq_cluster { 'rabbit_cluster':
+       init_node      => 'host1',
+       node_disc_type => 'ram',
+     }
+  DESC
 
   ensurable do
     defaultto(:present)

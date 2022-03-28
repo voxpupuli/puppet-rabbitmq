@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 require 'puppet/util/package'
 
@@ -25,6 +27,7 @@ Puppet::Type.type(:rabbitmq_parameter).provide(:rabbitmqctl, parent: Puppet::Pro
     all_vhosts.each do |vhost|
       all_parameters(vhost).map do |line|
         raise Puppet::Error, "cannot parse line from list_parameter:#{line}" unless line =~ %r{^(\S+)\s+(\S+)\s+(\S+)$}
+
         parameter = {
           ensure: :present,
           component_name: Regexp.last_match(1),
@@ -39,7 +42,7 @@ Puppet::Type.type(:rabbitmq_parameter).provide(:rabbitmqctl, parent: Puppet::Pro
 
   def self.prefetch(resources)
     packages = instances
-    resources.keys.each do |name|
+    resources.each_key do |name|
       Puppet.info "Calling prefetch: #{name}"
       if (provider = packages.find { |pkg| pkg.name == name })
         resources[name].provider = provider

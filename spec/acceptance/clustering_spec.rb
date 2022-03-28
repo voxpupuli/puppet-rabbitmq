@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper_acceptance'
 
 describe 'rabbitmq clustering' do
@@ -26,6 +28,7 @@ describe 'rabbitmq clustering' do
       it { is_expected.not_to contain 'TESTCOOKIE' }
     end
   end
+
   context 'rabbitmq::wipe_db_on_cookie_change => true' do
     it 'runs successfully' do
       pp = <<-EOS
@@ -67,7 +70,6 @@ describe 'rabbitmq clustering' do
             expect(r.stdout).to match(%r!({cluster_name,<<"rabbit_cluster">>}|^Cluster name: rabbit_cluster$)!)
             expect(r.exit_code).to be_zero
           end
-          # rubocop:enable RSpec/MultipleExpectations
         end
       end
     end

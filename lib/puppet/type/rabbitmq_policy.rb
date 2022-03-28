@@ -1,18 +1,20 @@
-Puppet::Type.newtype(:rabbitmq_policy) do
-  desc <<-DESC
-Type for managing rabbitmq policies
+# frozen_string_literal: true
 
-@example Create a rabbitmq_policy
- rabbitmq_policy { 'ha-all@myvhost':
-   pattern    => '.*',
-   priority   => 0,
-   applyto    => 'all',
-   definition => {
-     'ha-mode'      => 'all',
-     'ha-sync-mode' => 'automatic',
-   },
- }
-DESC
+Puppet::Type.newtype(:rabbitmq_policy) do
+  desc <<~DESC
+    Type for managing rabbitmq policies
+
+    @example Create a rabbitmq_policy
+     rabbitmq_policy { 'ha-all@myvhost':
+       pattern    => '.*',
+       priority   => 0,
+       applyto    => 'all',
+       definition => {
+         'ha-mode'      => 'all',
+         'ha-sync-mode' => 'automatic',
+       },
+     }
+  DESC
 
   ensurable do
     defaultto(:present)
@@ -78,95 +80,58 @@ DESC
   end
 
   def validate_definition(definition)
-    unless [Hash].include?(definition.class)
-      raise ArgumentError, 'Invalid definition'
-    end
+    raise ArgumentError, 'Invalid definition' unless [Hash].include?(definition.class)
+
     definition.each do |k, v|
       if k == 'ha-params' && definition['ha-mode'] == 'nodes'
-        unless [Array].include?(v.class)
-          raise ArgumentError, "Invalid definition, value #{v} for key #{k} is not an array"
-        end
+        raise ArgumentError, "Invalid definition, value #{v} for key #{k} is not an array" unless [Array].include?(v.class)
       else
-        unless [String].include?(v.class)
-          raise ArgumentError, "Invalid definition, value #{v} is not a string"
-        end
+        raise ArgumentError, "Invalid definition, value #{v} is not a string" unless [String].include?(v.class)
       end
     end
     if definition['ha-mode'] == 'exactly'
       ha_params = definition['ha-params']
-      unless ha_params.to_i.to_s == ha_params
-        raise ArgumentError, "Invalid ha-params '#{ha_params}' for ha-mode 'exactly'"
-      end
+      raise ArgumentError, "Invalid ha-params '#{ha_params}' for ha-mode 'exactly'" unless ha_params.to_i.to_s == ha_params
     end
     if definition.key? 'expires'
       expires_val = definition['expires']
-      unless expires_val.to_i.to_s == expires_val
-        raise ArgumentError, "Invalid expires value '#{expires_val}'"
-      end
+      raise ArgumentError, "Invalid expires value '#{expires_val}'" unless expires_val.to_i.to_s == expires_val
     end
     if definition.key? 'message-ttl'
       message_ttl_val = definition['message-ttl']
-      unless message_ttl_val.to_i.to_s == message_ttl_val
-        raise ArgumentError, "Invalid message-ttl value '#{message_ttl_val}'"
-      end
+      raise ArgumentError, "Invalid message-ttl value '#{message_ttl_val}'" unless message_ttl_val.to_i.to_s == message_ttl_val
     end
     if definition.key? 'max-length'
       max_length_val = definition['max-length']
-      unless max_length_val.to_i.to_s == max_length_val
-        raise ArgumentError, "Invalid max-length value '#{max_length_val}'"
-      end
+      raise ArgumentError, "Invalid max-length value '#{max_length_val}'" unless max_length_val.to_i.to_s == max_length_val
     end
     if definition.key? 'max-length-bytes'
       max_length_bytes_val = definition['max-length-bytes']
-      unless max_length_bytes_val.to_i.to_s == max_length_bytes_val
-        raise ArgumentError, "Invalid max-length-bytes value '#{max_length_bytes_val}'"
-      end
+      raise ArgumentError, "Invalid max-length-bytes value '#{max_length_bytes_val}'" unless max_length_bytes_val.to_i.to_s == max_length_bytes_val
     end
     if definition.key? 'shards-per-node'
       shards_per_node_val = definition['shards-per-node']
-      unless shards_per_node_val.to_i.to_s == shards_per_node_val
-        raise ArgumentError, "Invalid shards-per-node value '#{shards_per_node_val}'"
-      end
+      raise ArgumentError, "Invalid shards-per-node value '#{shards_per_node_val}'" unless shards_per_node_val.to_i.to_s == shards_per_node_val
     end
     if definition.key? 'ha-sync-batch-size'
       ha_sync_batch_size_val = definition['ha-sync-batch-size']
-      unless ha_sync_batch_size_val.to_i.to_s == ha_sync_batch_size_val
-        raise ArgumentError, "Invalid ha-sync-batch-size value '#{ha_sync_batch_size_val}'"
-      end
+      raise ArgumentError, "Invalid ha-sync-batch-size value '#{ha_sync_batch_size_val}'" unless ha_sync_batch_size_val.to_i.to_s == ha_sync_batch_size_val
     end
     if definition.key? 'delivery-limit' # rubocop:disable Style/GuardClause
       delivery_limit_val = definition['delivery-limit']
-      unless delivery_limit_val.to_i.to_s == delivery_limit_val
-        raise ArgumentError, "Invalid delivery-limit value '#{delivery_limit_val}'"
-      end
+      raise ArgumentError, "Invalid delivery-limit value '#{delivery_limit_val}'" unless delivery_limit_val.to_i.to_s == delivery_limit_val
     end
   end
 
   def munge_definition(definition)
-    if definition['ha-mode'] == 'exactly'
-      definition['ha-params'] = definition['ha-params'].to_i
-    end
-    if definition.key? 'expires'
-      definition['expires'] = definition['expires'].to_i
-    end
-    if definition.key? 'message-ttl'
-      definition['message-ttl'] = definition['message-ttl'].to_i
-    end
-    if definition.key? 'max-length'
-      definition['max-length'] = definition['max-length'].to_i
-    end
-    if definition.key? 'max-length-bytes'
-      definition['max-length-bytes'] = definition['max-length-bytes'].to_i
-    end
-    if definition.key? 'shards-per-node'
-      definition['shards-per-node'] = definition['shards-per-node'].to_i
-    end
-    if definition.key? 'ha-sync-batch-size'
-      definition['ha-sync-batch-size'] = definition['ha-sync-batch-size'].to_i
-    end
-    if definition.key? 'delivery-limit'
-      definition['delivery-limit'] = definition['delivery-limit'].to_i
-    end
+    definition['ha-params'] = definition['ha-params'].to_i if definition['ha-mode'] == 'exactly'
+    definition['expires'] = definition['expires'].to_i if definition.key? 'expires'
+    definition['message-ttl'] = definition['message-ttl'].to_i if definition.key? 'message-ttl'
+    definition['max-length'] = definition['max-length'].to_i if definition.key? 'max-length'
+    definition['max-length-bytes'] = definition['max-length-bytes'].to_i if definition.key? 'max-length-bytes'
+    definition['shards-per-node'] = definition['shards-per-node'].to_i if definition.key? 'shards-per-node'
+    definition['ha-sync-batch-size'] = definition['ha-sync-batch-size'].to_i if definition.key? 'ha-sync-batch-size'
+    definition['delivery-limit'] = definition['delivery-limit'].to_i if definition.key? 'delivery-limit'
     definition
   end
 end

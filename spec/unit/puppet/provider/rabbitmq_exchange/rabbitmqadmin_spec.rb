@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 provider_class = Puppet::Type.type(:rabbitmq_exchange).provider(:rabbitmqadmin)
@@ -17,20 +19,20 @@ describe provider_class do
   let(:provider) { provider_class.new(resource) }
 
   it 'returns instances' do
-    provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<-EOT
-/
-EOT
-    provider_class.expects(:rabbitmqctl_list).with('exchanges', '-p', '/', 'name', 'type', 'internal', 'durable', 'auto_delete', 'arguments').returns <<-EOT
-        direct  false   true    false   []
-amq.direct      direct  false   true    false   []
-amq.fanout      fanout  false   true    false   []
-amq.headers     headers false   true    false   []
-amq.match       headers false   true    false   []
-amq.rabbitmq.log        topic   true    true    false   []
-amq.rabbitmq.trace      topic   true    true    false   []
-amq.topic       topic   false   true    false   []
-test.headers    x-consistent-hash       false   true    false   [{"hash-header","message-distribution-hash"}]
-EOT
+    provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<~EOT
+      /
+    EOT
+    provider_class.expects(:rabbitmqctl_list).with('exchanges', '-p', '/', 'name', 'type', 'internal', 'durable', 'auto_delete', 'arguments').returns <<~EOT
+              direct  false   true    false   []
+      amq.direct      direct  false   true    false   []
+      amq.fanout      fanout  false   true    false   []
+      amq.headers     headers false   true    false   []
+      amq.match       headers false   true    false   []
+      amq.rabbitmq.log        topic   true    true    false   []
+      amq.rabbitmq.trace      topic   true    true    false   []
+      amq.topic       topic   false   true    false   []
+      test.headers    x-consistent-hash       false   true    false   [{"hash-header","message-distribution-hash"}]
+    EOT
     instances = provider_class.instances
     expect(instances.size).to eq(9)
   end

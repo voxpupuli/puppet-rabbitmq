@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper_acceptance'
 
 describe 'rabbitmq user:' do
@@ -24,13 +26,13 @@ describe 'rabbitmq user:' do
       apply_manifest(pp, catch_failures: true)
       apply_manifest(pp, catch_changes: true)
     end
+
     it 'has the user' do
       shell('rabbitmqctl list_users -q') do |r|
         expect(r.stdout).to match(%r{dan.*administrator})
         expect(r.exit_code).to be_zero
       end
     end
-    # rubocop:enable RSpec/MultipleExpectations
   end
 
   context 'destroy user resource' do

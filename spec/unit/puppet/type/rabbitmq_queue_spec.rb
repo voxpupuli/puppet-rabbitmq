@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 describe Puppet::Type.type(:rabbitmq_queue) do
   let(:queue) do
@@ -15,16 +17,19 @@ describe Puppet::Type.type(:rabbitmq_queue) do
     queue[:name] = 'dan@pl'
     expect(queue[:name]).to eq('dan@pl')
   end
+
   it 'requires a name' do
     expect do
       Puppet::Type.type(:rabbitmq_queue).new({})
     end.to raise_error(Puppet::Error, 'Title or name must be provided')
   end
+
   it 'does not allow whitespace in the name' do
     expect do
       queue[:name] = 'b r'
     end.to raise_error(Puppet::Error, %r{Valid values match})
   end
+
   it 'does not allow names without @' do
     expect do
       queue[:name] = 'b_r'

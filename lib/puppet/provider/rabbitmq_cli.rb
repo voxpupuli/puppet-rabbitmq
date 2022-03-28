@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Puppet::Provider::RabbitmqCli < Puppet::Provider
   initvars
 
@@ -38,7 +40,7 @@ class Puppet::Provider::RabbitmqCli < Puppet::Provider
     return @rabbitmq_version if defined? @rabbitmq_version
 
     output = rabbitmqctl('-q', 'status')
-    version = output.match(%r{RabbitMQ.*?([\d\.]+)})
+    version = output.match(%r{RabbitMQ.*?([\d.]+)})
     @rabbitmq_version = version[1] if version
     @rabbitmq_version
   end
@@ -56,9 +58,9 @@ class Puppet::Provider::RabbitmqCli < Puppet::Provider
 
   def self.rabbitmq_running
     rabbitmqctl('-q', 'status')
-    return true
+    true
   rescue Puppet::ExecutionFailure, Timeout::Error
-    return false
+    false
   end
 
   # Retry the given code block 'count' retries or until the
@@ -66,25 +68,22 @@ class Puppet::Provider::RabbitmqCli < Puppet::Provider
   # Limit each query time by 'timeout'.
   # For example:
   #   users = self.class.run_with_retries { rabbitmqctl 'list_users' }
-  def self.run_with_retries(count = 30, step = 6, timeout = 10)
+  def self.run_with_retries(count = 30, step = 6, timeout = 10, &block)
     count.times do |_n|
-      begin
-        output = Timeout.timeout(timeout) do
-          yield
-        end
-      rescue Puppet::ExecutionFailure, Timeout::Error
-        Puppet.debug 'Command failed, retrying'
-        sleep step
-      else
-        Puppet.debug 'Command succeeded'
-        return output
-      end
+      output = Timeout.timeout(timeout, &block)
+    rescue Puppet::ExecutionFailure, Timeout::Error
+      Puppet.debug 'Command failed, retrying'
+      sleep step
+    else
+      Puppet.debug 'Command succeeded'
+      return output
     end
     raise Puppet::Error, "Command is still failing after #{count * step} seconds expired!"
   end
 
   def self.define_instance_method(name)
     return if method_defined?(name)
+
     define_method(name) do |*args, &block|
       self.class.send(name, *args, &block)
     end

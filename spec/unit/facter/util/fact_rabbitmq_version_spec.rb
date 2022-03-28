@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Facter::Util::Fact do
@@ -13,6 +15,7 @@ describe Facter::Util::Fact do
         expect(Facter.fact(:rabbitmq_version).value).to eq('3.6.0')
       end
     end
+
     context 'with invalid value' do
       it do
         Facter::Util::Resolution.expects(:which).with('rabbitmqadmin').returns(true)
@@ -20,6 +23,7 @@ describe Facter::Util::Fact do
         expect(Facter.fact(:rabbitmq_version).value).to be_nil
       end
     end
+
     context 'rabbitmqadmin is not in path' do
       it do
         Facter::Util::Resolution.expects(:which).with('rabbitmqadmin').returns(false)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Facter::Util::Fact do
@@ -40,25 +42,25 @@ describe Facter::Util::Fact do
 
     context 'rabbitmq is not running' do
       it do
-        error_string = <<-EOS
-Status of node 'monty@rabbit-1' ...
-Error: unable to connect to node 'monty@rabbit-1': nodedown
+        error_string = <<~EOS
+          Status of node 'monty@rabbit-1' ...
+          Error: unable to connect to node 'monty@rabbit-1': nodedown
 
-DIAGNOSTICS
-===========
+          DIAGNOSTICS
+          ===========
 
-attempted to contact: ['monty@rabbit-1']
+          attempted to contact: ['monty@rabbit-1']
 
-monty@rabbit-1:
-  * connected to epmd (port 4369) on centos-7-x64
-  * epmd reports: node 'rabbit' not running at all
-                  no other nodes on centos-7-x64
-  * suggestion: start the node
+          monty@rabbit-1:
+            * connected to epmd (port 4369) on centos-7-x64
+            * epmd reports: node 'rabbit' not running at all
+                            no other nodes on centos-7-x64
+            * suggestion: start the node
 
-current node details:
-- node name: 'rabbitmq-cli-73@centos-7-x64'
-- home dir: /var/lib/rabbitmq
-- cookie hash: 6WdP0nl6d3HYqA5vTKMkIg==
+          current node details:
+          - node name: 'rabbitmq-cli-73@centos-7-x64'
+          - home dir: /var/lib/rabbitmq
+          - cookie hash: 6WdP0nl6d3HYqA5vTKMkIg==
 
         EOS
         Facter::Util::Resolution.expects(:which).with('rabbitmqctl').returns(true)

@@ -1,7 +1,10 @@
+# rubocop:disable Style/FrozenStringLiteralComment
+
 # Fact to get the ssl path for the erlang distribution in the current
 # system as described in the RabbitMQ docs [1].
 #
 # [1] https://www.rabbitmq.com/clustering-ssl.html
+
 Facter.add(:erl_ssl_path) do
   setcode do
     if Facter::Util::Resolution.which('erl')
@@ -11,3 +14,4 @@ Facter.add(:erl_ssl_path) do
     end
   end
 end
+# rubocop:enable Style/FrozenStringLiteralComment

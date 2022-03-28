@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 require 'puppet'
 require 'digest'
@@ -10,11 +12,7 @@ Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin, parent: Puppet::Pro
   mk_resource_methods
 
   def should_vhost
-    if @should_vhost
-      @should_vhost
-    else
-      @should_vhost = resource[:vhost]
-    end
+    @should_vhost || @should_vhost = resource[:vhost]
   end
 
   def self.all_vhosts
@@ -35,14 +33,15 @@ Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin, parent: Puppet::Pro
       all_bindings(vhost).map do |line|
         source_name, destination_name, destination_type, routing_key, arguments = line.split(%r{\t})
         # Convert output of arguments from the rabbitmqctl command to a json string.
-        if !arguments.nil?
+        if arguments.nil?
+          arguments = '{}'
+        else
           arguments = arguments.gsub(%r{^\[(.*)\]$}, '').gsub(%r{\{("(?:.|\\")*?"),}, '{\1:').gsub(%r{\},\{}, ',')
           arguments = '{}' if arguments == ''
-        else
-          arguments = '{}'
         end
         hashed_name = Digest::SHA256.hexdigest format('%s@%s@%s@%s', source_name, destination_name, vhost, routing_key)
         next if source_name.empty?
+
         binding = {
           source: source_name,
           destination: destination_name,

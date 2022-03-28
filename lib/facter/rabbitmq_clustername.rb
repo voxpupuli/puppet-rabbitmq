@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Facter.add(:rabbitmq_clustername) do
   setcode do
     if Facter::Util::Resolution.which('rabbitmqctl')

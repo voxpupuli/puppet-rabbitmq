@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 require 'puppet'
 
@@ -6,11 +8,7 @@ Puppet::Type.type(:rabbitmq_queue).provide(:rabbitmqadmin, parent: Puppet::Provi
   confine feature: :posix
 
   def should_vhost
-    if @should_vhost
-      @should_vhost
-    else
-      @should_vhost = resource[:name].rpartition('@').last
-    end
+    @should_vhost || @should_vhost = resource[:name].rpartition('@').last
   end
 
   def self.all_vhosts
@@ -26,13 +24,14 @@ Puppet::Type.type(:rabbitmq_queue).provide(:rabbitmqadmin, parent: Puppet::Provi
     all_vhosts.each do |vhost|
       all_queues(vhost).map do |line|
         next if line =~ %r{^federation:}
+
         name, durable, auto_delete, arguments = line.split("\t")
         # Convert output of arguments from the rabbitmqctl command to a json string.
-        if !arguments.nil?
+        if arguments.nil?
+          arguments = '{}'
+        else
           arguments = arguments.gsub(%r{^\[(.*)\]$}, '').gsub(%r{\{("(?:.|\\")*?"),}, '{\1:').gsub(%r{\},\{}, ',')
           arguments = '{}' if arguments == ''
-        else
-          arguments = '{}'
         end
         queue = {
           durable: durable,
@@ -49,7 +48,7 @@ Puppet::Type.type(:rabbitmq_queue).provide(:rabbitmqadmin, parent: Puppet::Provi
 
   def self.prefetch(resources)
     packages = instances
-    resources.keys.each do |name|
+    resources.each_key do |name|
       if (provider = packages.find { |pkg| pkg.name == name })
         resources[name].provider = provider
       end

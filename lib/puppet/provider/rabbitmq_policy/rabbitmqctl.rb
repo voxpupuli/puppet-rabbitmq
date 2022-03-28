@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 require 'puppet/util/package'
 
@@ -7,7 +9,7 @@ Puppet::Type.type(:rabbitmq_policy).provide(:rabbitmqctl, parent: Puppet::Provid
 
   # cache policies
   def self.policies(vhost, name)
-    @policies = {} unless @policies
+    @policies ||= {}
     unless @policies[vhost]
       @policies[vhost] = {}
       policy_list = run_with_retries do
@@ -30,6 +32,7 @@ Puppet::Type.type(:rabbitmq_policy).provide(:rabbitmqctl, parent: Puppet::Provid
 
       policy_list.split(%r{\n}).each do |line|
         raise Puppet::Error, "cannot parse line from list_policies:#{line}" unless line =~ regex
+
         n          = Regexp.last_match(2)
         applyto    = Regexp.last_match(applyto_index) || 'all'
         priority   = Regexp.last_match(6)
@@ -107,6 +110,7 @@ Puppet::Type.type(:rabbitmq_policy).provide(:rabbitmqctl, parent: Puppet::Provid
 
   def set_policy
     return if @set_policy
+
     @set_policy = true
     resource[:applyto]    ||= applyto
     resource[:definition] ||= definition
