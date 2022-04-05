@@ -1195,7 +1195,7 @@ describe 'rabbitmq' do
           is_expected.to contain_file('rabbitmq.config').with_content(%r{versions, \['tlsv1.3'\]})
         end
 
-        it 'does not set ssl negoatiation options with tlsv1.3' do
+        it 'does not set ssl negotiation options with tlsv1.3' do
           is_expected.to contain_file('rabbitmq.config'). \
             without_content(%r{client_renegotiation}). \
             without_content(%r{secure_renegotiate})
