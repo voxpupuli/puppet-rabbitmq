@@ -82,7 +82,10 @@ end
                    <%- if @ssl_dhfile -%>
                    {dhfile, "<%= @ssl_dhfile %>"},
                    <%- end -%>
+                   <%- if @ssl_versions and !@ssl_versions.include?('tlsv1.3') -%>
+                   {client_renegotiation,<%= @ssl_client_renegotiation %>},
                    {secure_renegotiate,<%= @ssl_secure_renegotiate %>},
+                   <%- end -%>
                    {reuse_sessions,<%= @ssl_reuse_sessions %>},
                    {honor_cipher_order,<%= @ssl_honor_cipher_order %>},
                    {verify,<%= @ssl_verify %>},

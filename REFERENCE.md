@@ -810,6 +810,14 @@ Reuse ssl sessions
 
 Default value: `true`
 
+##### `ssl_client_renegotiation`
+
+Data type: `Boolean`
+
+Allow ssl client renegotiation
+
+Default value: `false`
+
 ##### `ssl_secure_renegotiate`
 
 Data type: `Boolean`
