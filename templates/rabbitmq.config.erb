@@ -82,7 +82,7 @@ end
                    <%- if @ssl_dhfile -%>
                    {dhfile, "<%= @ssl_dhfile %>"},
                    <%- end -%>
-                   <%- if !@ssl_versions.include?('tlsv1.3') -%>
+                   <%- if !@ssl_versions || !@ssl_versions.include?('tlsv1.3') -%>
                    {client_renegotiation,<%= @ssl_client_renegotiation %>},
                    {secure_renegotiate,<%= @ssl_secure_renegotiate %>},
                    <%- end -%>
@@ -140,7 +140,7 @@ end
                   <%- end -%>
                   {certfile, "<%= @ssl_management_cert %>"},
                   {keyfile, "<%= @ssl_management_key %>"},
-                  <%- if !@ssl_versions.include?('tlsv1.3') -%>
+                  <%- if !@ssl_versions || !@ssl_versions.include?('tlsv1.3') -%>
                   {client_renegotiation,<%= @ssl_client_renegotiation %>},
                   {secure_renegotiate,<%= @ssl_secure_renegotiate %>},
                   <%- end -%>
