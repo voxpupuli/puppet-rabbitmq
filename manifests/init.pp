@@ -291,6 +291,8 @@
 #   SSL port for RabbitMQ
 # @param ssl_reuse_sessions
 #   Reuse ssl sessions
+# @param ssl_client_renegotiation
+#   Allow ssl client renegotiation
 # @param ssl_secure_renegotiate
 #   Use ssl secure renegotiate
 # @param ssl_stomp_port
@@ -419,13 +421,14 @@ class rabbitmq (
   Enum['verify_none','verify_peer'] $ssl_management_verify                                         = 'verify_none',
   Boolean $ssl_management_fail_if_no_peer_cert                                                     = false,
   Optional[Array] $ssl_versions                                                                    = undef,
+  Optional[Boolean] $ssl_client_renegotiation                                                      = undef,
   Boolean $ssl_secure_renegotiate                                                                  = true,
   Boolean $ssl_reuse_sessions                                                                      = true,
   Boolean $ssl_honor_cipher_order                                                                  = true,
   Optional[Stdlib::Absolutepath] $ssl_dhfile                                                       = undef,
   Array $ssl_ciphers                                                                               = [],
   Enum['true','false','peer','best_effort'] $ssl_crl_check                                         = 'false',
-  Optional[Stdlib::Absolutepath] $ssl_crl_cache_hash_dir                                                         = undef,
+  Optional[Stdlib::Absolutepath] $ssl_crl_cache_hash_dir                                           = undef,
   Optional[Integer] $ssl_crl_cache_http_timeout                                                    = undef,
   Boolean $stomp_ensure                                                                            = false,
   Boolean $ldap_auth                                                                               = false,
