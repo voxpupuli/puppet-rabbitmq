@@ -816,7 +816,7 @@ Data type: `Boolean`
 
 Allow ssl client renegotiation
 
-Default value: `false`
+Default value: `true`
 
 ##### `ssl_secure_renegotiate`
 

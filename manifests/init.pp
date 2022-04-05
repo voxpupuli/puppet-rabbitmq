@@ -394,7 +394,7 @@ class rabbitmq (
   Enum['verify_none','verify_peer'] $ssl_management_verify                                         = 'verify_none',
   Boolean $ssl_management_fail_if_no_peer_cert                                                     = false,
   Optional[Array] $ssl_versions                                                                    = undef,
-  Boolean $ssl_client_renegotiation                                                                = false,
+  Boolean $ssl_client_renegotiation                                                                = true,
   Boolean $ssl_secure_renegotiate                                                                  = true,
   Boolean $ssl_reuse_sessions                                                                      = true,
   Boolean $ssl_honor_cipher_order                                                                  = true,

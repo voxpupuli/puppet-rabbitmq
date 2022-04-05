@@ -912,7 +912,7 @@ describe 'rabbitmq' do
             ssl_cacert: '/path/to/cacert',
             ssl_cert: '/path/to/cert',
             ssl_key: '/path/to/key',
-            ssl_client_renegotiation: false,
+            ssl_client_renegotiation: true,
             ssl_secure_renegotiate: true,
             ssl_reuse_sessions: true,
             ssl_honor_cipher_order: true,
@@ -938,7 +938,7 @@ describe 'rabbitmq' do
             %r{keyfile,"/path/to/key"}
           )
           is_expected.to contain_file('rabbitmq.config').with_content(
-            %r{client_renegotiation,false}
+            %r{client_renegotiation,true}
           )
           is_expected.to contain_file('rabbitmq.config').with_content(
             %r{secure_renegotiate,true}
@@ -971,7 +971,7 @@ describe 'rabbitmq' do
             ssl_cacert: '/path/to/cacert',
             ssl_cert: '/path/to/cert',
             ssl_key: '/path/to/key',
-            ssl_client_renegotiation: false,
+            ssl_client_renegotiation: true,
             ssl_secure_renegotiate: true,
             ssl_reuse_sessions: true,
             ssl_honor_cipher_order: true,
@@ -1001,7 +1001,7 @@ describe 'rabbitmq' do
             %r{keyfile,"/path/to/key"}
           )
           is_expected.to contain_file('rabbitmq.config').with_content(
-            %r{client_renegotiation,false}
+            %r{client_renegotiation,true}
           )
           is_expected.to contain_file('rabbitmq.config').with_content(
             %r{secure_renegotiate,true}
@@ -1049,7 +1049,7 @@ describe 'rabbitmq' do
             ssl_cacert: '/path/to/cacert',
             ssl_cert: '/path/to/cert',
             ssl_key: '/path/to/key',
-            ssl_client_renegotiation: false,
+            ssl_client_renegotiation: true,
             ssl_secure_renegotiate: true,
             ssl_reuse_sessions: true,
             ssl_honor_cipher_order: true,
@@ -1073,7 +1073,7 @@ describe 'rabbitmq' do
             %r{keyfile,"/path/to/key"}
           )
           is_expected.to contain_file('rabbitmq.config').with_content(
-            %r{client_renegotiation,false}
+            %r{client_renegotiation,true}
           )
           is_expected.to contain_file('rabbitmq.config').with_content(
             %r{secure_renegotiate,true}
@@ -1387,14 +1387,14 @@ describe 'rabbitmq' do
         it { is_expected.to contain_file('rabbitmq.config').without_content(%r{dhfile,}) }
       end
 
-      describe 'ssl with ssl_client_renegotiation true' do
+      describe 'ssl with ssl_client_renegotiation false' do
         let(:params) do
           { ssl: true,
             ssl_interface: '0.0.0.0',
-            ssl_client_renegotiation: true }
+            ssl_client_renegotiation: false }
         end
 
-        it { is_expected.to contain_file('rabbitmq.config').with_content(%r{client_renegotiation,true}) }
+        it { is_expected.to contain_file('rabbitmq.config').with_content(%r{client_renegotiation,false}) }
       end
 
       describe 'ssl with ssl_secure_renegotiate false' do
