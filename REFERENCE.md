@@ -812,7 +812,7 @@ Default value: `true`
 
 ##### `ssl_client_renegotiation`
 
-Data type: `Boolean`
+Data type: `Optional[Boolean]`
 
 Allow ssl client renegotiation
 
