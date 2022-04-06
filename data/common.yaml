@@ -61,7 +61,7 @@ rabbitmq::ssl_fail_if_no_peer_cert: false
 rabbitmq::ssl_management_verify: 'verify_none'
 rabbitmq::ssl_management_fail_if_no_peer_cert: false
 rabbitmq::ssl_versions: ~
-rabbitmq::ssl_client_renegotiation: true
+rabbitmq::ssl_client_renegotiation: ~
 rabbitmq::ssl_secure_renegotiate: true
 rabbitmq::ssl_reuse_sessions: true
 rabbitmq::ssl_honor_cipher_order: true
