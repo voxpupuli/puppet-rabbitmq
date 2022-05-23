@@ -22,6 +22,17 @@
 #     package_gpg_key => 'http://www.some_site.some_domain/some_key.pub.key',
 #   }
 #
+# @example Offline installation from local mirror:
+#   class { 'rabbitmq':
+#     key_content     => template('openstack/rabbit.pub.key'),
+#     repo_gpg_key => '/tmp/rabbit.pub.key',
+#   }
+#
+# @example Use external package key source for any (apt/rpm) package provider:
+#   class { 'rabbitmq':
+#     repo_gpg_key => 'http://www.some_site.some_domain/some_key.pub.key',
+#   }
+#
 # @example To use RabbitMQ Environment Variables, use the parameters `environment_variables` e.g.:
 #   class { 'rabbitmq':
 #     port                  => '5672',
@@ -211,6 +222,10 @@
 #   Determines the ensure state of the package.  Set to installed by default, but could be changed to latest.
 # @param package_gpg_key
 #   RPM package GPG key to import. Uses source method. Should be a URL for Debian/RedHat OS family, or a file name for
+#   RedHat OS family. Set to https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc
+#   for Debian/RedHat OS Family by default.
+# @param repo_gpg_key
+#   RPM package GPG key to import. Uses source method. Should be a URL for Debian/RedHat OS family, or a file name for
 #   RedHat OS family. Set to https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey for Debian/RedHat OS Family by
 #   default. Note, that `key_content`, if specified, would override this parameter for Debian OS family.
 # @param package_name
@@ -355,6 +370,7 @@ class rabbitmq (
   Optional[Variant[Numeric, String]] $package_apt_pin                                              = undef,
   String $package_ensure                                                                           = 'installed',
   Optional[String] $package_gpg_key                                                                = undef,
+  Optional[String] $repo_gpg_key                                                                   = undef,
   Variant[String, Array] $package_name                                                             = 'rabbitmq',
   Optional[String] $package_source                                                                 = undef,
   Optional[String] $package_provider                                                               = undef,
