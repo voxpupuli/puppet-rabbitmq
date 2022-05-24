@@ -27,6 +27,7 @@ rabbitmq::node_ip_address: ~
 rabbitmq::package_apt_pin: ~
 rabbitmq::package_ensure: 'installed'
 rabbitmq::package_gpg_key: ~
+rabbitmq::repo_gpg_key: ~
 rabbitmq::package_name: 'rabbitmq'
 rabbitmq::package_source: ~
 rabbitmq::package_provider: ~
