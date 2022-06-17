@@ -74,6 +74,23 @@ class { 'rabbitmq':
 }
 ```
 
+##### Offline installation from local mirror:
+
+```puppet
+class { 'rabbitmq':
+  key_content     => template('openstack/rabbit.pub.key'),
+  repo_gpg_key => '/tmp/rabbit.pub.key',
+}
+```
+
+##### Use external package key source for any (apt/rpm) package provider:
+
+```puppet
+class { 'rabbitmq':
+  repo_gpg_key => 'http://www.some_site.some_domain/some_key.pub.key',
+}
+```
+
 ##### To use RabbitMQ Environment Variables, use the parameters `environment_variables` e.g.:
 
 ```puppet
@@ -597,6 +614,16 @@ Determines the ensure state of the package.  Set to installed by default, but co
 Default value: 'installed'
 
 ##### `package_gpg_key`
+
+Data type: `Optional[String]`
+
+RPM package GPG key to import. Uses source method. Should be a URL for Debian/RedHat OS family, or a file name for
+RedHat OS family. Set to https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc
+for Debian/RedHat OS Family by default.
+
+Default value: `undef`
+
+##### `repo_gpg_key`
 
 Data type: `Optional[String]`
 

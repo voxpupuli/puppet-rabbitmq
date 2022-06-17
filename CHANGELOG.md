@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v12.0.1](https://github.com/voxpupuli/puppet-rabbitmq/tree/v12.0.1) (2022-06-17)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v12.0.0...v12.0.1)
+
+**Fixed bugs:**
+
+- Fixing Yum repo [\#907](https://github.com/voxpupuli/puppet-rabbitmq/pull/907) ([bishopbm1](https://github.com/bishopbm1))
+- Use default install method on Archlinux [\#905](https://github.com/voxpupuli/puppet-rabbitmq/pull/905) ([wyardley](https://github.com/wyardley))
+
 ## [v12.0.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v12.0.0) (2022-03-28)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v11.1.0...v12.0.0)
