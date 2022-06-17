@@ -1,3 +1,2 @@
 ---
-rabbitmq::python_package: 'python2'
-rabbitmq::rabbitmqadmin_package: 'rabbitmqadmin'
+rabbitmq::python_package: 'python'
