@@ -41,10 +41,6 @@ describe 'rabbitmq user:' do
   context 'destroy user resource' do
     it 'runs successfully' do
       pp = <<-EOS
-      if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': repo_source => 'packagecloud' }
-        Class['erlang'] -> Class['rabbitmq']
-      }
       rabbitmq_user { 'dan':
         ensure => absent,
       }

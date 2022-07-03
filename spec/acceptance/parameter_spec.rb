@@ -16,7 +16,7 @@ describe 'rabbitmq parameter on a vhost:' do
         admin_enable      => true,
       }
 
-      rabbitmq_plugin { [ 'rabbitmq_federation_management', 'rabbitmq_federation' ]:
+      rabbitmq_plugin { [ 'rabbitmq_federation', 'rabbitmq_federation_management' ]:
         ensure => present
       } ~> Service['rabbitmq-server']
 
