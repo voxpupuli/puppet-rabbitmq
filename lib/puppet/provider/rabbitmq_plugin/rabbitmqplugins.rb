@@ -8,7 +8,12 @@ Puppet::Type.type(:rabbitmq_plugin).provide(:rabbitmqplugins, parent: Puppet::Pr
 
   def self.instances
     plugin_list = run_with_retries do
-      rabbitmqplugins('list', '-E', '-m')
+      cmd = ['list', '-E', '-m']
+
+      # This argument silences some extra output that's new in 3.10, but the
+      # argument is not available in some older versions
+      cmd << '-q' if Puppet::Util::Package.versioncmp(self.class.rabbitmq_version, '3.10') >= 0
+      rabbitmqplugins(*cmd)
     end
 
     plugin_list.split(%r{\n}).map do |line|
@@ -35,6 +40,10 @@ Puppet::Type.type(:rabbitmq_plugin).provide(:rabbitmqplugins, parent: Puppet::Pr
   end
 
   def exists?
-    run_with_retries { rabbitmqplugins('list', '-E', '-m') }.split(%r{\n}).include? resource[:name]
+    cmd = ['list', '-E', '-m']
+    # This argument silences some extra output that's new in 3.10, but the
+    # argument is not available in some older versions
+    cmd << '-q' if Puppet::Util::Package.versioncmp(self.class.rabbitmq_version, '3.10') >= 0
+    run_with_retries { rabbitmqplugins(*cmd) }.split(%r{\n}).include? resource[:name]
   end
 end

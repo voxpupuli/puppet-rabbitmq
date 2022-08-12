@@ -88,6 +88,15 @@ describe provider_class do
     end
   end
 
+  context 'with RabbitMQ version >=3.10.0' do
+    it 'uses the -s argument on versions >= 3.10.0' do
+      provider.class.expects(:rabbitmq_version).returns '3.10.0'
+      provider.expects(:rabbitmqplugins).with('list', '-E', '-m', '-q').returns("foo\n")
+
+      expect(provider.exists?).to eq(true)
+    end
+  end
+
   it 'calls rabbitmqplugins to disable' do
     provider.expects(:rabbitmqplugins).with('disable', 'foo')
     provider.destroy
