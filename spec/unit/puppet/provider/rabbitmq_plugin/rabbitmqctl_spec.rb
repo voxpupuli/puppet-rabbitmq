@@ -22,6 +22,16 @@ describe provider_class do
     provider.create
   end
 
+  context 'with RabbitMQ version >=3.10.0' do
+    it 'matches plugins' do
+      provider.expects(:rabbitmqplugins).with('list', '-E', '-m').returns <<~EOT
+        Listing plugins with pattern ".*" ...
+        foo
+      EOT
+      expect(provider.exists?).to eq(true)
+    end
+  end
+
   context 'with RabbitMQ version >=3.4.0' do
     it 'calls rabbitmqplugins to enable' do
       provider.class.expects(:rabbitmq_version).returns '3.4.0'

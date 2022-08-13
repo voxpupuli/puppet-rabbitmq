@@ -12,6 +12,7 @@ Puppet::Type.type(:rabbitmq_plugin).provide(:rabbitmqplugins, parent: Puppet::Pr
     end
 
     plugin_list.split(%r{\n}).map do |line|
+      next if line.start_with?('Listing plugins')
       raise Puppet::Error, "Cannot parse invalid plugins line: #{line}" unless line =~ %r{^(\S+)$}
 
       new(name: Regexp.last_match(1))
