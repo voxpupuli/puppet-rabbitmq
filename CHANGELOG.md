@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v12.0.2](https://github.com/voxpupuli/puppet-rabbitmq/tree/v12.0.2) (2022-08-13)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v12.0.1...v12.0.2)
+
+**Fixed bugs:**
+
+- rabbitmq\_plugin not working properly with RabbitMQ 3.10.x [\#909](https://github.com/voxpupuli/puppet-rabbitmq/issues/909)
+
+**Merged pull requests:**
+
+- Make rabbitmq\_plugin resource functional on RabbitMQ 3.10.x [\#912](https://github.com/voxpupuli/puppet-rabbitmq/pull/912) ([kvisle](https://github.com/kvisle))
+- Update tests for rabbitmqctl version parsing [\#911](https://github.com/voxpupuli/puppet-rabbitmq/pull/911) ([wyardley](https://github.com/wyardley))
+
 ## [v12.0.1](https://github.com/voxpupuli/puppet-rabbitmq/tree/v12.0.1) (2022-06-17)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v12.0.0...v12.0.1)
