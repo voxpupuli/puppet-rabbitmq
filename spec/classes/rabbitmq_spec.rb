@@ -682,7 +682,7 @@ describe 'rabbitmq' do
       end
 
       context 'use config file for plugins' do
-        describe 'config_plugins_file: true' do
+        describe 'config_plugins_file: true and default list of enabled plugins' do
           let :params do
             { use_config_file_for_plugins: true }
           end
@@ -697,6 +697,26 @@ describe 'rabbitmq' do
 
           it 'configures enabled_plugins' do
             is_expected.to contain_file('enabled_plugins').with_content(%r{\[rabbitmq_management\]\.})
+          end
+        end
+
+        describe 'config_plugins_file: true and custom list of enabled plugins' do
+          let :params do
+            {
+              use_config_file_for_plugins: true,
+              admin_enable: false,
+              plugins: %w[rabbitmq_stomp rabbitmq_shovel rabbitmq_prometheus]
+            }
+          end
+
+          it 'does not use rabbitmqplugin provider' do
+            is_expected.not_to contain_rabbitmq_plugin('rabbitmq_stomp')
+            is_expected.not_to contain_rabbitmq_plugin('rabbitmq_shovel')
+            is_expected.not_to contain_rabbitmq_plugin('rabbitmq_prometheus')
+          end
+
+          it 'configures enabled_plugins' do
+            is_expected.to contain_file('enabled_plugins').with_content(%r{\[rabbitmq_stomp,rabbitmq_shovel,rabbitmq_prometheus\]\.})
           end
         end
 
