@@ -1,6 +1,6 @@
 % This file managed by Puppet
 % Template Path: <%= @module_name %>/templates/enabled_plugins
-<%- @_plugins = [] -%>
+<%- @_plugins = @plugins -%>
 <%- if @admin_enable or @management_enable -%>
   <%- @_plugins << 'rabbitmq_management' -%>
 <%- end -%>
@@ -16,4 +16,4 @@
     <%- @_plugins << 'rabbitmq_shovel_management' -%>
   <%- end -%>
 <%- end -%>
-[<%= @_plugins.join(',')%>].
+[<%= (@_plugins.uniq).join(',')%>].

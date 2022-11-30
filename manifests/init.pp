@@ -116,6 +116,8 @@
 # @param use_config_file_for_plugins
 #   If enabled the /etc/rabbitmq/enabled_plugins config file is created,
 #   replacing the use of the rabbitmqplugins provider to enable plugins.
+# @param plugins
+#   Additional list of plugins to start, or to add to /etc/rabbitmq/enabled_plugins, if use_config_file_for_plugins is enabled.
 # @param auth_backends
 #   An array specifying authorization/authentication backend to use. Single quotes should be placed around array entries,
 #   ex. `['{foo, baz}', 'baz']` Defaults to [rabbit_auth_backend_internal], and if using LDAP defaults to [rabbit_auth_backend_internal,
@@ -345,6 +347,7 @@ class rabbitmq (
   Boolean $admin_enable                                                                            = true,
   Boolean $management_enable                                                                       = false,
   Boolean $use_config_file_for_plugins                                                             = false,
+  Array $plugins                                                                                   = [],
   Hash $cluster                                                                                    = $rabbitmq::cluster,
   Enum['ram', 'disc'] $cluster_node_type                                                           = 'disc',
   Array $cluster_nodes                                                                             = [],
@@ -548,6 +551,14 @@ class rabbitmq (
           notify   => Class['rabbitmq::service'],
           provider => 'rabbitmqplugins',
         }
+      }
+    }
+    # Start anything else listed on the plugins array, if it was not started already by the other booleans
+    $plugins.each | $plugin | {
+      rabbitmq_plugin { $plugin:
+        ensure   => present,
+        notify   => Class['rabbitmq::service'],
+        provider => 'rabbitmqplugins',
       }
     }
   }
