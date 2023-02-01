@@ -109,7 +109,7 @@
 #
 # @param admin_enable
 #   If enabled sets up the management interface/plugin for RabbitMQ.
-#   This also install the rabbitmqadmin command line tool.
+#   This will also install the rabbitmqadmin command line tool.
 # @param management_enable
 #   If enabled sets up the management interface/plugin for RabbitMQ.
 #   NOTE: This does not install the rabbitmqadmin command line tool.
@@ -511,7 +511,7 @@ class rabbitmq (
 
   unless $use_config_file_for_plugins {
     # NOTE(hjensas): condition on $service_manage to keep current behaviour.
-    # The condition is likely not required because installiton of rabbitmqadmin
+    # The condition is likely not required because installation of rabbitmqadmin
     # is no longer handled here.
     # TODO: Remove the condition on $service_manage
     if ($management_enable or $admin_enable) and $service_manage {
