@@ -198,7 +198,7 @@ The following parameters are available in the `rabbitmq` class.
 Data type: `Boolean`
 
 If enabled sets up the management interface/plugin for RabbitMQ.
-This also install the rabbitmqadmin command line tool.
+This will also install the rabbitmqadmin command line tool.
 
 Default value: `true`
 
@@ -219,6 +219,14 @@ If enabled the /etc/rabbitmq/enabled_plugins config file is created,
 replacing the use of the rabbitmqplugins provider to enable plugins.
 
 Default value: `false`
+
+##### `plugins`
+
+Data type: `Array`
+
+Additional list of plugins to start, or to add to /etc/rabbitmq/enabled_plugins, if use_config_file_for_plugins is enabled.
+
+Default value: []
 
 ##### `auth_backends`
 

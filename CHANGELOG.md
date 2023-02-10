@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v12.1.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v12.1.0) (2023-02-11)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v12.0.2...v12.1.0)
+
+**Implemented enhancements:**
+
+- bump puppet/systemd to \< 5.0.0 [\#919](https://github.com/voxpupuli/puppet-rabbitmq/pull/919) ([jhoblitt](https://github.com/jhoblitt))
+- Enable usage of custom list of plugins when using static config file [\#917](https://github.com/voxpupuli/puppet-rabbitmq/pull/917) ([enothen](https://github.com/enothen))
+
+**Closed issues:**
+
+- rabbitmq clustering status needs manual intervention if cluster partners aren't reachable at time of creation [\#130](https://github.com/voxpupuli/puppet-rabbitmq/issues/130)
+
+**Merged pull requests:**
+
+- docs: fix minor grammar & typo [\#921](https://github.com/voxpupuli/puppet-rabbitmq/pull/921) ([MindTooth](https://github.com/MindTooth))
+
 ## [v12.0.2](https://github.com/voxpupuli/puppet-rabbitmq/tree/v12.0.2) (2022-08-13)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v12.0.1...v12.0.2)
