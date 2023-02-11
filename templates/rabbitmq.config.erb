@@ -82,7 +82,12 @@ end
                    <%- if @ssl_dhfile -%>
                    {dhfile, "<%= @ssl_dhfile %>"},
                    <%- end -%>
+                   <%- if !@ssl_versions || !@ssl_versions.include?('tlsv1.3') -%>
+                   <%- if defined?(@ssl_client_renegotiation) -%>
+                   {client_renegotiation,<%= @ssl_client_renegotiation %>},
+                   <%- end -%>
                    {secure_renegotiate,<%= @ssl_secure_renegotiate %>},
+                   <%- end -%>
                    {reuse_sessions,<%= @ssl_reuse_sessions %>},
                    {honor_cipher_order,<%= @ssl_honor_cipher_order %>},
                    {verify,<%= @ssl_verify %>},
@@ -137,6 +142,14 @@ end
                   <%- end -%>
                   {certfile, "<%= @ssl_management_cert %>"},
                   {keyfile, "<%= @ssl_management_key %>"},
+                  <%- if !@ssl_versions || !@ssl_versions.include?('tlsv1.3') -%>
+                  <%- if defined?(@ssl_client_renegotiation) -%>
+                  {client_renegotiation,<%= @ssl_client_renegotiation %>},
+                  <%- end -%>
+                  {secure_renegotiate,<%= @ssl_secure_renegotiate %>},
+                  <%- end -%>
+                  {reuse_sessions,<%= @ssl_reuse_sessions %>},
+                  {honor_cipher_order,<%= @ssl_honor_cipher_order %>},
                   {verify,<%= @ssl_management_verify %>},
                   {fail_if_no_peer_cert,<%= @ssl_management_fail_if_no_peer_cert %>}
                    <%- if @ssl_versions -%>
