@@ -578,6 +578,7 @@ class rabbitmq (
         $cluster['name'] => {
           'init_node'      => $cluster['init_node'],
           'node_disc_type' => $cluster_node_type,
+          'local_node'     => $cluster['local_node'],
         }
     })
   }

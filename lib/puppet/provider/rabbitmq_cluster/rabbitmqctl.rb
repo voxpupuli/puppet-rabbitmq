@@ -15,8 +15,9 @@ Puppet::Type.type(:rabbitmq_cluster).provide(
     storage_type = @resource[:node_disc_type].to_s
 
     init_node = @resource[:init_node].to_s.gsub(%r{^.*@}, '')
+    local_node = @resource[:local_node].to_s.gsub(%r{^.*@}, '')
 
-    if [Facter.value(:hostname), Facter.value(:fqdn)].include? init_node
+    if local_node == init_node || [Facter.value(:hostname), Facter.value(:fqdn)].include?(init_node)
       return rabbitmqctl('set_cluster_name', @resource[:name]) unless cluster_name == resource[:name].to_s
     else
       rabbitmqctl('stop_app')
