@@ -22,6 +22,16 @@ describe Puppet::Type.type(:rabbitmq_cluster) do
     expect(rabbitmq_cluster[:init_node]).to eq('host1')
   end
 
+  it 'check if local_node set to host1' do
+    rabbitmq_cluster[:local_node] = 'host1'
+    expect(rabbitmq_cluster[:local_node]).to eq('host1')
+  end
+
+  it 'local_node not set should default to undef' do
+    rabbitmq_cluster[:init_node] = 'host1'
+    expect(rabbitmq_cluster[:local_node]).to eq(:undef)
+  end
+
   it 'try to set node_disc_type to ram' do
     rabbitmq_cluster[:node_disc_type] = 'ram'
     expect(rabbitmq_cluster[:node_disc_type]).to eq('ram')

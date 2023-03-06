@@ -40,6 +40,11 @@ Puppet::Type.newtype(:rabbitmq_cluster) do
     end
   end
 
+  newparam(:local_node) do
+    desc 'Name of the local node'
+    defaultto(:undef)
+  end
+
   newparam(:node_disc_type) do
     desc 'Storage type of node, default disc.'
     newvalues(%r{disc|ram})
