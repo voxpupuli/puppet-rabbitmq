@@ -6,10 +6,7 @@ describe 'rabbitmq binding:' do
   context 'create binding and queue resources when using default management port' do
     it 'runs successfully' do
       pp = <<-EOS
-      if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true }
-        Class['erlang'] -> Class['rabbitmq']
-      }
+      class { 'erlang': repo_source => 'packagecloud' } ->
       class { 'rabbitmq':
         service_manage    => true,
         port              => 5672,
@@ -80,10 +77,7 @@ describe 'rabbitmq binding:' do
   context 'create multiple bindings when same source / destination / vhost but different routing keys' do
     it 'runs successfully' do
       pp = <<-EOS
-      if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true }
-        Class['erlang'] -> Class['rabbitmq']
-      }
+      class { 'erlang': repo_source => 'packagecloud' } ->
       class { 'rabbitmq':
         service_manage    => true,
         port              => 5672,
@@ -168,10 +162,7 @@ describe 'rabbitmq binding:' do
   context 'create binding and queue resources when using a non-default management port' do
     it 'runs successfully' do
       pp = <<-EOS
-      if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true }
-        Class['erlang'] -> Class['rabbitmq']
-      }
+      class { 'erlang': repo_source => 'packagecloud' } ->
       class { 'rabbitmq':
         service_manage    => true,
         port              => 5672,

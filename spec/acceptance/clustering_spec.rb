@@ -6,6 +6,7 @@ describe 'rabbitmq clustering' do
   context 'rabbitmq::wipe_db_on_cookie_change => false' do
     it 'runs successfully' do
       pp = <<-EOS
+      class { 'erlang': repo_source => 'packagecloud' } ->
       class { 'rabbitmq':
         cluster                  => { 'name' => 'rabbit_cluster', 'init_node' => $facts['fqdn'] },
         config_cluster           => true,
@@ -13,10 +14,6 @@ describe 'rabbitmq clustering' do
         cluster_node_type        => 'ram',
         erlang_cookie            => 'TESTCOOKIE',
         wipe_db_on_cookie_change => false,
-      }
-      if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true}
-        Class['erlang'] -> Class['rabbitmq']
       }
       EOS
 
@@ -31,6 +28,7 @@ describe 'rabbitmq clustering' do
   context 'rabbitmq::wipe_db_on_cookie_change => true' do
     it 'runs successfully' do
       pp = <<-EOS
+      class { 'erlang': repo_source => 'packagecloud' } ->
       class { 'rabbitmq':
         cluster                  => { 'name' => 'rabbit_cluster', 'init_node' => $facts['fqdn'] },
         config_cluster           => true,
@@ -38,10 +36,6 @@ describe 'rabbitmq clustering' do
         cluster_node_type        => 'ram',
         erlang_cookie            => 'TESTCOOKIE',
         wipe_db_on_cookie_change => true,
-      }
-      if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true}
-        Class['erlang'] -> Class['rabbitmq']
       }
       EOS
 
@@ -76,6 +70,7 @@ describe 'rabbitmq clustering' do
   context 'rabbitmq::cluster[:local_node] = foobar' do
     it 'runs successfully' do
       pp = <<-EOS
+      class { 'erlang': repo_source => 'packagecloud' } ->
       class { 'rabbitmq':
         cluster                  => { 'name' => 'rabbit_cluster', 'init_node' => 'foobar', 'local_node' => 'foobar' },
         config_cluster           => true,
@@ -83,10 +78,6 @@ describe 'rabbitmq clustering' do
         cluster_node_type        => 'ram',
         environment_variables    => { 'NODENAME' => 'rabbit@foobar' },
         erlang_cookie            => 'TESTCOOKIE',
-      }
-      if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true}
-        Class['erlang'] -> Class['rabbitmq']
       }
       EOS
 

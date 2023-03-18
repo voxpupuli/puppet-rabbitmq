@@ -6,13 +6,10 @@ describe 'rabbitmq::install::rabbitmqadmin class' do
   context 'downloads the cli tools' do
     it 'runs successfully' do
       pp = <<-EOS
+      class { 'erlang': repo_source => 'packagecloud' } ->
       class { 'rabbitmq':
         admin_enable   => true,
         service_manage => true,
-      }
-      if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true}
-        Class['erlang'] -> Class['rabbitmq']
       }
       EOS
 
@@ -27,13 +24,10 @@ describe 'rabbitmq::install::rabbitmqadmin class' do
   context 'does nothing if service is unmanaged' do
     it 'runs successfully' do
       pp = <<-EOS
+      class { 'erlang': repo_source => 'packagecloud' } ->
       class { 'rabbitmq':
         admin_enable   => true,
         service_manage => false,
-      }
-      if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true}
-        Class['erlang'] -> Class['rabbitmq']
       }
       EOS
 
@@ -50,27 +44,21 @@ describe 'rabbitmq::install::rabbitmqadmin class' do
     it 'runs successfully' do
       # make sure credential change takes effect before admin_enable
       pp_pre = <<-EOS
+      class { 'erlang': repo_source => 'packagecloud' } ->
       class { 'rabbitmq':
         service_manage => true,
         default_user   => 'foobar',
         default_pass   => 'bazblam',
       }
-      if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true}
-        Class['erlang'] -> Class['rabbitmq']
-      }
       EOS
 
       pp = <<-EOS
+      class { 'erlang': repo_source => 'packagecloud' } ->
       class { 'rabbitmq':
         admin_enable   => true,
         service_manage => true,
         default_user   => 'foobar',
         default_pass   => 'bazblam',
-      }
-      if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true}
-        Class['erlang'] -> Class['rabbitmq']
       }
       EOS
 
