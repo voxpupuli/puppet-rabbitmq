@@ -36,21 +36,6 @@ describe 'rabbitmq' do
       it { is_expected.to contain_package('rabbitmq-server-plugins') } if os_facts[:os]['family'] == 'Suse'
 
       context 'with default params' do
-        it { is_expected.not_to contain_class('rabbitmq::repo::apt') }
-        it { is_expected.not_to contain_apt__source('rabbitmq') }
-        it { is_expected.not_to contain_class('rabbitmq::repo::rhel') }
-        it { is_expected.not_to contain_yumrepo('rabbitmq') }
-      end
-
-      context 'with service_restart => false' do
-        let(:params) { { service_restart: false } }
-
-        it { is_expected.not_to contain_class('rabbitmq::config').that_notifies('Class[rabbitmq::service]') }
-      end
-
-      context 'with repos_ensure => true' do
-        let(:params) { { repos_ensure: true } }
-
         if os_facts[:os]['family'] == 'Debian'
           it 'includes rabbitmq::repo::apt' do
             is_expected.to contain_class('rabbitmq::repo::apt').
@@ -85,8 +70,23 @@ describe 'rabbitmq' do
         end
       end
 
+      context 'with service_restart => false' do
+        let(:params) { { service_restart: false } }
+
+        it { is_expected.not_to contain_class('rabbitmq::config').that_notifies('Class[rabbitmq::service]') }
+      end
+
+      context 'with repos_ensure => false' do
+        let(:params) { { repos_ensure: false } }
+
+        it { is_expected.not_to contain_class('rabbitmq::repo::apt') }
+        it { is_expected.not_to contain_apt__source('rabbitmq') }
+        it { is_expected.not_to contain_class('rabbitmq::repo::rhel') }
+        it { is_expected.not_to contain_yumrepo('rabbitmq') }
+      end
+
       context 'with no pin', if: os_facts[:os]['family'] == 'Debian' do
-        let(:params) { { repos_ensure: true, package_apt_pin: '' } }
+        let(:params) { { package_apt_pin: '' } }
 
         describe 'it sets up an apt::source' do
           it {
@@ -100,7 +100,7 @@ describe 'rabbitmq' do
       end
 
       context 'with pin', if: os_facts[:os]['family'] == 'Debian' do
-        let(:params) { { repos_ensure: true, package_apt_pin: '700' } }
+        let(:params) { { package_apt_pin: '700' } }
 
         describe 'it sets up an apt::source and pin' do
           it {
@@ -245,6 +245,7 @@ describe 'rabbitmq' do
             is_expected.to contain_class('rabbitmq::install::rabbitmqadmin')
             is_expected.not_to contain_package('python')
             is_expected.not_to contain_package('python2')
+            is_expected.not_to contain_package('python3')
           end
         end
 
