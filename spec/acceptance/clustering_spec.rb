@@ -11,7 +11,6 @@ describe 'rabbitmq clustering' do
         config_cluster           => true,
         cluster_nodes            => ['rabbit1', 'rabbit2'],
         cluster_node_type        => 'ram',
-        environment_variables    => { 'RABBITMQ_USE_LONGNAME' => true },
         erlang_cookie            => 'TESTCOOKIE',
         wipe_db_on_cookie_change => false,
       }
@@ -37,7 +36,6 @@ describe 'rabbitmq clustering' do
         config_cluster           => true,
         cluster_nodes            => ['rabbit1', 'rabbit2'],
         cluster_node_type        => 'ram',
-        environment_variables    => { 'RABBITMQ_USE_LONGNAME' => true },
         erlang_cookie            => 'TESTCOOKIE',
         wipe_db_on_cookie_change => true,
       }
@@ -83,7 +81,7 @@ describe 'rabbitmq clustering' do
         config_cluster           => true,
         cluster_nodes            => ['foobar', 'rabbit2'],
         cluster_node_type        => 'ram',
-        environment_variables    => { 'RABBITMQ_USE_LONGNAME' => true, 'NODENAME' => 'rabbit@foobar' },
+        environment_variables    => { 'NODENAME' => 'rabbit@foobar' },
         erlang_cookie            => 'TESTCOOKIE',
       }
       if $facts['os']['family'] == 'RedHat' {
