@@ -81,18 +81,12 @@ describe 'rabbitmq' do
       context 'with no pin', if: facts[:os]['family'] == 'Debian' do
         let(:params) { { repos_ensure: true, package_apt_pin: '' } }
 
-        if Puppet.version =~ %r{^[6,7]} # https://tickets.puppetlabs.com/browse/PUP-9112 and https://tickets.puppetlabs.com/browse/PUP-9180
-          let(:expected_key_apt_source_key_content) { 'nil' }
-        else
-          let(:expected_key_apt_source_key_content) { ':undef' }
-        end
-
         describe 'it sets up an apt::source' do
           it {
             is_expected.to contain_apt__source('rabbitmq').with(
               'location' => "https://packagecloud.io/rabbitmq/rabbitmq-server/#{facts[:os]['name'].downcase}",
               'repos' => 'main',
-              'key' => "{\"id\"=>\"8C695B0219AFDEB04A058ED8F4E789204D206F89\", \"source\"=>\"https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey\", \"content\"=>#{expected_key_apt_source_key_content}}"
+              'key' => '{"id"=>"8C695B0219AFDEB04A058ED8F4E789204D206F89", "source"=>"https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey", "content"=>nil}'
             )
           }
         end
@@ -101,18 +95,12 @@ describe 'rabbitmq' do
       context 'with pin', if: facts[:os]['family'] == 'Debian' do
         let(:params) { { repos_ensure: true, package_apt_pin: '700' } }
 
-        if Puppet.version =~ %r{^[6,7]} # https://tickets.puppetlabs.com/browse/PUP-9112 and https://tickets.puppetlabs.com/browse/PUP-9180
-          let(:expected_key_apt_source_key_content) { 'nil' }
-        else
-          let(:expected_key_apt_source_key_content) { ':undef' }
-        end
-
         describe 'it sets up an apt::source and pin' do
           it {
             is_expected.to contain_apt__source('rabbitmq').with(
               'location' => "https://packagecloud.io/rabbitmq/rabbitmq-server/#{facts[:os]['name'].downcase}",
               'repos' => 'main',
-              'key' => "{\"id\"=>\"8C695B0219AFDEB04A058ED8F4E789204D206F89\", \"source\"=>\"https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey\", \"content\"=>#{expected_key_apt_source_key_content}}"
+              'key' => '{"id"=>"8C695B0219AFDEB04A058ED8F4E789204D206F89", "source"=>"https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey", "content"=>nil}'
             )
           }
 
