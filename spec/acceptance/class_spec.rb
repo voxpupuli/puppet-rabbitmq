@@ -15,7 +15,7 @@ describe 'rabbitmq class:' do
   context 'default class inclusion' do
     let(:pp) do
       <<-EOS
-      class { 'erlang': repo_source => 'packagecloud' } ->
+      class { 'erlang': } ->
       class { 'rabbitmq': }
       EOS
     end
@@ -48,7 +48,7 @@ describe 'rabbitmq class:' do
   context 'disable and stop service' do
     let(:pp) do
       <<-EOS
-        class { 'erlang': repo_source => 'packagecloud' } ->
+        class { 'erlang': } ->
         class { 'rabbitmq':
           service_ensure => 'stopped',
         }
@@ -66,12 +66,12 @@ describe 'rabbitmq class:' do
   context 'service is unmanaged' do
     it 'runs successfully' do
       pp_pre = <<-EOS
-        class { 'erlang': repo_source => 'packagecloud' } ->
+        class { 'erlang': } ->
         class { 'rabbitmq': }
       EOS
 
       pp = <<-EOS
-        class { 'erlang': repo_source => 'packagecloud' } ->
+        class { 'erlang': } ->
         class { 'rabbitmq':
           service_manage => false,
           service_ensure  => 'stopped',

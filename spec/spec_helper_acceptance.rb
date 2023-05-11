@@ -3,11 +3,9 @@
 require 'voxpupuli/acceptance/spec_helper_acceptance'
 
 configure_beaker do |host|
-  install_module_from_forge_on(host, 'puppet-erlang', '>= 1.0.0 < 2.0.0')
+  install_module_from_forge_on(host, 'puppet-erlang', '>= 1.1.0 < 2.0.0')
 
   case fact_on(host, 'os.family')
-  when 'Debian'
-    install_module_from_forge_on(host, 'puppetlabs-apt', '>= 4.1.0 < 9.0.0')
   when 'RedHat'
     if fact_on(host, 'os.selinux.enabled')
       # Make sure selinux is disabled so the tests work.

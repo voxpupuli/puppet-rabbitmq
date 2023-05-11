@@ -6,7 +6,7 @@ describe 'rabbitmq with delete_guest_user' do
   context 'delete_guest_user' do
     it 'runs successfully' do
       pp = <<-EOS
-      class { 'erlang': repo_source => 'packagecloud' } ->
+      class { 'erlang':  } ->
       class { 'rabbitmq':
         port              => 5672,
         delete_guest_user => true,

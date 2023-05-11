@@ -1,6 +1,5 @@
 class { 'rabbitmq':
   delete_guest_user => true,
-  repos_ensure      => true,
   package_apt_pin   => 900,
 }
 

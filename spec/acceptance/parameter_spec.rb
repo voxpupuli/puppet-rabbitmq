@@ -6,7 +6,7 @@ describe 'rabbitmq parameter on a vhost:' do
   context 'create parameter resource' do
     it 'runs successfully' do
       pp = <<-EOS
-      class { 'erlang': repo_source => 'packagecloud' } ->
+      class { 'erlang':  } ->
       class { 'rabbitmq':
         service_manage    => true,
         port              => 5672,

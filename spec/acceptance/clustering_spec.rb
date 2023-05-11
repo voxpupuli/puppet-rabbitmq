@@ -6,7 +6,7 @@ describe 'rabbitmq clustering' do
   context 'rabbitmq::wipe_db_on_cookie_change => false' do
     it 'runs successfully' do
       pp = <<-EOS
-      class { 'erlang': repo_source => 'packagecloud' } ->
+      class { 'erlang':  } ->
       class { 'rabbitmq':
         cluster                  => { 'name' => 'rabbit_cluster', 'init_node' => $facts['fqdn'] },
         config_cluster           => true,
@@ -28,7 +28,7 @@ describe 'rabbitmq clustering' do
   context 'rabbitmq::wipe_db_on_cookie_change => true' do
     it 'runs successfully' do
       pp = <<-EOS
-      class { 'erlang': repo_source => 'packagecloud' } ->
+      class { 'erlang':  } ->
       class { 'rabbitmq':
         cluster                  => { 'name' => 'rabbit_cluster', 'init_node' => $facts['fqdn'] },
         config_cluster           => true,
@@ -70,7 +70,7 @@ describe 'rabbitmq clustering' do
   context 'rabbitmq::cluster[:local_node] = foobar' do
     it 'runs successfully' do
       pp = <<-EOS
-      class { 'erlang': repo_source => 'packagecloud' } ->
+      class { 'erlang':  } ->
       class { 'rabbitmq':
         cluster                  => { 'name' => 'rabbit_cluster', 'init_node' => 'foobar', 'local_node' => 'foobar' },
         config_cluster           => true,

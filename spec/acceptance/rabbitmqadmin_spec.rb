@@ -6,7 +6,7 @@ describe 'rabbitmq::install::rabbitmqadmin class' do
   context 'downloads the cli tools' do
     it 'runs successfully' do
       pp = <<-EOS
-      class { 'erlang': repo_source => 'packagecloud' } ->
+      class { 'erlang':  } ->
       class { 'rabbitmq':
         admin_enable   => true,
         service_manage => true,
@@ -24,7 +24,7 @@ describe 'rabbitmq::install::rabbitmqadmin class' do
   context 'does nothing if service is unmanaged' do
     it 'runs successfully' do
       pp = <<-EOS
-      class { 'erlang': repo_source => 'packagecloud' } ->
+      class { 'erlang':  } ->
       class { 'rabbitmq':
         admin_enable   => true,
         service_manage => false,
@@ -44,7 +44,7 @@ describe 'rabbitmq::install::rabbitmqadmin class' do
     it 'runs successfully' do
       # make sure credential change takes effect before admin_enable
       pp_pre = <<-EOS
-      class { 'erlang': repo_source => 'packagecloud' } ->
+      class { 'erlang':  } ->
       class { 'rabbitmq':
         service_manage => true,
         default_user   => 'foobar',
@@ -53,7 +53,7 @@ describe 'rabbitmq::install::rabbitmqadmin class' do
       EOS
 
       pp = <<-EOS
-      class { 'erlang': repo_source => 'packagecloud' } ->
+      class { 'erlang':  } ->
       class { 'rabbitmq':
         admin_enable   => true,
         service_manage => true,
