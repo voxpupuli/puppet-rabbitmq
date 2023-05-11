@@ -12,12 +12,16 @@ describe 'rabbitmq class:' do
     service_name = 'rabbitmq'
   end
 
+  repos_ensure = (fact('os.family') == 'RedHat')
+
   context 'default class inclusion' do
     let(:pp) do
       <<-EOS
-      class { 'rabbitmq': }
+      class { 'rabbitmq':
+        repos_ensure => #{repos_ensure},
+      }
       if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true}
+        class { 'erlang': repo_source => 'packagecloud' }
         Class['erlang'] -> Class['rabbitmq']
       }
       EOS
@@ -52,10 +56,11 @@ describe 'rabbitmq class:' do
     let(:pp) do
       <<-EOS
         class { 'rabbitmq':
+          repos_ensure   => #{repos_ensure},
           service_ensure => 'stopped',
         }
         if $facts['os']['family'] == 'RedHat' {
-          class { 'erlang': epel_enable => true}
+          class { 'erlang': repo_source => 'packagecloud' }
           Class['erlang'] -> Class['rabbitmq']
         }
       EOS
@@ -72,20 +77,23 @@ describe 'rabbitmq class:' do
   context 'service is unmanaged' do
     it 'runs successfully' do
       pp_pre = <<-EOS
-        class { 'rabbitmq': }
+        class { 'rabbitmq':
+          repos_ensure => #{repos_ensure},
+        }
         if $facts['os']['family'] == 'RedHat' {
-          class { 'erlang': epel_enable => true}
+          class { 'erlang': repo_source => 'packagecloud' }
           Class['erlang'] -> Class['rabbitmq']
         }
       EOS
 
       pp = <<-EOS
         class { 'rabbitmq':
+          repos_ensure   => #{repos_ensure},
           service_manage => false,
-          service_ensure  => 'stopped',
+          service_ensure => 'stopped',
         }
         if $facts['os']['family'] == 'RedHat' {
-          class { 'erlang': epel_enable => true}
+          class { 'erlang': repo_source => 'packagecloud' }
           Class['erlang'] -> Class['rabbitmq']
         }
       EOS
@@ -104,6 +112,7 @@ describe 'rabbitmq class:' do
     let(:pp) do
       <<-EOS
       class { 'rabbitmq':
+        repos_ensure      => #{repos_ensure},
         service_manage    => true,
         port              => 5672,
         admin_enable      => true,
@@ -137,6 +146,7 @@ describe 'rabbitmq class:' do
     let(:pp) do
       <<-EOS
         class { 'rabbitmq':
+          repos_ensure      => #{repos_ensure},
           service_manage    => true,
           port              => 5672,
           admin_enable      => true,
@@ -172,6 +182,7 @@ describe 'rabbitmq class:' do
     let(:pp) do
       <<-EOS
         class { 'rabbitmq':
+          repos_ensure    => #{repos_ensure},
           service_manage  => true,
           admin_enable    => true,
           node_ip_address => '0.0.0.0',
@@ -203,6 +214,7 @@ describe 'rabbitmq class:' do
     let(:pp) do
       <<-EOS
         class { 'rabbitmq':
+          repos_ensure          => #{repos_ensure},
           service_manage        => true,
           port                  => 5672,
           admin_enable          => true,

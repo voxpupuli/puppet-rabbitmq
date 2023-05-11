@@ -3,14 +3,17 @@
 require 'spec_helper_acceptance'
 
 describe 'rabbitmq binding:' do
+  repos_ensure = (fact('os.family') == 'RedHat')
+
   context 'create binding and queue resources when using default management port' do
     it 'runs successfully' do
       pp = <<-EOS
       if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true }
+        class { 'erlang': repo_source => 'packagecloud' }
         Class['erlang'] -> Class['rabbitmq']
       }
       class { 'rabbitmq':
+        repos_ensure      => #{repos_ensure},
         service_manage    => true,
         port              => 5672,
         delete_guest_user => true,
@@ -81,10 +84,11 @@ describe 'rabbitmq binding:' do
     it 'runs successfully' do
       pp = <<-EOS
       if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true }
+        class { 'erlang': repo_source => 'packagecloud' }
         Class['erlang'] -> Class['rabbitmq']
       }
       class { 'rabbitmq':
+        repos_ensure      => #{repos_ensure},
         service_manage    => true,
         port              => 5672,
         delete_guest_user => true,
@@ -168,11 +172,8 @@ describe 'rabbitmq binding:' do
   context 'create binding and queue resources when using a non-default management port' do
     it 'runs successfully' do
       pp = <<-EOS
-      if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true }
-        Class['erlang'] -> Class['rabbitmq']
-      }
       class { 'rabbitmq':
+        repos_ensure      => #{repos_ensure},
         service_manage    => true,
         port              => 5672,
         management_port   => 11111,

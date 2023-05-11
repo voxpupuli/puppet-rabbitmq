@@ -3,21 +3,20 @@
 require 'spec_helper_acceptance'
 
 describe 'rabbitmq parameter on a vhost:' do
+  repos_ensure = (fact('os.family') == 'RedHat')
+
   context 'create parameter resource' do
     it 'runs successfully' do
       pp = <<-EOS
-      if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true }
-        Class['erlang'] -> Class['rabbitmq']
-      }
       class { 'rabbitmq':
+        repos_ensure      => #{repos_ensure},
         service_manage    => true,
         port              => 5672,
         delete_guest_user => true,
         admin_enable      => true,
       }
 
-      rabbitmq_plugin { [ 'rabbitmq_federation_management', 'rabbitmq_federation' ]:
+      rabbitmq_plugin { [ 'rabbitmq_federation', 'rabbitmq_federation_management' ]:
         ensure => present
       } ~> Service['rabbitmq-server']
 

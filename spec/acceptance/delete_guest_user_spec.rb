@@ -3,15 +3,18 @@
 require 'spec_helper_acceptance'
 
 describe 'rabbitmq with delete_guest_user' do
+  repos_ensure = (fact('os.family') == 'RedHat')
+
   context 'delete_guest_user' do
     it 'runs successfully' do
       pp = <<-EOS
       class { 'rabbitmq':
+        repos_ensure      => #{repos_ensure},
         port              => 5672,
         delete_guest_user => true,
       }
       if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true}
+        class { 'erlang': repo_source => 'packagecloud' }
         Class['erlang'] -> Class['rabbitmq']
       }
       EOS
