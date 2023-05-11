@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 provider_class = Puppet::Type.type(:rabbitmq_parameter).provider(:rabbitmqctl)
@@ -7,8 +9,8 @@ describe provider_class do
       name: 'documentumFederation@/',
       component_name: 'federation',
       value: {
-        'uri'      => 'amqp://',
-        'expires'  => '360000'
+        'uri' => 'amqp://',
+        'expires' => '360000'
       }
     )
   end
@@ -24,12 +26,12 @@ describe provider_class do
     end
 
     it 'matches' do
-      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<-EOT
-/
-EOT
-      provider_class.expects(:rabbitmqctl_list).with('parameters', '-p', '/').returns <<-EOT
-federation  documentumFederation  {"uri":"amqp://","expires":360000}
-EOT
+      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<~EOT
+        /
+      EOT
+      provider_class.expects(:rabbitmqctl_list).with('parameters', '-p', '/').returns <<~EOT
+        federation  documentumFederation  {"uri":"amqp://","expires":360000}
+      EOT
       provider_class.prefetch('documentumFederation@/' => resource)
     end
   end
@@ -40,17 +42,17 @@ EOT
     end
 
     it 'fail with invalid output from list' do
-      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<-EOT
-/
-EOT
+      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<~EOT
+        /
+      EOT
       provider.class.expects(:rabbitmqctl_list).with('parameters', '-p', '/').returns 'foobar'
       expect { provider_class.instances }.to raise_error Puppet::Error, %r{cannot parse line from list_parameter}
     end
 
     it 'return no instance' do
-      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<-EOT
-/
-EOT
+      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<~EOT
+        /
+      EOT
       provider_class.expects(:rabbitmqctl_list).with('parameters', '-p', '/').returns ''
       instances = provider_class.instances
       expect(instances.size).to eq(0)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 provider_class = Puppet::Type.type(:rabbitmq_plugin).provider(:rabbitmqplugins)
@@ -78,6 +80,7 @@ describe provider_class do
       provider.expects(:rabbitmqplugins).with('enable', 'foo')
       provider.create
     end
+
     it 'calls rabbitmqplugins to enable with offline' do
       provider.resource[:mode] = :offline
       provider.class.expects(:rabbitmq_version).returns '3.4.0'
@@ -85,6 +88,7 @@ describe provider_class do
       provider.expects(:rabbitmqplugins).with('enable', 'foo', '--offline')
       provider.create
     end
+
     it 'calls rabbitmqplugins to enable with online' do
       provider.resource[:mode] = :online
       provider.class.expects(:rabbitmq_version).returns '3.4.0'
@@ -92,6 +96,7 @@ describe provider_class do
       provider.expects(:rabbitmqplugins).with('enable', 'foo', '--online')
       provider.create
     end
+
     it 'calls rabbitmqplugins to enable with best' do
       provider.resource[:mode] = :best
       provider.class.expects(:rabbitmq_version).returns '3.4.0'
@@ -108,6 +113,7 @@ describe provider_class do
       provider.expects(:rabbitmqplugins).with('enable', 'foo')
       provider.create
     end
+
     it 'calls rabbitmqplugins to enable with offline' do
       provider.resource[:mode] = :offline
       provider.class.expects(:rabbitmq_version).returns '3.3.9'
@@ -115,6 +121,7 @@ describe provider_class do
       provider.expects(:rabbitmqplugins).with('enable', 'foo')
       provider.create
     end
+
     it 'calls rabbitmqplugins to enable with online' do
       provider.resource[:mode] = :online
       provider.class.expects(:rabbitmq_version).returns '3.3.9'
@@ -122,6 +129,7 @@ describe provider_class do
       provider.expects(:rabbitmqplugins).with('enable', 'foo')
       provider.create
     end
+
     it 'calls rabbitmqplugins to enable with best' do
       provider.resource[:mode] = :best
       provider.class.expects(:rabbitmq_version).returns '3.3.9'

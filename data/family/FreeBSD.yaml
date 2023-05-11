@@ -1,5 +1,5 @@
 ---
-rabbitmq::python_package: 'python2'
+rabbitmq::python_package: 'python38'
 rabbitmq::rabbitmq_home: '/var/db/rabbitmq'
 rabbitmq::config_path: '/usr/local/etc/rabbitmq/rabbitmq.config'
 rabbitmq::env_config_path: '/usr/local/etc/rabbitmq/rabbitmq-env.conf'

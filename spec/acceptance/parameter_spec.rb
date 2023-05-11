@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper_acceptance'
 
 describe 'rabbitmq parameter on a vhost:' do
@@ -36,13 +38,11 @@ describe 'rabbitmq parameter on a vhost:' do
       apply_manifest(pp, catch_changes: true)
     end
 
-    # rubocop:disable RSpec/MultipleExpectations
     it 'has the parameter' do
       shell('rabbitmqctl list_parameters -p fedhost') do |r|
         expect(r.stdout).to match(%r{federation-upstream.*documentumFed.*expires.*3600000})
         expect(r.exit_code).to be_zero
       end
     end
-    # rubocop:enable RSpec/MultipleExpectations
   end
 end

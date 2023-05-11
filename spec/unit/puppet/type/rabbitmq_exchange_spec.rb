@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 describe Puppet::Type.type(:rabbitmq_exchange) do
   let(:exchange) do
@@ -14,16 +16,19 @@ describe Puppet::Type.type(:rabbitmq_exchange) do
     exchange[:name] = 'dan@pl'
     expect(exchange[:name]).to eq('dan@pl')
   end
+
   it 'requires a name' do
     expect do
       Puppet::Type.type(:rabbitmq_exchange).new({})
     end.to raise_error(Puppet::Error, 'Title or name must be provided')
   end
+
   it 'does not allow whitespace in the name' do
     expect do
       exchange[:name] = 'b r'
     end.to raise_error(Puppet::Error, %r{Valid values match})
   end
+
   it 'does not allow names without @' do
     expect do
       exchange[:name] = 'b_r'
@@ -34,11 +39,13 @@ describe Puppet::Type.type(:rabbitmq_exchange) do
     exchange[:type] = :direct
     expect(exchange[:type]).to eq(:direct)
   end
+
   it 'requires a type' do
     expect do
       Puppet::Type.type(:rabbitmq_exchange).new(name: 'foo@bar')
     end.to raise_error(%r{.*must set type when creating exchange.*})
   end
+
   it 'does not require a type when destroying' do
     expect do
       Puppet::Type.type(:rabbitmq_exchange).new(name: 'foo@bar', ensure: :absent)

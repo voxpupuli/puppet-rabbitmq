@@ -1,14 +1,16 @@
-Puppet::Type.newtype(:rabbitmq_user_permissions) do
-  desc <<-DESC
-Type for managing rabbitmq user permissions
+# frozen_string_literal: true
 
-@example Define some rabbitmq_user_permissions
- rabbitmq_user_permissions { 'dan@myvhost':
-   configure_permission => '.*',
-   read_permission      => '.*',
-   write_permission     => '.*',
- }
-DESC
+Puppet::Type.newtype(:rabbitmq_user_permissions) do
+  desc <<~DESC
+    Type for managing rabbitmq user permissions
+
+    @example Define some rabbitmq_user_permissions
+     rabbitmq_user_permissions { 'dan@myvhost':
+       configure_permission => '.*',
+       read_permission      => '.*',
+       write_permission     => '.*',
+     }
+  DESC
 
   ensurable do
     defaultto(:present)

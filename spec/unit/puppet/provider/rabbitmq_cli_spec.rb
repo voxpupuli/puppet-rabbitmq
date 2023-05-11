@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 require 'puppet/provider/rabbitmq_cli'
@@ -11,16 +13,21 @@ describe provider_class do
   end
 
   it 'gets the RabbitMQ version' do
-    provider_class.expects(:rabbitmqctl).with('-q', 'status').returns '{rabbit,"RabbitMQ","3.1.5"}'
-    expect(provider_class.rabbitmq_version).to eq('3.1.5')
+    provider_class.expects(:rabbitmqctl).with('-q', 'status').returns '     [{rabbit,"RabbitMQ","3.7.28"},'
+    expect(provider_class.rabbitmq_version).to eq('3.7.28')
   end
 
   it 'caches the RabbitMQ version' do
-    provider_class.expects(:rabbitmqctl).with('-q', 'status').returns '{rabbit,"RabbitMQ","3.7.10"}'
+    provider_class.expects(:rabbitmqctl).with('-q', 'status').returns '     [{rabbit,"RabbitMQ","3.7.28"},'
     v1 = provider_class.rabbitmq_version
 
     # No second expects for rabbitmqctl as it shouldn't be called again
     expect(provider_class.rabbitmq_version).to eq(v1)
+  end
+
+  it 'gets the RabbitMQ version with version >= 3.8' do
+    provider_class.expects(:rabbitmqctl).with('-q', 'status').returns 'RabbitMQ version: 3.10.6'
+    expect(provider_class.rabbitmq_version).to eq('3.10.6')
   end
 
   it 'uses correct list options with RabbitMQ < 3.7.9' do

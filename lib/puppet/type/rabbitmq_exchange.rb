@@ -1,21 +1,23 @@
-Puppet::Type.newtype(:rabbitmq_exchange) do
-  desc <<-DESC
-Native type for managing rabbitmq exchanges
+# frozen_string_literal: true
 
-@example Create a rabbitmq_exchange
- rabbitmq_exchange { 'myexchange@myvhost':
-   user        => 'dan',
-   password    => 'bar',
-   type        => 'topic',
-   ensure      => present,
-   internal    => false,
-   auto_delete => false,
-   durable     => true,
-   arguments   => {
-     hash-header => 'message-distribution-hash'
-   }
- }
-DESC
+Puppet::Type.newtype(:rabbitmq_exchange) do
+  desc <<~DESC
+    Native type for managing rabbitmq exchanges
+
+    @example Create a rabbitmq_exchange
+     rabbitmq_exchange { 'myexchange@myvhost':
+       user        => 'dan',
+       password    => 'bar',
+       type        => 'topic',
+       ensure      => present,
+       internal    => false,
+       auto_delete => false,
+       durable     => true,
+       arguments   => {
+         hash-header => 'message-distribution-hash'
+       }
+     }
+  DESC
 
   ensurable do
     defaultto(:present)
@@ -57,7 +59,7 @@ DESC
 
   newparam(:arguments) do
     desc 'Exchange arguments example: {"hash-header": "message-distribution-hash"}'
-    defaultto {}
+    defaultto({})
   end
 
   newparam(:user) do
@@ -73,9 +75,7 @@ DESC
   end
 
   validate do
-    if self[:ensure] == :present && self[:type].nil?
-      raise ArgumentError, "must set type when creating exchange for #{self[:name]} whose type is #{self[:type]}"
-    end
+    raise ArgumentError, "must set type when creating exchange for #{self[:name]} whose type is #{self[:type]}" if self[:ensure] == :present && self[:type].nil?
   end
 
   autorequire(:rabbitmq_vhost) do

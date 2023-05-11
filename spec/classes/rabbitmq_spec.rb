@@ -1,10 +1,13 @@
+# frozen_string_literal: true
+
+# rubocop:disable RSpec/RepeatedExampleGroupDescription
+# rubocop:disable RSpec/RepeatedExampleGroupBody
+
 require 'spec_helper'
 
 describe 'rabbitmq' do
   on_supported_os.each do |os, facts|
     context "on #{os}" do
-      systemd_facts = os_specific_facts(facts)
-      facts = facts.merge(systemd_facts)
       let :facts do
         facts
       end
@@ -22,9 +25,8 @@ describe 'rabbitmq' do
       it { is_expected.to contain_class('rabbitmq::service') }
 
       it { is_expected.to contain_package(name).with_ensure('installed').with_name(name) }
-      if facts[:os]['family'] == 'Suse'
-        it { is_expected.to contain_package('rabbitmq-server-plugins') }
-      end
+
+      it { is_expected.to contain_package('rabbitmq-server-plugins') } if facts[:os]['family'] == 'Suse'
 
       context 'with default params' do
         it { is_expected.not_to contain_class('rabbitmq::repo::apt') }
@@ -68,7 +70,7 @@ describe 'rabbitmq' do
             is_expected.to contain_yumrepo('rabbitmq').
               with_ensure('present').
               with_baseurl(%r{https://packagecloud.io/rabbitmq/rabbitmq-server/el/\d+/\$basearch$}).
-              with_gpgkey('https://www.rabbitmq.com/rabbitmq-release-signing-key.asc')
+              with_gpgkey('https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey')
           end
         else
           it { is_expected.not_to contain_class('rabbitmq::repo::rhel') }
@@ -79,18 +81,12 @@ describe 'rabbitmq' do
       context 'with no pin', if: facts[:os]['family'] == 'Debian' do
         let(:params) { { repos_ensure: true, package_apt_pin: '' } }
 
-        if Puppet.version =~ %r{^6} # https://tickets.puppetlabs.com/browse/PUP-9112 and https://tickets.puppetlabs.com/browse/PUP-9180
-          let(:expected_key_apt_source_key_content) { 'nil' }
-        else
-          let(:expected_key_apt_source_key_content) { ':undef' }
-        end
-
         describe 'it sets up an apt::source' do
           it {
             is_expected.to contain_apt__source('rabbitmq').with(
-              'location'    => "https://packagecloud.io/rabbitmq/rabbitmq-server/#{facts[:os]['name'].downcase}",
-              'repos'       => 'main',
-              'key'         => "{\"id\"=>\"8C695B0219AFDEB04A058ED8F4E789204D206F89\", \"source\"=>\"https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey\", \"content\"=>#{expected_key_apt_source_key_content}}"
+              'location' => "https://packagecloud.io/rabbitmq/rabbitmq-server/#{facts[:os]['name'].downcase}",
+              'repos' => 'main',
+              'key' => '{"id"=>"8C695B0219AFDEB04A058ED8F4E789204D206F89", "source"=>"https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey", "content"=>nil}'
             )
           }
         end
@@ -99,18 +95,12 @@ describe 'rabbitmq' do
       context 'with pin', if: facts[:os]['family'] == 'Debian' do
         let(:params) { { repos_ensure: true, package_apt_pin: '700' } }
 
-        if Puppet.version =~ %r{^6} # https://tickets.puppetlabs.com/browse/PUP-9112 and https://tickets.puppetlabs.com/browse/PUP-9180
-          let(:expected_key_apt_source_key_content) { 'nil' }
-        else
-          let(:expected_key_apt_source_key_content) { ':undef' }
-        end
-
         describe 'it sets up an apt::source and pin' do
           it {
             is_expected.to contain_apt__source('rabbitmq').with(
-              'location'    => "https://packagecloud.io/rabbitmq/rabbitmq-server/#{facts[:os]['name'].downcase}",
-              'repos'       => 'main',
-              'key'         => "{\"id\"=>\"8C695B0219AFDEB04A058ED8F4E789204D206F89\", \"source\"=>\"https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey\", \"content\"=>#{expected_key_apt_source_key_content}}"
+              'location' => "https://packagecloud.io/rabbitmq/rabbitmq-server/#{facts[:os]['name'].downcase}",
+              'repos' => 'main',
+              'key' => '{"id"=>"8C695B0219AFDEB04A058ED8F4E789204D206F89", "source"=>"https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey", "content"=>nil}'
             )
           }
 
@@ -118,7 +108,7 @@ describe 'rabbitmq' do
             is_expected.to contain_apt__pin('rabbitmq').with(
               'packages' => '*',
               'priority' => '700',
-              'origin'   => 'packagecloud.io'
+              'origin' => 'packagecloud.io'
             )
           }
         end
@@ -148,8 +138,11 @@ describe 'rabbitmq' do
           end
 
           if facts[:systemd]
+            selinux_ignore_defaults = facts[:os]['family'] == 'RedHat'
+
             it do
               is_expected.to contain_systemd__service_limits("#{name}.service").
+                with_selinux_ignore_defaults(selinux_ignore_defaults).
                 with_limits('LimitNOFILE' => value).
                 with_restart_service(false)
             end
@@ -162,6 +155,38 @@ describe 'rabbitmq' do
       [-42, '-42', 'foo'].each do |value|
         context "with file_limit => '#{value}'" do
           let(:params) { { file_limit: value } }
+
+          it 'does not compile' do
+            expect { catalogue }.to raise_error(Puppet::PreformattedError, %r{Error while evaluating a Resource Statement})
+          end
+        end
+      end
+
+      [-1000, 0, 1000].each do |value|
+        context "with oom_score_adj => '#{value}'" do
+          let(:params) { { oom_score_adj: value } }
+
+          if facts[:os]['family'] == 'Debian'
+            it { is_expected.to contain_file('/etc/default/rabbitmq-server').with_content(%r{^echo #{value} > /proc/\$\$/oom_score_adj$}) }
+          else
+            it { is_expected.not_to contain_file('/etc/default/rabbitmq-server') }
+          end
+
+          if facts[:systemd]
+            it do
+              is_expected.to contain_systemd__service_limits("#{name}.service").
+                with_limits('OOMScoreAdjust' => value).
+                with_restart_service(false)
+            end
+          else
+            it { is_expected.not_to contain_systemd__service_limits("#{name}.service") }
+          end
+        end
+      end
+
+      [-2000, 2000, '500', 'foo'].each do |value|
+        context "with oom_score_adj => '#{value}'" do
+          let(:params) { { oom_score_adj: value } }
 
           it 'does not compile' do
             expect { catalogue }.to raise_error(Puppet::PreformattedError, %r{Error while evaluating a Resource Statement})
@@ -193,26 +218,19 @@ describe 'rabbitmq' do
               is_expected.to contain_package('rabbitmqadmin').with_name('blub')
             end
           end
-          if facts[:os]['family'] == 'Archlinux'
-            it 'installs a package called rabbitmqadmin' do
-              is_expected.to contain_package('rabbitmqadmin').with_name('rabbitmqadmin')
-            end
-          else
-            it 'we enable the admin interface by default' do
-              is_expected.to contain_class('rabbitmq::install::rabbitmqadmin')
-              is_expected.to contain_rabbitmq_plugin('rabbitmq_management').with(
-                notify: 'Class[Rabbitmq::Service]'
-              )
-              is_expected.to contain_archive('rabbitmqadmin').with_source('http://1.1.1.1:15672/cli/rabbitmqadmin')
-            end
+
+          it 'we enable the admin interface by default' do
+            is_expected.to contain_class('rabbitmq::install::rabbitmqadmin')
+            is_expected.to contain_rabbitmq_plugin('rabbitmq_management').with(
+              notify: 'Class[Rabbitmq::Service]'
+            )
+            is_expected.to contain_archive('rabbitmqadmin').with_source('http://1.1.1.1:15672/cli/rabbitmqadmin')
           end
-          if %w[RedHat Debian SUSE].include?(facts[:os]['family'])
-            it { is_expected.to contain_package('python') }
-          end
-          if %w[FreeBSD OpenBSD].include?(facts[:os]['family'])
-            it { is_expected.to contain_package('python2') }
-          end
+
+          it { is_expected.to contain_package('python') } if %w[RedHat Debian SUSE Archlinux].include?(facts[:os]['family'])
+          it { is_expected.to contain_package('python2') } if %w[FreeBSD OpenBSD].include?(facts[:os]['family'])
         end
+
         context 'with manage_python false' do
           let(:params) { { manage_python: false } }
 
@@ -234,6 +252,7 @@ describe 'rabbitmq' do
             is_expected.to contain_archive('rabbitmqadmin').with_source('http://127.0.0.1:15672/cli/rabbitmqadmin')
           end
         end
+
         context 'with service_manage set to true, node_ip_address = undef, and default user/pass specified', unless: facts[:osfamily] == 'Archlinux' do
           let(:params) { { admin_enable: true, default_user: 'foobar', default_pass: 'hunter2', node_ip_address: :undef } }
 
@@ -245,6 +264,7 @@ describe 'rabbitmq' do
             )
           end
         end
+
         context 'with service_manage set to true and default user/pass specified', unless: facts[:osfamily] == 'Archlinux' do
           let(:params) { { admin_enable: true, default_user: 'foobar', default_pass: 'hunter2', management_ip_address: '1.1.1.1' } }
 
@@ -256,6 +276,7 @@ describe 'rabbitmq' do
             )
           end
         end
+
         context 'with service_manage set to true and archive_options set', unless: facts[:osfamily] == 'Archlinux' do
           let(:params) do
             {
@@ -272,8 +293,9 @@ describe 'rabbitmq' do
             )
           end
         end
+
         context 'with service_manage set to true and management port specified', unless: facts[:osfamily] == 'Archlinux' do
-          # note that the 2.x management port is 55672 not 15672
+          # NOTE: that the 2.x management port is 55672 not 15672
           let(:params) { { admin_enable: true, management_port: 55_672, management_ip_address: '1.1.1.1' } }
 
           it 'we use the correct URL to rabbitmqadmin' do
@@ -284,8 +306,9 @@ describe 'rabbitmq' do
             )
           end
         end
+
         context 'with ipv6, service_manage set to true and management port specified', unless: facts[:osfamily] == 'Archlinux' do
-          # note that the 2.x management port is 55672 not 15672
+          # NOTE: that the 2.x management port is 55672 not 15672
           let(:params) { { admin_enable: true, management_port: 55_672, management_ip_address: '::1' } }
 
           it 'we use the correct URL to rabbitmqadmin' do
@@ -296,6 +319,7 @@ describe 'rabbitmq' do
             )
           end
         end
+
         context 'with service_manage set to false' do
           let(:params) { { admin_enable: true, service_manage: false } }
 
@@ -310,9 +334,9 @@ describe 'rabbitmq' do
         it {
           is_expected.to contain_file('/etc/rabbitmq').with(
             'ensure' => 'directory',
-            'owner'  => 'rabbitmq',
-            'group'  => 'rabbitmq',
-            'mode'   => '2755'
+            'owner' => 'rabbitmq',
+            'group' => 'rabbitmq',
+            'mode' => '2755'
           )
         }
       end
@@ -322,7 +346,7 @@ describe 'rabbitmq' do
           is_expected.to contain_file('rabbitmq.config').with(
             'owner' => 'rabbitmq',
             'group' => 'rabbitmq',
-            'mode'  => '0640'
+            'mode' => '0640'
           )
         }
       end
@@ -331,9 +355,9 @@ describe 'rabbitmq' do
         it {
           is_expected.to contain_file('/etc/rabbitmq/ssl').with(
             'ensure' => 'directory',
-            'owner'  => 'rabbitmq',
-            'group'  => 'rabbitmq',
-            'mode'   => '2750'
+            'owner' => 'rabbitmq',
+            'group' => 'rabbitmq',
+            'mode' => '2750'
           )
         }
       end
@@ -362,7 +386,7 @@ describe 'rabbitmq' do
         let(:params) do
           {
             config_cluster: true,
-            cluster_nodes: ['hare-1', 'hare-2'],
+            cluster_nodes: %w[hare-1 hare-2],
             cluster_node_type: 'ram',
             wipe_db_on_cookie_change: false
           }
@@ -372,7 +396,7 @@ describe 'rabbitmq' do
           let(:params) do
             {
               config_cluster: true,
-              cluster_nodes: ['hare-1', 'hare-2'],
+              cluster_nodes: %w[hare-1 hare-2],
               cluster_node_type: 'ram',
               erlang_cookie: 'TESTCOOKIE',
               wipe_db_on_cookie_change: true
@@ -413,7 +437,7 @@ describe 'rabbitmq' do
           let(:params) do
             {
               config_cluster: true,
-              cluster_nodes: ['hare-1', 'hare-2'],
+              cluster_nodes: %w[hare-1 hare-2],
               cluster_node_type: 'ram',
               erlang_cookie: 'ORIGINAL',
               wipe_db_on_cookie_change: true
@@ -438,13 +462,13 @@ describe 'rabbitmq' do
           let(:params) do
             { environment_variables: {
               'NODE_IP_ADDRESS' => '1.1.1.1',
-              'NODE_PORT'          => '5656',
-              'NODENAME'           => 'HOSTNAME',
-              'SERVICENAME'        => 'RabbitMQ',
-              'CONSOLE_LOG'        => 'RabbitMQ.debug',
-              'CTL_ERL_ARGS'       => 'verbose',
-              'SERVER_ERL_ARGS'    => 'v',
-              'SERVER_START_ARGS'  => 'debug'
+              'NODE_PORT' => '5656',
+              'NODENAME' => 'HOSTNAME',
+              'SERVICENAME' => 'RabbitMQ',
+              'CONSOLE_LOG' => 'RabbitMQ.debug',
+              'CTL_ERL_ARGS' => 'verbose',
+              'SERVER_ERL_ARGS' => 'v',
+              'SERVER_START_ARGS' => 'debug'
             } }
           end
 
@@ -472,7 +496,7 @@ describe 'rabbitmq' do
 
           it 'removes the user' do
             is_expected.to contain_rabbitmq_user('guest').with(
-              'ensure'   => 'absent',
+              'ensure' => 'absent',
               'provider' => 'rabbitmqctl'
             )
           end
@@ -494,6 +518,7 @@ describe 'rabbitmq' do
             is_expected.to contain_file('rabbitmq.config').without('content' => %r{stomp})
           end
         end
+
         describe 'stomp when set' do
           let(:params) { { config_stomp: true, stomp_port: 5679 } }
 
@@ -501,6 +526,7 @@ describe 'rabbitmq' do
             is_expected.to contain_file('rabbitmq.config').with('content' => %r{rabbitmq_stomp.*tcp_listeners, \[5679\]}m)
           end
         end
+
         describe 'stomp when set ssl port w/o ssl enabled' do
           let(:params) { { config_stomp: true, stomp_port: 5679, ssl: false, ssl_stomp_port: 5680 } }
 
@@ -508,6 +534,7 @@ describe 'rabbitmq' do
             is_expected.to contain_file('rabbitmq.config').without('content' => %r{rabbitmq_stomp.*ssl_listeners, \[5680\]}m)
           end
         end
+
         describe 'stomp when set with ssl' do
           let(:params) { { config_stomp: true, stomp_port: 5679, ssl: true, ssl_stomp_port: 5680 } }
 
@@ -593,6 +620,32 @@ describe 'rabbitmq' do
         end
       end
 
+      describe 'configuring ldap authentication' do
+        let :params do
+          { config_stomp: false,
+            ldap_auth: true,
+            ldap_server: ['ldap1.example.com', 'ldap2.example.com'],
+            ldap_other_bind: 'as_user',
+            ldap_use_ssl: false,
+            ldap_port: 389,
+            ldap_log: true,
+            ldap_config_variables: { 'foo' => 'bar' } }
+        end
+
+        it { is_expected.to contain_rabbitmq_plugin('rabbitmq_auth_backend_ldap') }
+
+        it 'does not set user_dn_pattern when none is specified' do
+          verify_contents(catalogue, 'rabbitmq.config',
+                          ['[', '  {rabbit, [', '    {auth_backends, [rabbit_auth_backend_internal, rabbit_auth_backend_ldap]},', '  ]}',
+                           '  {rabbitmq_auth_backend_ldap, [', '    {other_bind, as_user},',
+                           '    {servers, ["ldap1.example.com", "ldap2.example.com"]},',
+                           '    {use_ssl, false},',
+                           '    {port, 389},', '    {foo, bar},', '    {log, true}'])
+          content = catalogue.resource('file', 'rabbitmq.config').send(:parameters)[:content]
+          expect(content).not_to include 'user_dn_pattern'
+        end
+      end
+
       describe 'configuring auth_backends' do
         let :params do
           { auth_backends: ['{baz, foo}', 'bar'] }
@@ -617,7 +670,7 @@ describe 'rabbitmq' do
       end
 
       context 'use config file for plugins' do
-        describe 'config_plugins_file: true' do
+        describe 'config_plugins_file: true and default list of enabled plugins' do
           let :params do
             { use_config_file_for_plugins: true }
           end
@@ -632,6 +685,26 @@ describe 'rabbitmq' do
 
           it 'configures enabled_plugins' do
             is_expected.to contain_file('enabled_plugins').with_content(%r{\[rabbitmq_management\]\.})
+          end
+        end
+
+        describe 'config_plugins_file: true and custom list of enabled plugins' do
+          let :params do
+            {
+              use_config_file_for_plugins: true,
+              admin_enable: false,
+              plugins: %w[rabbitmq_stomp rabbitmq_shovel rabbitmq_prometheus]
+            }
+          end
+
+          it 'does not use rabbitmqplugin provider' do
+            is_expected.not_to contain_rabbitmq_plugin('rabbitmq_stomp')
+            is_expected.not_to contain_rabbitmq_plugin('rabbitmq_shovel')
+            is_expected.not_to contain_rabbitmq_plugin('rabbitmq_prometheus')
+          end
+
+          it 'configures enabled_plugins' do
+            is_expected.to contain_file('enabled_plugins').with_content(%r{\[rabbitmq_stomp,rabbitmq_shovel,rabbitmq_prometheus\]\.})
           end
         end
 
@@ -675,6 +748,7 @@ describe 'rabbitmq' do
         end
 
         it { is_expected.to contain_rabbitmq_plugin('rabbitmq_management') }
+
         it 'sets rabbitmq_managment opts to specified values' do
           is_expected.to contain_file('rabbitmq.config').with_content(%r{rabbitmq_management, \[})
           is_expected.to contain_file('rabbitmq.config').with_content(%r{listener, \[})
@@ -701,6 +775,7 @@ describe 'rabbitmq' do
           end
 
           it { is_expected.to contain_rabbitmq_plugin('rabbitmq_management') }
+
           it 'sets rabbitmq_managment opts to specified values' do
             is_expected.to contain_file('rabbitmq.config').with_content(%r{rabbitmq_management, \[})
             is_expected.to contain_file('rabbitmq.config').with_content(%r{listener, \[})
@@ -877,6 +952,7 @@ describe 'rabbitmq' do
             %r{dhfile,}
           )
         end
+
         it 'sets non ssl port for management port' do
           is_expected.to contain_file('rabbitmq.config').with_content(
             %r{port, 13142}
@@ -935,11 +1011,13 @@ describe 'rabbitmq' do
             %r{dhfile,}
           )
         end
+
         it 'sets ssl managment port to specified values' do
           is_expected.to contain_file('rabbitmq.config').with_content(
             %r{port, 13141}
           )
         end
+
         it 'sets ssl options in the rabbitmqadmin.conf' do
           is_expected.to contain_file('rabbitmqadmin.conf').with_content(
             %r{ssl_ca_cert_file\s=\s/path/to/cacert}
@@ -1039,6 +1117,7 @@ describe 'rabbitmq' do
           is_expected.to contain_file('rabbitmq.config').with_content(%r{certfile,"/path/to/cert"})
           is_expected.to contain_file('rabbitmq.config').with_content(%r{keyfile,"/path/to/key})
         end
+
         it 'does not set TCP listener environment defaults' do
           is_expected.to contain_file('rabbitmq-env.config'). \
             without_content(%r{NODE_PORT=}). \
@@ -1124,11 +1203,107 @@ describe 'rabbitmq' do
             ssl_cacert: '/path/to/cacert',
             ssl_cert: '/path/to/cert',
             ssl_key: '/path/to/key',
-            ssl_ciphers: ['ECDHE-RSA-AES256-SHA', 'DHE-RSA-AES256-SHA'] }
+            ssl_ciphers: %w[ECDHE-RSA-AES256-SHA DHE-RSA-AES256-SHA] }
         end
 
         it 'sets ssl ciphers to specified values' do
           is_expected.to contain_file('rabbitmq.config').with_content(%r{ciphers,\[[[:space:]]+"ECDHE-RSA-AES256-SHA",[[:space:]]+"DHE-RSA-AES256-SHA"[[:space:]]+\]})
+        end
+      end
+
+      describe 'ssl options with ssl_crl_check enabled' do
+        let(:params) do
+          { ssl: true,
+            ssl_port: 3141,
+            ssl_cacert: '/path/to/cacert',
+            ssl_cert: '/path/to/cert',
+            ssl_key: '/path/to/key',
+            ssl_crl_check: 'true' }
+        end
+
+        it 'sets ssl crl check setting to specified value' do
+          is_expected.to contain_file('rabbitmq.config').with_content(%r{crl_check,true})
+        end
+      end
+
+      describe 'ssl options with ssl_crl_check and ssl_crl_hash_cache enabled' do
+        let(:params) do
+          { ssl: true,
+            ssl_port: 3141,
+            ssl_cacert: '/path/to/cacert',
+            ssl_cert: '/path/to/cert',
+            ssl_key: '/path/to/key',
+            ssl_crl_check: 'true',
+            ssl_crl_cache_hash_dir: '/path/to/crl_cache/dir' }
+        end
+
+        it 'sets ssl crl check setting to specified value' do
+          is_expected.to contain_file('rabbitmq.config').with_content(%r{crl_check,true})
+          is_expected.to contain_file('rabbitmq.config').with_content(%r{crl_cache,\s+{ssl_crl_hash_dir,\s+{internal,\s+\[{dir, "/path/to/crl_cache/dir"}\]}}})
+        end
+      end
+
+      describe 'ssl options with ssl_crl_check and http cache enabled' do
+        let(:params) do
+          { ssl: true,
+            ssl_port: 3141,
+            ssl_cacert: '/path/to/cacert',
+            ssl_cert: '/path/to/cert',
+            ssl_key: '/path/to/key',
+            ssl_crl_check: 'true',
+            ssl_crl_cache_http_timeout: 5000 }
+        end
+
+        it 'sets ssl crl check setting to specified value' do
+          is_expected.to contain_file('rabbitmq.config').with_content(%r{crl_check,true})
+          is_expected.to contain_file('rabbitmq.config').with_content(%r{crl_cache,\s+{ssl_crl_cache,\s+{internal,\s+\[{http, 5000}\]}}})
+        end
+      end
+
+      describe 'ssl options with ssl_crl_check enabled and not ssl' do
+        let(:params) do
+          { ssl: false,
+            ssl_port: 3141,
+            ssl_cacert: '/path/to/cacert',
+            ssl_cert: '/path/to/cert',
+            ssl_key: '/path/to/key',
+            ssl_crl_check: 'true' }
+        end
+
+        it 'fails' do
+          expect { catalogue }.to raise_error(Puppet::Error, %r{\$ssl_crl_check requires that \$ssl => true})
+        end
+      end
+
+      describe 'ssl options with ssl_crl_cache_hash_dir set and not ssl_crl_check' do
+        let(:params) do
+          { ssl: true,
+            ssl_port: 3141,
+            ssl_cacert: '/path/to/cacert',
+            ssl_cert: '/path/to/cert',
+            ssl_key: '/path/to/key',
+            ssl_crl_check: 'false',
+            ssl_crl_cache_hash_dir: '/path/to/crl_cache/dir' }
+        end
+
+        it 'fails' do
+          expect { catalogue }.to raise_error(Puppet::Error, %r{\$ssl_crl_cache_hash_dir requires that \$ssl_crl_check => true|peer|best_effort})
+        end
+      end
+
+      describe 'ssl options with ssl_crl_cache_http_timeout set and not ssl_crl_check' do
+        let(:params) do
+          { ssl: true,
+            ssl_port: 3141,
+            ssl_cacert: '/path/to/cacert',
+            ssl_cert: '/path/to/cert',
+            ssl_key: '/path/to/key',
+            ssl_crl_check: 'false',
+            ssl_crl_cache_http_timeout: 5000 }
+        end
+
+        it 'fails' do
+          expect { catalogue }.to raise_error(Puppet::Error, %r{\$ssl_crl_cache_http_timeout requires that \$ssl_crl_check => true|peer|best_effort})
         end
       end
 
@@ -1288,6 +1463,7 @@ describe 'rabbitmq' do
           is_expected.to contain_file('rabbitmq.config').with_content(%r{certfile, "/path/to/management_cert"\},})
           is_expected.to contain_file('rabbitmq.config').with_content(%r{keyfile, "/path/to/management_key"\}})
         end
+
         it 'sets ssl options in the rabbitmqadmin.conf' do
           is_expected.to contain_file('rabbitmqadmin.conf').with_content(
             %r{ssl_ca_cert_file\s=\s/path/to/management_cacert}
@@ -1335,7 +1511,7 @@ describe 'rabbitmq' do
           let(:params) do
             { ipv6: true,
               environment_variables: { 'RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS' => '"some quoted args"',
-                                       'RABBITMQ_CTL_ERL_ARGS'    => '"other quoted args"' } }
+                                       'RABBITMQ_CTL_ERL_ARGS' => '"other quoted args"' } }
           end
 
           it 'enables inet6 distribution and quote properly' do
@@ -1349,7 +1525,7 @@ describe 'rabbitmq' do
           let(:params) do
             { ipv6: true,
               environment_variables: { 'RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS' => 'foo',
-                                       'RABBITMQ_CTL_ERL_ARGS'    => 'bar' } }
+                                       'RABBITMQ_CTL_ERL_ARGS' => 'bar' } }
           end
 
           it 'enables inet6 distribution and quote properly' do
@@ -1377,7 +1553,7 @@ describe 'rabbitmq' do
             { ipv6: true,
               ssl_erl_dist: true,
               environment_variables: { 'RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS' => '"some quoted args"',
-                                       'RABBITMQ_CTL_ERL_ARGS'    => '"other quoted args"' } }
+                                       'RABBITMQ_CTL_ERL_ARGS' => '"other quoted args"' } }
           end
 
           it 'enables inet6 distribution and quote properly' do
@@ -1392,7 +1568,7 @@ describe 'rabbitmq' do
             { ipv6: true,
               ssl_erl_dist: true,
               environment_variables: { 'RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS' => 'foo',
-                                       'RABBITMQ_CTL_ERL_ARGS'    => 'bar' } }
+                                       'RABBITMQ_CTL_ERL_ARGS' => 'bar' } }
           end
 
           it 'enables inet6 distribution and quote properly' do
@@ -1407,10 +1583,10 @@ describe 'rabbitmq' do
         let(:params) do
           { config_variables: {
             'hipe_compile' => true,
-            'vm_memory_high_watermark'      => 0.4,
-            'frame_max'                     => 131_072,
-            'collect_statistics'            => 'none',
-            'auth_mechanisms'               => "['PLAIN', 'AMQPLAIN']"
+            'vm_memory_high_watermark' => 0.4,
+            'frame_max' => 131_072,
+            'collect_statistics' => 'none',
+            'auth_mechanisms' => "['PLAIN', 'AMQPLAIN']"
           } }
         end
 
@@ -1541,7 +1717,7 @@ describe 'rabbitmq' do
 
           it 'removes the user' do
             is_expected.to contain_rabbitmq_user('guest').with(
-              'ensure'   => 'absent',
+              'ensure' => 'absent',
               'provider' => 'rabbitmqctl'
             )
           end
@@ -1569,7 +1745,7 @@ describe 'rabbitmq' do
 
         it 'sets the loopback_users parameter in the config file' do
           is_expected.to contain_file('rabbitmq.config'). \
-            with_content(%r{\{loopback_users, \[<<\"user1\">>, <<\"user2\">>\]\}})
+            with_content(%r{\{loopback_users, \[<<"user1">>, <<"user2">>\]\}})
         end
       end
 
@@ -1579,11 +1755,11 @@ describe 'rabbitmq' do
       describe 'service with default params' do
         it {
           is_expected.to contain_service('rabbitmq-server').with(
-            'ensure'     => 'running',
-            'enable'     => 'true',
-            'hasstatus'  => 'true',
+            'ensure' => 'running',
+            'enable' => 'true',
+            'hasstatus' => 'true',
             'hasrestart' => 'true',
-            'name'       => name
+            'name' => name
           )
         }
       end
@@ -1602,8 +1778,8 @@ describe 'rabbitmq' do
 
         it {
           is_expected.to contain_service('rabbitmq-server').with(
-            'ensure'    => 'stopped',
-            'enable'    => false
+            'ensure' => 'stopped',
+            'enable' => false
           )
         }
       end
@@ -1618,3 +1794,6 @@ describe 'rabbitmq' do
     end
   end
 end
+
+# rubocop:enable RSpec/RepeatedExampleGroupDescription
+# rubocop:enable RSpec/RepeatedExampleGroupBody

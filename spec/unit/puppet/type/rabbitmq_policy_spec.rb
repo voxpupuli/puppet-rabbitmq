@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 describe Puppet::Type.type(:rabbitmq_policy) do
   let(:policy) do
@@ -44,7 +46,7 @@ describe Puppet::Type.type(:rabbitmq_policy) do
   end
 
   it 'accepts valid value for applyto' do
-    [:all, :exchanges, :queues].each do |v|
+    %i[all exchanges queues].each do |v|
       policy[:applyto] = v
       expect(policy[:applyto]).to eq(v)
     end
@@ -178,6 +180,19 @@ describe Puppet::Type.type(:rabbitmq_policy) do
     expect do
       policy[:definition] = definition
     end.to raise_error(Puppet::Error, %r{Invalid ha-sync-batch-size value.*future})
+  end
+
+  it 'accepts and converts the delivery-limit value' do
+    definition = { 'delivery-limit' => '3' }
+    policy[:definition] = definition
+    expect(policy[:definition]['delivery-limit']).to eq(3)
+  end
+
+  it 'does not accept non-numeric delivery-limit value' do
+    definition = { 'delivery-limit' => 'future' }
+    expect do
+      policy[:definition] = definition
+    end.to raise_error(Puppet::Error, %r{Invalid delivery-limit value.*future})
   end
 
   context 'accepts list value in ha-params when ha-mode = nodes' do

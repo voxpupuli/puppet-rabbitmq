@@ -1,24 +1,26 @@
+# frozen_string_literal: true
+
 Puppet::Type.newtype(:rabbitmq_user) do
-  desc <<-DESC
-Native type for managing rabbitmq users
+  desc <<~DESC
+    Native type for managing rabbitmq users
 
-@example query all current users
- $ puppet resource rabbitmq_user
+    @example query all current users
+     $ puppet resource rabbitmq_user
 
-@example Configure a user, dan
- rabbitmq_user { 'dan':
-   admin    => true,
-   password => 'bar',
- }
+    @example Configure a user, dan
+     rabbitmq_user { 'dan':
+       admin    => true,
+       password => 'bar',
+     }
 
-@example Optional parameter tags will set further rabbitmq tags like monitoring, policymaker, etc.
- To set the administrator tag use admin-flag.
- rabbitmq_user { 'dan':
-   admin    => true,
-   password => 'bar',
-   tags     => ['monitoring', 'tag1'],
- }
-DESC
+    @example Optional parameter tags will set further rabbitmq tags like monitoring, policymaker, etc.
+     To set the administrator tag use admin-flag.
+     rabbitmq_user { 'dan':
+       admin    => true,
+       password => 'bar',
+       tags     => ['monitoring', 'tag1'],
+     }
+  DESC
 
   ensurable do
     defaultto(:present)
@@ -47,11 +49,9 @@ DESC
       'password has been changed'
     end
 
-    # rubocop:disable Style/PredicateName
     def is_to_s(_value)
       '[old password redacted]'
     end
-    # rubocop:enable Style/PredicateName
 
     def should_to_s(_value)
       '[new password redacted]'
@@ -71,13 +71,9 @@ DESC
   newproperty(:tags, array_matching: :all) do
     desc 'additional tags for the user'
     validate do |value|
-      unless value =~ %r{^\S+$}
-        raise ArgumentError, "Invalid tag: #{value.inspect}"
-      end
+      raise ArgumentError, "Invalid tag: #{value.inspect}" unless value =~ %r{^\S+$}
 
-      if value == 'administrator'
-        raise ArgumentError, 'must use admin property instead of administrator tag'
-      end
+      raise ArgumentError, 'must use admin property instead of administrator tag' if value == 'administrator'
     end
     defaultto []
 

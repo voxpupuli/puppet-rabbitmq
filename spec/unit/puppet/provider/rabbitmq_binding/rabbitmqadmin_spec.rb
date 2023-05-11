@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 provider_class = Puppet::Type.type(:rabbitmq_binding).provider(:rabbitmqadmin)
@@ -12,17 +14,16 @@ describe provider_class do
   end
   let(:provider) { provider_class.new(resource) }
 
-  # rubocop:disable RSpec/MultipleExpectations
   describe '#instances' do
     it 'returns instances' do
-      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<-EOT
-/
-EOT
+      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<~EOT
+        /
+      EOT
       provider_class.expects(:rabbitmqctl_list).with(
         'bindings', '-p', '/', 'source_name', 'destination_name', 'destination_kind', 'routing_key', 'arguments'
-      ).returns <<-EOT
-exchange\tdst_queue\tqueue\t*\t[]
-EOT
+      ).returns <<~EOT
+        exchange\tdst_queue\tqueue\t*\t[]
+      EOT
       instances = provider_class.instances
       expect(instances.size).to eq(1)
       expect(instances.map do |prov|
@@ -41,19 +42,17 @@ EOT
                    }
                  ])
     end
-    # rubocop:enable RSpec/MultipleExpectations
 
-    # rubocop:disable RSpec/MultipleExpectations
     it 'returns multiple instances' do
-      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<-EOT
-/
-EOT
+      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<~EOT
+        /
+      EOT
       provider_class.expects(:rabbitmqctl_list).with(
         'bindings', '-p', '/', 'source_name', 'destination_name', 'destination_kind', 'routing_key', 'arguments'
-      ).returns <<-EOT
-exchange\tdst_queue\tqueue\trouting_one\t[]
-exchange\tdst_queue\tqueue\trouting_two\t[]
-EOT
+      ).returns <<~EOT
+        exchange\tdst_queue\tqueue\trouting_one\t[]
+        exchange\tdst_queue\tqueue\trouting_two\t[]
+      EOT
       instances = provider_class.instances
       expect(instances.size).to eq(2)
       expect(instances.map do |prov|
@@ -79,7 +78,6 @@ EOT
                  ])
     end
   end
-  # rubocop:enable RSpec/MultipleExpectations
 
   describe 'Test for prefetch error' do
     let(:resource) do
@@ -94,28 +92,28 @@ EOT
     end
 
     it 'exists' do
-      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<-EOT
-/
-EOT
+      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<~EOT
+        /
+      EOT
       provider_class.expects(:rabbitmqctl_list).with(
         'bindings', '-p', '/', 'source_name', 'destination_name', 'destination_kind', 'routing_key', 'arguments'
-      ).returns <<-EOT
-exchange\tdst_queue\tqueue\t*\t[]
-EOT
+      ).returns <<~EOT
+        exchange\tdst_queue\tqueue\t*\t[]
+      EOT
 
       provider_class.prefetch({})
     end
 
     it 'matches' do
       # Test resource to match against
-      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<-EOT
-/
-EOT
+      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<~EOT
+        /
+      EOT
       provider_class.expects(:rabbitmqctl_list).with(
         'bindings', '-p', '/', 'source_name', 'destination_name', 'destination_kind', 'routing_key', 'arguments'
-      ).returns <<-EOT
-exchange\tdst_queue\tqueue\t*\t[]
-EOT
+      ).returns <<~EOT
+        exchange\tdst_queue\tqueue\t*\t[]
+      EOT
 
       provider_class.prefetch('binding1' => resource)
     end

@@ -3,10 +3,10 @@
 #
 # @api private
 class rabbitmq::config {
-
   $admin_enable                        = $rabbitmq::admin_enable
   $management_enable                   = $rabbitmq::management_enable
   $use_config_file_for_plugins         = $rabbitmq::use_config_file_for_plugins
+  $plugins                             = $rabbitmq::plugins
   $cluster_node_type                   = $rabbitmq::cluster_node_type
   $cluster_nodes                       = $rabbitmq::cluster_nodes
   $config                              = $rabbitmq::config
@@ -61,6 +61,9 @@ class rabbitmq::config {
   $ssl_dhfile                          = $rabbitmq::ssl_dhfile
   $ssl_versions                        = $rabbitmq::ssl_versions
   $ssl_ciphers                         = $rabbitmq::ssl_ciphers
+  $ssl_crl_check                       = $rabbitmq::ssl_crl_check
+  $ssl_crl_cache_hash_dir              = $rabbitmq::ssl_crl_cache_hash_dir
+  $ssl_crl_cache_http_timeout          = $rabbitmq::ssl_crl_cache_http_timeout
   $stomp_port                          = $rabbitmq::stomp_port
   $stomp_ssl_only                      = $rabbitmq::stomp_ssl_only
   $ldap_auth                           = $rabbitmq::ldap_auth
@@ -79,6 +82,7 @@ class rabbitmq::config {
   $auth_backends                       = $rabbitmq::auth_backends
   $cluster_partition_handling          = $rabbitmq::cluster_partition_handling
   $file_limit                          = $rabbitmq::file_limit
+  $oom_score_adj                       = $rabbitmq::oom_score_adj
   $collect_statistics_interval         = $rabbitmq::collect_statistics_interval
   $ipv6                                = $rabbitmq::ipv6
   $inetrc_config                       = $rabbitmq::inetrc_config
@@ -104,7 +108,7 @@ class rabbitmq::config {
     $management_ip_address = $rabbitmq::node_ip_address
   }
 
-  $inetrc_env = {'export ERL_INETRC' => $inetrc_config_path}
+  $inetrc_env = { 'export ERL_INETRC' => $inetrc_config_path }
 
   # Handle env variables.
   $_environment_variables = $default_ssl_env_variables + $inetrc_env + $rabbitmq::environment_variables
@@ -117,10 +121,10 @@ class rabbitmq::config {
     # is "inet_tls".
     if $ipv6 and $ssl_erl_dist {
       $proto_dist = 'inet6_tls'
-      $ssl_path = " -pa ${::erl_ssl_path} "
+      $ssl_path = " -pa ${facts['erl_ssl_path']} "
     } elsif $ssl_erl_dist {
       $proto_dist = 'inet_tls'
-      $ssl_path = " -pa ${::erl_ssl_path} "
+      $ssl_path = " -pa ${facts['erl_ssl_path']} "
     } else {
       $proto_dist = 'inet6_tcp'
       $ssl_path = ''
@@ -136,7 +140,7 @@ class rabbitmq::config {
         default           => "\"${orig}${ssl_path} -proto_dist ${proto_dist}\"",
       }
 
-      merge($memo, {"RABBITMQ_${item}_ERL_ARGS" => $munged})
+      merge($memo, { "RABBITMQ_${item}_ERL_ARGS" => $munged })
     }
 
     $environment_variables = $_environment_variables + $ipv6_or_tls_env
@@ -227,14 +231,18 @@ class rabbitmq::config {
         mode    => '0644',
       }
     }
-    default: { }
+    default: {}
   }
 
   if $facts['systemd'] { # systemd fact provided by systemd module
     systemd::service_limits { "${service_name}.service":
-      limits          => {'LimitNOFILE' => $file_limit},
+      selinux_ignore_defaults => ($facts['os']['family'] == 'RedHat'),
+      limits                  => {
+        'LimitNOFILE'    => $file_limit,
+        'OOMScoreAdjust' => $oom_score_adj,
+      },
       # The service will be notified when config changes
-      restart_service => false,
+      restart_service         => false,
     }
   }
 

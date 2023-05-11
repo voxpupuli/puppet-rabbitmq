@@ -2,7 +2,6 @@
 #
 # @api private
 class rabbitmq::install {
-
   $package_ensure   = $rabbitmq::package_ensure
   $package_name     = $rabbitmq::package_name
   $rabbitmq_group   = $rabbitmq::rabbitmq_group

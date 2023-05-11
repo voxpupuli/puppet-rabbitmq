@@ -1,20 +1,22 @@
-Puppet::Type.newtype(:rabbitmq_queue) do
-  desc <<-DESC
-Native type for managing rabbitmq queue
+# frozen_string_literal: true
 
-@example Create a rabbitmq_queue
- rabbitmq_queue { 'myqueue@myvhost':
-   ensure      => present,
-   user        => 'dan',
-   password    => 'bar',
-   durable     => true,
-   auto_delete => false,
-   arguments   => {
-     x-message-ttl          => 123,
-     x-dead-letter-exchange => 'other'
-   },
- }
-DESC
+Puppet::Type.newtype(:rabbitmq_queue) do
+  desc <<~DESC
+    Native type for managing rabbitmq queue
+
+    @example Create a rabbitmq_queue
+     rabbitmq_queue { 'myqueue@myvhost':
+       ensure      => present,
+       user        => 'dan',
+       password    => 'bar',
+       durable     => true,
+       auto_delete => false,
+       arguments   => {
+         x-message-ttl          => 123,
+         x-dead-letter-exchange => 'other'
+       },
+     }
+  DESC
 
   ensurable do
     defaultto(:present)
@@ -45,7 +47,7 @@ DESC
 
   newparam(:arguments) do
     desc 'Queue arguments example: {x-message-ttl => 60, x-expires => 10}'
-    defaultto {}
+    defaultto({})
     validate do |value|
       resource.validate_argument(value)
     end

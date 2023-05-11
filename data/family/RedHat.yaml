@@ -1,4 +1,5 @@
 ---
 rabbitmq::package_name: 'rabbitmq-server'
 rabbitmq::service_name: 'rabbitmq-server'
-rabbitmq::package_gpg_key: 'https://www.rabbitmq.com/rabbitmq-release-signing-key.asc'
+rabbitmq::package_gpg_key: 'https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc'
+rabbitmq::repo_gpg_key: 'https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey'

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 describe Puppet::Type.type(:rabbitmq_parameter) do
   let(:parameter) do
@@ -81,5 +83,21 @@ describe Puppet::Type.type(:rabbitmq_parameter) do
     value = { 'myparameter' => '1800000' }
     parameter[:value] = value
     expect(parameter[:value]['myparameter']).to eq(1_800_000)
+  end
+
+  context 'autoconvert is set to false' do
+    let(:parameter) do
+      Puppet::Type.type(:rabbitmq_parameter).new(
+        name: 'documentumShovel@/',
+        component_name: 'shovel',
+        autoconvert: false,
+        value: { 'myparameter' => '1800000' }
+      )
+    end
+
+    it 'does not convert numeric string to integer' do
+      expect(parameter[:value]['myparameter']).to eq('1800000')
+      expect(parameter[:value]['myparameter']).to be_kind_of(String)
+    end
   end
 end
