@@ -131,19 +131,29 @@ You can install all needed gems for spec tests into the modules directory by
 running:
 
 ```sh
-bundle install --path .vendor/ --without development system_tests release --jobs "$(nproc)"
+bundle config set --local path '.vendor/'
+bundle config set --local without 'development system_tests release'
+bundle install --jobs "$(nproc)"
 ```
 
 If you also want to run acceptance tests:
 
 ```sh
-bundle install --path .vendor/ --with system_tests --without development release --jobs "$(nproc)"
+bundle config set --local path '.vendor/'
+bundle config set --local without 'development release'
+bundle config set --local with 'system_tests'
+bundle install --jobs "$(nproc)"
 ```
 
 Our all in one solution if you don't know if you need to install or update gems:
 
 ```sh
-bundle install --path .vendor/ --with system_tests --without development release --jobs "$(nproc)"; bundle update; bundle clean
+bundle config set --local path '.vendor/'
+bundle config set --local without 'development release'
+bundle config set --local with 'system_tests'
+bundle install --jobs "$(nproc)"
+bundle update
+bundle clean
 ```
 
 As an alternative to the `--jobs "$(nproc)` parameter, you can set an
@@ -232,18 +242,21 @@ simple tests against it after applying the module. You can run this
 with:
 
 ```sh
-BEAKER_setfile=debian11-64 bundle exec rake beaker
+BEAKER_PUPPET_COLLECTION=puppet7 BEAKER_setfile=debian11-64 bundle exec rake beaker
 ```
 
-You can replace the string `debian10` with any common operating system.
+You can replace the string `debian11` with any common operating system.
 The following strings are known to work:
 
-* ubuntu1804
 * ubuntu2004
-* debian10
+* ubuntu2204
 * debian11
 * centos7
 * centos8
+* centos9
+* almalinux8
+* almalinux9
+* fedora36
 
 For more information and tips & tricks, see [voxpupuli-acceptance's documentation](https://github.com/voxpupuli/voxpupuli-acceptance#running-tests).
 

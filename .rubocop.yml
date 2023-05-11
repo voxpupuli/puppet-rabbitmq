@@ -2,5 +2,6 @@
 # Managed by modulesync - DO NOT EDIT
 # https://voxpupuli.org/docs/updating-files-managed-with-modulesync/
 
+inherit_from: .rubocop_todo.yml
 inherit_gem:
   voxpupuli-test: rubocop.yml
