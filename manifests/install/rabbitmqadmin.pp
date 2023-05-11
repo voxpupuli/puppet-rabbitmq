@@ -39,7 +39,7 @@ class rabbitmq::install::rabbitmqadmin {
     if !($management_ip_address) {
       # Pull from localhost if we don't have an explicit bind address
       $sanitized_ip = '127.0.0.1'
-    } elsif $management_ip_address =~ Stdlib::Compat::Ipv6 {
+    } elsif $management_ip_address =~ Stdlib::IP::Address::V6::Nosubnet {
       $sanitized_ip = join(enclose_ipv6(any2array($management_ip_address)), ',')
     } else {
       $sanitized_ip = $management_ip_address
