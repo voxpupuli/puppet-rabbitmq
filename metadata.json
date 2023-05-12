@@ -47,9 +47,6 @@
     },
     {
       "operatingsystem": "OpenBSD"
-    },
-    {
-      "operatingsystem": "Archlinux"
     }
   ],
   "requirements": [

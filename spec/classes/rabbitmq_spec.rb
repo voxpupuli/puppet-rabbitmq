@@ -12,14 +12,14 @@ describe 'rabbitmq' do
         os_facts
       end
 
-      name = case os_facts[:osfamily]
+      name = case os_facts[:os]['family']
              when 'Archlinux', 'OpenBSD', 'FreeBSD'
                'rabbitmq'
              else
                'rabbitmq-server'
              end
 
-      rabbitmq_home = case os_facts[:osfamily]
+      rabbitmq_home = case os_facts[:os]['family']
                       when 'FreeBSD'
                         '/var/db/rabbitmq'
                       else
@@ -248,7 +248,7 @@ describe 'rabbitmq' do
           end
         end
 
-        context 'with $management_ip_address undef and service_manage set to true', unless: os_facts[:osfamily] == 'Archlinux' do
+        context 'with $management_ip_address undef and service_manage set to true', unless: os_facts[:os]['family'] == 'Archlinux' do
           let(:params) { { admin_enable: true, management_ip_address: :undef } }
 
           it 'we enable the admin interface by default' do
@@ -260,7 +260,7 @@ describe 'rabbitmq' do
           end
         end
 
-        context 'with service_manage set to true, node_ip_address = undef, and default user/pass specified', unless: os_facts[:osfamily] == 'Archlinux' do
+        context 'with service_manage set to true, node_ip_address = undef, and default user/pass specified', unless: os_facts[:os]['family'] == 'Archlinux' do
           let(:params) { { admin_enable: true, default_user: 'foobar', default_pass: 'hunter2', node_ip_address: :undef } }
 
           it 'we use the correct URL to rabbitmqadmin' do
@@ -272,7 +272,7 @@ describe 'rabbitmq' do
           end
         end
 
-        context 'with service_manage set to true and default user/pass specified', unless: os_facts[:osfamily] == 'Archlinux' do
+        context 'with service_manage set to true and default user/pass specified', unless: os_facts[:os]['family'] == 'Archlinux' do
           let(:params) { { admin_enable: true, default_user: 'foobar', default_pass: 'hunter2', management_ip_address: '1.1.1.1' } }
 
           it 'we use the correct URL to rabbitmqadmin' do
@@ -284,7 +284,7 @@ describe 'rabbitmq' do
           end
         end
 
-        context 'with service_manage set to true and archive_options set', unless: os_facts[:osfamily] == 'Archlinux' do
+        context 'with service_manage set to true and archive_options set', unless: os_facts[:os]['family'] == 'Archlinux' do
           let(:params) do
             {
               admin_enable: true,
@@ -301,7 +301,7 @@ describe 'rabbitmq' do
           end
         end
 
-        context 'with service_manage set to true and management port specified', unless: os_facts[:osfamily] == 'Archlinux' do
+        context 'with service_manage set to true and management port specified', unless: os_facts[:os]['family'] == 'Archlinux' do
           # NOTE: that the 2.x management port is 55672 not 15672
           let(:params) { { admin_enable: true, management_port: 55_672, management_ip_address: '1.1.1.1' } }
 
@@ -314,7 +314,7 @@ describe 'rabbitmq' do
           end
         end
 
-        context 'with ipv6, service_manage set to true and management port specified', unless: os_facts[:osfamily] == 'Archlinux' do
+        context 'with ipv6, service_manage set to true and management port specified', unless: os_facts[:os]['family'] == 'Archlinux' do
           # NOTE: that the 2.x management port is 55672 not 15672
           let(:params) { { admin_enable: true, management_port: 55_672, management_ip_address: '::1' } }
 
