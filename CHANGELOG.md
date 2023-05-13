@@ -4,6 +4,36 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v13.0.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v13.0.0) (2023-05-13)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v12.1.0...v13.0.0)
+
+**Breaking changes:**
+
+- BREAKING: Drop official Archlinux support [\#933](https://github.com/voxpupuli/puppet-rabbitmq/pull/933) ([wyardley](https://github.com/wyardley))
+- Remove support for Debian 9 and Ubuntu 16.04; Add Debian 10 support [\#928](https://github.com/voxpupuli/puppet-rabbitmq/pull/928) ([wyardley](https://github.com/wyardley))
+- Drop Puppet 6 support [\#927](https://github.com/voxpupuli/puppet-rabbitmq/pull/927) ([bastelfreak](https://github.com/bastelfreak))
+
+**Implemented enhancements:**
+
+- Support FreeBSD 12 and 13 [\#932](https://github.com/voxpupuli/puppet-rabbitmq/pull/932) ([wyardley](https://github.com/wyardley))
+- Remove deprecated `Stdlib::Compat` [\#931](https://github.com/voxpupuli/puppet-rabbitmq/pull/931) ([wyardley](https://github.com/wyardley))
+- cluster: add local\_node settings [\#923](https://github.com/voxpupuli/puppet-rabbitmq/pull/923) ([fatpat](https://github.com/fatpat))
+
+**Fixed bugs:**
+
+- Idempotency issue with implicitly enabled plugins [\#930](https://github.com/voxpupuli/puppet-rabbitmq/issues/930)
+- Fix detection of management\_ip\_address for rabbitmqadmin [\#924](https://github.com/voxpupuli/puppet-rabbitmq/pull/924) ([kajinamit](https://github.com/kajinamit))
+
+**Closed issues:**
+
+- Compatibility with puppet-systemd [\#898](https://github.com/voxpupuli/puppet-rabbitmq/issues/898)
+- Add support for debian 10  [\#887](https://github.com/voxpupuli/puppet-rabbitmq/issues/887)
+
+**Merged pull requests:**
+
+- Remove testing workarounds from Puppet \< 6 [\#929](https://github.com/voxpupuli/puppet-rabbitmq/pull/929) ([wyardley](https://github.com/wyardley))
+
 ## [v12.1.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v12.1.0) (2023-02-11)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v12.0.2...v12.1.0)
