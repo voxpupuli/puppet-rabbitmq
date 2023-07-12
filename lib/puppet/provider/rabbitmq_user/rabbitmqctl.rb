@@ -17,7 +17,7 @@ Puppet::Type.type(:rabbitmq_user).provide(
       rabbitmqctl_list('users')
     end
 
-    user_list.split(%r{\n}).map do |line|
+    user_list.split(%r{\n}).reject { |line| line.strip =~ %r{^user\s+tags$} }.map do |line|
       raise Puppet::Error, "Cannot parse invalid user line: #{line}" unless line =~ %r{^(\S+)\s+\[(.*?)\]$}
 
       user = Regexp.last_match(1)
