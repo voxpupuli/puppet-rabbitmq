@@ -23,3 +23,4 @@ if File.exist?(File.join(__dir__, 'default_module_facts.yml'))
 end
 
 require 'spec_helper_local'
+Dir['./spec/support/spec/**/*.rb'].sort.each { |f| require f }
