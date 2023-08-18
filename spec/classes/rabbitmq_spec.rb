@@ -372,7 +372,7 @@ describe 'rabbitmq' do
       describe 'does not contain pre-ranch settings with default config' do
         it do
           is_expected.to contain_file('rabbitmq.config'). \
-            without_content(%r{binary,}).                 \
+            without_content(%r{binary,}). \
             without_content(%r{\{packet,        raw\},}). \
             without_content(%r{\{reuseaddr,     true\},})
         end
@@ -383,7 +383,7 @@ describe 'rabbitmq' do
 
         it do
           is_expected.to contain_file('rabbitmq.config'). \
-            with_content(%r{binary,}).                 \
+            with_content(%r{binary,}). \
             with_content(%r{\{packet,        raw\},}). \
             with_content(%r{\{reuseaddr,     true\},})
         end
