@@ -45,4 +45,23 @@ describe 'rabbitmq parameter on a vhost:' do
       end
     end
   end
+
+  context 'destroy parameter resource' do
+    it 'runs successfully' do
+      pp = <<-EOS
+      rabbitmq_parameter { 'documentumFed@fedhost':
+        ensure => absent,
+      }
+      EOS
+
+      apply_manifest(pp, catch_failures: true)
+      apply_manifest(pp, catch_changes: true)
+    end
+
+    it 'does not have the parameter' do
+      shell('rabbitmqctl list_parameters -q') do |r|
+        expect(r.stdout).not_to match(%r{documentumFed\s+})
+      end
+    end
+  end
 end
