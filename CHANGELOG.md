@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v13.1.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v13.1.0) (2023-10-30)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v13.0.0...v13.1.0)
+
+**Implemented enhancements:**
+
+- Add additional applyto options for policies [\#948](https://github.com/voxpupuli/puppet-rabbitmq/pull/948) ([wyardley](https://github.com/wyardley))
+- Add Puppet 8 support [\#938](https://github.com/voxpupuli/puppet-rabbitmq/pull/938) ([bastelfreak](https://github.com/bastelfreak))
+
+**Fixed bugs:**
+
+- fix purge rabbitmq\_parameter [\#945](https://github.com/voxpupuli/puppet-rabbitmq/pull/945) ([fatpat](https://github.com/fatpat))
+
 ## [v13.0.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v13.0.0) (2023-05-13)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v12.1.0...v13.0.0)
