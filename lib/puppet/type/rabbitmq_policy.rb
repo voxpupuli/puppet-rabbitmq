@@ -48,8 +48,11 @@ Puppet::Type.newtype(:rabbitmq_policy) do
   newproperty(:applyto) do
     desc 'policy apply to'
     newvalue(:all)
+    newvalue(:classic_queues)
     newvalue(:exchanges)
     newvalue(:queues)
+    newvalue(:quorum_queues)
+    newvalue(:streams)
     defaultto :all
   end
 

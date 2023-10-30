@@ -46,7 +46,7 @@ describe Puppet::Type.type(:rabbitmq_policy) do
   end
 
   it 'accepts valid value for applyto' do
-    %i[all exchanges queues].each do |v|
+    %i[all classic_queues exchanges queues quorum_queues streams].each do |v|
       policy[:applyto] = v
       expect(policy[:applyto]).to eq(v)
     end

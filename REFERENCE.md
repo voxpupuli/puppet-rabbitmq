@@ -1775,7 +1775,7 @@ The following properties are available in the `rabbitmq_policy` type.
 
 ##### `applyto`
 
-Valid values: `all`, `exchanges`, `queues`
+Valid values: `all`, `classic_queues`, `exchanges`, `queues`, `quorum_queues`, `streams`
 
 policy apply to
 
