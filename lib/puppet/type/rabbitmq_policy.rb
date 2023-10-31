@@ -120,9 +120,13 @@ Puppet::Type.newtype(:rabbitmq_policy) do
       ha_sync_batch_size_val = definition['ha-sync-batch-size']
       raise ArgumentError, "Invalid ha-sync-batch-size value '#{ha_sync_batch_size_val}'" unless ha_sync_batch_size_val.to_i.to_s == ha_sync_batch_size_val
     end
-    if definition.key? 'delivery-limit' # rubocop:disable Style/GuardClause
+    if definition.key? 'delivery-limit'
       delivery_limit_val = definition['delivery-limit']
       raise ArgumentError, "Invalid delivery-limit value '#{delivery_limit_val}'" unless delivery_limit_val.to_i.to_s == delivery_limit_val
+    end
+    if definition.key? 'initial-cluster-size' # rubocop:disable Style/GuardClause
+      initial_cluster_size_val = definition['initial-cluster-size']
+      raise ArgumentError, "Invalid initial-cluster-size value '#{initial_cluster_size_val}'" unless initial_cluster_size_val.to_i.to_s == initial_cluster_size_val
     end
   end
 
@@ -135,6 +139,7 @@ Puppet::Type.newtype(:rabbitmq_policy) do
     definition['shards-per-node'] = definition['shards-per-node'].to_i if definition.key? 'shards-per-node'
     definition['ha-sync-batch-size'] = definition['ha-sync-batch-size'].to_i if definition.key? 'ha-sync-batch-size'
     definition['delivery-limit'] = definition['delivery-limit'].to_i if definition.key? 'delivery-limit'
+    definition['initial-cluster-size'] = definition['initial-cluster-size'].to_i if definition.key? 'initial-cluster-size'
     definition
   end
 end
