@@ -195,6 +195,19 @@ describe Puppet::Type.type(:rabbitmq_policy) do
     end.to raise_error(Puppet::Error, %r{Invalid delivery-limit value.*future})
   end
 
+  it 'accepts and converts the initial-cluster-size value' do
+    definition = { 'initial-cluster-size' => '3' }
+    policy[:definition] = definition
+    expect(policy[:definition]['initial-cluster-size']).to eq(3)
+  end
+
+  it 'does not accept non-numeric initial-cluster-size value' do
+    definition = { 'initial-cluster-size' => 'impressive' }
+    expect do
+      policy[:definition] = definition
+    end.to raise_error(Puppet::Error, %r{Invalid initial-cluster-size value 'impressive})
+  end
+
   context 'accepts list value in ha-params when ha-mode = nodes' do
     before do
       policy[:definition] = definition
