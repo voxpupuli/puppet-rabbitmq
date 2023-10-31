@@ -17,7 +17,7 @@ describe 'rabbitmq class:' do
       <<-EOS
       class { 'rabbitmq': }
       if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true}
+        class { 'erlang': }
         Class['erlang'] -> Class['rabbitmq']
       }
       EOS
@@ -55,7 +55,7 @@ describe 'rabbitmq class:' do
           service_ensure => 'stopped',
         }
         if $facts['os']['family'] == 'RedHat' {
-          class { 'erlang': epel_enable => true}
+          class { 'erlang': }
           Class['erlang'] -> Class['rabbitmq']
         }
       EOS
@@ -74,7 +74,7 @@ describe 'rabbitmq class:' do
       pp_pre = <<-EOS
         class { 'rabbitmq': }
         if $facts['os']['family'] == 'RedHat' {
-          class { 'erlang': epel_enable => true}
+          class { 'erlang': }
           Class['erlang'] -> Class['rabbitmq']
         }
       EOS
@@ -85,7 +85,7 @@ describe 'rabbitmq class:' do
           service_ensure  => 'stopped',
         }
         if $facts['os']['family'] == 'RedHat' {
-          class { 'erlang': epel_enable => true}
+          class { 'erlang': }
           Class['erlang'] -> Class['rabbitmq']
         }
       EOS

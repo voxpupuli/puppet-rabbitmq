@@ -11,7 +11,7 @@ describe 'rabbitmq with delete_guest_user' do
         delete_guest_user => true,
       }
       if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true}
+        class { 'erlang': }
         Class['erlang'] -> Class['rabbitmq']
       }
       EOS
