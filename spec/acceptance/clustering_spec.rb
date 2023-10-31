@@ -15,7 +15,7 @@ describe 'rabbitmq clustering' do
         wipe_db_on_cookie_change => false,
       }
       if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true}
+        class { 'erlang': }
         Class['erlang'] -> Class['rabbitmq']
       }
       EOS
@@ -40,7 +40,7 @@ describe 'rabbitmq clustering' do
         wipe_db_on_cookie_change => true,
       }
       if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true}
+        class { 'erlang': }
         Class['erlang'] -> Class['rabbitmq']
       }
       EOS
@@ -85,7 +85,7 @@ describe 'rabbitmq clustering' do
         erlang_cookie            => 'TESTCOOKIE',
       }
       if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true}
+        class { 'erlang': }
         Class['erlang'] -> Class['rabbitmq']
       }
       EOS

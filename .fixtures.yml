@@ -3,6 +3,6 @@ fixtures:
     stdlib: 'https://github.com/puppetlabs/puppetlabs-stdlib'
     apt: 'https://github.com/puppetlabs/puppetlabs-apt'
     archive: 'https://github.com/voxpupuli/puppet-archive'
-    erlang: 'https://github.com/garethr/garethr-erlang'
+    erlang: 'https://github.com/voxpupuli/puppet-erlang'
     systemd: 'https://github.com/voxpupuli/puppet-systemd'
     yumrepo_core: 'https://github.com/puppetlabs/puppetlabs-yumrepo_core'

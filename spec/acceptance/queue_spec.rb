@@ -7,7 +7,7 @@ describe 'rabbitmq binding:' do
     it 'runs successfully' do
       pp = <<-EOS
       if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true }
+        class { 'erlang':  }
         Class['erlang'] -> Class['rabbitmq']
       }
       class { 'rabbitmq':
@@ -81,7 +81,7 @@ describe 'rabbitmq binding:' do
     it 'runs successfully' do
       pp = <<-EOS
       if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true }
+        class { 'erlang':  }
         Class['erlang'] -> Class['rabbitmq']
       }
       class { 'rabbitmq':
@@ -169,7 +169,7 @@ describe 'rabbitmq binding:' do
     it 'runs successfully' do
       pp = <<-EOS
       if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true }
+        class { 'erlang':  }
         Class['erlang'] -> Class['rabbitmq']
       }
       class { 'rabbitmq':
