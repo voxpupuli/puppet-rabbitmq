@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v13.1.1](https://github.com/voxpupuli/puppet-rabbitmq/tree/v13.1.1) (2023-11-01)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v13.1.0...v13.1.1)
+
+**Fixed bugs:**
+
+- Treat `initial-cluster-size` option in policy as an integer [\#950](https://github.com/voxpupuli/puppet-rabbitmq/pull/950) ([jimmybigcommerce](https://github.com/jimmybigcommerce))
+
 ## [v13.1.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v13.1.0) (2023-10-30)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v13.0.0...v13.1.0)
