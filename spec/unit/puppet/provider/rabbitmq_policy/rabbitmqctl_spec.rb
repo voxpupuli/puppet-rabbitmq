@@ -61,6 +61,23 @@ describe Puppet::Type.type(:rabbitmq_policy).provider(:rabbitmqctl) do
                                        'ha-sync-mode' => 'automatic'
                                      })
     end
+
+    it 'matches policies from list targeting quorum queues' do
+      provider.class.expects(:rabbitmq_version).returns '3.7.0'
+      provider.class.expects(:rabbitmqctl_list).with('policies', '-p', '/').returns <<~EOT
+        / ha-all ^.*$ quorum_queues {"delivery-limit":10,"initial-cluster-size":3,"max-length":100000000,"overflow":"reject-publish-dlx"} 0
+        / test .* exchanges {"ha-mode":"all"} 0
+      EOT
+      expect(provider.exists?).to eq(applyto: 'quorum_queues',
+                                     pattern: '^.*$',
+                                     priority: '0',
+                                     definition: {
+                                       'delivery-limit' => 10,
+                                       'initial-cluster-size' => 3,
+                                       'max-length' => 100_000_000,
+                                       'overflow' => 'reject-publish-dlx'
+                                     })
+    end
   end
 
   context 'with RabbitMQ version >=3.2.0 and < 3.7.0' do
