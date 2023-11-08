@@ -18,6 +18,11 @@ Puppet::Type.type(:rabbitmq_plugin).provide(:rabbitmqplugins, parent: Puppet::Pr
       # To preserve idempotency we should get all enabled plugins regardless of implicitly or
       # explicitly enabled.
       rabbitmqplugins('list', '-e', '-m')
+    rescue Puppet::MissingCommand
+      # See note about Puppet::MissingCommand in:
+      # lib/puppet/provider/rabbitmq_cli.rb
+      Puppet.debug('rabbitmqplugins command not found; assuming rabbitmq is not installed')
+      ''
     end
     # Split by newline.
     lines = list_str.split(%r{\n})
