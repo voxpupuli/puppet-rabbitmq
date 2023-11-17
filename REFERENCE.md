@@ -2080,13 +2080,26 @@ $ puppet resource rabbitmq_vhost`
 
 ```puppet
 rabbitmq_vhost { 'myvhost':
-  ensure => present,
+  ensure             => present,
+  description        => 'myvhost description',
+  tags               => ['tag1', 'tag2'],
+  default_queue_type => 'quorum',
 }
 ```
 
 #### Properties
 
 The following properties are available in the `rabbitmq_vhost` type.
+
+##### `default_queue_type`
+
+Valid values: `classic`, `quorum`, `stream`
+
+The default queue type for queues in this vhost
+
+##### `description`
+
+A description of the vhost
 
 ##### `ensure`
 
@@ -2095,6 +2108,12 @@ Valid values: `present`, `absent`
 The basic property that the resource should be in.
 
 Default value: `present`
+
+##### `tags`
+
+additional tags for the vhost
+
+Default value: `[]`
 
 #### Parameters
 
