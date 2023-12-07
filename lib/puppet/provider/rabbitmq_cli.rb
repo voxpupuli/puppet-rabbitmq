@@ -54,6 +54,14 @@ class Puppet::Provider::RabbitmqCli < Puppet::Provider
         ['-q']
       end
     rabbitmqctl("list_#{resource}", *list_opts, *opts)
+  rescue Puppet::MissingCommand
+    # rabbitmqctl is not present. Normally we would have installed a package
+    # that provides rabbitmqctl by now, but if we're running under --noop or
+    # with a restrictive set of tags, the package may not have been installed.
+    # Return an empty string to avoid error. This may give false positives for
+    # resources under --noop!
+    Puppet.debug('rabbitmqctl command not found; assuming rabbitmq is not installed')
+    ''
   end
 
   def self.rabbitmq_running
