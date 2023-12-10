@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v13.2.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v13.2.0) (2023-12-10)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v13.1.2...v13.2.0)
+
+**Implemented enhancements:**
+
+-  Add support for Vhost metadata  [\#964](https://github.com/voxpupuli/puppet-rabbitmq/pull/964) ([jimmybigcommerce](https://github.com/jimmybigcommerce))
+
+**Fixed bugs:**
+
+- resources fail to prefetch when rabbitmq is not intended to be installed \(via --noop or --tags\) [\#961](https://github.com/voxpupuli/puppet-rabbitmq/issues/961)
+
 ## [v13.1.2](https://github.com/voxpupuli/puppet-rabbitmq/tree/v13.1.2) (2023-11-05)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v13.1.1...v13.1.2)
