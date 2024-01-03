@@ -23,13 +23,17 @@
     {
       "operatingsystem": "Debian",
       "operatingsystemrelease": [
-        "10"
+        "10",
+        "11",
+        "12"
       ]
     },
     {
       "operatingsystem": "Ubuntu",
       "operatingsystemrelease": [
-        "18.04"
+        "18.04",
+        "20.04",
+        "22.04"
       ]
     },
     {
@@ -58,15 +62,15 @@
   "dependencies": [
     {
       "name": "puppetlabs/stdlib",
-      "version_requirement": ">= 4.25.0 < 9.0.0"
+      "version_requirement": ">= 4.25.0 < 10.0.0"
     },
     {
       "name": "puppet/archive",
-      "version_requirement": ">= 2.0.0 < 7.0.0"
+      "version_requirement": ">= 2.0.0 < 8.0.0"
     },
     {
       "name": "puppet/systemd",
-      "version_requirement": ">= 2.10.0 < 5.0.0"
+      "version_requirement": ">= 2.10.0 < 7.0.0"
     }
   ],
   "tags": [

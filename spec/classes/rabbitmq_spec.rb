@@ -234,7 +234,8 @@ describe 'rabbitmq' do
             is_expected.to contain_archive('rabbitmqadmin').with_source('http://1.1.1.1:15672/cli/rabbitmqadmin')
           end
 
-          it { is_expected.to contain_package('python') } if %w[RedHat Debian SUSE Archlinux].include?(os_facts[:os]['family'])
+          it { is_expected.to contain_package('python') } if %w[RedHat SUSE Archlinux].include?(os_facts[:os]['family'])
+          it { is_expected.to contain_package('python2.7') } if %w[Debian].include?(os_facts[:os]['family'])
           it { is_expected.to contain_package('python38') } if %w[FreeBSD].include?(os_facts[:os]['family'])
         end
 
