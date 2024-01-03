@@ -19,6 +19,11 @@ Puppet::Type.type(:rabbitmq_vhost).provide(
   # we only deal with vhost metadata >= version 3.11.0
   def self.supports_metadata?
     Puppet::Util::Package.versioncmp(rabbitmq_version, '3.11') >= 0
+  rescue Puppet::MissingCommand
+    # See comment on the definition of rabbitmqctl_list in rabbitmqctl_cli.rb;
+    # the same rationale applies here.
+    Puppet.debug('supports_metadata?: rabbitmqctl command not found; assuming rabbitmq is not installed')
+    false
   end
 
   def supports_metadata?
