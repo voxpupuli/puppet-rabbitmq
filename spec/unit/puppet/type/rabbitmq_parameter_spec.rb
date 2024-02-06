@@ -97,7 +97,7 @@ describe Puppet::Type.type(:rabbitmq_parameter) do
 
     it 'does not convert numeric string to integer' do
       expect(parameter[:value]['myparameter']).to eq('1800000')
-      expect(parameter[:value]['myparameter']).to be_kind_of(String)
+      expect(parameter[:value]['myparameter']).to be_a(String)
     end
   end
 end

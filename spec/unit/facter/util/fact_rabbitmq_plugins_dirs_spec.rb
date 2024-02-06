@@ -10,12 +10,7 @@ describe Facter::Util::Fact do
       it do
         Facter::Util::Resolution.expects(:which).with('rabbitmqctl').returns(true)
         Facter::Core::Execution.expects(:execute).with("rabbitmqctl eval 'application:get_env(rabbit, plugins_dir).'").returns('{ok,"/usr/lib/rabbitmq/plugins:/usr/lib/rabbitmq/lib/rabbitmq_server-3.7.10/plugins"}')
-        expect(Facter.fact(:rabbitmq_plugins_dirs).value).to match_array(
-          [
-            '/usr/lib/rabbitmq/plugins',
-            '/usr/lib/rabbitmq/lib/rabbitmq_server-3.7.10/plugins'
-          ]
-        )
+        expect(Facter.fact(:rabbitmq_plugins_dirs).value).to contain_exactly('/usr/lib/rabbitmq/plugins', '/usr/lib/rabbitmq/lib/rabbitmq_server-3.7.10/plugins')
       end
     end
 
@@ -23,11 +18,7 @@ describe Facter::Util::Fact do
       it do
         Facter::Util::Resolution.expects(:which).with('rabbitmqctl').returns(true)
         Facter::Core::Execution.expects(:execute).with("rabbitmqctl eval 'application:get_env(rabbit, plugins_dir).'").returns('{ok,"/usr/lib/rabbitmq/lib/rabbitmq_server-0.0.0/plugins"}')
-        expect(Facter.fact(:rabbitmq_plugins_dirs).value).to match_array(
-          [
-            '/usr/lib/rabbitmq/lib/rabbitmq_server-0.0.0/plugins'
-          ]
-        )
+        expect(Facter.fact(:rabbitmq_plugins_dirs).value).to contain_exactly('/usr/lib/rabbitmq/lib/rabbitmq_server-0.0.0/plugins')
       end
     end
 
