@@ -778,11 +778,11 @@ Default value: `'python'`
 Data type: `Boolean`
 
 Ensure that a repo with the official (and newer) RabbitMQ package is configured, along with its signing key.
-Defaults to false (use system packages). This does not ensure that soft dependencies (like EPEL on RHEL systems) are present.
+Defaults to true. This does not ensure that soft dependencies (like EPEL on RHEL systems) are present.
 It also does not solve the erlang dependency.  See https://www.rabbitmq.com/which-erlang.html for a good breakdown of the
 different ways of handling the erlang deps.  See also https://github.com/voxpupuli/puppet-rabbitmq/issues/788
 
-Default value: `false`
+Default value: `true`
 
 ##### <a name="-rabbitmq--service_ensure"></a>`service_ensure`
 
