@@ -247,6 +247,8 @@ The following parameters are available in the `rabbitmq` class:
 * [`package_apt_pin`](#-rabbitmq--package_apt_pin)
 * [`package_ensure`](#-rabbitmq--package_ensure)
 * [`package_gpg_key`](#-rabbitmq--package_gpg_key)
+* [`package_source`](#-rabbitmq--package_source)
+* [`package_provider`](#-rabbitmq--package_provider)
 * [`repo_gpg_key`](#-rabbitmq--repo_gpg_key)
 * [`package_name`](#-rabbitmq--package_name)
 * [`port`](#-rabbitmq--port)
@@ -271,6 +273,7 @@ The following parameters are available in the `rabbitmq` class:
 * [`ssl_management_cacert`](#-rabbitmq--ssl_management_cacert)
 * [`ssl_management_cert`](#-rabbitmq--ssl_management_cert)
 * [`ssl_management_key`](#-rabbitmq--ssl_management_key)
+* [`ssl_management_fail_if_no_peer_cert`](#-rabbitmq--ssl_management_fail_if_no_peer_cert)
 * [`ssl_port`](#-rabbitmq--ssl_port)
 * [`ssl_reuse_sessions`](#-rabbitmq--ssl_reuse_sessions)
 * [`ssl_secure_renegotiate`](#-rabbitmq--ssl_secure_renegotiate)
@@ -297,9 +300,6 @@ The following parameters are available in the `rabbitmq` class:
 * [`rabbitmqadmin_package`](#-rabbitmq--rabbitmqadmin_package)
 * [`archive_options`](#-rabbitmq--archive_options)
 * [`loopback_users`](#-rabbitmq--loopback_users)
-* [`package_source`](#-rabbitmq--package_source)
-* [`package_provider`](#-rabbitmq--package_provider)
-* [`ssl_management_fail_if_no_peer_cert`](#-rabbitmq--ssl_management_fail_if_no_peer_cert)
 
 ##### <a name="-rabbitmq--admin_enable"></a>`admin_enable`
 
@@ -739,6 +739,22 @@ for Debian/RedHat OS Family by default.
 
 Default value: `undef`
 
+##### <a name="-rabbitmq--package_source"></a>`package_source`
+
+Data type: `Optional[String]`
+
+
+
+Default value: `undef`
+
+##### <a name="-rabbitmq--package_provider"></a>`package_provider`
+
+Data type: `Optional[String]`
+
+
+
+Default value: `undef`
+
 ##### <a name="-rabbitmq--repo_gpg_key"></a>`repo_gpg_key`
 
 Data type: `Optional[String]`
@@ -936,6 +952,14 @@ Data type: `Optional[Stdlib::Absolutepath]`
 SSL management key. If unset set to ssl_key for backwards compatibility.
 
 Default value: `$ssl_key`
+
+##### <a name="-rabbitmq--ssl_management_fail_if_no_peer_cert"></a>`ssl_management_fail_if_no_peer_cert`
+
+Data type: `Boolean`
+
+
+
+Default value: `false`
 
 ##### <a name="-rabbitmq--ssl_port"></a>`ssl_port`
 
@@ -1155,30 +1179,6 @@ This option configures a list of users to allow access via the loopback interfac
 
 Default value: `['guest']`
 
-##### <a name="-rabbitmq--package_source"></a>`package_source`
-
-Data type: `Optional[String]`
-
-
-
-Default value: `undef`
-
-##### <a name="-rabbitmq--package_provider"></a>`package_provider`
-
-Data type: `Optional[String]`
-
-
-
-Default value: `undef`
-
-##### <a name="-rabbitmq--ssl_management_fail_if_no_peer_cert"></a>`ssl_management_fail_if_no_peer_cert`
-
-Data type: `Boolean`
-
-
-
-Default value: `false`
-
 ## Resource types
 
 ### <a name="rabbitmq_binding"></a>`rabbitmq_binding`
@@ -1260,7 +1260,7 @@ Default value: `queue`
 
 Valid values: `present`, `absent`
 
-The basic property that the resource should be in.
+Whether the resource should be present or absent
 
 Default value: `present`
 
@@ -1358,7 +1358,7 @@ The following properties are available in the `rabbitmq_cluster` type.
 
 Valid values: `present`, `absent`
 
-The basic property that the resource should be in.
+Whether the resource should be present or absent
 
 Default value: `present`
 
@@ -1439,11 +1439,13 @@ The following parameters are available in the `rabbitmq_erlang_cookie` type.
 
 Valid values: `true`, `false`
 
+Force parameter
 
 Default value: `false`
 
 ##### <a name="-rabbitmq_erlang_cookie--path"></a>`path`
 
+Path of the erlang cookie
 
 ##### <a name="-rabbitmq_erlang_cookie--provider"></a>`provider`
 
@@ -1452,16 +1454,19 @@ will usually discover the appropriate provider for your platform.
 
 ##### <a name="-rabbitmq_erlang_cookie--rabbitmq_group"></a>`rabbitmq_group`
 
+Rabbitmq Group
 
 Default value: `rabbitmq`
 
 ##### <a name="-rabbitmq_erlang_cookie--rabbitmq_home"></a>`rabbitmq_home`
 
+Path to the rabbitmq home directory
 
 Default value: `/var/lib/rabbitmq`
 
 ##### <a name="-rabbitmq_erlang_cookie--rabbitmq_user"></a>`rabbitmq_user`
 
+Rabbitmq User
 
 Default value: `rabbitmq`
 
@@ -1469,6 +1474,7 @@ Default value: `rabbitmq`
 
 Valid values: `%r{^\S+$}`
 
+Name of the service
 
 ### <a name="rabbitmq_exchange"></a>`rabbitmq_exchange`
 
@@ -1501,7 +1507,7 @@ The following properties are available in the `rabbitmq_exchange` type.
 
 Valid values: `present`, `absent`
 
-The basic property that the resource should be in.
+Whether the resource should be present or absent
 
 Default value: `present`
 
@@ -1635,7 +1641,7 @@ The component_name to use when setting parameter, eg: shovel or federation
 
 Valid values: `present`, `absent`
 
-The basic property that the resource should be in.
+Whether the resource should be present or absent
 
 Default value: `present`
 
@@ -1709,7 +1715,7 @@ The following properties are available in the `rabbitmq_plugin` type.
 
 Valid values: `present`, `absent`
 
-The basic property that the resource should be in.
+Whether the resource should be present or absent
 
 Default value: `present`
 
@@ -1789,7 +1795,7 @@ policy definition
 
 Valid values: `present`, `absent`
 
-The basic property that the resource should be in.
+Whether the resource should be present or absent
 
 Default value: `present`
 
@@ -1855,7 +1861,7 @@ The following properties are available in the `rabbitmq_queue` type.
 
 Valid values: `present`, `absent`
 
-The basic property that the resource should be in.
+Whether the resource should be present or absent
 
 Default value: `present`
 
@@ -1970,7 +1976,7 @@ Default value: `false`
 
 Valid values: `present`, `absent`
 
-The basic property that the resource should be in.
+Whether the resource should be present or absent
 
 Default value: `present`
 
@@ -2032,7 +2038,7 @@ regexp representing configuration permissions
 
 Valid values: `present`, `absent`
 
-The basic property that the resource should be in.
+Whether the resource should be present or absent
 
 Default value: `present`
 
@@ -2105,7 +2111,7 @@ A description of the vhost
 
 Valid values: `present`, `absent`
 
-The basic property that the resource should be in.
+Whether the resource should be present or absent
 
 Default value: `present`
 

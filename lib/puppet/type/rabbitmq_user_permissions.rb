@@ -13,6 +13,7 @@ Puppet::Type.newtype(:rabbitmq_user_permissions) do
   DESC
 
   ensurable do
+    desc 'Whether the resource should be present or absent'
     defaultto(:present)
     newvalue(:present) do
       provider.create

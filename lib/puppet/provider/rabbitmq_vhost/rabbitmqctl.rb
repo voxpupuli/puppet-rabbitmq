@@ -5,6 +5,7 @@ Puppet::Type.type(:rabbitmq_vhost).provide(
   :rabbitmqctl,
   parent: Puppet::Provider::RabbitmqCli
 ) do
+  desc 'Rabbitmqctl provider for rabbitmq vhost'
   confine feature: :posix
 
   def self.prefetch(resources)

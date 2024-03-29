@@ -2,6 +2,7 @@
 
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmq_cli'))
 Puppet::Type.type(:rabbitmq_user_permissions).provide(:rabbitmqctl, parent: Puppet::Provider::RabbitmqCli) do
+  desc 'Rabbitmqctl provider for rabbitmq user permissions'
   confine feature: :posix
 
   # cache users permissions

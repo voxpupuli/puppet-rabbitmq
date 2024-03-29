@@ -5,6 +5,7 @@ Puppet::Type.type(:rabbitmq_cluster).provide(
   :rabbitmqctl,
   parent: Puppet::Provider::RabbitmqCli
 ) do
+  desc 'Rabbitmqctl provider for rabbitmq cluster'
   confine feature: :posix
 
   def exists?

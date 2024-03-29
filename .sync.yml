@@ -2,3 +2,7 @@
 spec/spec_helper.rb:
   spec_overrides: "require 'spec_helper_local'"
   mock_with: ':mocha'
+.puppet-lint.rc:
+  enabled_lint_checks:
+    - parameter_documentation
+    - parameter_types

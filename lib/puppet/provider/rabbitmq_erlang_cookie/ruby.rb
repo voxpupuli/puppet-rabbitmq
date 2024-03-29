@@ -3,6 +3,7 @@
 require 'puppet'
 require 'set'
 Puppet::Type.type(:rabbitmq_erlang_cookie).provide(:ruby) do
+  desc 'Ruby provider for rabbitmq erlang cookie'
   confine feature: :posix
 
   def exists?

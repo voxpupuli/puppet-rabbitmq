@@ -6,6 +6,7 @@ require 'digest'
 
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmq_cli'))
 Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin, parent: Puppet::Provider::RabbitmqCli) do
+  desc 'Rabbitmqadmin provider for rabbitmq binding'
   confine feature: :posix
 
   # Without this, the composite namevar stuff doesn't work properly.

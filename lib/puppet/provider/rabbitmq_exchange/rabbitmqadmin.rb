@@ -3,6 +3,7 @@
 require 'puppet'
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmq_cli'))
 Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, parent: Puppet::Provider::RabbitmqCli) do
+  desc 'Rabbitmqadmin provider for rabbitmq exchange'
   confine feature: :posix
 
   def should_vhost

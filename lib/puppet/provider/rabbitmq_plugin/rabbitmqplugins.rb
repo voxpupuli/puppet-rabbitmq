@@ -4,6 +4,7 @@ require 'puppet/util/package'
 
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmq_cli'))
 Puppet::Type.type(:rabbitmq_plugin).provide(:rabbitmqplugins, parent: Puppet::Provider::RabbitmqCli) do
+  desc 'Rabbitmqplugins provider for rabbitmq plugin'
   confine feature: :posix
 
   def self.plugin_list
