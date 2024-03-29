@@ -226,6 +226,8 @@
 #   RPM package GPG key to import. Uses source method. Should be a URL for Debian/RedHat OS family, or a file name for
 #   RedHat OS family. Set to https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc
 #   for Debian/RedHat OS Family by default.
+# @param package_source
+# @param package_provider
 # @param repo_gpg_key
 #   RPM package GPG key to import. Uses source method. Should be a URL for Debian/RedHat OS family, or a file name for
 #   RedHat OS family. Set to https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey for Debian/RedHat OS Family by
@@ -280,6 +282,7 @@
 #   SSL management cert. If unset set to ssl_cert for backwards compatibility.
 # @param ssl_management_key
 #   SSL management key. If unset set to ssl_key for backwards compatibility.
+# @param ssl_management_fail_if_no_peer_cert
 # @param ssl_port
 #   SSL port for RabbitMQ
 # @param ssl_reuse_sessions

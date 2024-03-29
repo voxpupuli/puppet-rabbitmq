@@ -247,6 +247,8 @@ The following parameters are available in the `rabbitmq` class:
 * [`package_apt_pin`](#-rabbitmq--package_apt_pin)
 * [`package_ensure`](#-rabbitmq--package_ensure)
 * [`package_gpg_key`](#-rabbitmq--package_gpg_key)
+* [`package_source`](#-rabbitmq--package_source)
+* [`package_provider`](#-rabbitmq--package_provider)
 * [`repo_gpg_key`](#-rabbitmq--repo_gpg_key)
 * [`package_name`](#-rabbitmq--package_name)
 * [`port`](#-rabbitmq--port)
@@ -271,6 +273,7 @@ The following parameters are available in the `rabbitmq` class:
 * [`ssl_management_cacert`](#-rabbitmq--ssl_management_cacert)
 * [`ssl_management_cert`](#-rabbitmq--ssl_management_cert)
 * [`ssl_management_key`](#-rabbitmq--ssl_management_key)
+* [`ssl_management_fail_if_no_peer_cert`](#-rabbitmq--ssl_management_fail_if_no_peer_cert)
 * [`ssl_port`](#-rabbitmq--ssl_port)
 * [`ssl_reuse_sessions`](#-rabbitmq--ssl_reuse_sessions)
 * [`ssl_secure_renegotiate`](#-rabbitmq--ssl_secure_renegotiate)
@@ -297,9 +300,6 @@ The following parameters are available in the `rabbitmq` class:
 * [`rabbitmqadmin_package`](#-rabbitmq--rabbitmqadmin_package)
 * [`archive_options`](#-rabbitmq--archive_options)
 * [`loopback_users`](#-rabbitmq--loopback_users)
-* [`package_source`](#-rabbitmq--package_source)
-* [`package_provider`](#-rabbitmq--package_provider)
-* [`ssl_management_fail_if_no_peer_cert`](#-rabbitmq--ssl_management_fail_if_no_peer_cert)
 
 ##### <a name="-rabbitmq--admin_enable"></a>`admin_enable`
 
@@ -739,6 +739,22 @@ for Debian/RedHat OS Family by default.
 
 Default value: `undef`
 
+##### <a name="-rabbitmq--package_source"></a>`package_source`
+
+Data type: `Optional[String]`
+
+
+
+Default value: `undef`
+
+##### <a name="-rabbitmq--package_provider"></a>`package_provider`
+
+Data type: `Optional[String]`
+
+
+
+Default value: `undef`
+
 ##### <a name="-rabbitmq--repo_gpg_key"></a>`repo_gpg_key`
 
 Data type: `Optional[String]`
@@ -936,6 +952,14 @@ Data type: `Optional[Stdlib::Absolutepath]`
 SSL management key. If unset set to ssl_key for backwards compatibility.
 
 Default value: `$ssl_key`
+
+##### <a name="-rabbitmq--ssl_management_fail_if_no_peer_cert"></a>`ssl_management_fail_if_no_peer_cert`
+
+Data type: `Boolean`
+
+
+
+Default value: `false`
 
 ##### <a name="-rabbitmq--ssl_port"></a>`ssl_port`
 
@@ -1154,30 +1178,6 @@ Data type: `Array`
 This option configures a list of users to allow access via the loopback interfaces
 
 Default value: `['guest']`
-
-##### <a name="-rabbitmq--package_source"></a>`package_source`
-
-Data type: `Optional[String]`
-
-
-
-Default value: `undef`
-
-##### <a name="-rabbitmq--package_provider"></a>`package_provider`
-
-Data type: `Optional[String]`
-
-
-
-Default value: `undef`
-
-##### <a name="-rabbitmq--ssl_management_fail_if_no_peer_cert"></a>`ssl_management_fail_if_no_peer_cert`
-
-Data type: `Boolean`
-
-
-
-Default value: `false`
 
 ## Resource types
 
