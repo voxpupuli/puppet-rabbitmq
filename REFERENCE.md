@@ -1260,7 +1260,7 @@ Default value: `queue`
 
 Valid values: `present`, `absent`
 
-The basic property that the resource should be in.
+Whether the resource should be present or absent
 
 Default value: `present`
 
@@ -1358,7 +1358,7 @@ The following properties are available in the `rabbitmq_cluster` type.
 
 Valid values: `present`, `absent`
 
-The basic property that the resource should be in.
+Whether the resource should be present or absent
 
 Default value: `present`
 
@@ -1439,11 +1439,13 @@ The following parameters are available in the `rabbitmq_erlang_cookie` type.
 
 Valid values: `true`, `false`
 
+Force parameter
 
 Default value: `false`
 
 ##### <a name="-rabbitmq_erlang_cookie--path"></a>`path`
 
+Path of the erlang cookie
 
 ##### <a name="-rabbitmq_erlang_cookie--provider"></a>`provider`
 
@@ -1452,16 +1454,19 @@ will usually discover the appropriate provider for your platform.
 
 ##### <a name="-rabbitmq_erlang_cookie--rabbitmq_group"></a>`rabbitmq_group`
 
+Rabbitmq Group
 
 Default value: `rabbitmq`
 
 ##### <a name="-rabbitmq_erlang_cookie--rabbitmq_home"></a>`rabbitmq_home`
 
+Path to the rabbitmq home directory
 
 Default value: `/var/lib/rabbitmq`
 
 ##### <a name="-rabbitmq_erlang_cookie--rabbitmq_user"></a>`rabbitmq_user`
 
+Rabbitmq User
 
 Default value: `rabbitmq`
 
@@ -1469,6 +1474,7 @@ Default value: `rabbitmq`
 
 Valid values: `%r{^\S+$}`
 
+Name of the service
 
 ### <a name="rabbitmq_exchange"></a>`rabbitmq_exchange`
 
@@ -1501,7 +1507,7 @@ The following properties are available in the `rabbitmq_exchange` type.
 
 Valid values: `present`, `absent`
 
-The basic property that the resource should be in.
+Whether the resource should be present or absent
 
 Default value: `present`
 
@@ -1635,7 +1641,7 @@ The component_name to use when setting parameter, eg: shovel or federation
 
 Valid values: `present`, `absent`
 
-The basic property that the resource should be in.
+Whether the resource should be present or absent
 
 Default value: `present`
 
@@ -1709,7 +1715,7 @@ The following properties are available in the `rabbitmq_plugin` type.
 
 Valid values: `present`, `absent`
 
-The basic property that the resource should be in.
+Whether the resource should be present or absent
 
 Default value: `present`
 
@@ -1789,7 +1795,7 @@ policy definition
 
 Valid values: `present`, `absent`
 
-The basic property that the resource should be in.
+Whether the resource should be present or absent
 
 Default value: `present`
 
@@ -1855,7 +1861,7 @@ The following properties are available in the `rabbitmq_queue` type.
 
 Valid values: `present`, `absent`
 
-The basic property that the resource should be in.
+Whether the resource should be present or absent
 
 Default value: `present`
 
@@ -1970,7 +1976,7 @@ Default value: `false`
 
 Valid values: `present`, `absent`
 
-The basic property that the resource should be in.
+Whether the resource should be present or absent
 
 Default value: `present`
 
@@ -2032,7 +2038,7 @@ regexp representing configuration permissions
 
 Valid values: `present`, `absent`
 
-The basic property that the resource should be in.
+Whether the resource should be present or absent
 
 Default value: `present`
 
@@ -2105,7 +2111,7 @@ A description of the vhost
 
 Valid values: `present`, `absent`
 
-The basic property that the resource should be in.
+Whether the resource should be present or absent
 
 Default value: `present`
 

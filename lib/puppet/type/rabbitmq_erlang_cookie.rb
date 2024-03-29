@@ -13,7 +13,9 @@ Puppet::Type.newtype(:rabbitmq_erlang_cookie) do
     this type directly.
   DESC
 
-  newparam(:path, namevar: true)
+  newparam(:path, namevar: true) do
+    desc 'Path of the erlang cookie'
+  end
 
   newproperty(:content) do
     desc 'Content of cookie'
@@ -33,23 +35,28 @@ Puppet::Type.newtype(:rabbitmq_erlang_cookie) do
   end
 
   newparam(:force) do
+    desc 'Force parameter'
     defaultto(:false)
     newvalues(:true, :false)
   end
 
   newparam(:rabbitmq_user) do
+    desc 'Rabbitmq User'
     defaultto('rabbitmq')
   end
 
   newparam(:rabbitmq_group) do
+    desc 'Rabbitmq Group'
     defaultto('rabbitmq')
   end
 
   newparam(:rabbitmq_home) do
+    desc 'Path to the rabbitmq home directory'
     defaultto('/var/lib/rabbitmq')
   end
 
   newparam(:service_name) do
+    desc 'Name of the service'
     newvalues(%r{^\S+$})
   end
 end

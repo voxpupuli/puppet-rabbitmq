@@ -5,6 +5,7 @@ require 'puppet/util/package'
 
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmq_cli'))
 Puppet::Type.type(:rabbitmq_policy).provide(:rabbitmqctl, parent: Puppet::Provider::RabbitmqCli) do
+  desc 'Rabbitmqctl provider for rabbitmq policy'
   confine feature: :posix
 
   # cache policies

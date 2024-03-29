@@ -1,10 +1,15 @@
 # Makes sure that the Packagecloud repo is installed
 #
 # @api private
+#
+# @param location
+# @param repo_key_source
+# @param package_key_source
+#
 class rabbitmq::repo::rhel (
-  $location                  = "https://packagecloud.io/rabbitmq/rabbitmq-server/el/${facts['os'][release][major]}/\$basearch",
-  String $repo_key_source    = $rabbitmq::repo_gpg_key,
-  String $package_key_source = $rabbitmq::package_gpg_key,
+  String[1] $location                  = "https://packagecloud.io/rabbitmq/rabbitmq-server/el/${facts['os'][release][major]}/\$basearch",
+  String[1] $repo_key_source    = $rabbitmq::repo_gpg_key,
+  String[1] $package_key_source = $rabbitmq::package_gpg_key,
 ) {
   # Import package key from rabbitmq to be able to
   # sign the package and the repo.

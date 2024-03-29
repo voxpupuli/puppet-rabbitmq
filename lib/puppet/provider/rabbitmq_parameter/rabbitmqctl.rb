@@ -5,6 +5,7 @@ require 'puppet/util/package'
 
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmq_cli'))
 Puppet::Type.type(:rabbitmq_parameter).provide(:rabbitmqctl, parent: Puppet::Provider::RabbitmqCli) do
+  desc 'Rabbitmqctl provider for rabbitmq parameter'
   confine feature: :posix
 
   mk_resource_methods

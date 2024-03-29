@@ -5,6 +5,7 @@ Puppet::Type.type(:rabbitmq_user).provide(
   :rabbitmqctl,
   parent: Puppet::Provider::RabbitmqCli
 ) do
+  desc 'Rabbitmqctl provider for rabbitmq user'
   confine feature: :posix
 
   def initialize(value = {})

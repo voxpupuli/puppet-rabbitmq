@@ -36,6 +36,7 @@ Puppet::Type.newtype(:rabbitmq_parameter) do
   DESC
 
   ensurable do
+    desc 'Whether the resource should be present or absent'
     defaultto(:present)
     newvalue(:present) do
       provider.create
