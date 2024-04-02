@@ -44,9 +44,8 @@ describe Puppet::Type.type(:rabbitmq_parameter) do
   end
 
   it 'accepts a valid hash for value' do
-    value = { 'message-ttl' => '1800000' }
-    parameter[:value] = value
-    expect(parameter[:value]).to eq(value)
+    parameter[:value] = { 'message-ttl' => '1800000' }
+    expect(parameter[:value]).to eq({ 'message-ttl' => 1_800_000 })
   end
 
   it 'does not accept an empty string for definition' do
