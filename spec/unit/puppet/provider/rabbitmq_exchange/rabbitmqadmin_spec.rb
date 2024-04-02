@@ -2,10 +2,9 @@
 
 require 'spec_helper'
 
-provider_class = Puppet::Type.type(:rabbitmq_exchange).provider(:rabbitmqadmin)
-describe provider_class do
-  let(:resource) do
-    Puppet::Type::Rabbitmq_exchange.new(
+describe Puppet::Type.type(:rabbitmq_exchange).provider(:rabbitmqadmin) do
+  let(:params) do
+    {
       name: 'test.headers@/',
       type: :headers,
       internal: :false,
@@ -14,15 +13,18 @@ describe provider_class do
       arguments: {
         'hash-headers' => 'message-distribution-hash'
       }
-    )
+    }
   end
-  let(:provider) { provider_class.new(resource) }
+  let(:type_class) { Puppet::Type.type(:rabbitmq_exchange).provider(:rabbitmqadmin) }
+  let(:resource) { Puppet::Type.type(:rabbitmq_exchange).new(params) }
+  let(:provider) { resource.provider }
+  let(:instances) { type_class.instances }
 
   it 'returns instances' do
-    provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<~EOT
+    allow(type_class).to receive(:rabbitmqctl_list).with('vhosts').and_return <<~EOT
       /
     EOT
-    provider_class.expects(:rabbitmqctl_list).with('exchanges', '-p', '/', 'name', 'type', 'internal', 'durable', 'auto_delete', 'arguments').returns <<~EOT
+    allow(type_class).to receive(:rabbitmqctl_list).with('exchanges', '-p', '/', 'name', 'type', 'internal', 'durable', 'auto_delete', 'arguments').and_return <<~EOT
               direct  false   true    false   []
       amq.direct      direct  false   true    false   []
       amq.fanout      fanout  false   true    false   []
@@ -33,23 +35,22 @@ describe provider_class do
       amq.topic       topic   false   true    false   []
       test.headers    x-consistent-hash       false   true    false   [{"hash-header","message-distribution-hash"}]
     EOT
-    instances = provider_class.instances
     expect(instances.size).to eq(9)
   end
 
   it 'calls rabbitmqadmin to create as guest' do
-    provider.expects(:rabbitmqadmin).with('declare', 'exchange', '--vhost=/', '--user=guest', '--password=guest', 'name=test.headers', 'type=headers', 'internal=false', 'durable=true', 'auto_delete=false', 'arguments={"hash-headers":"message-distribution-hash"}', '-c', '/etc/rabbitmq/rabbitmqadmin.conf')
+    allow(type_class).to receive(:rabbitmqadmin).with('declare', 'exchange', '--vhost=/', '--user=guest', '--password=guest', 'name=test.headers', 'type=headers', 'internal=false', 'durable=true', 'auto_delete=false', 'arguments={"hash-headers":"message-distribution-hash"}', '-c', '/etc/rabbitmq/rabbitmqadmin.conf')
     provider.create
   end
 
   it 'calls rabbitmqadmin to destroy' do
-    provider.expects(:rabbitmqadmin).with('delete', 'exchange', '--vhost=/', '--user=guest', '--password=guest', 'name=test.headers', '-c', '/etc/rabbitmq/rabbitmqadmin.conf')
+    allow(type_class).to receive(:rabbitmqadmin).with('delete', 'exchange', '--vhost=/', '--user=guest', '--password=guest', 'name=test.headers', '-c', '/etc/rabbitmq/rabbitmqadmin.conf')
     provider.destroy
   end
 
   context 'specifying credentials' do
-    let(:resource) do
-      Puppet::Type::Rabbitmq_exchange.new(
+    let(:params) do
+      {
         name: 'test.headers@/',
         type: :headers,
         internal: 'false',
@@ -60,12 +61,11 @@ describe provider_class do
         arguments: {
           'hash-header' => 'message-distribution-hash'
         }
-      )
+      }
     end
-    let(:provider) { provider_class.new(resource) }
 
     it 'calls rabbitmqadmin to create with credentials' do
-      provider.expects(:rabbitmqadmin).with('declare', 'exchange', '--vhost=/', '--user=colin', '--password=secret', 'name=test.headers', 'type=headers', 'internal=false', 'durable=true', 'auto_delete=false', 'arguments={"hash-header":"message-distribution-hash"}', '-c', '/etc/rabbitmq/rabbitmqadmin.conf')
+      allow(type_class).to receive(:rabbitmqadmin).with('declare', 'exchange', '--vhost=/', '--user=colin', '--password=secret', 'name=test.headers', 'type=headers', 'internal=false', 'durable=true', 'auto_delete=false', 'arguments={"hash-header":"message-distribution-hash"}', '-c', '/etc/rabbitmq/rabbitmqadmin.conf')
       provider.create
     end
   end

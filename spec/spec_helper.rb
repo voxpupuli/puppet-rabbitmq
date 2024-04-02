@@ -3,10 +3,6 @@
 # Managed by modulesync - DO NOT EDIT
 # https://voxpupuli.org/docs/updating-files-managed-with-modulesync/
 
-RSpec.configure do |c|
-  c.mock_with :mocha
-end
-
 # puppetlabs_spec_helper will set up coverage if the env variable is set.
 # We want to do this if lib exists and it hasn't been explicitly set.
 ENV['COVERAGE'] ||= 'yes' if Dir.exist?(File.expand_path('../lib', __dir__))
@@ -21,6 +17,4 @@ if File.exist?(File.join(__dir__, 'default_module_facts.yml'))
     add_custom_fact name.to_sym, value
   end
 end
-
-require 'spec_helper_local'
 Dir['./spec/support/spec/**/*.rb'].sort.each { |f| require f }

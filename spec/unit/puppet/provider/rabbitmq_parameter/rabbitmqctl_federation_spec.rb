@@ -2,74 +2,75 @@
 
 require 'spec_helper'
 
-provider_class = Puppet::Type.type(:rabbitmq_parameter).provider(:rabbitmqctl)
-describe provider_class do
-  let(:resource) do
-    Puppet::Type.type(:rabbitmq_parameter).new(
+describe Puppet::Type.type(:rabbitmq_parameter).provider(:rabbitmqctl) do
+  let(:params) do
+    {
       name: 'documentumFederation@/',
       component_name: 'federation',
       value: {
         'uri' => 'amqp://',
         'expires' => '360000'
       }
-    )
+    }
   end
-  let(:provider) { provider_class.new(resource) }
+  let(:type_class) { Puppet::Type.type(:rabbitmq_parameter).provider(:rabbitmqctl) }
+  let(:resource) { Puppet::Type.type(:rabbitmq_parameter).new(params) }
+  let(:provider) { resource.provider }
+  let(:instances) { Puppet::Type.type(:rabbitmq_parameter).instances }
 
   after do
-    described_class.instance_variable_set(:@parameters, nil)
+    type_class.instance_variable_set(:@parameters, nil)
   end
 
   describe '#prefetch' do
     it 'exists' do
-      expect(described_class).to respond_to :prefetch
+      expect(type_class).to respond_to :prefetch
     end
 
     it 'matches' do
-      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<~EOT
+      allow(type_class).to receive(:rabbitmqctl_list).with('vhosts').and_return <<~EOT
         /
       EOT
-      provider_class.expects(:rabbitmqctl_list).with('parameters', '-p', '/').returns <<~EOT
+      allow(type_class).to receive(:rabbitmqctl_list).with('parameters', '-p', '/').and_return <<~EOT
         federation  documentumFederation  {"uri":"amqp://","expires":360000}
       EOT
-      provider_class.prefetch('documentumFederation@/' => resource)
+      type_class.prefetch('documentumFederation@/' => resource)
     end
   end
 
   describe '#instances' do
     it 'exists' do
-      expect(described_class).to respond_to :instances
+      expect(type_class).to respond_to :instances
     end
 
     it 'fail with invalid output from list' do
-      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<~EOT
+      allow(type_class).to receive(:rabbitmqctl_list).with('vhosts').and_return <<~EOT
         /
       EOT
-      provider.class.expects(:rabbitmqctl_list).with('parameters', '-p', '/').returns 'foobar'
-      expect { provider_class.instances }.to raise_error Puppet::Error, %r{cannot parse line from list_parameter}
+      allow(type_class).to receive(:rabbitmqctl_list).with('parameters', '-p', '/').and_return 'foobar'
+      expect { instances }.to raise_error Puppet::Error, %r{cannot parse line from list_parameter}
     end
 
     it 'return no instance' do
-      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<~EOT
+      allow(type_class).to receive(:rabbitmqctl_list).with('vhosts').and_return <<~EOT
         /
       EOT
-      provider_class.expects(:rabbitmqctl_list).with('parameters', '-p', '/').returns ''
-      instances = provider_class.instances
+      allow(type_class).to receive(:rabbitmqctl_list).with('parameters', '-p', '/').and_return ''
       expect(instances.size).to eq(0)
     end
   end
 
   describe '#create' do
     it 'create parameter' do
-      provider.expects(:rabbitmqctl).with('set_parameter', '-p', '/', 'federation', 'documentumFederation',
-                                          '{"uri":"amqp://","expires":360000}')
+      allow(type_class).to receive(:rabbitmqctl).with('set_parameter', '-p', '/', 'federation', 'documentumFederation',
+                                                      '{"uri":"amqp://","expires":360000}')
       provider.create
     end
   end
 
   describe '#destroy' do
     it 'destroy parameter' do
-      provider.expects(:rabbitmqctl).with('clear_parameter', '-p', '/', 'federation', 'documentumFederation')
+      allow(type_class).to receive(:rabbitmqctl).with('clear_parameter', '-p', '/', 'federation', 'documentumFederation')
       provider.destroy
     end
   end

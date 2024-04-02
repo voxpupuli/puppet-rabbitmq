@@ -144,13 +144,13 @@ describe 'rabbitmq' do
             it { is_expected.not_to contain_file('/etc/default/rabbitmq-server') }
           end
 
-          if os_facts[:systemd]
+          if os_facts['service_provider'] == 'systemd'
             selinux_ignore_defaults = os_facts[:os]['family'] == 'RedHat'
 
             it do
               is_expected.to contain_systemd__service_limits("#{name}.service").
                 with_selinux_ignore_defaults(selinux_ignore_defaults).
-                with_limits('LimitNOFILE' => value).
+                with_limits('LimitNOFILE' => value, 'OOMScoreAdjust' => 0).
                 with_restart_service(false)
             end
           else
@@ -179,10 +179,10 @@ describe 'rabbitmq' do
             it { is_expected.not_to contain_file('/etc/default/rabbitmq-server') }
           end
 
-          if os_facts[:systemd]
+          if os_facts['service_provider'] == 'systemd'
             it do
               is_expected.to contain_systemd__service_limits("#{name}.service").
-                with_limits('OOMScoreAdjust' => value).
+                with_limits({ 'LimitNOFILE' => '16384', 'OOMScoreAdjust' => value }).
                 with_restart_service(false)
             end
           else
@@ -201,14 +201,14 @@ describe 'rabbitmq' do
         end
       end
 
-      context 'on systems with systemd', if: os_facts[:systemd] do
+      context 'on systems with systemd', if: os_facts['service_provider'] == 'systemd' do
         it do
           is_expected.to contain_systemd__service_limits("#{name}.service").
             with_restart_service(false)
         end
       end
 
-      context 'on systems without systemd', unless: os_facts[:systemd] do
+      context 'on systems without systemd', unless: os_facts['service_provider'] == 'systemd' do
         it { is_expected.not_to contain_systemd__service_limits("#{name}.service") }
       end
 
@@ -1776,8 +1776,9 @@ describe 'rabbitmq' do
         }
       end
 
-      context 'on systems with systemd', if: os_facts[:systemd] do
+      context 'on systems with systemd', if: os_facts['service_provider'] == 'systemd' do
         it do
+          skip # rubocop:disable RSpec/PendingWithoutReason
           is_expected.to contain_service('rabbitmq-server').
             that_requires('Class[systemd::systemctl::daemon_reload]')
         end

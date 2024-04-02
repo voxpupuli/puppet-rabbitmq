@@ -2,10 +2,9 @@
 
 require 'spec_helper'
 
-provider_class = Puppet::Type.type(:rabbitmq_parameter).provider(:rabbitmqctl)
-describe provider_class do
-  let(:resource) do
-    Puppet::Type.type(:rabbitmq_parameter).new(
+describe Puppet::Type.type(:rabbitmq_parameter).provider(:rabbitmqctl) do
+  let(:params) do
+    {
       name: 'documentumShovel@/',
       component_name: 'shovel',
       value: {
@@ -14,60 +13,61 @@ describe provider_class do
         'dest-uri' => 'amqp://remote-server',
         'dest-queue' => 'another-queue'
       }
-    )
+    }
   end
-  let(:provider) { provider_class.new(resource) }
+  let(:type_class) { Puppet::Type.type(:rabbitmq_parameter).provider(:rabbitmqctl) }
+  let(:resource) { Puppet::Type.type(:rabbitmq_parameter).new(params) }
+  let(:provider) { resource.provider }
+  let(:instances) { type_class.instances }
 
   after do
-    described_class.instance_variable_set(:@parameters, nil)
+    type_class.instance_variable_set(:@parameters, nil)
   end
 
   describe '#prefetch' do
     it 'exists' do
-      expect(described_class).to respond_to :prefetch
+      expect(type_class).to respond_to :prefetch
     end
 
     it 'matches' do
-      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<~EOT
+      allow(type_class).to receive(:rabbitmqctl_list).with('vhosts').and_return <<~EOT
         /
       EOT
-      provider_class.expects(:rabbitmqctl_list).with('parameters', '-p', '/').returns <<~EOT
+      allow(type_class).to receive(:rabbitmqctl_list).with('parameters', '-p', '/').and_return <<~EOT
         shovel  documentumShovel  {"src-uri":"amqp://","src-queue":"my-queue","dest-uri":"amqp://remote-server","dest-queue":"another-queue"}
       EOT
-      provider_class.prefetch('documentumShovel@/' => resource)
+      type_class.prefetch('documentumShovel@/' => resource)
     end
   end
 
   describe '#instances' do
     it 'exists' do
-      expect(described_class).to respond_to :instances
+      expect(type_class).to respond_to :instances
     end
 
     it 'fail with invalid output from list' do
-      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<~EOT
+      allow(type_class).to receive(:rabbitmqctl_list).with('vhosts').and_return <<~EOT
         /
       EOT
-      provider.class.expects(:rabbitmqctl_list).with('parameters', '-p', '/').returns 'foobar'
-      expect { provider_class.instances }.to raise_error Puppet::Error, %r{cannot parse line from list_parameter}
+      allow(type_class).to receive(:rabbitmqctl_list).with('parameters', '-p', '/').and_return 'foobar'
+      expect { instances }.to raise_error Puppet::Error, %r{cannot parse line from list_parameter}
     end
 
     it 'return no instance' do
-      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<~EOT
+      allow(type_class).to receive(:rabbitmqctl_list).with('vhosts').and_return <<~EOT
         /
       EOT
-      provider_class.expects(:rabbitmqctl_list).with('parameters', '-p', '/').returns ''
-      instances = provider_class.instances
+      allow(type_class).to receive(:rabbitmqctl_list).with('parameters', '-p', '/').and_return ''
       expect(instances.size).to eq(0)
     end
 
     it 'return one instance' do
-      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<~EOT
+      allow(type_class).to receive(:rabbitmqctl_list).with('vhosts').and_return <<~EOT
         /
       EOT
-      provider_class.expects(:rabbitmqctl_list).with('parameters', '-p', '/').returns <<~EOT
+      allow(type_class).to receive(:rabbitmqctl_list).with('parameters', '-p', '/').and_return <<~EOT
         shovel  documentumShovel  {"src-uri":"amqp://","src-queue":"my-queue","dest-uri":"amqp://remote-server","dest-queue":"another-queue"}
       EOT
-      instances = provider_class.instances
       expect(instances.size).to eq(1)
       expect(instances.map do |prov|
         {
@@ -92,14 +92,13 @@ describe provider_class do
     end
 
     it 'return multiple instances' do
-      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<~EOT
+      allow(type_class).to receive(:rabbitmqctl_list).with('vhosts').and_return <<~EOT
         /
       EOT
-      provider_class.expects(:rabbitmqctl_list).with('parameters', '-p', '/').returns <<~EOT
+      allow(type_class).to receive(:rabbitmqctl_list).with('parameters', '-p', '/').and_return <<~EOT
         shovel  documentumShovel1  {"src-uri":"amqp://","src-queue":"my-queue","dest-uri":"amqp://remote-server","dest-queue":"another-queue"}
         shovel  documentumShovel2  {"src-uri":["amqp://cl1","amqp://cl2"],"src-queue":"my-queue","dest-uri":"amqp://remote-server","dest-queue":"another-queue"}
       EOT
-      instances = provider_class.instances
       expect(instances.size).to eq(2)
       expect(instances.map do |prov|
         {
@@ -134,14 +133,13 @@ describe provider_class do
     end
 
     it 'return different instances' do
-      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<~EOT
+      allow(type_class).to receive(:rabbitmqctl_list).with('vhosts').and_return <<~EOT
         /
       EOT
-      provider_class.expects(:rabbitmqctl_list).with('parameters', '-p', '/').returns <<~EOT
+      allow(type_class).to receive(:rabbitmqctl_list).with('parameters', '-p', '/').and_return <<~EOT
         shovel  documentumShovel1  {"src-uri":"amqp://","src-queue":"my-queue","dest-uri":"amqp://remote-server","dest-queue":"another-queue"}
         federation  documentumFederation2  {"uri":"amqp://","expires":"360000"}
       EOT
-      instances = provider_class.instances
       expect(instances.size).to eq(2)
       expect(instances.map do |prov|
         {
@@ -176,15 +174,15 @@ describe provider_class do
 
   describe '#create' do
     it 'create parameter' do
-      provider.expects(:rabbitmqctl).with('set_parameter', '-p', '/', 'shovel', 'documentumShovel',
-                                          '{"src-uri":"amqp://","src-queue":"my-queue","dest-uri":"amqp://remote-server","dest-queue":"another-queue"}')
+      allow(type_class).to receive(:rabbitmqctl).with('set_parameter', '-p', '/', 'shovel', 'documentumShovel',
+                                                      '{"src-uri":"amqp://","src-queue":"my-queue","dest-uri":"amqp://remote-server","dest-queue":"another-queue"}')
       provider.create
     end
   end
 
   describe '#destroy' do
     it 'destroy parameter' do
-      provider.expects(:rabbitmqctl).with('clear_parameter', '-p', '/', 'shovel', 'documentumShovel')
+      allow(type_class).to receive(:rabbitmqctl).with('clear_parameter', '-p', '/', 'shovel', 'documentumShovel')
       provider.destroy
     end
   end

@@ -2,19 +2,21 @@
 
 require 'spec_helper'
 
-provider_class = Puppet::Type.type(:rabbitmq_cluster).provider(:rabbitmqctl)
-describe provider_class do
-  let(:resource) do
-    Puppet::Type::Rabbitmq_cluster.new(
+describe Puppet::Type.type(:rabbitmq_cluster).provider(:rabbitmqctl) do
+  let(:params) do
+    {
       name: 'test_cluster',
-      init_node: 'host1'
-    )
+      init_node: 'host1',
+      provider: described_class.name,
+    }
   end
-  let(:provider) { provider_class.new(resource) }
+  let(:type_class) { Puppet::Type.type(:rabbitmq_cluster).provider(:rabbitmqctl) }
+  let(:resource) { Puppet::Type.type(:rabbitmq_cluster).new(params) }
+  let(:provider) { resource.provider }
 
   describe '#exists?' do
     it {
-      provider.expects(:rabbitmqctl).with('-q', 'cluster_status').returns(
+      allow(type_class).to receive(:rabbitmqctl).with('-q', 'cluster_status').and_return(
         'Cluster name: test_cluster'
       )
       expect(provider.exists?).to be true
@@ -23,18 +25,18 @@ describe provider_class do
 
   describe '#create on every other node' do
     it 'joins a cluster or changes the cluster name' do
-      provider.expects(:rabbitmqctl).with('stop_app')
-      provider.expects(:rabbitmqctl).with('join_cluster', 'rabbit@host1', '--disc')
-      provider.expects(:rabbitmqctl).with('start_app')
+      allow(type_class).to receive(:rabbitmqctl).with('stop_app')
+      allow(type_class).to receive(:rabbitmqctl).with('join_cluster', 'rabbit@host1', '--disc')
+      allow(type_class).to receive(:rabbitmqctl).with('start_app')
       provider.create
     end
   end
 
   describe '#destroy' do
     it 'remove cluster setup' do
-      provider.expects(:rabbitmqctl).with('stop_app')
-      provider.expects(:rabbitmqctl).with('reset')
-      provider.expects(:rabbitmqctl).with('start_app')
+      allow(type_class).to receive(:rabbitmqctl).with('stop_app')
+      allow(type_class).to receive(:rabbitmqctl).with('reset')
+      allow(type_class).to receive(:rabbitmqctl).with('start_app')
       provider.destroy
     end
   end

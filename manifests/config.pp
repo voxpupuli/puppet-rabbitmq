@@ -234,7 +234,7 @@ class rabbitmq::config {
     default: {}
   }
 
-  if $facts['systemd'] { # systemd fact provided by systemd module
+  if $facts['service_provider'] == 'systemd' { # systemd fact provided by systemd module
     systemd::service_limits { "${service_name}.service":
       selinux_ignore_defaults => ($facts['os']['family'] == 'RedHat'),
       limits                  => {

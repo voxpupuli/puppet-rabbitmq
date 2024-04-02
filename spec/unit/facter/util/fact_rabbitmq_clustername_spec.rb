@@ -10,32 +10,32 @@ describe Facter::Util::Fact do
   describe 'rabbitmq_clusternam' do
     context 'with value' do
       it do
-        Facter::Util::Resolution.expects(:which).with('rabbitmqctl').returns(true)
-        Facter::Core::Execution.expects(:execute).with('rabbitmqctl -q cluster_status 2>&1').returns(' {cluster_name,<<"monty">>},')
+        allow(Facter::Util::Resolution).to receive(:which).with('rabbitmqctl').and_return(true)
+        allow(Facter::Core::Execution).to receive(:execute).with('rabbitmqctl -q cluster_status 2>&1').and_return(' {cluster_name,<<"monty">>},')
         expect(Facter.fact(:rabbitmq_clustername).value).to eq('monty')
       end
     end
 
     context 'with dashes in hostname' do
       it do
-        Facter::Util::Resolution.expects(:which).with('rabbitmqctl').returns(true)
-        Facter::Core::Execution.expects(:execute).with('rabbitmqctl -q cluster_status 2>&1').returns('Cluster name: rabbit-1')
+        allow(Facter::Util::Resolution).to receive(:which).with('rabbitmqctl').and_return(true)
+        allow(Facter::Core::Execution).to receive(:execute).with('rabbitmqctl -q cluster_status 2>&1').and_return('Cluster name: rabbit-1')
         expect(Facter.fact(:rabbitmq_clustername).value).to eq('rabbit-1')
       end
     end
 
     context 'with dashes in clustername/hostname' do
       it do
-        Facter::Util::Resolution.expects(:which).with('rabbitmqctl').returns(true)
-        Facter::Core::Execution.expects(:execute).with('rabbitmqctl -q cluster_status 2>&1').returns(' {cluster_name,<<"monty-python@rabbit-1">>},')
+        allow(Facter::Util::Resolution).to receive(:which).with('rabbitmqctl').and_return(true)
+        allow(Facter::Core::Execution).to receive(:execute).with('rabbitmqctl -q cluster_status 2>&1').and_return(' {cluster_name,<<"monty-python@rabbit-1">>},')
         expect(Facter.fact(:rabbitmq_clustername).value).to eq('monty-python@rabbit-1')
       end
     end
 
     context 'with quotes around node name' do
       it do
-        Facter::Util::Resolution.expects(:which).with('rabbitmqctl').returns(true)
-        Facter::Core::Execution.expects(:execute).with('rabbitmqctl -q cluster_status 2>&1').returns("monty\npython\nCluster name: 'monty@rabbit-1'\nend\nof\nfile")
+        allow(Facter::Util::Resolution).to receive(:which).with('rabbitmqctl').and_return(true)
+        allow(Facter::Core::Execution).to receive(:execute).with('rabbitmqctl -q cluster_status 2>&1').and_return("monty\npython\nCluster name: 'monty@rabbit-1'\nend\nof\nfile")
         expect(Facter.fact(:rabbitmq_clustername).value).to eq("'monty@rabbit-1'")
       end
     end
@@ -63,15 +63,15 @@ describe Facter::Util::Fact do
           - cookie hash: 6WdP0nl6d3HYqA5vTKMkIg==
 
         EOS
-        Facter::Util::Resolution.expects(:which).with('rabbitmqctl').returns(true)
-        Facter::Core::Execution.expects(:execute).with('rabbitmqctl -q cluster_status 2>&1').returns(error_string)
+        allow(Facter::Util::Resolution).to receive(:which).with('rabbitmqctl').and_return(true)
+        allow(Facter::Core::Execution).to receive(:execute).with('rabbitmqctl -q cluster_status 2>&1').and_return(error_string)
         expect(Facter.fact(:rabbitmq_clustername).value).to be_nil
       end
     end
 
     context 'rabbitmqctl is not in path' do
       it do
-        Facter::Util::Resolution.expects(:which).with('rabbitmqctl').returns(false)
+        allow(Facter::Util::Resolution).to receive(:which).with('rabbitmqctl').and_return(false)
         expect(Facter.fact(:rabbitmq_clustername).value).to be_nil
       end
     end

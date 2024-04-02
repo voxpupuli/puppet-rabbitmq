@@ -13,17 +13,13 @@ describe 'rabbitmq class:' do
   end
 
   context 'default class inclusion' do
-    let(:pp) do
-      <<-EOS
-      class { 'rabbitmq': }
-      if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true}
-        Class['erlang'] -> Class['rabbitmq']
-      }
-      EOS
+    it_behaves_like 'an idempotent resource' do
+      let(:manifest) do
+        <<-PUPPET
+        class { 'rabbitmq': }
+        PUPPET
+      end
     end
-
-    it_behaves_like 'an idempotent resource'
 
     describe package(package_name) do
       it { is_expected.to be_installed }
@@ -49,19 +45,19 @@ describe 'rabbitmq class:' do
   end
 
   context 'disable and stop service' do
-    let(:pp) do
-      <<-EOS
-        class { 'rabbitmq':
-          service_ensure => 'stopped',
-        }
-        if $facts['os']['family'] == 'RedHat' {
-          class { 'erlang': epel_enable => true}
-          Class['erlang'] -> Class['rabbitmq']
-        }
-      EOS
+    it_behaves_like 'an idempotent resource' do
+      let(:manifest) do
+        <<-PUPPET
+          class { 'rabbitmq':
+            service_ensure => 'stopped',
+          }
+          if $facts['os']['family'] == 'RedHat' {
+            class { 'erlang': epel_enable => true}
+            Class['erlang'] -> Class['rabbitmq']
+          }
+        PUPPET
+      end
     end
-
-    it_behaves_like 'an idempotent resource'
 
     describe service(service_name) do
       it { is_expected.not_to be_enabled }
@@ -73,20 +69,12 @@ describe 'rabbitmq class:' do
     it 'runs successfully' do
       pp_pre = <<-EOS
         class { 'rabbitmq': }
-        if $facts['os']['family'] == 'RedHat' {
-          class { 'erlang': epel_enable => true}
-          Class['erlang'] -> Class['rabbitmq']
-        }
       EOS
 
       pp = <<-EOS
         class { 'rabbitmq':
           service_manage => false,
           service_ensure  => 'stopped',
-        }
-        if $facts['os']['family'] == 'RedHat' {
-          class { 'erlang': epel_enable => true}
-          Class['erlang'] -> Class['rabbitmq']
         }
       EOS
 
@@ -101,18 +89,18 @@ describe 'rabbitmq class:' do
   end
 
   context 'binding on all interfaces' do
-    let(:pp) do
-      <<-EOS
-      class { 'rabbitmq':
-        service_manage    => true,
-        port              => 5672,
-        admin_enable      => true,
-        node_ip_address   => '0.0.0.0'
-      }
-      EOS
+    it_behaves_like 'an idempotent resource' do
+      let(:manifest) do
+        <<-PUPPET
+        class { 'rabbitmq':
+          service_manage    => true,
+          port              => 5672,
+          admin_enable      => true,
+          node_ip_address   => '0.0.0.0'
+        }
+        PUPPET
+      end
     end
-
-    it_behaves_like 'an idempotent resource'
 
     describe service(service_name) do
       it { is_expected.to be_running }
@@ -134,18 +122,18 @@ describe 'rabbitmq class:' do
   end
 
   context 'binding to localhost only' do
-    let(:pp) do
-      <<-EOS
-        class { 'rabbitmq':
-          service_manage    => true,
-          port              => 5672,
-          admin_enable      => true,
-          node_ip_address   => '127.0.0.1'
-        }
-      EOS
+    it_behaves_like 'an idempotent resource' do
+      let(:manifest) do
+        <<-PUPPET
+          class { 'rabbitmq':
+            service_manage    => true,
+            port              => 5672,
+            admin_enable      => true,
+            node_ip_address   => '127.0.0.1'
+          }
+        PUPPET
+      end
     end
-
-    it_behaves_like 'an idempotent resource'
 
     describe service(service_name) do
       it { is_expected.to be_running }
@@ -169,22 +157,22 @@ describe 'rabbitmq class:' do
   end
 
   context 'ssl enabled' do
-    let(:pp) do
-      <<-EOS
-        class { 'rabbitmq':
-          service_manage  => true,
-          admin_enable    => true,
-          node_ip_address => '0.0.0.0',
-          ssl_interface   => '0.0.0.0',
-          ssl             => true,
-          ssl_cacert      => '/tmp/cacert.crt',
-          ssl_cert        => '/tmp/rabbitmq.crt',
-          ssl_key         => '/tmp/rabbitmq.key',
-        }
-      EOS
+    it_behaves_like 'an idempotent resource' do
+      let(:manifest) do
+        <<-PUPPET
+          class { 'rabbitmq':
+            service_manage  => true,
+            admin_enable    => true,
+            node_ip_address => '0.0.0.0',
+            ssl_interface   => '0.0.0.0',
+            ssl             => true,
+            ssl_cacert      => '/tmp/cacert.crt',
+            ssl_cert        => '/tmp/rabbitmq.crt',
+            ssl_key         => '/tmp/rabbitmq.key',
+          }
+        PUPPET
+      end
     end
-
-    it_behaves_like 'an idempotent resource'
 
     describe service(service_name) do
       it { is_expected.to be_running }
@@ -200,8 +188,9 @@ describe 'rabbitmq class:' do
   end
 
   context 'different management_ip_address and node_ip_address' do
-    let(:pp) do
-      <<-EOS
+    it_behaves_like 'an idempotent resource' do
+      let(:manifest) do
+        <<-PUPPET
         class { 'rabbitmq':
           service_manage        => true,
           port                  => 5672,
@@ -209,10 +198,9 @@ describe 'rabbitmq class:' do
           node_ip_address       => '0.0.0.0',
           management_ip_address => '127.0.0.1'
         }
-      EOS
+        PUPPET
+      end
     end
-
-    it_behaves_like 'an idempotent resource'
 
     describe service(service_name) do
       it { is_expected.to be_running }

@@ -2,31 +2,32 @@
 
 require 'spec_helper_acceptance'
 
-describe 'rabbitmq vhost:' do
-  context 'create vhost resource' do
-    it 'runs successfully' do
-      pp = <<-EOS
-      if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true }
-        Class['erlang'] -> Class['rabbitmq']
-      }
-      class { 'rabbitmq':
-        service_manage    => true,
-        port              => 5672,
-        delete_guest_user => true,
-        admin_enable      => true,
-      } ->
+describe 'rabbitmq_vhost:' do
+  before(:all) do
+    pp = <<-EOS
+    class { 'rabbitmq':
+      service_manage    => true,
+      port              => 5672,
+      delete_guest_user => true,
+      admin_enable      => true,
+    }
+    EOS
 
-      rabbitmq_vhost { 'myhost':
-        ensure => present,
-      }
-      EOS
+    apply_manifest(pp, catch_failures: true)
+  end
 
-      apply_manifest(pp, catch_failures: true)
-      apply_manifest(pp, catch_changes: true)
+  context 'ensure present' do
+    it_behaves_like 'an idempotent resource' do
+      let(:manifest) do
+        <<-PUPPET
+        rabbitmq_vhost { 'myhost':
+          ensure => present,
+        }
+        PUPPET
+      end
     end
 
-    it 'has the vhost' do
+    it 'vhost exist' do
       shell('rabbitmqctl list_vhosts') do |r|
         expect(r.stdout).to match(%r{myhost})
         expect(r.exit_code).to be_zero
