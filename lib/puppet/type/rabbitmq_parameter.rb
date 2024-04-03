@@ -106,9 +106,12 @@ Puppet::Type.newtype(:rabbitmq_parameter) do
   def munge_value(value)
     return value if value(:autoconvert) == :false
 
-    value.each do |k, v|
-      value[k] = v.to_i if v =~ %r{\A[-+]?[0-9]+\z}
+    value.transform_values do |v|
+      if v.is_a?(String) && v.match?(%r{\A[-+]?[0-9]+\z})
+        v.to_i
+      else
+        v
+      end
     end
-    value
   end
 end
