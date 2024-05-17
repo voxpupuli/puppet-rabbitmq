@@ -1,0 +1,16 @@
+[default]
+<% if $rabbitmq::config::ssl and $rabbitmq::config::management_ssl {-%>
+ssl = True
+ssl_ca_cert_file = <%= $rabbitmq::config::ssl_management_cacert %>
+ssl_cert_file = <%= $rabbitmq::config::ssl_management_cert %>
+ssl_key_file = <%= $rabbitmq::config::ssl_management_key %>
+port = <%= $rabbitmq::config::ssl_management_port %>
+<% unless $rabbitmq::config::management_hostname {-%>
+hostname = <%= $networking[fqdn] %>
+<% } -%>
+<% } else {-%>
+port = <%= $rabbitmq::config::management_port %>
+<% } -%>
+<% if $rabbitmq::config::management_hostname { %>
+hostname = <%= $rabbitmq::config::management_hostname %>
+<% } -%>

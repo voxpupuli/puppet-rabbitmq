@@ -1,0 +1,223 @@
+% This file managed by Puppet
+% Template Path: <%= $rabbitmq::config::module_name %>/templates/rabbitmq.config
+[
+<%- if $rabbitmq::config::ssl and $rabbitmq::config::ssl_versions { -%>
+  {ssl, [{versions, ['<%= $rabbitmq::config::ssl_versions.sort.join("', '") %>']}]},
+<%- } -%>
+  {rabbit, [
+<%- if $rabbitmq::config::heartbeat {-%>
+    {heartbeat, <%=$rabbitmq::config::heartbeat%>},
+<% } -%>
+<% if $rabbitmq::config::loopback_users.size > 0 {-%>
+    {loopback_users, [<<"<%= $rabbitmq::config::loopback_users.join('">>, <<"') %>">>]},
+<% } else {-%>
+    {loopback_users, []},
+<% } -%>
+<% if $rabbitmq::config::auth_backends {-%>
+    {auth_backends, [<%= $rabbitmq::config::auth_backends.join(', ') %>]},
+<% } elsif $rabbitmq::config::ldap_auth {-%>
+    {auth_backends, [rabbit_auth_backend_internal, rabbit_auth_backend_ldap]},
+<% } -%>
+<% if $rabbitmq::config::config_cluster {-%>
+    {cluster_nodes, {['rabbit@<%= $rabbitmq::config::cluster_nodes.join("', 'rabbit@") %>'], <%= $rabbitmq::config::cluster_node_type %>}},
+    {cluster_partition_handling, <%= $rabbitmq::config::cluster_partition_handling %>},
+<% } -%>
+    {tcp_listen_options, [
+         <%- unless $rabbitmq::config::config_ranch {-%>
+         binary,
+         {packet,        raw},
+         {reuseaddr,     true},
+         <%- } -%>
+         <%- if $rabbitmq::config::tcp_keepalive {-%>
+         {keepalive,     true},
+         <%- } -%>
+         <%- if $rabbitmq::config::tcp_backlog {-%>
+         {backlog,       <%= $rabbitmq::config::tcp_backlog %>},
+         <%- } -%>
+         <%- if $rabbitmq::config::tcp_sndbuf {-%>
+         {sndbuf,       <%= $rabbitmq::config::tcp_sndbuf %>},
+         <%- } -%>
+         <%- if $rabbitmq::config::tcp_recbuf {-%>
+         {recbuf,       <%= $rabbitmq::config::tcp_recbuf %>},
+         <%- } -%>
+         {nodelay,       true},
+         {linger,        {true, 0}},
+         {exit_on_close, false}
+    ]},
+<%- if $rabbitmq::config::collect_statistics_interval {-%>
+    {collect_statistics_interval, <%= $rabbitmq::config::collect_statistics_interval %>},
+<%- } -%>
+<%- if $rabbitmq::config::ssl_only {-%>
+    {tcp_listeners, []},
+<%-} elsif $rabbitmq::config::interface {-%>
+    {tcp_listeners, [{"<%= $rabbitmq::config::interface%>", <%= $rabbitmq::config::port %>}]},
+<%- } -%>
+<%- if $rabbitmq::config::ssl {-%>
+  <%- if $rabbitmq::config::ssl_interface {-%>
+    {ssl_listeners, [{"<%= $rabbitmq::config::ssl_interface%>", <%= $rabbitmq::config::ssl_port %>}]},
+  <%-} else {-%>
+    {ssl_listeners, [<%= $rabbitmq::config::ssl_port %>]},
+  <%- } -%>
+    {ssl_options, [
+                   <%- if $rabbitmq::config::ssl_cacert {-%>
+                   {cacertfile,"<%= $rabbitmq::config::ssl_cacert %>"},
+                   <%- } -%>
+                   {certfile,"<%= $rabbitmq::config::ssl_cert %>"},
+                   {keyfile,"<%= $rabbitmq::config::ssl_key %>"},
+                   <%- if $rabbitmq::config::ssl_cert_password {-%>
+                   {password, "<%= $rabbitmq::config::ssl_cert_password %>"},
+                   <%- } -%>
+                   <%- if $rabbitmq::config::ssl_depth {-%>
+                   {depth,<%= $rabbitmq::config::ssl_depth %>},
+                   <%- } -%>
+                   <%- if $rabbitmq::config::ssl_dhfile {-%>
+                   {dhfile, "<%= $rabbitmq::config::ssl_dhfile %>"},
+                   <%- } -%>
+                   {secure_renegotiate,<%= $rabbitmq::config::ssl_secure_renegotiate %>},
+                   {reuse_sessions,<%= $rabbitmq::config::ssl_reuse_sessions %>},
+                   {honor_cipher_order,<%= $rabbitmq::config::ssl_honor_cipher_order %>},
+                   {verify,<%= $rabbitmq::config::ssl_verify %>},
+                   {fail_if_no_peer_cert,<%= $rabbitmq::config::ssl_fail_if_no_peer_cert %>}
+                   <%- if $rabbitmq::config::ssl_versions {-%>
+                   ,{versions, ['<%= $rabbitmq::config::ssl_versions.sort.join("', '") %>']}
+                   <%- } -%>
+                   <%- if $rabbitmq::config::ssl_ciphers and $rabbitmq::config::ssl_ciphers.size > 0 {-%>
+                   ,{ciphers,[
+                      <%- $rabbitmq::config::ssl_ciphers.each |$k| { -%>
+                      <%- if $k.split(',').size > 1 {-%>
+                      {<%= $k %>}<%- if $k != $rabbitmq::config::ssl_ciphers[-1] { -%>,<%- } %>
+                      <%-} else {-%>
+                      "<%= $k %>"<%- if $k != $rabbitmq::config::ssl_ciphers[-1] { -%>,<%- } %>
+                      <%-} -%>
+                      <%-} -%>
+                   ]}
+                   <%- } -%>
+                   <%- if $rabbitmq::config::ssl_crl_check != 'false' {-%>
+                   ,{crl_check,<%= $rabbitmq::config::ssl_crl_check %>}
+                   <%- } -%>
+                   <%- if $rabbitmq::config::ssl_crl_cache_hash_dir {-%>
+                   ,{crl_cache, {ssl_crl_hash_dir, {internal, [{dir, "<%= $rabbitmq::config::ssl_crl_cache_hash_dir %>"}]}}}
+                   <%- } -%>
+                   <%- if $rabbitmq::config::ssl_crl_cache_http_timeout {-%>
+                   ,{crl_cache, {ssl_crl_cache, {internal, [{http, <%= $rabbitmq::config::ssl_crl_cache_http_timeout %>}]}}}
+                   <%- } -%>
+                  ]},
+<%- } -%>
+<% if $rabbitmq::config::config_variables {-%>
+<%- $rabbitmq::config::config_variables.keys.sort.each |$key| {-%>
+    {<%= $key %>, <%= $rabbitmq::config::config_variables[$key] %>},
+<%- } -%>
+<%- } -%>
+    {default_user, <<"<%= $rabbitmq::config::default_user %>">>},
+    {default_pass, <<"<%= $rabbitmq::config::default_pass %>">>}
+  ]}<% if $rabbitmq::config::config_kernel_variables {-%>,
+  {kernel, [
+    <%- $rabbitmq::config::config_kernel_variables.keys.sort.each |$k| { -%>
+    {<%= $k %>, <%= $rabbitmq::config::config_kernel_variables[$k] %>}<%- if $k != $rabbitmq::config::config_kernel_variables.keys.sort[-1] { -%>,<%- } %>
+    <%-} -%>
+  ]}
+<%- } -%>
+<%- if $rabbitmq::config::admin_enable or $rabbitmq::config::management_enable or ! $rabbitmq::config::config_management_variables.empty {-%>,
+  {rabbitmq_management, [
+    <%- if !$rabbitmq::config::config_management_variables.empty {-%>
+    <%- $rabbitmq::config::config_management_variables.keys.sort.each |$k| { -%>
+    {<%= $k %>, <%= $rabbitmq::config::config_management_variables[$k] %>}<%- if $k != $rabbitmq::config::config_management_variables.keys.sort[-1] { -%>,<%- } %>
+    <%-} -%>
+    <%-} -%>
+<%- if $rabbitmq::config::admin_enable or $rabbitmq::config::management_enable {-%>
+<%- if !$rabbitmq::config::config_management_variables.empty {-%>,<%-}-%>
+    {listener, [
+<%- if $rabbitmq::config::ssl and $rabbitmq::config::management_ssl {-%>
+  <%- if $rabbitmq::config::management_ip_address {-%>
+      {ip, "<%= $rabbitmq::config::management_ip_address %>"},
+  <%- } -%>
+      {port, <%= $rabbitmq::config::ssl_management_port %>},
+      {ssl, true},
+      {ssl_opts, [
+                  <%- if $rabbitmq::config::ssl_management_cacert {-%>
+                  {cacertfile, "<%= $rabbitmq::config::ssl_management_cacert %>"},
+                  <%- } -%>
+                  {certfile, "<%= $rabbitmq::config::ssl_management_cert %>"},
+                  {keyfile, "<%= $rabbitmq::config::ssl_management_key %>"},
+                  {verify,<%= $rabbitmq::config::ssl_management_verify %>},
+                  {fail_if_no_peer_cert,<%= $rabbitmq::config::ssl_management_fail_if_no_peer_cert %>}
+                   <%- if $rabbitmq::config::ssl_versions {-%>
+                   ,{versions, ['<%= $rabbitmq::config::ssl_versions.sort.join("', '") %>']}
+                   <%- } -%>
+                   <%- if $rabbitmq::config::ssl_ciphers and $rabbitmq::config::ssl_ciphers.size > 0 {-%>
+                   ,{ciphers,[
+                      <%- $rabbitmq::config::ssl_ciphers.each |$k| { -%>
+                      <%- if $k.split(',').size > 1 {-%>
+                      {<%= $k %>}<%- if $k != $rabbitmq::config::ssl_ciphers[-1] { -%>,<%- } %>
+                      <%-} else {-%>
+                      "<%= $k %>"<%- if $k != $rabbitmq::config::ssl_ciphers[-1] { -%>,<%- } %>
+                      <%-} -%>
+                      <%-} -%>
+                   ]}
+                  <%- } -%>
+                 ]}
+<%- } else {-%>
+  <%- if $rabbitmq::config::management_ip_address {-%>
+      {ip, "<%= $rabbitmq::config::management_ip_address %>"},
+  <%- } -%>
+      {port, <%= $rabbitmq::config::management_port %>}
+<%- } -%>
+    ]}
+<%- } -%>
+  ]}
+<%- } -%>
+<% if $rabbitmq::config::config_stomp {-%>,
+% Configure the Stomp Plugin listening port
+  {rabbitmq_stomp, [
+  <%- if $rabbitmq::config::stomp_ssl_only {-%>
+    {tcp_listeners, []}
+  <%-} else {-%>
+    {tcp_listeners, [<%= $rabbitmq::config::stomp_port %>]}
+  <%- } -%>
+  <%- if $rabbitmq::config::ssl and $rabbitmq::config::ssl_stomp_port {-%>
+    ,
+    {ssl_listeners, [<%= $rabbitmq::config::ssl_stomp_port %>]}
+  <%- } -%>
+  ]}
+<% } -%>
+<%- if $rabbitmq::config::ldap_auth {-%>,
+% Configure the LDAP authentication plugin
+  {rabbitmq_auth_backend_ldap, [
+    {other_bind, <%= $rabbitmq::config::ldap_other_bind %>},
+
+<% if $rabbitmq::config::ldap_server =~ Array {-%>
+    {servers, ["<%= $rabbitmq::config::ldap_server.join('", "') %>"]},
+<% } else {-%>
+    {servers, ["<%= $rabbitmq::config::ldap_server %>"]},
+<% } -%>
+<% if $rabbitmq::config::ldap_user_dn_pattern {-%>
+    {user_dn_pattern, "<%= $rabbitmq::config::ldap_user_dn_pattern %>"},
+<%- } -%>
+    {use_ssl, <%= $rabbitmq::config::ldap_use_ssl %>},
+    {port, <%= $rabbitmq::config::ldap_port %>},
+<% if $rabbitmq::config::ldap_config_variables {-%>
+<%- $rabbitmq::config::ldap_config_variables.keys.sort.each |$key| {-%>
+    {<%= $key %>, <%= $rabbitmq::config::ldap_config_variables[$key] %>},
+<%- } -%>
+<%- } -%>
+    {log, <%= $rabbitmq::config::ldap_log %>}
+  ]}
+<%- } -%>
+<%- if $rabbitmq::config::config_shovel and !$rabbitmq::config::config_shovel_statics.empty {-%>,
+  {rabbitmq_shovel,
+    [{shovels,[
+      <%- $rabbitmq::config::config_shovel_statics.keys.sort.each |$key| { -%>
+      {<%= $key %>,[<%= $rabbitmq::config::config_shovel_statics[$key] %>]}<%- if $key != $rabbitmq::config::config_shovel_statics.keys.sort[-1] {-%>,<%- } %>
+      <%- } -%>
+    ]}]}
+<%- } -%>
+<%- if $rabbitmq::config::config_additional_variables and !$rabbitmq::config::config_additional_variables.empty {-%>,
+% Additional config
+<%- $rabbitmq::config::config_additional_variables.keys.sort.each |$key| {-%>
+  {<%= $key %>, <%= $rabbitmq::config::config_additional_variables[$key] %>}<%- if $key != $rabbitmq::config::config_additional_variables.keys.sort[-1] {%>,<% } %>
+<%- } -%>
+<%- } -%>
+].
+% EOF
+
+

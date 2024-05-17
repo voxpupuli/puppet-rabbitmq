@@ -5,7 +5,7 @@ rabbitmq::use_config_file_for_plugins: false
 rabbitmq::cluster: {}
 rabbitmq::cluster_node_type: 'disc'
 rabbitmq::cluster_nodes: []
-rabbitmq::config: 'rabbitmq/rabbitmq.config.erb'
+rabbitmq::config: 'rabbitmq/rabbitmq.config.epp'
 rabbitmq::config_cluster: false
 rabbitmq::config_path: '/etc/rabbitmq/rabbitmq.config'
 rabbitmq::config_ranch: true
@@ -15,7 +15,7 @@ rabbitmq::config_shovel_statics: {}
 rabbitmq::default_user: 'guest'
 rabbitmq::default_pass: 'guest'
 rabbitmq::delete_guest_user: false
-rabbitmq::env_config: 'rabbitmq/rabbitmq-env.conf.erb'
+rabbitmq::env_config: 'rabbitmq/rabbitmq-env.conf.epp'
 rabbitmq::env_config_path: '/etc/rabbitmq/rabbitmq-env.conf'
 rabbitmq::erlang_cookie: ~
 rabbitmq::interface: ~
