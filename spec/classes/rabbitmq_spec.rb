@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable RSpec/RepeatedExampleGroupDescription
-# rubocop:disable RSpec/RepeatedExampleGroupBody
-
 require 'spec_helper'
 
 describe 'rabbitmq' do
@@ -144,13 +141,13 @@ describe 'rabbitmq' do
             it { is_expected.not_to contain_file('/etc/default/rabbitmq-server') }
           end
 
-          if os_facts[:systemd]
+          if os_facts['systemd']
             selinux_ignore_defaults = os_facts[:os]['family'] == 'RedHat'
 
             it do
               is_expected.to contain_systemd__service_limits("#{name}.service").
                 with_selinux_ignore_defaults(selinux_ignore_defaults).
-                with_limits('LimitNOFILE' => value).
+                with_limits({ 'LimitNOFILE' => value, 'OOMScoreAdjust' => 0 }).
                 with_restart_service(false)
             end
           else
@@ -179,10 +176,10 @@ describe 'rabbitmq' do
             it { is_expected.not_to contain_file('/etc/default/rabbitmq-server') }
           end
 
-          if os_facts[:systemd]
+          if os_facts['systemd']
             it do
               is_expected.to contain_systemd__service_limits("#{name}.service").
-                with_limits('OOMScoreAdjust' => value).
+                with_limits({ 'LimitNOFILE' => 16_384, 'OOMScoreAdjust' => value }).
                 with_restart_service(false)
             end
           else
@@ -201,14 +198,14 @@ describe 'rabbitmq' do
         end
       end
 
-      context 'on systems with systemd', if: os_facts[:systemd] do
+      context 'on systems with systemd', if: os_facts['systemd'] do
         it do
           is_expected.to contain_systemd__service_limits("#{name}.service").
             with_restart_service(false)
         end
       end
 
-      context 'on systems without systemd', unless: os_facts[:systemd] do
+      context 'on systems without systemd', unless: os_facts['systemd'] do
         it { is_expected.not_to contain_systemd__service_limits("#{name}.service") }
       end
 
@@ -1806,6 +1803,3 @@ describe 'rabbitmq' do
     end
   end
 end
-
-# rubocop:enable RSpec/RepeatedExampleGroupDescription
-# rubocop:enable RSpec/RepeatedExampleGroupBody
