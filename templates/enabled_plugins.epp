@@ -1,0 +1,3 @@
+% This file managed by Puppet
+% Template Path: <%= $rabbitmq::config::module_name %>/templates/enabled_plugins
+[<%= ($::rabbitmq::config::_plugins.unique).join(',')%>].

@@ -7,8 +7,8 @@
 # Maximum number of open file handles. This will need to be increased
 # to handle many simultaneous connections. Refer to the system
 # documentation for ulimit (in man bash) for more information.
-ulimit -n <%= @file_limit %>
+ulimit -n <%= $rabbitmq::config::file_limit %>
 
 # OOM score. It sets the score of the init script, but as this value is
 # inherited, it also applies to the rabbitmq-server.
-echo <%= @oom_score_adj %> > /proc/$$/oom_score_adj
+echo <%= $rabbitmq::config::oom_score_adj %> > /proc/$$/oom_score_adj
