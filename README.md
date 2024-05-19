@@ -1,8 +1,7 @@
 # rabbitmq
 
 [![License](https://img.shields.io/github/license/voxpupuli/puppet-rabbitmq.svg)](https://github.com/voxpupuli/puppet-rabbitmq/blob/master/LICENSE)
-[![Build Status](https://travis-ci.org/voxpupuli/puppet-rabbitmq.svg?branch=master)](https://travis-ci.org/voxpupuli/puppet-rabbitmq)
-[![Code Coverage](https://coveralls.io/repos/github/voxpupuli/puppet-rabbitmq/badge.svg?branch=master)](https://coveralls.io/github/voxpupuli/puppet-rabbitmq)
+[![Build Status](https://github.com/voxpupuli/puppet-rabbitmq/actions/workflows/ci.yml/badge.svg)](https://github.com/voxpupuli/puppet-rabbitmq/actions)
 [![Puppet Forge](https://img.shields.io/puppetforge/v/puppet/rabbitmq.svg)](https://forge.puppetlabs.com/puppet/rabbitmq)
 [![Puppet Forge - downloads](https://img.shields.io/puppetforge/dt/puppet/rabbitmq.svg)](https://forge.puppetlabs.com/puppet/rabbitmq)
 [![Puppet Forge - endorsement](https://img.shields.io/puppetforge/e/puppet/rabbitmq.svg)](https://forge.puppetlabs.com/puppet/rabbitmq)
