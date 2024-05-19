@@ -1,5 +1,19 @@
 # frozen_string_literal: true
 
+# See below; these are variables that we want to auto-convert to integer
+# values
+CONVERT_TO_INT_VARS = %w[
+  consumer-timeout
+  delivery-limit
+  expires
+  ha-sync-batch-size
+  initial-cluster-size
+  max-length
+  max-length-bytes
+  message-ttl
+  shards-per-node
+].freeze
+
 Puppet::Type.newtype(:rabbitmq_policy) do
   desc <<~DESC
     Type for managing rabbitmq policies
@@ -97,50 +111,22 @@ Puppet::Type.newtype(:rabbitmq_policy) do
       ha_params = definition['ha-params']
       raise ArgumentError, "Invalid ha-params '#{ha_params}' for ha-mode 'exactly'" unless ha_params.to_i.to_s == ha_params
     end
-    if definition.key? 'expires'
-      expires_val = definition['expires']
-      raise ArgumentError, "Invalid expires value '#{expires_val}'" unless expires_val.to_i.to_s == expires_val
-    end
-    if definition.key? 'message-ttl'
-      message_ttl_val = definition['message-ttl']
-      raise ArgumentError, "Invalid message-ttl value '#{message_ttl_val}'" unless message_ttl_val.to_i.to_s == message_ttl_val
-    end
-    if definition.key? 'max-length'
-      max_length_val = definition['max-length']
-      raise ArgumentError, "Invalid max-length value '#{max_length_val}'" unless max_length_val.to_i.to_s == max_length_val
-    end
-    if definition.key? 'max-length-bytes'
-      max_length_bytes_val = definition['max-length-bytes']
-      raise ArgumentError, "Invalid max-length-bytes value '#{max_length_bytes_val}'" unless max_length_bytes_val.to_i.to_s == max_length_bytes_val
-    end
-    if definition.key? 'shards-per-node'
-      shards_per_node_val = definition['shards-per-node']
-      raise ArgumentError, "Invalid shards-per-node value '#{shards_per_node_val}'" unless shards_per_node_val.to_i.to_s == shards_per_node_val
-    end
-    if definition.key? 'ha-sync-batch-size'
-      ha_sync_batch_size_val = definition['ha-sync-batch-size']
-      raise ArgumentError, "Invalid ha-sync-batch-size value '#{ha_sync_batch_size_val}'" unless ha_sync_batch_size_val.to_i.to_s == ha_sync_batch_size_val
-    end
-    if definition.key? 'delivery-limit'
-      delivery_limit_val = definition['delivery-limit']
-      raise ArgumentError, "Invalid delivery-limit value '#{delivery_limit_val}'" unless delivery_limit_val.to_i.to_s == delivery_limit_val
-    end
-    if definition.key? 'initial-cluster-size' # rubocop:disable Style/GuardClause
-      initial_cluster_size_val = definition['initial-cluster-size']
-      raise ArgumentError, "Invalid initial-cluster-size value '#{initial_cluster_size_val}'" unless initial_cluster_size_val.to_i.to_s == initial_cluster_size_val
+
+    # Since this pattern is repeated, use a constant to track all the types
+    # where we need to convert a string value to an unquoted integer explicitly
+    definition.each do |k, v|
+      raise ArgumentError, "Invalid #{k} value '#{v}'" if CONVERT_TO_INT_VARS.include?(k) && v.to_i.to_s != v
     end
   end
 
   def munge_definition(definition)
     definition['ha-params'] = definition['ha-params'].to_i if definition['ha-mode'] == 'exactly'
-    definition['expires'] = definition['expires'].to_i if definition.key? 'expires'
-    definition['message-ttl'] = definition['message-ttl'].to_i if definition.key? 'message-ttl'
-    definition['max-length'] = definition['max-length'].to_i if definition.key? 'max-length'
-    definition['max-length-bytes'] = definition['max-length-bytes'].to_i if definition.key? 'max-length-bytes'
-    definition['shards-per-node'] = definition['shards-per-node'].to_i if definition.key? 'shards-per-node'
-    definition['ha-sync-batch-size'] = definition['ha-sync-batch-size'].to_i if definition.key? 'ha-sync-batch-size'
-    definition['delivery-limit'] = definition['delivery-limit'].to_i if definition.key? 'delivery-limit'
-    definition['initial-cluster-size'] = definition['initial-cluster-size'].to_i if definition.key? 'initial-cluster-size'
+
+    # Again, use a list of types to convert vs. hard-coding each one
+    definition.each do |k, v|
+      definition[k] = v.to_i if CONVERT_TO_INT_VARS.include? k
+    end
+
     definition
   end
 end

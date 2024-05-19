@@ -91,7 +91,7 @@ describe Puppet::Type.type(:rabbitmq_policy) do
     end
   end
 
-  it 'accepts and convert ha-params for ha-mode exactly' do
+  it 'accepts and converts ha-params for ha-mode exactly' do
     definition = { 'ha-mode' => 'exactly', 'ha-params' => '2' }
     policy[:definition] = definition
     expect(policy[:definition]['ha-params']).to eq(2)
@@ -104,7 +104,20 @@ describe Puppet::Type.type(:rabbitmq_policy) do
     end.to raise_error(Puppet::Error, %r{Invalid ha-params.*nonnumeric.*exactly})
   end
 
-  it 'accepts and convert the expires value' do
+  it 'accepts and converts the consumer-timeout value' do
+    definition = { 'consumer-timeout' => '86400000' }
+    policy[:definition] = definition
+    expect(policy[:definition]['consumer-timeout']).to eq(86_400_000)
+  end
+
+  it 'does not accept non-numeric consumer-timeout value' do
+    definition = { 'consumer-timeout' => 'bogus' }
+    expect do
+      policy[:definition] = definition
+    end.to raise_error(Puppet::Error, %r{Invalid consumer-timeout value.*bogus})
+  end
+
+  it 'accepts and converts the expires value' do
     definition = { 'expires' => '1800000' }
     policy[:definition] = definition
     expect(policy[:definition]['expires']).to eq(1_800_000)
@@ -117,7 +130,7 @@ describe Puppet::Type.type(:rabbitmq_policy) do
     end.to raise_error(Puppet::Error, %r{Invalid expires value.*future})
   end
 
-  it 'accepts and convert the message-ttl value' do
+  it 'accepts and converts the message-ttl value' do
     definition = { 'message-ttl' => '1800000' }
     policy[:definition] = definition
     expect(policy[:definition]['message-ttl']).to eq(1_800_000)
@@ -130,7 +143,7 @@ describe Puppet::Type.type(:rabbitmq_policy) do
     end.to raise_error(Puppet::Error, %r{Invalid message-ttl value.*future})
   end
 
-  it 'accepts and convert the max-length value' do
+  it 'accepts and converts the max-length value' do
     definition = { 'max-length' => '1800000' }
     policy[:definition] = definition
     expect(policy[:definition]['max-length']).to eq(1_800_000)
@@ -143,7 +156,7 @@ describe Puppet::Type.type(:rabbitmq_policy) do
     end.to raise_error(Puppet::Error, %r{Invalid max-length value.*future})
   end
 
-  it 'accepts and convert the max-length-bytes value' do
+  it 'accepts and converts the max-length-bytes value' do
     definition = { 'max-length-bytes' => '1800000' }
     policy[:definition] = definition
     expect(policy[:definition]['max-length-bytes']).to eq(1_800_000)
@@ -156,7 +169,7 @@ describe Puppet::Type.type(:rabbitmq_policy) do
     end.to raise_error(Puppet::Error, %r{Invalid max-length-bytes value.*future})
   end
 
-  it 'accepts and convert the shards-per-node value' do
+  it 'accepts and converts the shards-per-node value' do
     definition = { 'shards-per-node' => '1800000' }
     policy[:definition] = definition
     expect(policy[:definition]['shards-per-node']).to eq(1_800_000)
@@ -169,7 +182,7 @@ describe Puppet::Type.type(:rabbitmq_policy) do
     end.to raise_error(Puppet::Error, %r{Invalid shards-per-node value.*future})
   end
 
-  it 'accepts and convert the ha-sync-batch-size value' do
+  it 'accepts and converts the ha-sync-batch-size value' do
     definition = { 'ha-sync-batch-size' => '1800000' }
     policy[:definition] = definition
     expect(policy[:definition]['ha-sync-batch-size']).to eq(1_800_000)
