@@ -7,7 +7,7 @@ describe 'rabbitmq clustering' do
     it 'runs successfully' do
       pp = <<-EOS
       class { 'rabbitmq':
-        cluster                  => { 'name' => 'rabbit_cluster', 'init_node' => $facts['fqdn'] },
+        cluster                  => { 'name' => 'rabbit_cluster', 'init_node' => $facts['networking']['fqdn'] },
         config_cluster           => true,
         cluster_nodes            => ['rabbit1', 'rabbit2'],
         cluster_node_type        => 'ram',
@@ -28,7 +28,7 @@ describe 'rabbitmq clustering' do
     it 'runs successfully' do
       pp = <<-EOS
       class { 'rabbitmq':
-        cluster                  => { 'name' => 'rabbit_cluster', 'init_node' => $facts['fqdn'] },
+        cluster                  => { 'name' => 'rabbit_cluster', 'init_node' => $facts['networking']['fqdn'] },
         config_cluster           => true,
         cluster_nodes            => ['rabbit1', 'rabbit2'],
         cluster_node_type        => 'ram',
