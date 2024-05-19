@@ -125,10 +125,9 @@ describe 'rabbitmq' do
           selinux_ignore_defaults = os_facts[:os]['family'] == 'RedHat'
 
           it do
-            is_expected.to contain_systemd__service_limits("#{name}.service").
+            is_expected.to contain_systemd__manage_dropin('service-90-limits.conf').
               with_selinux_ignore_defaults(selinux_ignore_defaults).
-              with_limits({ 'LimitNOFILE' => value, 'OOMScoreAdjust' => 0 }).
-              with_restart_service(false)
+              with_service_entry({ 'LimitNOFILE' => value, 'OOMScoreAdjust' => 0 })
           end
         end
       end
@@ -147,11 +146,7 @@ describe 'rabbitmq' do
         context "with oom_score_adj => '#{value}'", if: os_facts['systemd'] do
           let(:params) { { oom_score_adj: value } }
 
-          it do
-            is_expected.to contain_systemd__service_limits("#{name}.service").
-              with_limits({ 'LimitNOFILE' => 16_384, 'OOMScoreAdjust' => value }).
-              with_restart_service(false)
-          end
+          it { is_expected.to contain_systemd__manage_dropin('service-90-limits.conf').with_service_entry({ 'LimitNOFILE' => 16_384, 'OOMScoreAdjust' => value }) }
         end
       end
 
@@ -166,14 +161,11 @@ describe 'rabbitmq' do
       end
 
       context 'on systems with systemd', if: os_facts['systemd'] do
-        it do
-          is_expected.to contain_systemd__service_limits("#{name}.service").
-            with_restart_service(false)
-        end
+        it { is_expected.to contain_systemd__manage_dropin('service-90-limits.conf') }
       end
 
       context 'on systems without systemd', unless: os_facts['systemd'] do
-        it { is_expected.not_to contain_systemd__service_limits("#{name}.service") }
+        it { is_expected.not_to contain_systemd__manage_dropin('service-90-limits.conf') }
       end
 
       context 'with admin_enable set to true' do
