@@ -5,4 +5,5 @@ fixtures:
     archive: 'https://github.com/voxpupuli/puppet-archive'
     erlang: 'https://github.com/voxpupuli/puppet-erlang'
     systemd: 'https://github.com/voxpupuli/puppet-systemd'
+    epel: 'https://github.com/voxpupuli/puppet-epel'
     yumrepo_core: 'https://github.com/puppetlabs/puppetlabs-yumrepo_core'

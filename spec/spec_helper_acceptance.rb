@@ -8,6 +8,7 @@ configure_beaker do |host|
     install_puppet_module_via_pmt_on(host, 'puppetlabs-apt', '>= 4.1.0 < 9.0.0')
   when 'RedHat'
     install_puppet_module_via_pmt_on(host, 'puppet-erlang', '>= 1.1.0 < 2.0.0')
+    install_puppet_module_via_pmt_on(host, 'puppet-epel', '>= 5.0.0 < 6.0.0')
     if fact_on(host, 'os.selinux.enabled')
       # Make sure selinux is disabled so the tests work.
       on host, puppet('resource', 'exec', 'setenforce 0', 'path=/bin:/sbin:/usr/bin:/usr/sbin', 'onlyif=which setenforce && getenforce | grep Enforcing')

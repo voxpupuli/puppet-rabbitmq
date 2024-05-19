@@ -492,6 +492,8 @@ class rabbitmq (
     }
   }
 
+  # when repos_ensure is true, we configure externel repos
+  # CentOS 7 doesn't contain rabbitmq. It's only in EPEL.
   if $repos_ensure {
     case $facts['os']['family'] {
       'RedHat': {
@@ -505,6 +507,8 @@ class rabbitmq (
       default: {
       }
     }
+  } elsif ($facts['os']['family'] == 'RedHat' and $facts['os']['release']['major'] == '7') {
+    require epel
   }
 
   contain rabbitmq::install
