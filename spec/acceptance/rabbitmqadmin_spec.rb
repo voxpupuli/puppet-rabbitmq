@@ -10,10 +10,6 @@ describe 'rabbitmq::install::rabbitmqadmin class' do
         admin_enable   => true,
         service_manage => true,
       }
-      if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true}
-        Class['erlang'] -> Class['rabbitmq']
-      }
       EOS
 
       apply_manifest(pp, catch_failures: true)
@@ -30,10 +26,6 @@ describe 'rabbitmq::install::rabbitmqadmin class' do
       class { 'rabbitmq':
         admin_enable   => true,
         service_manage => false,
-      }
-      if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true}
-        Class['erlang'] -> Class['rabbitmq']
       }
       EOS
 
@@ -55,10 +47,6 @@ describe 'rabbitmq::install::rabbitmqadmin class' do
         default_user   => 'foobar',
         default_pass   => 'bazblam',
       }
-      if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true}
-        Class['erlang'] -> Class['rabbitmq']
-      }
       EOS
 
       pp = <<-EOS
@@ -67,10 +55,6 @@ describe 'rabbitmq::install::rabbitmqadmin class' do
         service_manage => true,
         default_user   => 'foobar',
         default_pass   => 'bazblam',
-      }
-      if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true}
-        Class['erlang'] -> Class['rabbitmq']
       }
       EOS
 

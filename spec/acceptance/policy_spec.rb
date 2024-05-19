@@ -6,10 +6,6 @@ describe 'rabbitmq policy on a vhost:' do
   context 'create policy resource' do
     it 'runs successfully' do
       pp = <<-EOS
-      if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true }
-        Class['erlang'] -> Class['rabbitmq']
-      }
       class { 'rabbitmq':
         service_manage    => true,
         port              => 5672,
