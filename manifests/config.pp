@@ -221,14 +221,13 @@ class rabbitmq::config {
   }
 
   if $facts['systemd'] { # systemd fact provided by systemd module
-    systemd::service_limits { "${service_name}.service":
+    systemd::manage_dropin { 'service-90-limits.conf':
+      unit                    => "${service_name}.service",
       selinux_ignore_defaults => ($facts['os']['family'] == 'RedHat'),
-      limits                  => {
+      service_entry           => {
         'LimitNOFILE'    => $file_limit,
         'OOMScoreAdjust' => $oom_score_adj,
       },
-      # The service will be notified when config changes
-      restart_service         => false,
     }
   }
 
