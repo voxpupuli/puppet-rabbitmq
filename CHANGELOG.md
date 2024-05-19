@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v13.3.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v13.3.0) (2024-05-19)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v13.2.0...v13.3.0)
+
+**Implemented enhancements:**
+
+- Use epp template to handle sensitive data [\#966](https://github.com/voxpupuli/puppet-rabbitmq/issues/966)
+- systemd: migrate from service\_limits-\>manage\_dropin [\#982](https://github.com/voxpupuli/puppet-rabbitmq/pull/982) ([bastelfreak](https://github.com/bastelfreak))
+- Remove leftovers from Linux systems without systemd [\#981](https://github.com/voxpupuli/puppet-rabbitmq/pull/981) ([bastelfreak](https://github.com/bastelfreak))
+- update puppet-systemd upper bound to 8.0.0 [\#977](https://github.com/voxpupuli/puppet-rabbitmq/pull/977) ([TheMeier](https://github.com/TheMeier))
+- Harden codebase and add documentation stubs [\#974](https://github.com/voxpupuli/puppet-rabbitmq/pull/974) ([zilchms](https://github.com/zilchms))
+
+**Fixed bugs:**
+
+- add a workaround for rabbitmq\_vhost when running with --noop or --tags [\#969](https://github.com/voxpupuli/puppet-rabbitmq/pull/969) ([bugfood](https://github.com/bugfood))
+
+**Merged pull requests:**
+
+- Migrate erb to epp templates [\#978](https://github.com/voxpupuli/puppet-rabbitmq/pull/978) ([nosrio](https://github.com/nosrio))
+- Use a more expressive method of rewriting values [\#975](https://github.com/voxpupuli/puppet-rabbitmq/pull/975) ([ekohl](https://github.com/ekohl))
+
 ## [v13.2.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v13.2.0) (2023-12-10)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v13.1.2...v13.2.0)
@@ -643,7 +664,7 @@ Debian 8 is EOL since some months now. Release 10.2.0 will be the last one with 
 - \[Bugfix\] convert $ssl\_depth from string to integer [\#539](https://github.com/voxpupuli/puppet-rabbitmq/pull/539) ([bastelfreak](https://github.com/bastelfreak))
 - Extend rabbitmqadmin config template with SSL options. [\#526](https://github.com/voxpupuli/puppet-rabbitmq/pull/526) ([justahero](https://github.com/justahero))
 - \[MODULES-4223\] don't set NODE\_PORT and NODE\_IP\_ADDRESS if ssl\_only [\#524](https://github.com/voxpupuli/puppet-rabbitmq/pull/524) ([JAORMX](https://github.com/JAORMX))
-- \[MODULES-3733\] rabbitmq provider env\_path does not locate ruby gem installed puppet binary [\#517](https://github.com/voxpupuli/puppet-rabbitmq/pull/517) ([lowstorage](https://github.com/lowstorage))
+- \[MODULES-3733\] rabbitmq provider env\_path does not locate ruby gem installed puppet binary [\#517](https://github.com/voxpupuli/puppet-rabbitmq/pull/517) ([growthstock](https://github.com/growthstock))
 
 **Closed issues:**
 
