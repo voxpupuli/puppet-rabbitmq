@@ -6,18 +6,14 @@ describe 'rabbitmq vhost:' do
   context 'create vhost resource' do
     it 'runs successfully' do
       pp = <<-EOS
-      if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': epel_enable => true }
-        Class['erlang'] -> Class['rabbitmq']
-      }
       class { 'rabbitmq':
         service_manage    => true,
         port              => 5672,
         delete_guest_user => true,
         admin_enable      => true,
-      } ->
+      }
 
-      rabbitmq_vhost { 'myhost':
+      -> rabbitmq_vhost { 'myhost':
         ensure => present,
       }
       EOS

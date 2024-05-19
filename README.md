@@ -50,6 +50,10 @@ These are now documented via [Puppet Strings](https://github.com/puppetlabs/pupp
 
 You can view example usage in [REFERENCE](REFERENCE.md).
 
+**[puppet/epel](https://forge.puppet.com/modules/puppet/epel) is a soft dependency. The module requires it if you're on CentOS 7**
+
+Version v13.2.0 and older also added an erlang repository on CentOS 7. That isn't used and can be safely removed.
+
 ## Reference
 
 See [REFERENCE](REFERENCE.md).
