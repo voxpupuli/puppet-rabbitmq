@@ -6,7 +6,7 @@ ssl_cert_file = <%= $rabbitmq::config::ssl_management_cert %>
 ssl_key_file = <%= $rabbitmq::config::ssl_management_key %>
 port = <%= $rabbitmq::config::ssl_management_port %>
 <% unless $rabbitmq::config::management_hostname {-%>
-hostname = <%= $networking[fqdn] %>
+hostname = <%= $facts['networking']['fqdn'] %>
 <% } -%>
 <% } else {-%>
 port = <%= $rabbitmq::config::management_port %>
