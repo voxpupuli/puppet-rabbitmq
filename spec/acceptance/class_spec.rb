@@ -15,11 +15,7 @@ describe 'rabbitmq class:' do
   context 'default class inclusion' do
     let(:pp) do
       <<-EOS
-      class { 'rabbitmq': }
-      if $facts['os']['family'] == 'RedHat' {
-        class { 'erlang': }
-        Class['erlang'] -> Class['rabbitmq']
-      }
+      include rabbitmq
       EOS
     end
 
@@ -54,10 +50,6 @@ describe 'rabbitmq class:' do
         class { 'rabbitmq':
           service_ensure => 'stopped',
         }
-        if $facts['os']['family'] == 'RedHat' {
-          class { 'erlang': }
-          Class['erlang'] -> Class['rabbitmq']
-        }
       EOS
     end
 
@@ -73,20 +65,12 @@ describe 'rabbitmq class:' do
     it 'runs successfully' do
       pp_pre = <<-EOS
         class { 'rabbitmq': }
-        if $facts['os']['family'] == 'RedHat' {
-          class { 'erlang': }
-          Class['erlang'] -> Class['rabbitmq']
-        }
       EOS
 
       pp = <<-EOS
         class { 'rabbitmq':
           service_manage => false,
           service_ensure  => 'stopped',
-        }
-        if $facts['os']['family'] == 'RedHat' {
-          class { 'erlang': }
-          Class['erlang'] -> Class['rabbitmq']
         }
       EOS
 
