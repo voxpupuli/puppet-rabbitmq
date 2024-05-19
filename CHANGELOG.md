@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v13.4.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v13.4.0) (2024-05-19)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v13.3.0...v13.4.0)
+
+Historically we used the garethr/erlang module as soft dependency on CentOS 7. This also configured the EPEL7 repository.  We have replaced this with an include of the EPEL repo on CentOS 7.
+
+**Implemented enhancements:**
+
+- puppetlabs/apt: Allow 9.x  [\#988](https://github.com/voxpupuli/puppet-rabbitmq/pull/988) ([bastelfreak](https://github.com/bastelfreak))
+- puppetlabs/stdlib: Allow 9.x [\#986](https://github.com/voxpupuli/puppet-rabbitmq/pull/986) ([bastelfreak](https://github.com/bastelfreak))
+- puppet/archive: Allow 7.x [\#952](https://github.com/voxpupuli/puppet-rabbitmq/pull/952) ([bastelfreak](https://github.com/bastelfreak))
+
+**Fixed bugs:**
+
+- metadata.json: re-add Puppet 8 support [\#985](https://github.com/voxpupuli/puppet-rabbitmq/pull/985) ([bastelfreak](https://github.com/bastelfreak))
+- CentOS7: default to EPEL7 as source [\#983](https://github.com/voxpupuli/puppet-rabbitmq/pull/983) ([bastelfreak](https://github.com/bastelfreak))
+
+**Merged pull requests:**
+
+- docs: update readme badges [\#987](https://github.com/voxpupuli/puppet-rabbitmq/pull/987) ([wyardley](https://github.com/wyardley))
+
 ## [v13.3.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v13.3.0) (2024-05-19)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v13.2.0...v13.3.0)
@@ -25,7 +46,7 @@ These should not affect the functionality of the module.
 - Migrate erb to epp templates [\#978](https://github.com/voxpupuli/puppet-rabbitmq/pull/978) ([nosrio](https://github.com/nosrio))
 - Use a more expressive method of rewriting values [\#975](https://github.com/voxpupuli/puppet-rabbitmq/pull/975) ([ekohl](https://github.com/ekohl))
 
-## [v13.2.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v13.2.0) (2023-12-10)
+## [v13.2.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v13.2.0) (2023-12-11)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v13.1.2...v13.2.0)
 
@@ -37,7 +58,7 @@ These should not affect the functionality of the module.
 
 - resources fail to prefetch when rabbitmq is not intended to be installed \(via --noop or --tags\) [\#961](https://github.com/voxpupuli/puppet-rabbitmq/issues/961)
 
-## [v13.1.2](https://github.com/voxpupuli/puppet-rabbitmq/tree/v13.1.2) (2023-11-05)
+## [v13.1.2](https://github.com/voxpupuli/puppet-rabbitmq/tree/v13.1.2) (2023-11-06)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v13.1.1...v13.1.2)
 
@@ -335,7 +356,7 @@ Debian 8 is EOL since some months now. Release 10.2.0 will be the last one with 
 **Merged pull requests:**
 
 - docs: Updates autocluster plugin link [\#809](https://github.com/voxpupuli/puppet-rabbitmq/pull/809) ([wyardley](https://github.com/wyardley))
-- Update link to rabbitmq-autocluster [\#808](https://github.com/voxpupuli/puppet-rabbitmq/pull/808) ([makmarius](https://github.com/makmarius))
+- Update link to rabbitmq-autocluster [\#808](https://github.com/voxpupuli/puppet-rabbitmq/pull/808) ([ghost](https://github.com/ghost))
 - Allow `puppetlabs/stdlib` 6.x and `puppet/archive` 4.x [\#803](https://github.com/voxpupuli/puppet-rabbitmq/pull/803) ([alexjfisher](https://github.com/alexjfisher))
 - Remove unused curl\_prefix variable [\#800](https://github.com/voxpupuli/puppet-rabbitmq/pull/800) ([mbaldessari](https://github.com/mbaldessari))
 - Use data-in-modules instead of params.pp [\#797](https://github.com/voxpupuli/puppet-rabbitmq/pull/797) ([dhoppe](https://github.com/dhoppe))
