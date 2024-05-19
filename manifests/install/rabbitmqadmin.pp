@@ -11,7 +11,7 @@ class rabbitmq::install::rabbitmqadmin {
     $python_package = $rabbitmq::python_package
     # Some systems (e.g., Ubuntu 16.04) don't ship Python 2 by default
     if $rabbitmq::manage_python {
-      ensure_packages([$python_package])
+      stdlib::ensure_packages([$python_package])
       $rabbitmqadmin_require = [Archive['rabbitmqadmin'], Package[$python_package]]
     } else {
       $rabbitmqadmin_require = Archive['rabbitmqadmin']
