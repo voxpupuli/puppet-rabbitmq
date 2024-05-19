@@ -220,27 +220,6 @@ class rabbitmq::config {
     }
   }
 
-  case $facts['os']['family'] {
-    'Debian': {
-      file { '/etc/default/rabbitmq-server':
-        ensure  => file,
-        content => epp('rabbitmq/default.epp'),
-        mode    => '0644',
-        owner   => '0',
-        group   => '0',
-      }
-    }
-    'RedHat': {
-      file { '/etc/security/limits.d/rabbitmq-server.conf':
-        content => template('rabbitmq/limits.conf'),
-        owner   => '0',
-        group   => '0',
-        mode    => '0644',
-      }
-    }
-    default: {}
-  }
-
   if $facts['systemd'] { # systemd fact provided by systemd module
     systemd::service_limits { "${service_name}.service":
       selinux_ignore_defaults => ($facts['os']['family'] == 'RedHat'),

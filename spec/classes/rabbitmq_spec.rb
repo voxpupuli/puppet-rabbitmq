@@ -119,39 +119,16 @@ describe 'rabbitmq' do
       end
 
       ['infinity', -1, 1234].each do |value|
-        context "with file_limit => '#{value}'" do
+        context "with file_limit => '#{value}'", if: os_facts['systemd'] do
           let(:params) { { file_limit: value } }
 
-          if os_facts[:os]['family'] == 'RedHat'
-            it do
-              is_expected.to contain_file('/etc/security/limits.d/rabbitmq-server.conf').
-                with_owner('0').
-                with_group('0').
-                with_mode('0644').
-                that_notifies('Class[Rabbitmq::Service]').
-                with_content("rabbitmq soft nofile #{value}\nrabbitmq hard nofile #{value}\n")
-            end
-          else
-            it { is_expected.not_to contain_file('/etc/security/limits.d/rabbitmq-server.conf') }
-          end
+          selinux_ignore_defaults = os_facts[:os]['family'] == 'RedHat'
 
-          if os_facts[:os]['family'] == 'Debian'
-            it { is_expected.to contain_file('/etc/default/rabbitmq-server').with_content(%r{ulimit -n #{value}}) }
-          else
-            it { is_expected.not_to contain_file('/etc/default/rabbitmq-server') }
-          end
-
-          if os_facts['systemd']
-            selinux_ignore_defaults = os_facts[:os]['family'] == 'RedHat'
-
-            it do
-              is_expected.to contain_systemd__service_limits("#{name}.service").
-                with_selinux_ignore_defaults(selinux_ignore_defaults).
-                with_limits({ 'LimitNOFILE' => value, 'OOMScoreAdjust' => 0 }).
-                with_restart_service(false)
-            end
-          else
-            it { is_expected.not_to contain_systemd__service_limits("#{name}.service") }
+          it do
+            is_expected.to contain_systemd__service_limits("#{name}.service").
+              with_selinux_ignore_defaults(selinux_ignore_defaults).
+              with_limits({ 'LimitNOFILE' => value, 'OOMScoreAdjust' => 0 }).
+              with_restart_service(false)
           end
         end
       end
@@ -167,23 +144,13 @@ describe 'rabbitmq' do
       end
 
       [-1000, 0, 1000].each do |value|
-        context "with oom_score_adj => '#{value}'" do
+        context "with oom_score_adj => '#{value}'", if: os_facts['systemd'] do
           let(:params) { { oom_score_adj: value } }
 
-          if os_facts[:os]['family'] == 'Debian'
-            it { is_expected.to contain_file('/etc/default/rabbitmq-server').with_content(%r{^echo #{value} > /proc/\$\$/oom_score_adj$}) }
-          else
-            it { is_expected.not_to contain_file('/etc/default/rabbitmq-server') }
-          end
-
-          if os_facts['systemd']
-            it do
-              is_expected.to contain_systemd__service_limits("#{name}.service").
-                with_limits({ 'LimitNOFILE' => 16_384, 'OOMScoreAdjust' => value }).
-                with_restart_service(false)
-            end
-          else
-            it { is_expected.not_to contain_systemd__service_limits("#{name}.service") }
+          it do
+            is_expected.to contain_systemd__service_limits("#{name}.service").
+              with_limits({ 'LimitNOFILE' => 16_384, 'OOMScoreAdjust' => value }).
+              with_restart_service(false)
           end
         end
       end
