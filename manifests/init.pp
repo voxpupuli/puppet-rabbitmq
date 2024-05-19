@@ -170,7 +170,7 @@
 #   set explicitly if using clustering. If you run Pacemaker and you don't want to use RabbitMQ buildin cluster, you can set config_cluster
 #   to 'False' and set 'erlang_cookie'.
 # @param file_limit
-#   Set rabbitmq file ulimit. Defaults to 16384. Only available on systems with `$::osfamily == 'Debian'` or `$::osfamily == 'RedHat'`.
+#   Set rabbitmq file ulimit. Defaults to 16384. Only available on systems with systemd
 # @param oom_score_adj
 #   Set rabbitmq-server process OOM score. Defaults to 0.
 # @param heartbeat
