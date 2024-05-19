@@ -85,7 +85,7 @@ Puppet::Type.newtype(:rabbitmq_parameter) do
     [self[:name].split('@')[1]]
   end
 
-  def set_parameters(hash) # rubocop:disable Style/AccessorMethodName
+  def set_parameters(hash) # rubocop:disable Naming/AccessorMethodName
     # Hack to ensure :autoconvert is initialized before :value
     self[:autoconvert] = hash[:autoconvert] if hash.key?(:autoconvert)
     super
