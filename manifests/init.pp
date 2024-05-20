@@ -507,7 +507,7 @@ class rabbitmq (
       default: {
       }
     }
-  } elsif ($facts['os']['family'] == 'RedHat' and $facts['os']['release']['major'] == '7') {
+  } elsif ($facts['os']['family'] == 'RedHat' and $facts['os']['release']['major'] in ['7', '8']) {
     require epel
   }
 
