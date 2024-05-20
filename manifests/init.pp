@@ -507,8 +507,6 @@ class rabbitmq (
       default: {
       }
     }
-  } elsif ($facts['os']['family'] == 'RedHat' and $facts['os']['release']['major'] == '7') {
-    require epel
   }
 
   contain rabbitmq::install

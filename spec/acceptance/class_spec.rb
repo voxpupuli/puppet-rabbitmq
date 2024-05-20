@@ -15,7 +15,14 @@ describe 'rabbitmq class:' do
   context 'default class inclusion' do
     let(:pp) do
       <<-EOS
-      include rabbitmq
+        # Hack to make sure tests work w/ soft EPEL dependency on CentOS / EL7
+        if ($facts['os']['family'] == 'RedHat' and $facts['os']['release']['major'] == '7') {
+          include epel
+          include rabbitmq
+          Class['epel'] -> Class['rabbitmq']
+        } else {
+          include rabbitmq
+        }
       EOS
     end
 
