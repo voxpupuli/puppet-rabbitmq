@@ -411,6 +411,21 @@ describe 'rabbitmq' do
             is_expected.to contain_file('rabbitmq.config').with('content' => %r{cluster_nodes.*\['rabbit@hare-1', 'rabbit@hare-2'\], ram})
           end
         end
+
+        describe 'without cluster_nodes and sets appropriate configuration' do
+          let(:params) do
+            {
+              config_cluster: true,
+              cluster_node_type: 'ram',
+              erlang_cookie: 'ORIGINAL',
+              wipe_db_on_cookie_change: true
+            }
+          end
+
+          it 'for cluster_nodes' do
+            is_expected.to contain_file('rabbitmq.config').with('content' => %r{cluster_nodes.*\[\], ram})
+          end
+        end
       end
 
       describe 'rabbitmq-env configuration' do
