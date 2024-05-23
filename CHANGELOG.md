@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v13.5.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v13.5.0) (2024-05-23)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v13.4.0...v13.5.0)
+
+**Implemented enhancements:**
+
+- Add require\_epel parameter, defaulting to `true` [\#997](https://github.com/voxpupuli/puppet-rabbitmq/pull/997) ([wyardley](https://github.com/wyardley))
+- Add support for policy definition consumer-timeout [\#991](https://github.com/voxpupuli/puppet-rabbitmq/pull/991) ([wyardley](https://github.com/wyardley))
+
+**Fixed bugs:**
+
+- Handle rabbitmq.config when cluster\_nodes is empty [\#993](https://github.com/voxpupuli/puppet-rabbitmq/pull/993) ([nosrio](https://github.com/nosrio))
+
+**Closed issues:**
+
+- Does not find rabbitmqadmin under ubuntu [\#812](https://github.com/voxpupuli/puppet-rabbitmq/issues/812)
+
+**Merged pull requests:**
+
+- Add unit test to handle bug solved on PR \#993 [\#994](https://github.com/voxpupuli/puppet-rabbitmq/pull/994) ([nosrio](https://github.com/nosrio))
+- Use stdlib::ensure\_packages  [\#990](https://github.com/voxpupuli/puppet-rabbitmq/pull/990) ([wyardley](https://github.com/wyardley))
+
 ## [v13.4.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v13.4.0) (2024-05-19)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v13.3.0...v13.4.0)
