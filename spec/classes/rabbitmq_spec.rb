@@ -408,7 +408,7 @@ describe 'rabbitmq' do
           end
 
           it 'for cluster_nodes' do
-            is_expected.to contain_file('rabbitmq.config').with('content' => %r{cluster_nodes.*\['rabbit@hare-1', 'rabbit@hare-2'\], ram})
+            is_expected.to contain_file('rabbitmq.config').with('content' => %r{^ {4}\{cluster_nodes, \{\['rabbit@hare-1', 'rabbit@hare-2'\], ram})
           end
         end
 
@@ -423,7 +423,7 @@ describe 'rabbitmq' do
           end
 
           it 'for cluster_nodes' do
-            is_expected.to contain_file('rabbitmq.config').with('content' => %r{cluster_nodes.*\[\], ram})
+            is_expected.to contain_file('rabbitmq.config').with('content' => %r{^ {4}\{cluster_nodes, \{\[\], ram})
           end
         end
       end

@@ -19,11 +19,11 @@
     {auth_backends, [rabbit_auth_backend_internal, rabbit_auth_backend_ldap]},
 <% } -%>
 <% if $rabbitmq::config::config_cluster {-%>
-    <% if !$rabbitmq::config::cluster_nodes.empty {-%>
+    <%- if !$rabbitmq::config::cluster_nodes.empty {-%>
     {cluster_nodes, {['rabbit@<%= $rabbitmq::config::cluster_nodes.join("', 'rabbit@") %>'], <%= $rabbitmq::config::cluster_node_type %>}},
-    <% } else {%>
+    <%- } else {-%>
     {cluster_nodes, {[], <%= $rabbitmq::config::cluster_node_type %>}},
-    <% } %>
+    <%- } -%>
     {cluster_partition_handling, <%= $rabbitmq::config::cluster_partition_handling %>},
 <% } -%>
     {tcp_listen_options, [
