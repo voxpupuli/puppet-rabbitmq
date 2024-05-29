@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v13.5.1](https://github.com/voxpupuli/puppet-rabbitmq/tree/v13.5.1) (2024-05-29)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v13.5.0...v13.5.1)
+
+**Fixed bugs:**
+
+- Fix indentation for cluster\_nodes [\#1002](https://github.com/voxpupuli/puppet-rabbitmq/pull/1002) ([jplindquist](https://github.com/jplindquist))
+- require puppet/systemd \>= 6.0.0 [\#1001](https://github.com/voxpupuli/puppet-rabbitmq/pull/1001) ([saz](https://github.com/saz))
+
 ## [v13.5.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v13.5.0) (2024-05-23)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v13.4.0...v13.5.0)
