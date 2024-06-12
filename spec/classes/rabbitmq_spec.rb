@@ -119,7 +119,7 @@ describe 'rabbitmq' do
       end
 
       ['infinity', -1, 1234].each do |value|
-        context "with file_limit => '#{value}'", if: os_facts['systemd'] do
+        context "with file_limit => '#{value}'", if: os_facts['kernel'] == 'Linux' do
           let(:params) { { file_limit: value } }
 
           selinux_ignore_defaults = os_facts[:os]['family'] == 'RedHat'
@@ -143,7 +143,7 @@ describe 'rabbitmq' do
       end
 
       [-1000, 0, 1000].each do |value|
-        context "with oom_score_adj => '#{value}'", if: os_facts['systemd'] do
+        context "with oom_score_adj => '#{value}'", if: os_facts[:kernel] == 'Linux' do
           let(:params) { { oom_score_adj: value } }
 
           it { is_expected.to contain_systemd__manage_dropin('service-90-limits.conf').with_service_entry({ 'LimitNOFILE' => 16_384, 'OOMScoreAdjust' => value }) }
@@ -160,11 +160,11 @@ describe 'rabbitmq' do
         end
       end
 
-      context 'on systems with systemd', if: os_facts['systemd'] do
+      context 'on Linux', if: os_facts[:kernel] == 'Linux' do
         it { is_expected.to contain_systemd__manage_dropin('service-90-limits.conf') }
       end
 
-      context 'on systems without systemd', unless: os_facts['systemd'] do
+      context 'on non-Linux', unless: os_facts[:kernel] == 'Linux' do
         it { is_expected.not_to contain_systemd__manage_dropin('service-90-limits.conf') }
       end
 
@@ -1745,13 +1745,6 @@ describe 'rabbitmq' do
             'name' => name
           )
         }
-      end
-
-      context 'on systems with systemd', if: os_facts[:systemd] do
-        it do
-          is_expected.to contain_service('rabbitmq-server').
-            that_requires('Class[systemd::systemctl::daemon_reload]')
-        end
       end
 
       describe 'service with ensure stopped' do
