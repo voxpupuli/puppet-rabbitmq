@@ -537,7 +537,7 @@ Default value: `undef`
 
 Data type: `Variant[Integer[-1],Enum['unlimited'],Pattern[/^(infinity|\d+(:(infinity|\d+))?)$/]]`
 
-Set rabbitmq file ulimit. Defaults to 16384. Only available on systems with systemd
+Set rabbitmq file ulimit. Defaults to 16384. Only available on Linux
 
 Default value: `16384`
 

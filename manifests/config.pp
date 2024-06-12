@@ -220,7 +220,7 @@ class rabbitmq::config {
     }
   }
 
-  if $facts['systemd'] { # systemd fact provided by systemd module
+  if $facts['kernel'] == 'Linux' {
     systemd::manage_dropin { 'service-90-limits.conf':
       unit                    => "${service_name}.service",
       selinux_ignore_defaults => ($facts['os']['family'] == 'RedHat'),
