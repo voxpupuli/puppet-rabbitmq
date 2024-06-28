@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v13.6.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v13.6.0) (2024-06-28)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v13.5.1...v13.6.0)
+
+**Implemented enhancements:**
+
+- Add support for Debian 11 [\#1010](https://github.com/voxpupuli/puppet-rabbitmq/pull/1010) ([wyardley](https://github.com/wyardley))
+- Add support for FreeBSD 14 [\#1009](https://github.com/voxpupuli/puppet-rabbitmq/pull/1009) ([smortex](https://github.com/smortex))
+
+**Merged pull requests:**
+
+- replace systemd fact with core fact [\#1007](https://github.com/voxpupuli/puppet-rabbitmq/pull/1007) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v13.5.1](https://github.com/voxpupuli/puppet-rabbitmq/tree/v13.5.1) (2024-05-29)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v13.5.0...v13.5.1)
