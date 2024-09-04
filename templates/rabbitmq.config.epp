@@ -136,6 +136,13 @@
       {ip, "<%= $rabbitmq::config::management_ip_address %>"},
   <%- } -%>
       {port, <%= $rabbitmq::config::ssl_management_port %>},
+      <%- if !$rabbitmq::config::config_cowboy_opts.empty {-%>
+      {cowboy_opts, [
+      <%- $rabbitmq::config::config_cowboy_opts.keys.sort.each |$k| { -%>
+        {<%= $k %>, <%= $rabbitmq::config::config_cowboy_opts[$k] %>}<% if $k != $rabbitmq::config::config_cowboy_opts.keys.sort[-1] { %>,<%- } %>
+      <%- } -%>
+      ]},
+      <%- } -%>
       {ssl, true},
       {ssl_opts, [
                   <%- if $rabbitmq::config::ssl_management_cacert {-%>
@@ -164,7 +171,10 @@
   <%- if $rabbitmq::config::management_ip_address {-%>
       {ip, "<%= $rabbitmq::config::management_ip_address %>"},
   <%- } -%>
-      {port, <%= $rabbitmq::config::management_port %>}
+      {port, <%= $rabbitmq::config::management_port %>}<% if !$rabbitmq::config::config_cowboy_opts.empty {%>,
+      {cowboy_opts, [<%- $rabbitmq::config::config_cowboy_opts.keys.sort.each |$k| { %>
+        {<%= $k %>, <%= $rabbitmq::config::config_cowboy_opts[$k] %>}<% if $k != $rabbitmq::config::config_cowboy_opts.keys.sort[-1] { %>,<%- }} %>
+      ]}<%- } %>
 <%- } -%>
     ]}
 <%- } -%>

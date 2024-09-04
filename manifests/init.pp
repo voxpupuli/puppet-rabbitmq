@@ -137,6 +137,8 @@
 #   Additional config variables in rabbitmq.config
 # @param config_cluster
 #   Enable or disable clustering support.
+# @param config_cowboy_opts
+#   Additional config variables for cowboy_opts in rabbitmq.config.
 # @param config_kernel_variables
 #   Hash of Erlang kernel configuration variables to set (see [Variables Configurable in rabbitmq.config](#variables-configurable-in-rabbitmq.config)).
 # @param config_path
@@ -356,7 +358,8 @@ class rabbitmq (
   Hash $cluster                                                                                    = $rabbitmq::cluster,
   Enum['ram', 'disc'] $cluster_node_type                                                           = 'disc',
   Array $cluster_nodes                                                                             = [],
-  String $config                                                                                   = 'rabbitmq/rabbitmq.config.epp',
+  String $config   
+  Hash $config_cowboy_opts                                                                         = {},                                                                                = 'rabbitmq/rabbitmq.config.epp',
   Boolean $config_cluster                                                                          = false,
   Stdlib::Absolutepath $config_path                                                                = '/etc/rabbitmq/rabbitmq.config',
   Boolean $config_ranch                                                                            = true,
