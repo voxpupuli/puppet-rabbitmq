@@ -358,8 +358,8 @@ class rabbitmq (
   Hash $cluster                                                                                    = $rabbitmq::cluster,
   Enum['ram', 'disc'] $cluster_node_type                                                           = 'disc',
   Array $cluster_nodes                                                                             = [],
-  String $config   
-  Hash $config_cowboy_opts                                                                         = {},                                                                                = 'rabbitmq/rabbitmq.config.epp',
+  String $config                                                                                   = 'rabbitmq/rabbitmq.config.epp',
+  Hash $config_cowboy_opts                                                                         = {},
   Boolean $config_cluster                                                                          = false,
   Stdlib::Absolutepath $config_path                                                                = '/etc/rabbitmq/rabbitmq.config',
   Boolean $config_ranch                                                                            = true,
