@@ -207,6 +207,7 @@ The following parameters are available in the `rabbitmq` class:
 * [`config`](#-rabbitmq--config)
 * [`config_additional_variables`](#-rabbitmq--config_additional_variables)
 * [`config_cluster`](#-rabbitmq--config_cluster)
+* [`config_cowboy_opts`](#-rabbitmq--config_cowboy_opts)
 * [`config_kernel_variables`](#-rabbitmq--config_kernel_variables)
 * [`config_path`](#-rabbitmq--config_path)
 * [`config_ranch`](#-rabbitmq--config_ranch)
@@ -410,6 +411,14 @@ Data type: `Boolean`
 Enable or disable clustering support.
 
 Default value: `false`
+
+##### <a name="-rabbitmq--config_cowboy_opts"></a>`config_cowboy_opts`
+
+Data type: `Hash`
+
+Hash of additional configs (key / value) for `cowboy_opts` in rabbitmq.config.
+
+Default value: `{}`
 
 ##### <a name="-rabbitmq--config_kernel_variables"></a>`config_kernel_variables`
 
