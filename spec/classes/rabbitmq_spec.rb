@@ -9,14 +9,14 @@ describe 'rabbitmq' do
         os_facts
       end
 
-      name = case os_facts[:os]['family']
+      name = case os_facts['os']['family']
              when 'Archlinux', 'OpenBSD', 'FreeBSD'
                'rabbitmq'
              else
                'rabbitmq-server'
              end
 
-      rabbitmq_home = case os_facts[:os]['family']
+      rabbitmq_home = case os_facts['os']['family']
                       when 'FreeBSD'
                         '/var/db/rabbitmq'
                       else
@@ -30,7 +30,7 @@ describe 'rabbitmq' do
 
       it { is_expected.to contain_package(name).with_ensure('installed').with_name(name) }
 
-      it { is_expected.to contain_package('rabbitmq-server-plugins') } if os_facts[:os]['family'] == 'Suse'
+      it { is_expected.to contain_package('rabbitmq-server-plugins') } if os_facts['os']['family'] == 'Suse'
 
       context 'with default params' do
         it { is_expected.not_to contain_class('rabbitmq::repo::apt') }
@@ -48,7 +48,7 @@ describe 'rabbitmq' do
       context 'with repos_ensure => true' do
         let(:params) { { repos_ensure: true } }
 
-        if os_facts[:os]['family'] == 'Debian'
+        if os_facts['os']['family'] == 'Debian'
           it 'includes rabbitmq::repo::apt' do
             is_expected.to contain_class('rabbitmq::repo::apt').
               with_key_source('https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey').
@@ -58,7 +58,7 @@ describe 'rabbitmq' do
           it 'adds a repo with default values' do
             is_expected.to contain_apt__source('rabbitmq').
               with_ensure('present').
-              with_location("https://packagecloud.io/rabbitmq/rabbitmq-server/#{os_facts[:os]['name'].downcase}").
+              with_location("https://packagecloud.io/rabbitmq/rabbitmq-server/#{os_facts['os']['name'].downcase}").
               with_release(nil).
               with_repos('main')
           end
@@ -67,7 +67,7 @@ describe 'rabbitmq' do
           it { is_expected.not_to contain_apt__souce('rabbitmq') }
         end
 
-        if os_facts[:os]['family'] == 'RedHat'
+        if os_facts['os']['family'] == 'RedHat'
           it { is_expected.to contain_class('rabbitmq::repo::rhel') }
 
           it 'the repo should be present, and contain the expected values' do
@@ -82,13 +82,13 @@ describe 'rabbitmq' do
         end
       end
 
-      context 'with no pin', if: os_facts[:os]['family'] == 'Debian' do
+      context 'with no pin', if: os_facts['os']['family'] == 'Debian' do
         let(:params) { { repos_ensure: true, package_apt_pin: '' } }
 
         describe 'it sets up an apt::source' do
           it {
             is_expected.to contain_apt__source('rabbitmq').with(
-              'location' => "https://packagecloud.io/rabbitmq/rabbitmq-server/#{os_facts[:os]['name'].downcase}",
+              'location' => "https://packagecloud.io/rabbitmq/rabbitmq-server/#{os_facts['os']['name'].downcase}",
               'repos' => 'main',
               'key' => '{"id"=>"8C695B0219AFDEB04A058ED8F4E789204D206F89", "source"=>"https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey", "content"=>nil}'
             )
@@ -96,13 +96,13 @@ describe 'rabbitmq' do
         end
       end
 
-      context 'with pin', if: os_facts[:os]['family'] == 'Debian' do
+      context 'with pin', if: os_facts['os']['family'] == 'Debian' do
         let(:params) { { repos_ensure: true, package_apt_pin: '700' } }
 
         describe 'it sets up an apt::source and pin' do
           it {
             is_expected.to contain_apt__source('rabbitmq').with(
-              'location' => "https://packagecloud.io/rabbitmq/rabbitmq-server/#{os_facts[:os]['name'].downcase}",
+              'location' => "https://packagecloud.io/rabbitmq/rabbitmq-server/#{os_facts['os']['name'].downcase}",
               'repos' => 'main',
               'key' => '{"id"=>"8C695B0219AFDEB04A058ED8F4E789204D206F89", "source"=>"https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey", "content"=>nil}'
             )
@@ -122,7 +122,7 @@ describe 'rabbitmq' do
         context "with file_limit => '#{value}'", if: os_facts['kernel'] == 'Linux' do
           let(:params) { { file_limit: value } }
 
-          selinux_ignore_defaults = os_facts[:os]['family'] == 'RedHat'
+          selinux_ignore_defaults = os_facts['os']['family'] == 'RedHat'
 
           it do
             is_expected.to contain_systemd__manage_dropin('service-90-limits.conf').
@@ -143,7 +143,7 @@ describe 'rabbitmq' do
       end
 
       [-1000, 0, 1000].each do |value|
-        context "with oom_score_adj => '#{value}'", if: os_facts[:kernel] == 'Linux' do
+        context "with oom_score_adj => '#{value}'", if: os_facts['kernel'] == 'Linux' do
           let(:params) { { oom_score_adj: value } }
 
           it { is_expected.to contain_systemd__manage_dropin('service-90-limits.conf').with_service_entry({ 'LimitNOFILE' => 16_384, 'OOMScoreAdjust' => value }) }
@@ -160,11 +160,11 @@ describe 'rabbitmq' do
         end
       end
 
-      context 'on Linux', if: os_facts[:kernel] == 'Linux' do
+      context 'on Linux', if: os_facts['kernel'] == 'Linux' do
         it { is_expected.to contain_systemd__manage_dropin('service-90-limits.conf') }
       end
 
-      context 'on non-Linux', unless: os_facts[:kernel] == 'Linux' do
+      context 'on non-Linux', unless: os_facts['kernel'] == 'Linux' do
         it { is_expected.not_to contain_systemd__manage_dropin('service-90-limits.conf') }
       end
 
@@ -190,9 +190,9 @@ describe 'rabbitmq' do
             is_expected.to contain_archive('rabbitmqadmin').with_source('http://1.1.1.1:15672/cli/rabbitmqadmin')
           end
 
-          it { is_expected.to contain_package('python') } if %w[RedHat SUSE Archlinux].include?(os_facts[:os]['family'])
-          it { is_expected.to contain_package('python3') } if %w[Debian].include?(os_facts[:os]['family'])
-          it { is_expected.to contain_package('python38') } if %w[FreeBSD].include?(os_facts[:os]['family'])
+          it { is_expected.to contain_package('python') } if %w[RedHat SUSE Archlinux].include?(os_facts['os']['family'])
+          it { is_expected.to contain_package('python3') } if %w[Debian].include?(os_facts['os']['family'])
+          it { is_expected.to contain_package('python38') } if %w[FreeBSD].include?(os_facts['os']['family'])
         end
 
         context 'with manage_python false' do
@@ -205,7 +205,7 @@ describe 'rabbitmq' do
           end
         end
 
-        context 'with $management_ip_address undef and service_manage set to true', unless: os_facts[:os]['family'] == 'Archlinux' do
+        context 'with $management_ip_address undef and service_manage set to true', unless: os_facts['os']['family'] == 'Archlinux' do
           let(:params) { { admin_enable: true, management_ip_address: :undef } }
 
           it 'we enable the admin interface by default' do
@@ -217,7 +217,7 @@ describe 'rabbitmq' do
           end
         end
 
-        context 'with service_manage set to true, node_ip_address = undef, and default user/pass specified', unless: os_facts[:os]['family'] == 'Archlinux' do
+        context 'with service_manage set to true, node_ip_address = undef, and default user/pass specified', unless: os_facts['os']['family'] == 'Archlinux' do
           let(:params) { { admin_enable: true, default_user: 'foobar', default_pass: 'hunter2', node_ip_address: :undef } }
 
           it 'we use the correct URL to rabbitmqadmin' do
@@ -229,7 +229,7 @@ describe 'rabbitmq' do
           end
         end
 
-        context 'with service_manage set to true and default user/pass specified', unless: os_facts[:os]['family'] == 'Archlinux' do
+        context 'with service_manage set to true and default user/pass specified', unless: os_facts['os']['family'] == 'Archlinux' do
           let(:params) { { admin_enable: true, default_user: 'foobar', default_pass: 'hunter2', management_ip_address: '1.1.1.1' } }
 
           it 'we use the correct URL to rabbitmqadmin' do
@@ -241,7 +241,7 @@ describe 'rabbitmq' do
           end
         end
 
-        context 'with service_manage set to true and archive_options set', unless: os_facts[:os]['family'] == 'Archlinux' do
+        context 'with service_manage set to true and archive_options set', unless: os_facts['os']['family'] == 'Archlinux' do
           let(:params) do
             {
               admin_enable: true,
@@ -258,7 +258,7 @@ describe 'rabbitmq' do
           end
         end
 
-        context 'with service_manage set to true and management port specified', unless: os_facts[:os]['family'] == 'Archlinux' do
+        context 'with service_manage set to true and management port specified', unless: os_facts['os']['family'] == 'Archlinux' do
           # NOTE: that the 2.x management port is 55672 not 15672
           let(:params) { { admin_enable: true, management_port: 55_672, management_ip_address: '1.1.1.1' } }
 
@@ -271,7 +271,7 @@ describe 'rabbitmq' do
           end
         end
 
-        context 'with ipv6, service_manage set to true and management port specified', unless: os_facts[:os]['family'] == 'Archlinux' do
+        context 'with ipv6, service_manage set to true and management port specified', unless: os_facts['os']['family'] == 'Archlinux' do
           # NOTE: that the 2.x management port is 55672 not 15672
           let(:params) { { admin_enable: true, management_port: 55_672, management_ip_address: '::1' } }
 
@@ -476,7 +476,7 @@ describe 'rabbitmq' do
       describe 'rabbitmq-env configuration' do
         context 'with default params' do
           it 'sets environment variables' do
-            if %w[FreeBSD OpenBSD].include?(os_facts[:os]['family'])
+            if %w[FreeBSD OpenBSD].include?(os_facts['os']['family'])
               is_expected.to contain_file('rabbitmq-env.config'). \
                 with_content(%r{ERL_INETRC=/usr/local/etc/rabbitmq/inetrc})
             else
