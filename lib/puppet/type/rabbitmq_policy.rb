@@ -11,6 +11,7 @@ CONVERT_TO_INT_VARS = %w[
   max-length
   max-length-bytes
   message-ttl
+  queue-version
   shards-per-node
 ].freeze
 
