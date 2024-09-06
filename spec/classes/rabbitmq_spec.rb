@@ -429,6 +429,50 @@ describe 'rabbitmq' do
         end
       end
 
+      describe 'with config_cowboy_opts' do
+        context 'without SSL' do
+          let(:params) do
+            {
+              config_cowboy_opts: {
+                'max_request_line_length' => 16_000,
+                'max_keepalive' => 1000,
+              },
+            }
+          end
+
+          it 'sets expected cowboy config variables' do
+            is_expected.to contain_file('rabbitmq.config'). \
+              with_content(
+                %r{\{cowboy_opts, \[\n\s+\{max_keepalive, 1000\},\n\s+\{max_request_line_length, 16000\}}
+              )
+          end
+        end
+
+        context 'withSSL' do
+          let(:params) do
+            {
+              config_cowboy_opts: {
+                'max_request_line_length' => 16_003,
+                'max_keepalive' => 1002,
+              },
+              ssl: true,
+              ssl_port: 3141,
+              ssl_cacert: '/path/to/cacert',
+              ssl_cert: '/path/to/cert',
+              ssl_key: '/path/to/key',
+              ssl_versions: ['tlsv1.2', 'tlsv1.1'],
+            }
+          end
+
+          it 'sets expected cowboy config variables' do
+            is_expected.to contain_file('rabbitmq.config'). \
+              with_content(
+                %r{\{cowboy_opts, \[\n\s+\{max_keepalive, 1002\},\n\s+\{max_request_line_length, 16003\}}
+              )
+          end
+        end
+      end
+
       describe 'rabbitmq-env configuration' do
         context 'with default params' do
           it 'sets environment variables' do

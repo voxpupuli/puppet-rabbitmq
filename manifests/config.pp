@@ -10,8 +10,8 @@ class rabbitmq::config {
   $cluster_node_type                   = $rabbitmq::cluster_node_type
   $cluster_nodes                       = $rabbitmq::cluster_nodes
   $config                              = $rabbitmq::config
-  $config_cowboy_opts                  = $rabbitmq::config_cowboy_opts
   $config_cluster                      = $rabbitmq::config_cluster
+  $config_cowboy_opts                  = $rabbitmq::config_cowboy_opts
   $config_path                         = $rabbitmq::config_path
   $config_ranch                        = $rabbitmq::config_ranch
   $config_stomp                        = $rabbitmq::config_stomp
