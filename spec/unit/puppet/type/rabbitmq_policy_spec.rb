@@ -221,6 +221,19 @@ describe Puppet::Type.type(:rabbitmq_policy) do
     end.to raise_error(Puppet::Error, %r{Invalid initial-cluster-size value 'impressive})
   end
 
+  it 'accepts and converts the queue-version value' do
+    definition = { 'queue-version' => '2' }
+    policy[:definition] = definition
+    expect(policy[:definition]['queue-version']).to eq(2)
+  end
+
+  it 'does not accept non-numeric queue-version value' do
+    definition = { 'queue-version' => 'oogabooga' }
+    expect do
+      policy[:definition] = definition
+    end.to raise_error(Puppet::Error, %r{Invalid queue-version value.*oogabooga})
+  end
+
   context 'accepts list value in ha-params when ha-mode = nodes' do
     before do
       policy[:definition] = definition
