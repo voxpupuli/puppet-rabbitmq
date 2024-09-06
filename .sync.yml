@@ -1,7 +1,8 @@
 ---
 spec/spec_helper.rb:
-  spec_overrides: "require 'spec_helper_local'"
+  facterdb_string_keys: true
   mock_with: ':mocha'
+  spec_overrides: "require 'spec_helper_local'"
 .puppet-lint.rc:
   enabled_lint_checks:
     - parameter_documentation
