@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v13.7.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v13.7.0) (2024-09-06)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v13.6.0...v13.7.0)
+
+**Implemented enhancements:**
+
+- Add support for Ubuntu 20 and 22 [\#1015](https://github.com/voxpupuli/puppet-rabbitmq/pull/1015) ([wyardley](https://github.com/wyardley))
+- Add support for cowboy\_opts config in rabbitmq.config [\#1013](https://github.com/voxpupuli/puppet-rabbitmq/pull/1013) ([SpinEternel](https://github.com/SpinEternel))
+
+**Fixed bugs:**
+
+- Convert `queue-version` to integer [\#1019](https://github.com/voxpupuli/puppet-rabbitmq/pull/1019) ([wyardley](https://github.com/wyardley))
+
 ## [v13.6.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v13.6.0) (2024-06-28)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v13.5.1...v13.6.0)
