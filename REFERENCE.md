@@ -725,7 +725,7 @@ Default value: `undef`
 
 ##### <a name="-rabbitmq--package_apt_pin"></a>`package_apt_pin`
 
-Data type: `Optional[Variant[Numeric, String]]`
+Data type: `Optional[Variant[Numeric, String[1]]]`
 
 Whether to pin the package to a particular source
 
