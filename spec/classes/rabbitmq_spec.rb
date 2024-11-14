@@ -1195,7 +1195,7 @@ describe 'rabbitmq' do
       end
 
       # tlsv1.3 not supported on older RMQ/Erlang with this distro
-      describe 'ssl options with ssl version tlsv1.3', unless: facts[:osfamily] == 'RedHat' do
+      describe 'ssl options with ssl version tlsv1.3' do
         let(:params) do
           { ssl: true,
             ssl_port: 3141,

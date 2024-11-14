@@ -263,6 +263,8 @@
 #   Cert to use for SSL.
 # @param ssl_cert_password
 #   Password used when generating CSR.
+# @param ssl_client_renegotiation
+#   Allow ssl client renegotiation
 # @param ssl_depth
 #   SSL verification depth.
 # @param ssl_dhfile
@@ -291,8 +293,6 @@
 #   SSL port for RabbitMQ
 # @param ssl_reuse_sessions
 #   Reuse ssl sessions
-# @param ssl_client_renegotiation
-#   Allow ssl client renegotiation
 # @param ssl_secure_renegotiate
 #   Use ssl secure renegotiate
 # @param ssl_stomp_port

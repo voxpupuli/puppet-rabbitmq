@@ -77,7 +77,12 @@
                    <%- if $rabbitmq::config::ssl_dhfile {-%>
                    {dhfile, "<%= $rabbitmq::config::ssl_dhfile %>"},
                    <%- } -%>
+                   <%- if !$rabbitmq::config::ssl_versions or !('tlsv1.3' in $rabbitmq::config::ssl_versions) {-%>
+                     <%- if $rabbitmq::config::ssl_client_renegotiation != undef {-%>
+                   {client_renegotiation,<%= $rabbitmq::config::ssl_client_renegotiation %>},
+                     <%- } -%>
                    {secure_renegotiate,<%= $rabbitmq::config::ssl_secure_renegotiate %>},
+                   <%- } -%>
                    {reuse_sessions,<%= $rabbitmq::config::ssl_reuse_sessions %>},
                    {honor_cipher_order,<%= $rabbitmq::config::ssl_honor_cipher_order %>},
                    {verify,<%= $rabbitmq::config::ssl_verify %>},
@@ -150,6 +155,14 @@
                   <%- } -%>
                   {certfile, "<%= $rabbitmq::config::ssl_management_cert %>"},
                   {keyfile, "<%= $rabbitmq::config::ssl_management_key %>"},
+                  <%- if !$rabbitmq::config::ssl_versions or !('tlsv1.3' in $rabbitmq::config::ssl_versions) {-%>
+                    <%- if $rabbitmq::config::ssl_client_renegotiation != undef {-%>
+                  {client_renegotiation,<%= $rabbitmq::config::ssl_client_renegotiation %>},
+                    <%- } -%>
+                  {secure_renegotiate,<%= $rabbitmq::config::ssl_secure_renegotiate %>},
+                  <%- } -%>
+                  {reuse_sessions,<%= $rabbitmq::config::ssl_reuse_sessions %>},
+                  {honor_cipher_order,<%= $rabbitmq::config::ssl_honor_cipher_order %>},
                   {verify,<%= $rabbitmq::config::ssl_management_verify %>},
                   {fail_if_no_peer_cert,<%= $rabbitmq::config::ssl_management_fail_if_no_peer_cert %>}
                    <%- if $rabbitmq::config::ssl_versions {-%>
