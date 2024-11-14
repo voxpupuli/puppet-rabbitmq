@@ -264,6 +264,7 @@ The following parameters are available in the `rabbitmq` class:
 * [`ssl_cacert`](#-rabbitmq--ssl_cacert)
 * [`ssl_cert`](#-rabbitmq--ssl_cert)
 * [`ssl_cert_password`](#-rabbitmq--ssl_cert_password)
+* [`ssl_client_renegotiation`](#-rabbitmq--ssl_client_renegotiation)
 * [`ssl_depth`](#-rabbitmq--ssl_depth)
 * [`ssl_dhfile`](#-rabbitmq--ssl_dhfile)
 * [`ssl_erl_dist`](#-rabbitmq--ssl_erl_dist)
@@ -278,7 +279,6 @@ The following parameters are available in the `rabbitmq` class:
 * [`ssl_management_fail_if_no_peer_cert`](#-rabbitmq--ssl_management_fail_if_no_peer_cert)
 * [`ssl_port`](#-rabbitmq--ssl_port)
 * [`ssl_reuse_sessions`](#-rabbitmq--ssl_reuse_sessions)
-* [`ssl_client_renegotiation`](#-rabbitmq--ssl_client_renegotiation)
 * [`ssl_secure_renegotiate`](#-rabbitmq--ssl_secure_renegotiate)
 * [`ssl_stomp_port`](#-rabbitmq--ssl_stomp_port)
 * [`ssl_verify`](#-rabbitmq--ssl_verify)
@@ -883,6 +883,14 @@ Password used when generating CSR.
 
 Default value: `undef`
 
+##### <a name="-rabbitmq--ssl_client_renegotiation"></a>`ssl_client_renegotiation`
+
+Data type: `Optional[Boolean]`
+
+Allow ssl client renegotiation
+
+Default value: `undef`
+
 ##### <a name="-rabbitmq--ssl_depth"></a>`ssl_depth`
 
 Data type: `Optional[Integer]`
@@ -995,14 +1003,6 @@ Data type: `Boolean`
 Reuse ssl sessions
 
 Default value: `true`
-
-##### <a name="-rabbitmq--ssl_client_renegotiation"></a>`ssl_client_renegotiation`
-
-Data type: `Optional[Boolean]`
-
-Allow ssl client renegotiation
-
-Default value: `undef`
 
 ##### <a name="-rabbitmq--ssl_secure_renegotiate"></a>`ssl_secure_renegotiate`
 
