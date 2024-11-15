@@ -83,7 +83,7 @@ describe 'rabbitmq' do
       end
 
       context 'with no pin', if: os_facts['os']['family'] == 'Debian' do
-        let(:params) { { repos_ensure: true, package_apt_pin: '' } }
+        let(:params) { { repos_ensure: true, package_apt_pin: nil } }
 
         describe 'it sets up an apt::source' do
           it {

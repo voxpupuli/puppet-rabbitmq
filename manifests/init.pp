@@ -378,7 +378,7 @@ class rabbitmq (
   Boolean $management_ssl                                                                          = true,
   Optional[String] $management_hostname                                                            = undef,
   Optional[String] $node_ip_address                                                                = undef,
-  Optional[Variant[Numeric, String]] $package_apt_pin                                              = undef,
+  Optional[Variant[Numeric, String[1]]] $package_apt_pin                                           = undef,
   String $package_ensure                                                                           = 'installed',
   Optional[String] $package_gpg_key                                                                = undef,
   Optional[String] $repo_gpg_key                                                                   = undef,
