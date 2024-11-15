@@ -68,6 +68,10 @@ describe 'rabbitmq clustering' do
   context 'rabbitmq::cluster[:local_node] = foobar' do
     it 'runs successfully' do
       pp = <<-EOS
+      # Needed to avoid nxdomain error
+      host { 'foobar':
+        ip => '127.0.0.1',
+      }
       class { 'rabbitmq':
         cluster                  => { 'name' => 'rabbit_cluster', 'init_node' => 'foobar', 'local_node' => 'foobar' },
         config_cluster           => true,
@@ -78,7 +82,7 @@ describe 'rabbitmq clustering' do
       }
       EOS
 
-      apply_manifest(pp, expect_failures: true)
+      apply_manifest(pp, catch_failures: true)
     end
   end
 end
