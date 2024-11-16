@@ -5,7 +5,7 @@ require 'voxpupuli/acceptance/spec_helper_acceptance'
 configure_beaker do |host|
   case fact_on(host, 'os.family')
   when 'Debian'
-    install_puppet_module_via_pmt_on(host, 'puppetlabs-apt', '>= 4.1.0 < 10.0.0')
+    install_puppet_module_via_pmt_on(host, 'puppetlabs-apt', '>= 9.0.0 < 10.0.0')
   when 'RedHat'
     install_puppet_module_via_pmt_on(host, 'puppet-epel', '>= 5.0.0 < 6.0.0')
     if fact_on(host, 'os.selinux.enabled')
@@ -13,8 +13,6 @@ configure_beaker do |host|
       on host, puppet('resource', 'exec', 'setenforce 0', 'path=/bin:/sbin:/usr/bin:/usr/sbin', 'onlyif=which setenforce && getenforce | grep Enforcing')
     end
   end
-
-  install_package(host, 'iproute2') if fact('os.release.major').to_i == 18 || fact('os.release.major') == 'buster/sid'
 
   # Fake certs
   on host, 'echo "-----BEGIN RSA PRIVATE KEY-----
