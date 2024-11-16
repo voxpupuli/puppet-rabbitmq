@@ -242,11 +242,9 @@
 #   Name of the package required by rabbitmqadmin.
 # @param repos_ensure
 #   Ensure that a repo with the official (and newer) RabbitMQ package is configured, along with its signing key.
-#   Defaults to false (use system packages). This does not ensure that soft dependencies (like EPEL on RHEL systems) are present.
-#   It also does not solve the erlang dependency.  See https://www.rabbitmq.com/which-erlang.html for a good breakdown of the
-#   different ways of handling the erlang deps.  See also https://github.com/voxpupuli/puppet-rabbitmq/issues/788
-# @param require_epel
-#   If this parameter is set, On CentOS / RHEL 7 systems, require the "puppet/epel" module
+#   Defaults to false (use system packages). This does not ensure that soft dependencies are present.
+#   It also does not solve the erlang dependency. See https://www.rabbitmq.com/which-erlang.html for a good breakdown of the
+#   different ways of handling the erlang deps. See also https://github.com/voxpupuli/puppet-rabbitmq/issues/788
 # @param service_ensure
 #   The state of the service.
 # @param service_manage
@@ -461,7 +459,6 @@ class rabbitmq (
   Array $archive_options                                                                           = [],
   Array $loopback_users                                                                            = ['guest'],
   Boolean $service_restart                                                                         = true,
-  Boolean $require_epel                                                                            = true,
 ) {
   if $ssl_only and ! $ssl {
     fail('$ssl_only => true requires that $ssl => true')
@@ -516,13 +513,10 @@ class rabbitmq (
       default: {
       }
     }
-  } elsif ($facts['os']['family'] == 'RedHat' and $facts['os']['release']['major'] == '7') and $require_epel {
-    # On later CentOS / RHEL systems, this is not useful since EPEL doesn't
-    # have the rabbitmq-server package anyway.
-    #
-    # Once support for 7 is dropped, we should remove this code and the
-    # parameter
-    require epel
+  } elsif $facts['os']['family'] == 'RedHat' {
+    package { 'centos-release-rabbitmq-38':
+      ensure   => 'present',
+    }
   }
 
   contain rabbitmq::install

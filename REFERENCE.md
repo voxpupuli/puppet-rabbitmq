@@ -255,7 +255,6 @@ The following parameters are available in the `rabbitmq` class:
 * [`port`](#-rabbitmq--port)
 * [`python_package`](#-rabbitmq--python_package)
 * [`repos_ensure`](#-rabbitmq--repos_ensure)
-* [`require_epel`](#-rabbitmq--require_epel)
 * [`service_ensure`](#-rabbitmq--service_ensure)
 * [`service_manage`](#-rabbitmq--service_manage)
 * [`service_name`](#-rabbitmq--service_name)
@@ -805,19 +804,11 @@ Default value: `'python'`
 Data type: `Boolean`
 
 Ensure that a repo with the official (and newer) RabbitMQ package is configured, along with its signing key.
-Defaults to false (use system packages). This does not ensure that soft dependencies (like EPEL on RHEL systems) are present.
-It also does not solve the erlang dependency.  See https://www.rabbitmq.com/which-erlang.html for a good breakdown of the
-different ways of handling the erlang deps.  See also https://github.com/voxpupuli/puppet-rabbitmq/issues/788
+Defaults to false (use system packages). This does not ensure that soft dependencies are present.
+It also does not solve the erlang dependency. See https://www.rabbitmq.com/which-erlang.html for a good breakdown of the
+different ways of handling the erlang deps. See also https://github.com/voxpupuli/puppet-rabbitmq/issues/788
 
 Default value: `false`
-
-##### <a name="-rabbitmq--require_epel"></a>`require_epel`
-
-Data type: `Boolean`
-
-If this parameter is set, On CentOS / RHEL 7 systems, require the "puppet/epel" module
-
-Default value: `true`
 
 ##### <a name="-rabbitmq--service_ensure"></a>`service_ensure`
 
