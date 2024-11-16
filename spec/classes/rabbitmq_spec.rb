@@ -27,6 +27,7 @@ describe 'rabbitmq' do
       it { is_expected.to contain_class('rabbitmq::install') }
       it { is_expected.to contain_class('rabbitmq::config').that_notifies('Class[rabbitmq::service]') }
       it { is_expected.to contain_class('rabbitmq::service') }
+      it { is_expected.to contain_class('rabbitmq::management') }
 
       it { is_expected.to contain_package(name).with_ensure('installed').with_name(name) }
 
@@ -188,6 +189,8 @@ describe 'rabbitmq' do
               notify: 'Class[Rabbitmq::Service]'
             )
             is_expected.to contain_archive('rabbitmqadmin').with_source('http://1.1.1.1:15672/cli/rabbitmqadmin')
+            is_expected.to contain_file('/usr/local/bin/rabbitmqadmin').with_owner('root').with_mode('0755')
+            is_expected.to contain_exec('remove_old_rabbitmqadmin_on_upgrade').with_command("rm #{rabbitmq_home}/rabbitmqadmin")
           end
 
           it { is_expected.to contain_package('python') } if %w[RedHat SUSE Archlinux].include?(os_facts['os']['family'])
