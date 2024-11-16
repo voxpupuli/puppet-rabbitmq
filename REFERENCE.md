@@ -264,6 +264,7 @@ The following parameters are available in the `rabbitmq` class:
 * [`ssl_cacert`](#-rabbitmq--ssl_cacert)
 * [`ssl_cert`](#-rabbitmq--ssl_cert)
 * [`ssl_cert_password`](#-rabbitmq--ssl_cert_password)
+* [`ssl_client_renegotiation`](#-rabbitmq--ssl_client_renegotiation)
 * [`ssl_depth`](#-rabbitmq--ssl_depth)
 * [`ssl_dhfile`](#-rabbitmq--ssl_dhfile)
 * [`ssl_erl_dist`](#-rabbitmq--ssl_erl_dist)
@@ -879,6 +880,14 @@ Default value: `undef`
 Data type: `Optional[String]`
 
 Password used when generating CSR.
+
+Default value: `undef`
+
+##### <a name="-rabbitmq--ssl_client_renegotiation"></a>`ssl_client_renegotiation`
+
+Data type: `Optional[Boolean]`
+
+Allow ssl client renegotiation
 
 Default value: `undef`
 
