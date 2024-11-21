@@ -38,6 +38,8 @@ describe 'rabbitmq' do
         it { is_expected.not_to contain_apt__source('rabbitmq') }
         it { is_expected.not_to contain_class('rabbitmq::repo::rhel') }
         it { is_expected.not_to contain_yumrepo('rabbitmq') }
+
+        it { is_expected.to contain_package('centos-release-rabbitmq-38') } if os_facts['os']['family'] == 'RedHat'
       end
 
       context 'with service_restart => false' do
@@ -77,6 +79,19 @@ describe 'rabbitmq' do
               with_baseurl(%r{https://packagecloud.io/rabbitmq/rabbitmq-server/el/\d+/\$basearch$}).
               with_gpgkey('https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey')
           end
+
+          it {
+            is_expected.to contain_exec('rpm --import https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc').with(
+              unless: 'rpm -q gpg-pubkey-6026dfca-573adfde 2>/dev/null'
+            )
+          }
+
+          it {
+            is_expected.to contain_exec('rpm --import https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey').with(
+              unless: 'rpm -q gpg-pubkey-4d206f89-5bbb8d59 2>/dev/null'
+            )
+          }
+
         else
           it { is_expected.not_to contain_class('rabbitmq::repo::rhel') }
           it { is_expected.not_to contain_yumrepo('rabbitmq') }
@@ -189,7 +204,10 @@ describe 'rabbitmq' do
               notify: 'Class[Rabbitmq::Service]'
             )
             is_expected.to contain_archive('rabbitmqadmin').with_source('http://1.1.1.1:15672/cli/rabbitmqadmin')
-            is_expected.to contain_file('/usr/local/bin/rabbitmqadmin').with_owner('root').with_mode('0755')
+            is_expected.to contain_file('/usr/local/bin/rabbitmqadmin').with(
+              owner: 'root',
+              mode: '0755'
+            )
             is_expected.to contain_exec('remove_old_rabbitmqadmin_on_upgrade').with_command("rm #{rabbitmq_home}/rabbitmqadmin")
           end
 
