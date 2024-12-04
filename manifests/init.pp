@@ -240,6 +240,19 @@
 #   The RabbitMQ port.
 # @param python_package
 #   Name of the package required by rabbitmqadmin.
+# @param quorum_membership_reconciliation_enabled
+#   Boolean - Enables or disables continuous membership reconciliation. Defaults Omitted
+# @param quorum_membership_reconciliation_auto_remove
+#   Boolean - Enables or disables automatic removal of member nodes that are no longer part of the cluster, 
+#   but still a member of the quorum queue. Defaults Omitted
+# @param quorum_membership_reconciliation_interval
+#   Integer - The default evaluation interval in milliseconds. Defaults Omitted
+# @param quorum_membership_reconciliation_trigger_interval
+#   Integer - The reconciliation delay in milliseconds, used when a trigger event occurs, 
+#   for example, a node is added or removed from the cluster or an applicable policy changes.
+#   This delay will be applied only once, then the regular interval will be used again. Default Omitted
+# @param quorum_membership_reconciliation_target_group_size
+#   Integer - Default Omitted
 # @param repos_ensure
 #   Ensure that a repo with the official (and newer) RabbitMQ package is configured, along with its signing key.
 #   Defaults to false (use system packages). This does not ensure that soft dependencies are present.
@@ -381,6 +394,11 @@ class rabbitmq (
   Optional[Variant[Numeric, String[1]]] $package_apt_pin                                           = undef,
   String $package_ensure                                                                           = 'installed',
   Optional[String] $package_gpg_key                                                                = undef,
+  Optional[Boolean] $quorum_membership_reconciliation_enabled                                      = undef,
+  Optional[Boolean] $quorum_membership_reconciliation_auto_remove                                  = undef,
+  Optional[Integer] $quorum_membership_reconciliation_interval                                     = undef,
+  Optional[Integer] $quorum_membership_reconciliation_trigger_interval                             = undef,
+  Optional[Integer] $quorum_membership_reconciliation_target_group_size                            = undef,
   Optional[String] $repo_gpg_key                                                                   = undef,
   Variant[String, Array] $package_name                                                             = 'rabbitmq',
   Optional[String] $package_source                                                                 = undef,
