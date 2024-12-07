@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v14.0.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v14.0.0) (2024-12-07)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v13.7.0...v14.0.0)
+
+**Breaking changes:**
+
+- Add support for CentOS / RHEL 9 and drop support for 7 [\#1027](https://github.com/voxpupuli/puppet-rabbitmq/pull/1027) ([wyardley](https://github.com/wyardley))
+- Drop support for Debian 10, Ubuntu 18, and FreeBSD 12 [\#1026](https://github.com/voxpupuli/puppet-rabbitmq/pull/1026) ([wyardley](https://github.com/wyardley))
+
+**Implemented enhancements:**
+
+- Add client\_renegotiation ssl option, use more ssl options in management plugin [\#1024](https://github.com/voxpupuli/puppet-rabbitmq/pull/1024) ([wyardley](https://github.com/wyardley))
+
+**Fixed bugs:**
+
+- Disallow empty string in `package_apt_pin` [\#1025](https://github.com/voxpupuli/puppet-rabbitmq/pull/1025) ([wyardley](https://github.com/wyardley))
+
 ## [v13.7.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v13.7.0) (2024-09-06)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v13.6.0...v13.7.0)
@@ -742,7 +759,7 @@ Debian 8 is EOL since some months now. Release 10.2.0 will be the last one with 
 - \[Bugfix\] convert $ssl\_depth from string to integer [\#539](https://github.com/voxpupuli/puppet-rabbitmq/pull/539) ([bastelfreak](https://github.com/bastelfreak))
 - Extend rabbitmqadmin config template with SSL options. [\#526](https://github.com/voxpupuli/puppet-rabbitmq/pull/526) ([justahero](https://github.com/justahero))
 - \[MODULES-4223\] don't set NODE\_PORT and NODE\_IP\_ADDRESS if ssl\_only [\#524](https://github.com/voxpupuli/puppet-rabbitmq/pull/524) ([JAORMX](https://github.com/JAORMX))
-- \[MODULES-3733\] rabbitmq provider env\_path does not locate ruby gem installed puppet binary [\#517](https://github.com/voxpupuli/puppet-rabbitmq/pull/517) ([growthstock](https://github.com/growthstock))
+- \[MODULES-3733\] rabbitmq provider env\_path does not locate ruby gem installed puppet binary [\#517](https://github.com/voxpupuli/puppet-rabbitmq/pull/517) ([totalcharge](https://github.com/totalcharge))
 
 **Closed issues:**
 
