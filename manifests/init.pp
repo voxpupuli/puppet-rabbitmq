@@ -245,6 +245,8 @@
 #   Defaults to false (use system packages). This does not ensure that soft dependencies are present.
 #   It also does not solve the erlang dependency. See https://www.rabbitmq.com/which-erlang.html for a good breakdown of the
 #   different ways of handling the erlang deps. See also https://github.com/voxpupuli/puppet-rabbitmq/issues/788
+# @param rhel_satellite
+#   True if we used RedHat satellite
 # @param service_ensure
 #   The state of the service.
 # @param service_manage
@@ -386,6 +388,7 @@ class rabbitmq (
   Optional[String] $package_source                                                                 = undef,
   Optional[String] $package_provider                                                               = undef,
   Boolean $repos_ensure                                                                            = false,
+  Boolean $rhel_satellite                                                                          = false,
   Boolean $manage_python                                                                           = true,
   String $python_package                                                                           = 'python',
   String $rabbitmq_user                                                                            = 'rabbitmq',
@@ -514,8 +517,10 @@ class rabbitmq (
       }
     }
   } elsif $facts['os']['family'] == 'RedHat' {
-    package { 'centos-release-rabbitmq-38':
-      ensure   => 'present',
+    unless $rhel_satellite {
+      package { 'centos-release-rabbitmq-38':
+        ensure   => 'present',
+      }
     }
   }
 
