@@ -161,6 +161,9 @@
 #   Password to set for the `default_user` in rabbitmq.config.
 # @param delete_guest_user
 #   Controls whether default guest user is deleted.
+# @param enable_centos_release
+#   Enable the `centos-release-rabbitmq-38` if set to `true` and if the OS is in the
+#   RedHat family and `repos_ensure` is `false`. Defaults to true on CentOS.
 # @param env_config
 #   The template file to use for rabbitmq_env.config.
 # @param env_config_path
@@ -369,6 +372,7 @@ class rabbitmq (
   String $default_user                                                                             = 'guest',
   String $default_pass                                                                             = 'guest',
   Boolean $delete_guest_user                                                                       = false,
+  Boolean $enable_centos_release                                                                   = false,
   String $env_config                                                                               = 'rabbitmq/rabbitmq-env.conf.epp',
   Stdlib::Absolutepath $env_config_path                                                            = '/etc/rabbitmq/rabbitmq-env.conf',
   Optional[String] $erlang_cookie                                                                  = undef,
@@ -513,7 +517,7 @@ class rabbitmq (
       default: {
       }
     }
-  } elsif $facts['os']['family'] == 'RedHat' {
+  } elsif $facts['os']['family'] == 'RedHat' and $enable_centos_release {
     package { 'centos-release-rabbitmq-38':
       ensure   => 'present',
     }

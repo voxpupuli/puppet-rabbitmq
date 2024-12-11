@@ -39,13 +39,20 @@ describe 'rabbitmq' do
         it { is_expected.not_to contain_class('rabbitmq::repo::rhel') }
         it { is_expected.not_to contain_yumrepo('rabbitmq') }
 
-        it { is_expected.to contain_package('centos-release-rabbitmq-38') } if os_facts['os']['family'] == 'RedHat'
+        it { is_expected.to contain_package('centos-release-rabbitmq-38') } if os_facts['os']['name'] == 'CentOS'
+        it { is_expected.not_to contain_package('centos-release-rabbitmq-38') } if os_facts['os']['name'] == 'RedHat'
       end
 
       context 'with service_restart => false' do
         let(:params) { { service_restart: false } }
 
         it { is_expected.not_to contain_class('rabbitmq::config').that_notifies('Class[rabbitmq::service]') }
+      end
+
+      context 'with enable_centos_release set to false' do
+        let(:params) { { enable_centos_release: false } }
+
+        it { is_expected.not_to contain_package('centos-release-rabbitmq-38') } if os_facts['os']['family'] == 'RedHat'
       end
 
       context 'with repos_ensure => true' do
