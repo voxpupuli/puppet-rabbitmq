@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v14.1.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v14.1.0) (2024-12-11)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v14.0.0...v14.1.0)
+
+**Implemented enhancements:**
+
+- Add `enable_centos_release` parameter [\#1034](https://github.com/voxpupuli/puppet-rabbitmq/pull/1034) ([wyardley](https://github.com/wyardley))
+
+**Closed issues:**
+
+- centos-release being enabled by default on RHEL [\#1033](https://github.com/voxpupuli/puppet-rabbitmq/issues/1033)
+
 ## [v14.0.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v14.0.0) (2024-12-07)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v13.7.0...v14.0.0)
@@ -413,7 +425,7 @@ Debian 8 is EOL since some months now. Release 10.2.0 will be the last one with 
 - Add a custom fact for rabbitmq's plugins folder. [\#778](https://github.com/voxpupuli/puppet-rabbitmq/pull/778) ([TomRitserveldt](https://github.com/TomRitserveldt))
 - Add support for enabled plugins config using enabled\_plugins file [\#777](https://github.com/voxpupuli/puppet-rabbitmq/pull/777) ([hjensas](https://github.com/hjensas))
 - Allow Array values in rabbitmq\_parameter [\#774](https://github.com/voxpupuli/puppet-rabbitmq/pull/774) ([vStone](https://github.com/vStone))
-- Add optional variables for SSL management-console [\#648](https://github.com/voxpupuli/puppet-rabbitmq/pull/648) ([Slm0n87](https://github.com/Slm0n87))
+- Add optional variables for SSL management-console [\#648](https://github.com/voxpupuli/puppet-rabbitmq/pull/648) ([slm0n87](https://github.com/slm0n87))
 
 **Fixed bugs:**
 
