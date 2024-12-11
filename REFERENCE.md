@@ -219,6 +219,7 @@ The following parameters are available in the `rabbitmq` class:
 * [`default_user`](#-rabbitmq--default_user)
 * [`default_pass`](#-rabbitmq--default_pass)
 * [`delete_guest_user`](#-rabbitmq--delete_guest_user)
+* [`enable_centos_release`](#-rabbitmq--enable_centos_release)
 * [`env_config`](#-rabbitmq--env_config)
 * [`env_config_path`](#-rabbitmq--env_config_path)
 * [`environment_variables`](#-rabbitmq--environment_variables)
@@ -505,6 +506,15 @@ Default value: `'guest'`
 Data type: `Boolean`
 
 Controls whether default guest user is deleted.
+
+Default value: `false`
+
+##### <a name="-rabbitmq--enable_centos_release"></a>`enable_centos_release`
+
+Data type: `Boolean`
+
+Enable the `centos-release-rabbitmq-38` if set to `true` and if the OS is in the
+RedHat family and `repos_ensure` is `false`. Defaults to true on CentOS.
 
 Default value: `false`
 
