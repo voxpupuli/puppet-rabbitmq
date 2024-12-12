@@ -248,19 +248,23 @@
 #   Boolean - Enables or disables automatic removal of member nodes that are no longer part of the cluster, 
 #   but still a member of the quorum queue. This requires RabbitMQ 3.13 or higher. More information on this configuration
 #   can be found here: https://www.rabbitmq.com/docs/quorum-queues
+#   Important Note: This only takes affect if quorum_membership_reconciliation_enabled is set to true.
 # @param quorum_membership_reconciliation_interval
 #   Integer - The default evaluation interval in milliseconds. This requires RabbitMQ 3.13 or higher. More information on this configuration
 #   can be found here: https://www.rabbitmq.com/docs/quorum-queues
+#   Important Note: This only takes affect if quorum_membership_reconciliation_enabled is set to true.
 # @param quorum_membership_reconciliation_trigger_interval
 #   Integer - The reconciliation delay in milliseconds, used when a trigger event occurs, 
 #   for example, a node is added or removed from the cluster or an applicable policy changes.
 #   This delay will be applied only once, then the regular interval will be used again.
 #   This requires RabbitMQ 3.13 or higher. More information on this configuration
 #   can be found here: https://www.rabbitmq.com/docs/quorum-queues
+#   Important Note: This only takes affect if quorum_membership_reconciliation_enabled is set to true.
 # @param quorum_membership_reconciliation_target_group_size
 #   Integer - Controls the target group size for a quorum queue
 #   This requires RabbitMQ 3.13 or higher. More information on this configuration
 #   can be found here: https://www.rabbitmq.com/docs/quorum-queues
+#   Important Note: This only takes affect if quorum_membership_reconciliation_enabled is set to true.
 # @param repos_ensure
 #   Ensure that a repo with the official (and newer) RabbitMQ package is configured, along with its signing key.
 #   Defaults to false (use system packages). This does not ensure that soft dependencies are present.

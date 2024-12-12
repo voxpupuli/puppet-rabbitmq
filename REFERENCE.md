@@ -821,6 +821,7 @@ Data type: `Optional[Boolean]`
 Boolean - Enables or disables automatic removal of member nodes that are no longer part of the cluster,
 but still a member of the quorum queue. This requires RabbitMQ 3.13 or higher. More information on this configuration
 can be found here: https://www.rabbitmq.com/docs/quorum-queues
+Important Note: This only takes affect if quorum_membership_reconciliation_enabled is set to true.
 
 Default value: `undef`
 
@@ -830,6 +831,7 @@ Data type: `Optional[Integer]`
 
 Integer - The default evaluation interval in milliseconds. This requires RabbitMQ 3.13 or higher. More information on this configuration
 can be found here: https://www.rabbitmq.com/docs/quorum-queues
+Important Note: This only takes affect if quorum_membership_reconciliation_enabled is set to true.
 
 Default value: `undef`
 
@@ -842,6 +844,7 @@ for example, a node is added or removed from the cluster or an applicable policy
 This delay will be applied only once, then the regular interval will be used again.
 This requires RabbitMQ 3.13 or higher. More information on this configuration
 can be found here: https://www.rabbitmq.com/docs/quorum-queues
+Important Note: This only takes affect if quorum_membership_reconciliation_enabled is set to true.
 
 Default value: `undef`
 
@@ -852,6 +855,7 @@ Data type: `Optional[Integer]`
 Integer - Controls the target group size for a quorum queue
 This requires RabbitMQ 3.13 or higher. More information on this configuration
 can be found here: https://www.rabbitmq.com/docs/quorum-queues
+Important Note: This only takes affect if quorum_membership_reconciliation_enabled is set to true.
 
 Default value: `undef`
 
