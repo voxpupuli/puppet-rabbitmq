@@ -28,18 +28,18 @@
 <% } -%>
 <% if $rabbitmq::config::quorum_membership_reconciliation_enabled {-%>
     {quorum_membership_reconciliation_enabled, <%= $rabbitmq::config::quorum_membership_reconciliation_enabled %>},
-<% unless $rabbitmq::config::quorum_membership_reconciliation_auto_remove =~ Undef {-%>
+  <%- unless $rabbitmq::config::quorum_membership_reconciliation_auto_remove =~ Undef {-%>
     {quorum_membership_reconciliation_auto_remove, <%= $rabbitmq::config::quorum_membership_reconciliation_auto_remove %>},
-<% } -%>
-<% unless $rabbitmq::config::quorum_membership_reconciliation_interval =~ Undef {-%>
+  <%- } -%>
+  <%- unless $rabbitmq::config::quorum_membership_reconciliation_interval =~ Undef {-%>
     {quorum_membership_reconciliation_interval, <%= $rabbitmq::config::quorum_membership_reconciliation_interval %>},
-<% } -%>
-<% unless $rabbitmq::config::quorum_membership_reconciliation_trigger_interval =~ Undef {-%>
+  <%- } -%>
+  <%- unless $rabbitmq::config::quorum_membership_reconciliation_trigger_interval =~ Undef {-%>
     {quorum_membership_reconciliation_trigger_interval, <%= $rabbitmq::config::quorum_membership_reconciliation_trigger_interval %>},
-<% } -%>
-<% unless $rabbitmq::config::quorum_membership_reconciliation_target_group_size =~ Undef {-%>
+  <%- } -%>
+  <%- unless $rabbitmq::config::quorum_membership_reconciliation_target_group_size =~ Undef {-%>
     {quorum_membership_reconciliation_target_group_size, <%= $rabbitmq::config::quorum_membership_reconciliation_target_group_size %>},
-<% } -%>
+  <%- } -%>
 <% } -%>
     {tcp_listen_options, [
          <%- unless $rabbitmq::config::config_ranch {-%>
