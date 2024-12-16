@@ -808,8 +808,8 @@ Default value: `'python'`
 
 Data type: `Optional[Boolean]`
 
-Boolean - Enables or disables continuous membership reconciliation.
-This requires RabbitMQ 3.13 or higher. More information on this configuration
+Enables or disables continuous membership reconciliation.
+This REQUIRES RabbitMQ 3.13 or higher to be set to true. More information on this configuration
 can be found here: https://www.rabbitmq.com/docs/quorum-queues
 
 Default value: `undef`
@@ -818,9 +818,8 @@ Default value: `undef`
 
 Data type: `Optional[Boolean]`
 
-Boolean - Enables or disables automatic removal of member nodes that are no longer part of the cluster,
-but still a member of the quorum queue. This requires RabbitMQ 3.13 or higher. More information on this configuration
-can be found here: https://www.rabbitmq.com/docs/quorum-queues
+Enables or disables automatic removal of member nodes that are no longer part of the cluster,
+but still a member of the quorum queue.
 Important Note: This only takes affect if quorum_membership_reconciliation_enabled is set to true.
 
 Default value: `undef`
@@ -829,8 +828,7 @@ Default value: `undef`
 
 Data type: `Optional[Integer]`
 
-Integer - The default evaluation interval in milliseconds. This requires RabbitMQ 3.13 or higher. More information on this configuration
-can be found here: https://www.rabbitmq.com/docs/quorum-queues
+The default evaluation interval in milliseconds.
 Important Note: This only takes affect if quorum_membership_reconciliation_enabled is set to true.
 
 Default value: `undef`
@@ -839,11 +837,9 @@ Default value: `undef`
 
 Data type: `Optional[Integer]`
 
-Integer - The reconciliation delay in milliseconds, used when a trigger event occurs,
+The reconciliation delay in milliseconds, used when a trigger event occurs,
 for example, a node is added or removed from the cluster or an applicable policy changes.
 This delay will be applied only once, then the regular interval will be used again.
-This requires RabbitMQ 3.13 or higher. More information on this configuration
-can be found here: https://www.rabbitmq.com/docs/quorum-queues
 Important Note: This only takes affect if quorum_membership_reconciliation_enabled is set to true.
 
 Default value: `undef`
@@ -852,9 +848,7 @@ Default value: `undef`
 
 Data type: `Optional[Integer]`
 
-Integer - Controls the target group size for a quorum queue
-This requires RabbitMQ 3.13 or higher. More information on this configuration
-can be found here: https://www.rabbitmq.com/docs/quorum-queues
+Controls the target group size for a quorum queue
 Important Note: This only takes affect if quorum_membership_reconciliation_enabled is set to true.
 
 Default value: `undef`

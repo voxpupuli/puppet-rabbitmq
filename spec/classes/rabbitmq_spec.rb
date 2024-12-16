@@ -1801,12 +1801,12 @@ describe 'rabbitmq' do
         let(:params) { { quorum_membership_reconciliation_enabled: :undef } }
 
         it 'sets quorum_membership_reconciliation_enabled parameter undef in config file' do
-          is_expected.not_to contain_file('rabbitmq.config'). \
-            with_content(%r{\{quorum_membership_reconciliation_enabled, .*\}}). \
-            with_content(%r{\{quorum_membership_reconciliation_auto_remove, .*\}}). \
-            with_content(%r{\{quorum_membership_reconciliation_interval, .*\}}). \
-            with_content(%r{\{quorum_membership_reconciliation_trigger_interval, .*\}}). \
-            with_content(%r{\{quorum_membership_reconciliation_target_group_size, .*\}})
+          is_expected.to contain_file('rabbitmq.config'). \
+            without_content(%r{\{quorum_membership_reconciliation_enabled, }). \
+            without_content(%r{\{quorum_membership_reconciliation_auto_remove, }). \
+            without_content(%r{\{quorum_membership_reconciliation_interval, }). \
+            without_content(%r{\{quorum_membership_reconciliation_trigger_interval, }). \
+            without_content(%r{\{quorum_membership_reconciliation_target_group_size, })
         end
       end
 
@@ -1817,12 +1817,12 @@ describe 'rabbitmq' do
         let(:params) { { quorum_membership_reconciliation_enabled: false } }
 
         it 'sets quorum_membership_reconciliation_enabled parameter false in config file' do
-          is_expected.not_to contain_file('rabbitmq.config'). \
-            with_content(%r{\{quorum_membership_reconciliation_enabled, .*\}}). \
-            with_content(%r{\{quorum_membership_reconciliation_auto_remove, .*\}}). \
-            with_content(%r{\{quorum_membership_reconciliation_interval, .*\}}). \
-            with_content(%r{\{quorum_membership_reconciliation_trigger_interval, .*\}}). \
-            with_content(%r{\{quorum_membership_reconciliation_target_group_size, .*\}})
+          is_expected.to contain_file('rabbitmq.config'). \
+            without_content(%r{\{quorum_membership_reconciliation_enabled, }). \
+            without_content(%r{\{quorum_membership_reconciliation_auto_remove, }). \
+            without_content(%r{\{quorum_membership_reconciliation_interval, }). \
+            without_content(%r{\{quorum_membership_reconciliation_trigger_interval, }). \
+            without_content(%r{\{quorum_membership_reconciliation_target_group_size, })
         end
       end
 
@@ -1834,15 +1834,11 @@ describe 'rabbitmq' do
 
         it 'sets quorum_membership_reconciliation_enabled parameter true in config file' do
           is_expected.to contain_file('rabbitmq.config'). \
-            with_content(%r{\{quorum_membership_reconciliation_enabled, true\}})
-        end
-
-        it 'sets quorum_membership_reconciliation_enabled parameter true in config file ONLY' do
-          is_expected.not_to contain_file('rabbitmq.config'). \
-            with_content(%r{\{quorum_membership_reconciliation_auto_remove, .*\}}). \
-            with_content(%r{\{quorum_membership_reconciliation_interval, .*\}}). \
-            with_content(%r{\{quorum_membership_reconciliation_trigger_interval, .*\}}). \
-            with_content(%r{\{quorum_membership_reconciliation_target_group_size, .*\}})
+            with_content(%r{\{quorum_membership_reconciliation_enabled, true\}}). \
+            without_content(%r{\{quorum_membership_reconciliation_auto_remove, }). \
+            without_content(%r{\{quorum_membership_reconciliation_interval, }). \
+            without_content(%r{\{quorum_membership_reconciliation_trigger_interval, }). \
+            without_content(%r{\{quorum_membership_reconciliation_target_group_size, })
         end
       end
 
@@ -1854,7 +1850,7 @@ describe 'rabbitmq' do
             quorum_membership_reconciliation_enabled: true,
             quorum_membership_reconciliation_auto_remove: true,
             quorum_membership_reconciliation_interval: 36_000,
-            quorum_membership_reconciliation_trigger_interval: 3600,
+            quorum_membership_reconciliation_trigger_interval: 3_600,
             quorum_membership_reconciliation_target_group_size: 2
           }
         end
