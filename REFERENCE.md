@@ -255,6 +255,11 @@ The following parameters are available in the `rabbitmq` class:
 * [`package_name`](#-rabbitmq--package_name)
 * [`port`](#-rabbitmq--port)
 * [`python_package`](#-rabbitmq--python_package)
+* [`quorum_membership_reconciliation_enabled`](#-rabbitmq--quorum_membership_reconciliation_enabled)
+* [`quorum_membership_reconciliation_auto_remove`](#-rabbitmq--quorum_membership_reconciliation_auto_remove)
+* [`quorum_membership_reconciliation_interval`](#-rabbitmq--quorum_membership_reconciliation_interval)
+* [`quorum_membership_reconciliation_trigger_interval`](#-rabbitmq--quorum_membership_reconciliation_trigger_interval)
+* [`quorum_membership_reconciliation_target_group_size`](#-rabbitmq--quorum_membership_reconciliation_target_group_size)
 * [`repos_ensure`](#-rabbitmq--repos_ensure)
 * [`service_ensure`](#-rabbitmq--service_ensure)
 * [`service_manage`](#-rabbitmq--service_manage)
@@ -808,6 +813,55 @@ Data type: `String`
 Name of the package required by rabbitmqadmin.
 
 Default value: `'python'`
+
+##### <a name="-rabbitmq--quorum_membership_reconciliation_enabled"></a>`quorum_membership_reconciliation_enabled`
+
+Data type: `Optional[Boolean]`
+
+Enables or disables continuous membership reconciliation.
+This REQUIRES RabbitMQ 3.13 or higher to be set to true. More information on this configuration
+can be found here: https://www.rabbitmq.com/docs/quorum-queues
+
+Default value: `undef`
+
+##### <a name="-rabbitmq--quorum_membership_reconciliation_auto_remove"></a>`quorum_membership_reconciliation_auto_remove`
+
+Data type: `Optional[Boolean]`
+
+Enables or disables automatic removal of member nodes that are no longer part of the cluster,
+but still a member of the quorum queue.
+Important Note: This only takes affect if quorum_membership_reconciliation_enabled is set to true.
+
+Default value: `undef`
+
+##### <a name="-rabbitmq--quorum_membership_reconciliation_interval"></a>`quorum_membership_reconciliation_interval`
+
+Data type: `Optional[Integer]`
+
+The default evaluation interval in milliseconds.
+Important Note: This only takes affect if quorum_membership_reconciliation_enabled is set to true.
+
+Default value: `undef`
+
+##### <a name="-rabbitmq--quorum_membership_reconciliation_trigger_interval"></a>`quorum_membership_reconciliation_trigger_interval`
+
+Data type: `Optional[Integer]`
+
+The reconciliation delay in milliseconds, used when a trigger event occurs,
+for example, a node is added or removed from the cluster or an applicable policy changes.
+This delay will be applied only once, then the regular interval will be used again.
+Important Note: This only takes affect if quorum_membership_reconciliation_enabled is set to true.
+
+Default value: `undef`
+
+##### <a name="-rabbitmq--quorum_membership_reconciliation_target_group_size"></a>`quorum_membership_reconciliation_target_group_size`
+
+Data type: `Optional[Integer]`
+
+Controls the target group size for a quorum queue
+Important Note: This only takes affect if quorum_membership_reconciliation_enabled is set to true.
+
+Default value: `undef`
 
 ##### <a name="-rabbitmq--repos_ensure"></a>`repos_ensure`
 

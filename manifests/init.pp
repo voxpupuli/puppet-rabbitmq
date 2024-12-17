@@ -243,6 +243,25 @@
 #   The RabbitMQ port.
 # @param python_package
 #   Name of the package required by rabbitmqadmin.
+# @param quorum_membership_reconciliation_enabled
+#   Enables or disables continuous membership reconciliation.
+#   This REQUIRES RabbitMQ 3.13 or higher to be set to true. More information on this configuration
+#   can be found here: https://www.rabbitmq.com/docs/quorum-queues
+# @param quorum_membership_reconciliation_auto_remove
+#   Enables or disables automatic removal of member nodes that are no longer part of the cluster,
+#   but still a member of the quorum queue.
+#   Important Note: This only takes affect if quorum_membership_reconciliation_enabled is set to true.
+# @param quorum_membership_reconciliation_interval
+#   The default evaluation interval in milliseconds.
+#   Important Note: This only takes affect if quorum_membership_reconciliation_enabled is set to true.
+# @param quorum_membership_reconciliation_trigger_interval
+#   The reconciliation delay in milliseconds, used when a trigger event occurs,
+#   for example, a node is added or removed from the cluster or an applicable policy changes.
+#   This delay will be applied only once, then the regular interval will be used again.
+#   Important Note: This only takes affect if quorum_membership_reconciliation_enabled is set to true.
+# @param quorum_membership_reconciliation_target_group_size
+#   Controls the target group size for a quorum queue
+#   Important Note: This only takes affect if quorum_membership_reconciliation_enabled is set to true.
 # @param repos_ensure
 #   Ensure that a repo with the official (and newer) RabbitMQ package is configured, along with its signing key.
 #   Defaults to false (use system packages). This does not ensure that soft dependencies are present.
@@ -385,6 +404,11 @@ class rabbitmq (
   Optional[Variant[Numeric, String[1]]] $package_apt_pin                                           = undef,
   String $package_ensure                                                                           = 'installed',
   Optional[String] $package_gpg_key                                                                = undef,
+  Optional[Boolean] $quorum_membership_reconciliation_enabled                                      = undef,
+  Optional[Boolean] $quorum_membership_reconciliation_auto_remove                                  = undef,
+  Optional[Integer] $quorum_membership_reconciliation_interval                                     = undef,
+  Optional[Integer] $quorum_membership_reconciliation_trigger_interval                             = undef,
+  Optional[Integer] $quorum_membership_reconciliation_target_group_size                            = undef,
   Optional[String] $repo_gpg_key                                                                   = undef,
   Variant[String, Array] $package_name                                                             = 'rabbitmq',
   Optional[String] $package_source                                                                 = undef,

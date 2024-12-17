@@ -1795,9 +1795,80 @@ describe 'rabbitmq' do
       describe 'rabbitmq-heartbeat options' do
         let(:params) { { heartbeat: 60 } }
 
-        it 'sets heartbeat paramter in config file' do
+        it 'sets heartbeat parameter in config file' do
           is_expected.to contain_file('rabbitmq.config'). \
             with_content(%r{\{heartbeat, 60\}})
+        end
+      end
+
+      # Ensure that whenever Param quorum_membership_reconciliation_enabled is unset - none of the
+      # other quorum_membership_reconciliation paramaters are set at all
+      # This ensures full backward compatibility with PRE RabbitMQ 3.13
+      describe 'rabbitmq-quorum_membership_reconciliation_enabled undef options' do
+        let(:params) { { quorum_membership_reconciliation_enabled: :undef } }
+
+        it 'sets quorum_membership_reconciliation_enabled parameter undef in config file' do
+          is_expected.to contain_file('rabbitmq.config'). \
+            without_content(%r{\{quorum_membership_reconciliation_enabled, }). \
+            without_content(%r{\{quorum_membership_reconciliation_auto_remove, }). \
+            without_content(%r{\{quorum_membership_reconciliation_interval, }). \
+            without_content(%r{\{quorum_membership_reconciliation_trigger_interval, }). \
+            without_content(%r{\{quorum_membership_reconciliation_target_group_size, })
+        end
+      end
+
+      # Ensure that whenever Param quorum_membership_reconciliation_enabled is false - none of the
+      # other quorum_membership_reconciliation paramaters are set at all
+      # This ensures full backward compatibility with PRE RabbitMQ 3.13
+      describe 'rabbitmq-quorum_membership_reconciliation_enabled false options' do
+        let(:params) { { quorum_membership_reconciliation_enabled: false } }
+
+        it 'sets quorum_membership_reconciliation_enabled parameter false in config file' do
+          is_expected.to contain_file('rabbitmq.config'). \
+            without_content(%r{\{quorum_membership_reconciliation_enabled, }). \
+            without_content(%r{\{quorum_membership_reconciliation_auto_remove, }). \
+            without_content(%r{\{quorum_membership_reconciliation_interval, }). \
+            without_content(%r{\{quorum_membership_reconciliation_trigger_interval, }). \
+            without_content(%r{\{quorum_membership_reconciliation_target_group_size, })
+        end
+      end
+
+      # Ensure that whenever Param quorum_membership_reconciliation_enabled is true - the defaults
+      # of all other quorum_membership_reconciliation parameters ensure they are UNSET until
+      # explicitly set.
+      describe 'rabbitmq-quorum_membership_reconciliation_enabled true options' do
+        let(:params) { { quorum_membership_reconciliation_enabled: true } }
+
+        it 'sets quorum_membership_reconciliation_enabled parameter true in config file' do
+          is_expected.to contain_file('rabbitmq.config'). \
+            with_content(%r{\{quorum_membership_reconciliation_enabled, true\}}). \
+            without_content(%r{\{quorum_membership_reconciliation_auto_remove, }). \
+            without_content(%r{\{quorum_membership_reconciliation_interval, }). \
+            without_content(%r{\{quorum_membership_reconciliation_trigger_interval, }). \
+            without_content(%r{\{quorum_membership_reconciliation_target_group_size, })
+        end
+      end
+
+      # Ensure that whenever Param quorum_membership_reconciliation_enabled is true
+      # and the other parameters are set - they pass as expected.
+      describe 'rabbitmq-quorum_membership_reconciliation_enabled true options' do
+        let(:params) do
+          {
+            quorum_membership_reconciliation_enabled: true,
+            quorum_membership_reconciliation_auto_remove: true,
+            quorum_membership_reconciliation_interval: 36_000,
+            quorum_membership_reconciliation_trigger_interval: 3_600,
+            quorum_membership_reconciliation_target_group_size: 2
+          }
+        end
+
+        it 'sets quorum_membership_reconciliation_enabled parameter true in config file' do
+          is_expected.to contain_file('rabbitmq.config'). \
+            with_content(%r{\{quorum_membership_reconciliation_enabled, true\}}). \
+            with_content(%r{\{quorum_membership_reconciliation_auto_remove, true\}}). \
+            with_content(%r{\{quorum_membership_reconciliation_interval, 36000\}}). \
+            with_content(%r{\{quorum_membership_reconciliation_trigger_interval, 3600\}}). \
+            with_content(%r{\{quorum_membership_reconciliation_target_group_size, 2\}})
         end
       end
 
