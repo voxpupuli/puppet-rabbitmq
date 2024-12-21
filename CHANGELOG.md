@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v14.2.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v14.2.0) (2024-12-21)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v14.1.0...v14.2.0)
+
+**Implemented enhancements:**
+
+- Quorum Queue Reconciliation Support? [\#1029](https://github.com/voxpupuli/puppet-rabbitmq/issues/1029)
+- puppet/systemd: allow 8.x [\#1036](https://github.com/voxpupuli/puppet-rabbitmq/pull/1036) ([jay7x](https://github.com/jay7x))
+
 ## [v14.1.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v14.1.0) (2024-12-11)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v14.0.0...v14.1.0)
