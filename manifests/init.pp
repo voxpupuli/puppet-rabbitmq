@@ -543,7 +543,7 @@ class rabbitmq (
     }
   } elsif $facts['os']['family'] == 'RedHat' and $enable_centos_release {
     package { 'centos-release-rabbitmq-38':
-      ensure   => 'present',
+      ensure => 'present',
     }
   }
 
