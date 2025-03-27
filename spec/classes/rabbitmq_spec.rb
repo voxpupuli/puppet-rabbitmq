@@ -182,7 +182,7 @@ describe 'rabbitmq' do
           end
         end
       end
-         
+
       { 'TimeoutStartSec' => 1200, 'TimeoutStopSec' => 1200, }.each do |key, value|
         context "with systemd_additional_service_parameters => '{ #{key} => #{value}'", if: os_facts['kernel'] == 'Linux' do
           let(:params) { { systemd_additional_service_parameters: { key => value } } }
