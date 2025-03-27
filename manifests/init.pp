@@ -65,6 +65,20 @@
 #     }
 #   }
 #
+# @example Change RabbitMQ service startup timeout via SystemD to 20 minutes (1200 seconds) :
+#   class { 'rabbitmq':
+#     systemd_additional_service_parameters => {
+#       'TimeoutStartSec' => 1200,
+#     }
+#   }
+# @example Change multiple RabbitMQ service startup parameters via SystemD:
+#   class { 'rabbitmq':
+#     systemd_additional_service_parameters => {
+#       'TimeoutStartSec' => 1200,
+#       'TimeoutStopSec'  => 1200,
+#     }
+#   }
+#
 # @example Change Erlang Kernel Config Variables in rabbitmq.config
 #   class { 'rabbitmq':
 #     port                    => '5672',
@@ -176,6 +190,9 @@
 #   to 'False' and set 'erlang_cookie'.
 # @param file_limit
 #   Set rabbitmq file ulimit. Defaults to 16384. Only available on Linux
+# @param systemd_additional_service_parameters
+#   Hash of additional systemd service parameters which are appended to the dropin file. No validation is done, this is passed verbotem to the systemd dropin module.
+#   Defaults to {}. Only available on Linux
 # @param oom_score_adj
 #   Set rabbitmq-server process OOM score. Defaults to 0.
 # @param heartbeat
@@ -470,6 +487,7 @@ class rabbitmq (
   Boolean $wipe_db_on_cookie_change                                                                = false,
   String $cluster_partition_handling                                                               = 'ignore',
   Variant[Integer[-1],Enum['unlimited'],Pattern[/^(infinity|\d+(:(infinity|\d+))?)$/]] $file_limit = 16384,
+  Hash $systemd_additional_service_parameters                                                      = {},
   Integer[-1000, 1000] $oom_score_adj                                                              = 0,
   Hash $environment_variables                                                                      = { 'LC_ALL' => 'en_US.UTF-8' },
   Hash $config_variables                                                                           = {},

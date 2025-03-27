@@ -136,6 +136,27 @@ class { 'rabbitmq':
 }
 ```
 
+##### Change RabbitMQ service startup timeout via SystemD to 20 minutes (1200 seconds) :
+
+```puppet
+class { 'rabbitmq':
+  systemd_additional_service_parameters => {
+    'TimeoutStartSec' => 1200,
+  }
+}
+```
+
+##### Change multiple RabbitMQ service startup parameters via SystemD:
+
+```puppet
+class { 'rabbitmq':
+  systemd_additional_service_parameters => {
+    'TimeoutStartSec' => 1200,
+    'TimeoutStopSec'  => 1200,
+  }
+}
+```
+
 ##### Change Erlang Kernel Config Variables in rabbitmq.config
 
 ```puppet
@@ -225,6 +246,7 @@ The following parameters are available in the `rabbitmq` class:
 * [`environment_variables`](#-rabbitmq--environment_variables)
 * [`erlang_cookie`](#-rabbitmq--erlang_cookie)
 * [`file_limit`](#-rabbitmq--file_limit)
+* [`systemd_additional_service_parameters`](#-rabbitmq--systemd_additional_service_parameters)
 * [`oom_score_adj`](#-rabbitmq--oom_score_adj)
 * [`heartbeat`](#-rabbitmq--heartbeat)
 * [`inetrc_config`](#-rabbitmq--inetrc_config)
@@ -564,6 +586,15 @@ Data type: `Variant[Integer[-1],Enum['unlimited'],Pattern[/^(infinity|\d+(:(infi
 Set rabbitmq file ulimit. Defaults to 16384. Only available on Linux
 
 Default value: `16384`
+
+##### <a name="-rabbitmq--systemd_additional_service_parameters"></a>`systemd_additional_service_parameters`
+
+Data type: `Hash`
+
+Hash of additional systemd service parameters which are appended to the dropin file. No validation is done, this is passed verbotem to the systemd dropin module.
+Defaults to {}. Only available on Linux
+
+Default value: `{}`
 
 ##### <a name="-rabbitmq--oom_score_adj"></a>`oom_score_adj`
 
