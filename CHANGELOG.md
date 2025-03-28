@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v14.3.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v14.3.0) (2025-03-28)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v14.2.0...v14.3.0)
+
+**Implemented enhancements:**
+
+- \(\#1043\) - Add support for any necessary systemd system parameters via hash input [\#1044](https://github.com/voxpupuli/puppet-rabbitmq/pull/1044) ([LangJV](https://github.com/LangJV))
+- metadata.json: Add OpenVox [\#1042](https://github.com/voxpupuli/puppet-rabbitmq/pull/1042) ([jstraw](https://github.com/jstraw))
+
 ## [v14.2.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v14.2.0) (2024-12-21)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v14.1.0...v14.2.0)
