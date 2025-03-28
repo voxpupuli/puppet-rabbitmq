@@ -89,6 +89,7 @@ class rabbitmq::config {
   $auth_backends                                      = $rabbitmq::auth_backends
   $cluster_partition_handling                         = $rabbitmq::cluster_partition_handling
   $file_limit                                         = $rabbitmq::file_limit
+  $systemd_additional_service_parameters              = $rabbitmq::systemd_additional_service_parameters
   $oom_score_adj                                      = $rabbitmq::oom_score_adj
   $collect_statistics_interval                        = $rabbitmq::collect_statistics_interval
   $ipv6                                               = $rabbitmq::ipv6
@@ -227,14 +228,16 @@ class rabbitmq::config {
     }
   }
 
+  # Create our complete hash of all possible systemd dropin values
+  # When there is a duplicate key, the key in the rightmost hash will "win."
+  # This order ensures that if we set LimitNOFILE or OOMScoreAdjust "twice" the explicit set one "wins" which is needed for consistency with the other places it's also configured.
+  $completesystemdpropertieshash = $systemd_additional_service_parameters + { 'LimitNOFILE' => $file_limit, 'OOMScoreAdjust' => $oom_score_adj, }
+
   if $facts['kernel'] == 'Linux' {
     systemd::manage_dropin { 'service-90-limits.conf':
       unit                    => "${service_name}.service",
       selinux_ignore_defaults => ($facts['os']['family'] == 'RedHat'),
-      service_entry           => {
-        'LimitNOFILE'    => $file_limit,
-        'OOMScoreAdjust' => $oom_score_adj,
-      },
+      service_entry           => $completesystemdpropertieshash,
     }
   }
 

@@ -183,6 +183,22 @@ describe 'rabbitmq' do
         end
       end
 
+      { 'TimeoutStartSec' => 1200, 'TimeoutStopSec' => 1200, }.each do |key, value|
+        context "with systemd_additional_service_parameters => '{ #{key} => #{value}'", if: os_facts['kernel'] == 'Linux' do
+          let(:params) { { systemd_additional_service_parameters: { key => value } } }
+
+          it { is_expected.to contain_systemd__manage_dropin('service-90-limits.conf').with_service_entry({ key => value, 'LimitNOFILE' => 16_384, 'OOMScoreAdjust' => 0 }) }
+        end
+      end
+
+      { 'TimeoutStartSec' => 600, 'TimeoutStopSec' => 2400, }.each do |key, value|
+        context "with systemd_additional_service_parameters => '{ #{key} => #{value}'", if: os_facts['kernel'] == 'Linux' do
+          let(:params) { { systemd_additional_service_parameters: { key => value } } }
+
+          it { is_expected.to contain_systemd__manage_dropin('service-90-limits.conf').with_service_entry({ key => value, 'LimitNOFILE' => 16_384, 'OOMScoreAdjust' => 0 }) }
+        end
+      end
+
       context 'on Linux', if: os_facts['kernel'] == 'Linux' do
         it { is_expected.to contain_systemd__manage_dropin('service-90-limits.conf') }
       end
