@@ -28,6 +28,7 @@ class rabbitmq::config {
   $management_ssl                                     = $rabbitmq::management_ssl
   $management_hostname                                = $rabbitmq::management_hostname
   $node_ip_address                                    = $rabbitmq::node_ip_address
+  $quorum_cluster_size                                = $rabbitmq::quorum_cluster_size
   $quorum_membership_reconciliation_enabled           = $rabbitmq::quorum_membership_reconciliation_enabled
   $quorum_membership_reconciliation_auto_remove       = $rabbitmq::quorum_membership_reconciliation_auto_remove
   $quorum_membership_reconciliation_interval          = $rabbitmq::quorum_membership_reconciliation_interval

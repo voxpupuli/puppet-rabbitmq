@@ -26,6 +26,9 @@
     <%- } -%>
     {cluster_partition_handling, <%= $rabbitmq::config::cluster_partition_handling %>},
 <% } -%>
+<% if $rabbitmq::config::quorum_cluster_size {-%>
+    {quorum_cluster_size, <%= $rabbitmq::config::quorum_cluster_size %>},
+<%- } -%>
 <% if $rabbitmq::config::quorum_membership_reconciliation_enabled {-%>
     {quorum_membership_reconciliation_enabled, <%= $rabbitmq::config::quorum_membership_reconciliation_enabled %>},
   <%- unless $rabbitmq::config::quorum_membership_reconciliation_auto_remove =~ Undef {-%>

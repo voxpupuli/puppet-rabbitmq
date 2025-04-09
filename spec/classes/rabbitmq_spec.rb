@@ -1817,6 +1817,22 @@ describe 'rabbitmq' do
         end
       end
 
+      describe 'quorum_cluster_size with default value' do
+        it 'does not set quorum_cluster_size' do
+          is_expected.to contain_file('rabbitmq.config'). \
+            without_content(%r{quorum_cluster_size, })
+        end
+      end
+
+      describe 'quorum_cluster_size with non-default value' do
+        let(:params) { { quorum_cluster_size: 7 } }
+
+        it 'does set quorum_cluster_size to 7' do
+          is_expected.to contain_file('rabbitmq.config'). \
+            with_content(%r{quorum_cluster_size, 7})
+        end
+      end
+
       # Ensure that whenever Param quorum_membership_reconciliation_enabled is unset - none of the
       # other quorum_membership_reconciliation paramaters are set at all
       # This ensures full backward compatibility with PRE RabbitMQ 3.13
