@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v14.4.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v14.4.0) (2025-04-10)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v14.3.0...v14.4.0)
+
+**Implemented enhancements:**
+
+- Support quorum\_cluster\_size and add target-group-size policy key [\#1047](https://github.com/voxpupuli/puppet-rabbitmq/pull/1047) ([alphamonkey79](https://github.com/alphamonkey79))
+
+**Closed issues:**
+
+- add 'quorum\_cluster\_size' and 'target-group-size' parameter support [\#1046](https://github.com/voxpupuli/puppet-rabbitmq/issues/1046)
+- Support setting TimeoutStartSec and other systemd Parameters [\#1043](https://github.com/voxpupuli/puppet-rabbitmq/issues/1043)
+
 ## [v14.3.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v14.3.0) (2025-03-28)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v14.2.0...v14.3.0)
