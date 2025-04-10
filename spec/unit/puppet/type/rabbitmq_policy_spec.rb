@@ -234,6 +234,19 @@ describe Puppet::Type.type(:rabbitmq_policy) do
     end.to raise_error(Puppet::Error, %r{Invalid queue-version value.*oogabooga})
   end
 
+  it 'accepts and converts the target-group-size value' do
+    definition = { 'target-group-size' => '7' }
+    policy[:definition] = definition
+    expect(policy[:definition]['target-group-size']).to eq(7)
+  end
+
+  it 'does not accept non-numeric target-group-size value' do
+    definition = { 'target-group-size' => 'notreal' }
+    expect do
+      policy[:definition] = definition
+    end.to raise_error(Puppet::Error, %r{Invalid target-group-size value.*notreal})
+  end
+
   context 'accepts list value in ha-params when ha-mode = nodes' do
     before do
       policy[:definition] = definition

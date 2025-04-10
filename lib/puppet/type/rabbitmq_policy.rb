@@ -13,6 +13,7 @@ CONVERT_TO_INT_VARS = %w[
   message-ttl
   queue-version
   shards-per-node
+  target-group-size
 ].freeze
 
 Puppet::Type.newtype(:rabbitmq_policy) do

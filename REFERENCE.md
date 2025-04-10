@@ -277,6 +277,7 @@ The following parameters are available in the `rabbitmq` class:
 * [`package_name`](#-rabbitmq--package_name)
 * [`port`](#-rabbitmq--port)
 * [`python_package`](#-rabbitmq--python_package)
+* [`quorum_cluster_size`](#-rabbitmq--quorum_cluster_size)
 * [`quorum_membership_reconciliation_enabled`](#-rabbitmq--quorum_membership_reconciliation_enabled)
 * [`quorum_membership_reconciliation_auto_remove`](#-rabbitmq--quorum_membership_reconciliation_auto_remove)
 * [`quorum_membership_reconciliation_interval`](#-rabbitmq--quorum_membership_reconciliation_interval)
@@ -844,6 +845,15 @@ Data type: `String`
 Name of the package required by rabbitmqadmin.
 
 Default value: `'python'`
+
+##### <a name="-rabbitmq--quorum_cluster_size"></a>`quorum_cluster_size`
+
+Data type: `Optional[Integer]`
+
+Sets the default quorum queue cluster size.
+More info can be found here: https://www.rabbitmq.com/docs/quorum-queues
+
+Default value: `undef`
 
 ##### <a name="-rabbitmq--quorum_membership_reconciliation_enabled"></a>`quorum_membership_reconciliation_enabled`
 

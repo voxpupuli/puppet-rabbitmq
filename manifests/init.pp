@@ -260,6 +260,9 @@
 #   The RabbitMQ port.
 # @param python_package
 #   Name of the package required by rabbitmqadmin.
+# @param quorum_cluster_size
+#   Sets the default quorum queue cluster size.
+#   More info can be found here: https://www.rabbitmq.com/docs/quorum-queues
 # @param quorum_membership_reconciliation_enabled
 #   Enables or disables continuous membership reconciliation.
 #   This REQUIRES RabbitMQ 3.13 or higher to be set to true. More information on this configuration
@@ -421,6 +424,7 @@ class rabbitmq (
   Optional[Variant[Numeric, String[1]]] $package_apt_pin                                           = undef,
   String $package_ensure                                                                           = 'installed',
   Optional[String] $package_gpg_key                                                                = undef,
+  Optional[Integer] $quorum_cluster_size                                                           = undef,
   Optional[Boolean] $quorum_membership_reconciliation_enabled                                      = undef,
   Optional[Boolean] $quorum_membership_reconciliation_auto_remove                                  = undef,
   Optional[Integer] $quorum_membership_reconciliation_interval                                     = undef,
