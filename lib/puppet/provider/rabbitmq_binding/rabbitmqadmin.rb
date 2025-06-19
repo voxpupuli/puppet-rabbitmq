@@ -43,7 +43,7 @@ Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin, parent: Puppet::Pro
           arguments = arguments.gsub(%r{^\[|\]$}, '').gsub(%r{\{("(?:.|\\")*?"),}, '{\1:').gsub(%r{\},\{}, ',')
           arguments = '{}' if arguments == ''
         end
-        hashed_name = Digest::SHA256.hexdigest format('%s@%s@%s@%s', source_name, destination_name, vhost, routing_key)
+        hashed_name = Digest::SHA256.hexdigest format('%s@%s@%s@%s@%s', source_name, destination_name, vhost, routing_key, arguments)
         next if source_name.empty?
 
         binding = {
@@ -67,7 +67,7 @@ Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin, parent: Puppet::Pro
   def self.prefetch(resources)
     bindings = instances
     resources.each do |name, res|
-      if (provider = bindings.find { |binding| binding.source == res[:source] && binding.destination == res[:destination] && binding.vhost == res[:vhost] && binding.routing_key == res[:routing_key] })
+      if (provider = bindings.find { |binding| binding.source == res[:source] && binding.destination == res[:destination] && binding.vhost == res[:vhost] && binding.routing_key == res[:routing_key] && binding.arguments == res[:arguments] })
         resources[name].provider = provider
       end
     end
