@@ -37,7 +37,10 @@ Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin, parent: Puppet::Pro
         if arguments.nil?
           arguments = '{}'
         else
-          arguments = arguments.gsub(%r{^\[(.*)\]$}, '').gsub(%r{\{("(?:.|\\")*?"),}, '{\1:').gsub(%r{\},\{}, ',')
+          # Substitution : Removes the opening '[' and closing ']' brackets from the arguments string
+          # Substitution 2 : Converts JSON-style "key", format to "key": format by replacing commas after quoted keys with colons
+          # Substitution 3 : Merges multiple object definitions by replacing "},{" with "," to create a single valid JSON object
+          arguments = arguments.gsub(%r{^\[|\]$}, '').gsub(%r{\{("(?:.|\\")*?"),}, '{\1:').gsub(%r{\},\{}, ',')
           arguments = '{}' if arguments == ''
         end
         hashed_name = Digest::SHA256.hexdigest format('%s@%s@%s@%s', source_name, destination_name, vhost, routing_key)

@@ -36,7 +36,10 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, parent: Puppet::Pr
         if arguments.nil?
           arguments = '{}'
         else
-          arguments = arguments.gsub(%r{^\[(.*)\]$}, '').gsub(%r{\{("(?:.|\\")*?"),}, '{\1:').gsub(%r{\},\{}, ',')
+          # Substitution : Removes the opening '[' and closing ']' brackets from the arguments string
+          # Substitution 2 : Converts JSON-style "key", format to "key": format by replacing commas after quoted keys with colons
+          # Substitution 3 : Merges multiple object definitions by replacing "},{" with "," to create a single valid JSON object
+          arguments = arguments.gsub(%r{^\[|\]$}, '').gsub(%r{\{("(?:.|\\")*?"),}, '{\1:').gsub(%r{\},\{}, ',')
           arguments = '{}' if arguments == ''
         end
         exchange = {
