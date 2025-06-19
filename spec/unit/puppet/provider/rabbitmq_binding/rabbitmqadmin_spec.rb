@@ -77,6 +77,44 @@ describe provider_class do
                    }
                  ])
     end
+
+    it 'returns multiple instances (with or without arguments)' do
+      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<~EOT
+        /
+      EOT
+      provider_class.expects(:rabbitmqctl_list).with(
+        'bindings', '-p', '/', 'source_name', 'destination_name', 'destination_kind', 'routing_key', 'arguments'
+      ).returns <<~EOT
+        exchange\tdst_queue\tqueue\trouting_one\t[]
+        exchange\tdst_queue\tqueue\trouting_two\t[{"header","value"},{"x-match","all"}]
+      EOT
+      instances = provider_class.instances
+      expect(instances.size).to eq(2)
+      expect(instances.map do |prov|
+        {
+          source: prov.get(:source),
+          destination: prov.get(:destination),
+          vhost: prov.get(:vhost),
+          routing_key: prov.get(:routing_key),
+          arguments: prov.get(:arguments)
+        }
+      end).to eq([
+                   {
+                     source: 'exchange',
+                     destination: 'dst_queue',
+                     vhost: '/',
+                     routing_key: 'routing_one',
+                     arguments: {}
+                   },
+                   {
+                     source: 'exchange',
+                     destination: 'dst_queue',
+                     vhost: '/',
+                     routing_key: 'routing_two',
+                     arguments: { 'header' => 'value', 'x-match' => 'all' }
+                   }
+                 ])
+    end
   end
 
   describe 'Test for prefetch error' do

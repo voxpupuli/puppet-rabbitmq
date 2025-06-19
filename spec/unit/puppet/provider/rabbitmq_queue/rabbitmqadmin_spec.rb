@@ -19,11 +19,39 @@ describe provider_class do
       /
     EOT
     provider_class.expects(:rabbitmqctl_list).with('queues', '-p', '/', 'name', 'durable', 'auto_delete', 'arguments').returns <<~EOT
-      test  true  false []
-      test2 true  false [{"x-message-ttl",342423},{"x-expires",53253232},{"x-max-length",2332},{"x-max-length-bytes",32563324242},{"x-dead-letter-exchange","amq.direct"},{"x-dead-letter-routing-key","test.routing"}]
+      test\ttrue\tfalse\t[]
+      test2\ttrue\tfalse\t[{"x-message-ttl",342423},{"x-expires",53253232},{"x-max-length",2332},{"x-max-length-bytes",32563324242},{"x-dead-letter-exchange","amq.direct"},{"x-dead-letter-routing-key","test.routing"}]
     EOT
     instances = provider_class.instances
     expect(instances.size).to eq(2)
+    expect(instances.map do |prov|
+             {
+               name: prov.get(:name),
+               durable: prov.get(:durable),
+               auto_delete: prov.get(:auto_delete),
+               arguments: prov.get(:arguments)
+             }
+           end).to eq([
+                        {
+                          name: 'test@/',
+                          durable: 'true',
+                          auto_delete: 'false',
+                          arguments: {}
+                        },
+                        {
+                          name: 'test2@/',
+                          durable: 'true',
+                          auto_delete: 'false',
+                          arguments: {
+                            'x-message-ttl' => 342_423,
+                            'x-expires' => 53_253_232,
+                            'x-max-length' => 2332,
+                            'x-max-length-bytes' => 32_563_324_242,
+                            'x-dead-letter-exchange' => 'amq.direct',
+                            'x-dead-letter-routing-key' => 'test.routing'
+                          }
+                        }
+                      ])
   end
 
   it 'calls rabbitmqadmin to create' do
