@@ -25,7 +25,7 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, parent: Puppet::Pr
     resources = []
     all_vhosts.each do |vhost|
       all_exchanges(vhost).each do |line|
-        name, type, internal, durable, auto_delete, arguments = line.split
+        name, type, internal, durable, auto_delete, arguments = line.split(%r{\t})
         if type.nil?
           # if name is empty, it will wrongly get the type's value.
           # This way type will get the correct value
