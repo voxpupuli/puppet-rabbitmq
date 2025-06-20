@@ -25,7 +25,7 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, parent: Puppet::Pr
     resources = []
     all_vhosts.each do |vhost|
       all_exchanges(vhost).each do |line|
-        name, type, internal, durable, auto_delete, arguments = line.split
+        name, type, internal, durable, auto_delete, arguments = line.split(%r{\t})
         if type.nil?
           # if name is empty, it will wrongly get the type's value.
           # This way type will get the correct value
@@ -36,7 +36,10 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, parent: Puppet::Pr
         if arguments.nil?
           arguments = '{}'
         else
-          arguments = arguments.gsub(%r{^\[(.*)\]$}, '').gsub(%r{\{("(?:.|\\")*?"),}, '{\1:').gsub(%r{\},\{}, ',')
+          # Substitution : Removes the opening '[' and closing ']' brackets from the arguments string
+          # Substitution 2 : Converts JSON-style "key", format to "key": format by replacing commas after quoted keys with colons
+          # Substitution 3 : Merges multiple object definitions by replacing "},{" with "," to create a single valid JSON object
+          arguments = arguments.gsub(%r{^\[|\]$}, '').gsub(%r{\{("(?:.|\\")*?"),}, '{\1:').gsub(%r{\},\{}, ',')
           arguments = '{}' if arguments == ''
         end
         exchange = {
