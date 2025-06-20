@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v14.4.1](https://github.com/voxpupuli/puppet-rabbitmq/tree/v14.4.1) (2025-06-20)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v14.4.0...v14.4.1)
+
+**Fixed bugs:**
+
+- Fix undef comparison in rabbitmq-env.conf template [\#1055](https://github.com/voxpupuli/puppet-rabbitmq/pull/1055) ([optiz0r](https://github.com/optiz0r))
+- Fix binding arguments parsing and uniqueness in rabbitmq\_binding provider [\#1054](https://github.com/voxpupuli/puppet-rabbitmq/pull/1054) ([J-Mx](https://github.com/J-Mx))
+
 ## [v14.4.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v14.4.0) (2025-04-10)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v14.3.0...v14.4.0)
