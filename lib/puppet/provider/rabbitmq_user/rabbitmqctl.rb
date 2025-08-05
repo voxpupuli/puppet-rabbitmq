@@ -18,16 +18,20 @@ Puppet::Type.type(:rabbitmq_user).provide(
       rabbitmqctl_list('users')
     end
 
-    user_list.split(%r{\n}).map do |line|
-      raise Puppet::Error, "Cannot parse invalid user line: #{line}" unless line =~ %r{^(\S+)\s+\[(.*?)\]$}
+    if user_list.split(%r{\n}).size > 0
+      user_list.split(%r{\n}).map do |line|
+        raise Puppet::Error, "Cannot parse invalid user line: #{line}" unless line =~ %r{^(\S+)\s+\[(.*?)\]$}
 
-      user = Regexp.last_match(1)
-      tags = Regexp.last_match(2).split(%r{,\s*})
-      new(
-        ensure: :present,
-        name: user,
-        tags: tags
-      )
+        user = Regexp.last_match(1)
+        tags = Regexp.last_match(2).split(%r{,\s*})
+        new(
+          ensure: :present,
+          name: user,
+          tags: tags
+        )
+      end
+    else
+      user_list = []
     end
   end
 
