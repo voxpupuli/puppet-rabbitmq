@@ -149,7 +149,7 @@ class rabbitmq::config {
         default           => "\"${orig}${ssl_path} -proto_dist ${proto_dist}\"",
       }
 
-      merge($memo, { "RABBITMQ_${item}_ERL_ARGS" => $munged })
+      stdlib::merge($memo, { "RABBITMQ_${item}_ERL_ARGS" => $munged })
     }
 
     $environment_variables = $_environment_variables + $ipv6_or_tls_env
