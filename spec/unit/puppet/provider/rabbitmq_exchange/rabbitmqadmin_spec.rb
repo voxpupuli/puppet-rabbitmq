@@ -19,10 +19,10 @@ describe provider_class do
   let(:provider) { provider_class.new(resource) }
 
   it 'returns instances' do
-    provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<~EOT
+    expect(provider_class).to receive(:rabbitmqctl_list).with('vhosts').and_return(<<~EOT)
       /
     EOT
-    provider_class.expects(:rabbitmqctl_list).with('exchanges', '-p', '/', 'name', 'type', 'internal', 'durable', 'auto_delete', 'arguments').returns <<~EOT
+    expect(provider_class).to receive(:rabbitmqctl_list).with('exchanges', '-p', '/', 'name', 'type', 'internal', 'durable', 'auto_delete', 'arguments').and_return(<<~EOT)
       \tdirect\tfalse\ttrue\tfalse\t[]
       amq.direct\tdirect\tfalse\ttrue\tfalse\t[]
       amq.fanout\tfanout\tfalse\ttrue\tfalse\t[]
@@ -121,12 +121,12 @@ describe provider_class do
   end
 
   it 'calls rabbitmqadmin to create as guest' do
-    provider.expects(:rabbitmqadmin).with('declare', 'exchange', '--vhost=/', '--user=guest', '--password=guest', 'name=test.headers', 'type=headers', 'internal=false', 'durable=true', 'auto_delete=false', 'arguments={"hash-headers":"message-distribution-hash"}', '-c', '/etc/rabbitmq/rabbitmqadmin.conf')
+    expect(provider).to receive(:rabbitmqadmin).with('declare', 'exchange', '--vhost=/', '--user=guest', '--password=guest', 'name=test.headers', 'type=headers', 'internal=false', 'durable=true', 'auto_delete=false', 'arguments={"hash-headers":"message-distribution-hash"}', '-c', '/etc/rabbitmq/rabbitmqadmin.conf')
     provider.create
   end
 
   it 'calls rabbitmqadmin to destroy' do
-    provider.expects(:rabbitmqadmin).with('delete', 'exchange', '--vhost=/', '--user=guest', '--password=guest', 'name=test.headers', '-c', '/etc/rabbitmq/rabbitmqadmin.conf')
+    expect(provider).to receive(:rabbitmqadmin).with('delete', 'exchange', '--vhost=/', '--user=guest', '--password=guest', 'name=test.headers', '-c', '/etc/rabbitmq/rabbitmqadmin.conf')
     provider.destroy
   end
 
@@ -148,7 +148,7 @@ describe provider_class do
     let(:provider) { provider_class.new(resource) }
 
     it 'calls rabbitmqadmin to create with credentials' do
-      provider.expects(:rabbitmqadmin).with('declare', 'exchange', '--vhost=/', '--user=colin', '--password=secret', 'name=test.headers', 'type=headers', 'internal=false', 'durable=true', 'auto_delete=false', 'arguments={"hash-header":"message-distribution-hash"}', '-c', '/etc/rabbitmq/rabbitmqadmin.conf')
+      expect(provider).to receive(:rabbitmqadmin).with('declare', 'exchange', '--vhost=/', '--user=colin', '--password=secret', 'name=test.headers', 'type=headers', 'internal=false', 'durable=true', 'auto_delete=false', 'arguments={"hash-header":"message-distribution-hash"}', '-c', '/etc/rabbitmq/rabbitmqadmin.conf')
       provider.create
     end
   end

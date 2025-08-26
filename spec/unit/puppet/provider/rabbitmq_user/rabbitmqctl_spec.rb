@@ -16,7 +16,7 @@ describe provider_class do
   let(:instance) { provider.class.instances.first }
 
   before do
-    provider.class.stubs(:rabbitmqctl_list).with('users').returns(
+    allow(provider.class).to receive(:rabbitmqctl_list).with('users').and_return(
       "rmq_x [disk, storage]\nrmq_y [network, cpu, administrator]\nrmq_z []\n"
     )
   end
@@ -41,7 +41,7 @@ describe provider_class do
 
   describe '#create' do
     it 'adds a user' do
-      provider.expects(:rabbitmqctl).with('add_user', 'rmq_x', 'secret')
+      expect(provider).to receive(:rabbitmqctl).with('add_user', 'rmq_x', 'secret')
       provider.create
     end
 
@@ -63,7 +63,7 @@ describe provider_class do
 
   describe '#destroy' do
     it 'removes a user' do
-      provider.expects(:rabbitmqctl).with('delete_user', 'rmq_x')
+      expect(provider).to receive(:rabbitmqctl).with('delete_user', 'rmq_x')
       provider.destroy
     end
   end
@@ -71,10 +71,10 @@ describe provider_class do
   describe '#check_password' do
     context 'correct password' do
       before do
-        provider.class.stubs(:rabbitmqctl).with(
+        allow(provider.class).to receive(:rabbitmqctl).with(
           'eval',
           'rabbit_access_control:check_user_pass_login(list_to_binary("rmq_x"), list_to_binary("secret")).'
-        ).returns <<~EOT
+        ).and_return(<<~EOT)
           {ok,{user,<<"rmq_x">>,[],rabbit_auth_backend_internal,
                     {internal_user,<<"rmq_x">>,
                                    <<193,81,62,182,129,135,196,89,148,87,227,48,86,2,154,
@@ -90,10 +90,10 @@ describe provider_class do
 
     context 'incorrect password' do
       before do
-        provider.class.stubs(:rabbitmqctl).with(
+        allow(provider.class).to receive(:rabbitmqctl).with(
           'eval',
           'rabbit_access_control:check_user_pass_login(list_to_binary("rmq_x"), list_to_binary("nottherightone")).'
-        ).returns <<~EOT
+        ).and_return(<<~EOT)
           {refused,"user '~s' - invalid credentials",[<<"rmq_x">>]}
           ...done.
         EOT
@@ -108,14 +108,14 @@ describe provider_class do
   describe '#tags=' do
     it 'clears all tags on existing user' do
       provider.set(tags: %w[tag1 tag2 tag3])
-      provider.expects(:rabbitmqctl).with('set_user_tags', 'rmq_x', [])
+      expect(provider).to receive(:rabbitmqctl).with('set_user_tags', 'rmq_x', [])
       provider.tags = []
       provider.flush
     end
 
     it 'sets multiple tags' do
       provider.set(tags: [])
-      provider.expects(:rabbitmqctl).with('set_user_tags', 'rmq_x', %w[tag1 tag2])
+      expect(provider).to receive(:rabbitmqctl).with('set_user_tags', 'rmq_x', %w[tag1 tag2])
       provider.tags = %w[tag1 tag2]
       provider.flush
     end
@@ -123,7 +123,7 @@ describe provider_class do
     it 'clears tags while keeping admin tag' do
       provider.set(tags: %w[administrator tag1 tag2])
       resource[:admin] = true
-      provider.expects(:rabbitmqctl).with('set_user_tags', 'rmq_x', ['administrator'])
+      expect(provider).to receive(:rabbitmqctl).with('set_user_tags', 'rmq_x', ['administrator'])
       provider.tags = []
       provider.flush
     end
@@ -131,7 +131,7 @@ describe provider_class do
     it 'changes tags while keeping admin tag' do
       provider.set(tags: %w[administrator tag1 tag2])
       resource[:admin] = true
-      provider.expects(:rabbitmqctl).with('set_user_tags', 'rmq_x', %w[tag1 tag7 tag3 administrator])
+      expect(provider).to receive(:rabbitmqctl).with('set_user_tags', 'rmq_x', %w[tag1 tag7 tag3 administrator])
       provider.tags = %w[tag1 tag7 tag3]
       provider.flush
     end
@@ -149,7 +149,7 @@ describe provider_class do
     end
 
     it 'sets admin value' do
-      provider.expects(:rabbitmqctl).with('set_user_tags', 'rmq_x', ['administrator'])
+      expect(provider).to receive(:rabbitmqctl).with('set_user_tags', 'rmq_x', ['administrator'])
       resource[:admin] = true
       provider.admin = resource[:admin]
       provider.flush
@@ -157,7 +157,7 @@ describe provider_class do
 
     it 'adds admin value to existing tags of the user' do
       resource[:tags] = %w[tag1 tag2]
-      provider.expects(:rabbitmqctl).with('set_user_tags', 'rmq_x', %w[tag1 tag2 administrator])
+      expect(provider).to receive(:rabbitmqctl).with('set_user_tags', 'rmq_x', %w[tag1 tag2 administrator])
       resource[:admin] = true
       provider.admin = resource[:admin]
       provider.flush
@@ -165,7 +165,7 @@ describe provider_class do
 
     it 'unsets admin value' do
       provider.set(tags: ['administrator'])
-      provider.expects(:rabbitmqctl).with('set_user_tags', 'rmq_x', [])
+      expect(provider).to receive(:rabbitmqctl).with('set_user_tags', 'rmq_x', [])
       provider.admin = :false
       provider.flush
     end
@@ -173,7 +173,7 @@ describe provider_class do
     it 'does not interfere with existing tags on the user when unsetting admin value' do
       provider.set(tags: %w[administrator tag1 tag2])
       resource[:tags] = %w[tag1 tag2]
-      provider.expects(:rabbitmqctl).with('set_user_tags', 'rmq_x', %w[tag1 tag2])
+      expect(provider).to receive(:rabbitmqctl).with('set_user_tags', 'rmq_x', %w[tag1 tag2])
       provider.admin = :false
       provider.flush
     end

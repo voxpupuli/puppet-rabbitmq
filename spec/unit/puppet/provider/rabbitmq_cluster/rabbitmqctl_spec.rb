@@ -14,7 +14,7 @@ describe provider_class do
 
   describe '#exists?' do
     it {
-      provider.expects(:rabbitmqctl).with('-q', 'cluster_status').returns(
+      expect(provider).to receive(:rabbitmqctl).with('-q', 'cluster_status').and_return(
         'Cluster name: test_cluster'
       )
       expect(provider.exists?).to be true
@@ -23,18 +23,18 @@ describe provider_class do
 
   describe '#create on every other node' do
     it 'joins a cluster or changes the cluster name' do
-      provider.expects(:rabbitmqctl).with('stop_app')
-      provider.expects(:rabbitmqctl).with('join_cluster', 'rabbit@host1', '--disc')
-      provider.expects(:rabbitmqctl).with('start_app')
+      expect(provider).to receive(:rabbitmqctl).with('stop_app')
+      expect(provider).to receive(:rabbitmqctl).with('join_cluster', 'rabbit@host1', '--disc')
+      expect(provider).to receive(:rabbitmqctl).with('start_app')
       provider.create
     end
   end
 
   describe '#destroy' do
     it 'remove cluster setup' do
-      provider.expects(:rabbitmqctl).with('stop_app')
-      provider.expects(:rabbitmqctl).with('reset')
-      provider.expects(:rabbitmqctl).with('start_app')
+      expect(provider).to receive(:rabbitmqctl).with('stop_app')
+      expect(provider).to receive(:rabbitmqctl).with('reset')
+      expect(provider).to receive(:rabbitmqctl).with('start_app')
       provider.destroy
     end
   end

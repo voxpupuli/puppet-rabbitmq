@@ -12,8 +12,8 @@ describe provider_class do
   let(:provider) { provider_class.new(resource) }
 
   it 'calls rabbitmqplugins to enable when node not running' do
-    provider.class.expects(:rabbitmq_running).returns false
-    provider.expects(:rabbitmqplugins).with('enable', 'foo')
+    expect(provider.class).to receive(:rabbitmq_running).and_return(false)
+    expect(provider).to receive(:rabbitmqplugins).with('enable', 'foo')
     provider.create
   end
 
@@ -23,7 +23,7 @@ describe provider_class do
     end
 
     it 'retrieves instances' do
-      provider.class.expects(:plugin_list).returns(%w[foo bar])
+      expect(provider.class).to receive(:plugin_list).and_return(%w[foo bar])
       instances = provider_class.instances
       instances_cmp = instances.map { |prov| { name: prov.get(:name) } }
       expect(instances_cmp).to eq(
@@ -35,7 +35,7 @@ describe provider_class do
     end
 
     it 'raises error on invalid line' do
-      provider_class.expects(:plugin_list).returns(['  '])
+      expect(provider_class).to receive(:plugin_list).and_return(['  '])
       expect { provider_class.instances }.to raise_error Puppet::Error, %r{Cannot parse invalid plugins line}
     end
   end
@@ -46,101 +46,101 @@ describe provider_class do
     end
 
     it 'returns a list of plugins' do
-      provider.class.expects(:rabbitmqplugins).with('list', '-e', '-m').returns("foo\nbar\nbaz\n")
+      expect(provider.class).to receive(:rabbitmqplugins).with('list', '-e', '-m').and_return("foo\nbar\nbaz\n")
       expect(provider.class.plugin_list).to eq(%w[foo bar baz])
     end
 
     it 'handles no training newline properly' do
-      provider.class.expects(:rabbitmqplugins).with('list', '-e', '-m').returns("foo\nbar")
+      expect(provider.class).to receive(:rabbitmqplugins).with('list', '-e', '-m').and_return("foo\nbar")
       expect(provider.class.plugin_list).to eq(%w[foo bar])
     end
 
     it 'handles lines that are not plugins' do
-      provider.class.expects(:rabbitmqplugins).with('list', '-e', '-m').returns("Listing plugins with pattern \".*\" ...\nfoo\nbar")
+      expect(provider.class).to receive(:rabbitmqplugins).with('list', '-e', '-m').and_return("Listing plugins with pattern \".*\" ...\nfoo\nbar")
       expect(provider.class.plugin_list).to eq(%w[foo bar])
     end
   end
 
   describe '#exists?' do
     it 'matches existing plugins' do
-      provider_class.expects(:plugin_list).returns(%w[foo])
+      expect(provider_class).to receive(:plugin_list).and_return(%w[foo])
       expect(provider.exists?).to eq(true)
     end
 
     it 'returns false for missing plugins' do
-      provider_class.expects(:plugin_list).returns(%w[bar])
+      expect(provider_class).to receive(:plugin_list).and_return(%w[bar])
       expect(provider.exists?).to eq(false)
     end
   end
 
   context 'with RabbitMQ version >=3.4.0' do
     it 'calls rabbitmqplugins to enable' do
-      provider.class.expects(:rabbitmq_version).returns '3.4.0'
-      provider.class.expects(:rabbitmq_running).returns true
-      provider.expects(:rabbitmqplugins).with('enable', 'foo')
+      expect(provider.class).to receive(:rabbitmq_version).and_return('3.4.0')
+      expect(provider.class).to receive(:rabbitmq_running).and_return(true)
+      expect(provider).to receive(:rabbitmqplugins).with('enable', 'foo')
       provider.create
     end
 
     it 'calls rabbitmqplugins to enable with offline' do
       provider.resource[:mode] = :offline
-      provider.class.expects(:rabbitmq_version).returns '3.4.0'
-      provider.class.expects(:rabbitmq_running).returns true
-      provider.expects(:rabbitmqplugins).with('enable', 'foo', '--offline')
+      expect(provider.class).to receive(:rabbitmq_version).and_return('3.4.0')
+      expect(provider.class).to receive(:rabbitmq_running).and_return(true)
+      expect(provider).to receive(:rabbitmqplugins).with('enable', 'foo', '--offline')
       provider.create
     end
 
     it 'calls rabbitmqplugins to enable with online' do
       provider.resource[:mode] = :online
-      provider.class.expects(:rabbitmq_version).returns '3.4.0'
-      provider.class.expects(:rabbitmq_running).returns true
-      provider.expects(:rabbitmqplugins).with('enable', 'foo', '--online')
+      expect(provider.class).to receive(:rabbitmq_version).and_return('3.4.0')
+      expect(provider.class).to receive(:rabbitmq_running).and_return(true)
+      expect(provider).to receive(:rabbitmqplugins).with('enable', 'foo', '--online')
       provider.create
     end
 
     it 'calls rabbitmqplugins to enable with best' do
       provider.resource[:mode] = :best
-      provider.class.expects(:rabbitmq_version).returns '3.4.0'
-      provider.class.expects(:rabbitmq_running).returns true
-      provider.expects(:rabbitmqplugins).with('enable', 'foo')
+      expect(provider.class).to receive(:rabbitmq_version).and_return('3.4.0')
+      expect(provider.class).to receive(:rabbitmq_running).and_return(true)
+      expect(provider).to receive(:rabbitmqplugins).with('enable', 'foo')
       provider.create
     end
   end
 
   context 'with RabbitMQ version < 3.4.0' do
     it 'calls rabbitmqplugins to enable' do
-      provider.class.expects(:rabbitmq_version).returns '3.3.9'
-      provider.class.expects(:rabbitmq_running).returns true
-      provider.expects(:rabbitmqplugins).with('enable', 'foo')
+      expect(provider.class).to receive(:rabbitmq_version).and_return('3.3.9')
+      expect(provider.class).to receive(:rabbitmq_running).and_return(true)
+      expect(provider).to receive(:rabbitmqplugins).with('enable', 'foo')
       provider.create
     end
 
     it 'calls rabbitmqplugins to enable with offline' do
       provider.resource[:mode] = :offline
-      provider.class.expects(:rabbitmq_version).returns '3.3.9'
-      provider.class.expects(:rabbitmq_running).returns true
-      provider.expects(:rabbitmqplugins).with('enable', 'foo')
+      expect(provider.class).to receive(:rabbitmq_version).and_return('3.3.9')
+      expect(provider.class).to receive(:rabbitmq_running).and_return(true)
+      expect(provider).to receive(:rabbitmqplugins).with('enable', 'foo')
       provider.create
     end
 
     it 'calls rabbitmqplugins to enable with online' do
       provider.resource[:mode] = :online
-      provider.class.expects(:rabbitmq_version).returns '3.3.9'
-      provider.class.expects(:rabbitmq_running).returns true
-      provider.expects(:rabbitmqplugins).with('enable', 'foo')
+      expect(provider.class).to receive(:rabbitmq_version).and_return('3.3.9')
+      expect(provider.class).to receive(:rabbitmq_running).and_return(true)
+      expect(provider).to receive(:rabbitmqplugins).with('enable', 'foo')
       provider.create
     end
 
     it 'calls rabbitmqplugins to enable with best' do
       provider.resource[:mode] = :best
-      provider.class.expects(:rabbitmq_version).returns '3.3.9'
-      provider.class.expects(:rabbitmq_running).returns true
-      provider.expects(:rabbitmqplugins).with('enable', 'foo')
+      expect(provider.class).to receive(:rabbitmq_version).and_return('3.3.9')
+      expect(provider.class).to receive(:rabbitmq_running).and_return(true)
+      expect(provider).to receive(:rabbitmqplugins).with('enable', 'foo')
       provider.create
     end
   end
 
   it 'calls rabbitmqplugins to disable' do
-    provider.expects(:rabbitmqplugins).with('disable', 'foo')
+    expect(provider).to receive(:rabbitmqplugins).with('disable', 'foo')
     provider.destroy
   end
 end
