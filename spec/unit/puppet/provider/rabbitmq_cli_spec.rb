@@ -13,12 +13,12 @@ describe provider_class do
   end
 
   it 'gets the RabbitMQ version' do
-    provider_class.expects(:rabbitmqctl).with('-q', 'status').returns '     [{rabbit,"RabbitMQ","3.7.28"},'
+    expect(provider_class).to receive(:rabbitmqctl).with('-q', 'status').and_return('     [{rabbit,"RabbitMQ","3.7.28"},')
     expect(provider_class.rabbitmq_version).to eq('3.7.28')
   end
 
   it 'caches the RabbitMQ version' do
-    provider_class.expects(:rabbitmqctl).with('-q', 'status').returns '     [{rabbit,"RabbitMQ","3.7.28"},'
+    expect(provider_class).to receive(:rabbitmqctl).with('-q', 'status').and_return('     [{rabbit,"RabbitMQ","3.7.28"},')
     v1 = provider_class.rabbitmq_version
 
     # No second expects for rabbitmqctl as it shouldn't be called again
@@ -26,19 +26,19 @@ describe provider_class do
   end
 
   it 'gets the RabbitMQ version with version >= 3.8' do
-    provider_class.expects(:rabbitmqctl).with('-q', 'status').returns 'RabbitMQ version: 3.10.6'
+    expect(provider_class).to receive(:rabbitmqctl).with('-q', 'status').and_return('RabbitMQ version: 3.10.6')
     expect(provider_class.rabbitmq_version).to eq('3.10.6')
   end
 
   it 'uses correct list options with RabbitMQ < 3.7.9' do
-    provider_class.expects(:rabbitmq_version).returns '3.7.8'
-    provider_class.expects(:rabbitmqctl).with('list_vhost', '-q').returns ''
+    expect(provider_class).to receive(:rabbitmq_version).and_return('3.7.8')
+    expect(provider_class).to receive(:rabbitmqctl).with('list_vhost', '-q').and_return('')
     expect(provider_class.rabbitmqctl_list('vhost')).to eq('')
   end
 
   it 'uses correct list options with RabbitMQ >= 3.7.9' do
-    provider_class.expects(:rabbitmq_version).returns '3.7.10'
-    provider_class.expects(:rabbitmqctl).with('list_vhost', '-q', '--no-table-headers').returns ''
+    expect(provider_class).to receive(:rabbitmq_version).and_return('3.7.10')
+    expect(provider_class).to receive(:rabbitmqctl).with('list_vhost', '-q', '--no-table-headers').and_return('')
     expect(provider_class.rabbitmqctl_list('vhost')).to eq('')
   end
 end

@@ -41,15 +41,15 @@ describe Puppet::Type.type(:rabbitmq_policy).provider(:rabbitmqctl) do
   end
 
   it 'fails with invalid output from list' do
-    provider.class.expects(:rabbitmqctl_list).with('policies', '-p', '/').returns 'foobar'
-    provider.class.expects(:rabbitmq_version).returns '3.1.5'
+    expect(provider.class).to receive(:rabbitmqctl_list).with('policies', '-p', '/').and_return('foobar')
+    expect(provider.class).to receive(:rabbitmq_version).and_return('3.1.5')
     expect { provider.exists? }.to raise_error(Puppet::Error, %r{cannot parse line from list_policies})
   end
 
   context 'with RabbitMQ version >=3.7.0' do
     it 'matches policies from list' do
-      provider.class.expects(:rabbitmq_version).returns '3.7.0'
-      provider.class.expects(:rabbitmqctl_list).with('policies', '-p', '/').returns <<~EOT
+      expect(provider.class).to receive(:rabbitmq_version).and_return('3.7.0')
+      expect(provider.class).to receive(:rabbitmqctl_list).with('policies', '-p', '/').and_return(<<~EOT)
         / ha-all .* all {"ha-mode":"all","ha-sync-mode":"automatic"} 0
         / test .* exchanges {"ha-mode":"all"} 0
       EOT
@@ -63,8 +63,8 @@ describe Puppet::Type.type(:rabbitmq_policy).provider(:rabbitmqctl) do
     end
 
     it 'matches policies from list targeting quorum queues' do
-      provider.class.expects(:rabbitmq_version).returns '3.7.0'
-      provider.class.expects(:rabbitmqctl_list).with('policies', '-p', '/').returns <<~EOT
+      expect(provider.class).to receive(:rabbitmq_version).and_return('3.7.0')
+      expect(provider.class).to receive(:rabbitmqctl_list).with('policies', '-p', '/').and_return(<<~EOT)
         / ha-all ^.*$ quorum_queues {"delivery-limit":10,"initial-cluster-size":3,"max-length":100000000,"overflow":"reject-publish-dlx"} 0
         / test .* exchanges {"ha-mode":"all"} 0
       EOT
@@ -82,8 +82,8 @@ describe Puppet::Type.type(:rabbitmq_policy).provider(:rabbitmqctl) do
 
   context 'with RabbitMQ version >=3.2.0 and < 3.7.0' do
     it 'matches policies from list' do
-      provider.class.expects(:rabbitmq_version).returns '3.6.9'
-      provider.class.expects(:rabbitmqctl_list).with('policies', '-p', '/').returns <<~EOT
+      expect(provider.class).to receive(:rabbitmq_version).and_return('3.6.9')
+      expect(provider.class).to receive(:rabbitmqctl_list).with('policies', '-p', '/').and_return(<<~EOT)
         / ha-all all .* {"ha-mode":"all","ha-sync-mode":"automatic"} 0
         / test exchanges .* {"ha-mode":"all"} 0
       EOT
@@ -99,8 +99,8 @@ describe Puppet::Type.type(:rabbitmq_policy).provider(:rabbitmqctl) do
 
   context 'with RabbitMQ version <3.2.0' do
     it 'matches policies from list (<3.2.0)' do
-      provider.class.expects(:rabbitmq_version).returns '3.1.5'
-      provider.class.expects(:rabbitmqctl_list).with('policies', '-p', '/').returns <<~EOT
+      expect(provider.class).to receive(:rabbitmq_version).and_return('3.1.5')
+      expect(provider.class).to receive(:rabbitmqctl_list).with('policies', '-p', '/').and_return(<<~EOT)
         / ha-all .* {"ha-mode":"all","ha-sync-mode":"automatic"} 0
         / test .* {"ha-mode":"all"} 0
       EOT
@@ -115,41 +115,41 @@ describe Puppet::Type.type(:rabbitmq_policy).provider(:rabbitmqctl) do
   end
 
   it 'does not match an empty list' do
-    provider.class.expects(:rabbitmqctl_list).with('policies', '-p', '/').returns ''
-    provider.class.expects(:rabbitmq_version).returns '3.1.5'
+    expect(provider.class).to receive(:rabbitmqctl_list).with('policies', '-p', '/').and_return('')
+    expect(provider.class).to receive(:rabbitmq_version).and_return('3.1.5')
     expect(provider.exists?).to eq(nil)
   end
 
   it 'destroys policy' do
-    provider.expects(:rabbitmqctl).with('clear_policy', '-p', '/', 'ha-all')
+    expect(provider).to receive(:rabbitmqctl).with('clear_policy', '-p', '/', 'ha-all')
     provider.destroy
   end
 
   it 'onlies call set_policy once (<3.2.0)' do
-    provider.class.expects(:rabbitmq_version).returns '3.1.0'
+    expect(provider.class).to receive(:rabbitmq_version).and_return('3.1.0')
     provider.resource[:priority] = '10'
     provider.resource[:applyto] = 'exchanges'
-    provider.expects(:rabbitmqctl).with('set_policy',
-                                        '-p', '/',
-                                        'ha-all',
-                                        '.*',
-                                        '{"ha-mode":"all"}',
-                                        '10').once
+    expect(provider).to receive(:rabbitmqctl).with('set_policy',
+                                                   '-p', '/',
+                                                   'ha-all',
+                                                   '.*',
+                                                   '{"ha-mode":"all"}',
+                                                   '10').once
     provider.priority = '10'
     provider.applyto = 'exchanges'
   end
 
   it 'onlies call set_policy once (>=3.2.0)' do
-    provider.class.expects(:rabbitmq_version).returns '3.2.0'
+    expect(provider.class).to receive(:rabbitmq_version).and_return('3.2.0')
     provider.resource[:priority] = '10'
     provider.resource[:applyto] = 'exchanges'
-    provider.expects(:rabbitmqctl).with('set_policy',
-                                        '-p', '/',
-                                        '--priority', '10',
-                                        '--apply-to', 'exchanges',
-                                        'ha-all',
-                                        '.*',
-                                        '{"ha-mode":"all"}').once
+    expect(provider).to receive(:rabbitmqctl).with('set_policy',
+                                                   '-p', '/',
+                                                   '--priority', '10',
+                                                   '--apply-to', 'exchanges',
+                                                   'ha-all',
+                                                   '.*',
+                                                   '{"ha-mode":"all"}').once
     provider.priority = '10'
     provider.applyto = 'exchanges'
   end

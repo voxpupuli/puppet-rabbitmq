@@ -16,12 +16,12 @@ describe provider_class do
 
   describe '#instances' do
     it 'returns instances' do
-      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<~EOT
+      expect(provider_class).to receive(:rabbitmqctl_list).with('vhosts').and_return(<<~EOT)
         /
       EOT
-      provider_class.expects(:rabbitmqctl_list).with(
+      expect(provider_class).to receive(:rabbitmqctl_list).with(
         'bindings', '-p', '/', 'source_name', 'destination_name', 'destination_kind', 'routing_key', 'arguments'
-      ).returns <<~EOT
+      ).and_return(<<~EOT)
         exchange\tdst_queue\tqueue\t*\t[]
       EOT
       instances = provider_class.instances
@@ -44,12 +44,12 @@ describe provider_class do
     end
 
     it 'returns multiple instances' do
-      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<~EOT
+      expect(provider_class).to receive(:rabbitmqctl_list).with('vhosts').and_return(<<~EOT)
         /
       EOT
-      provider_class.expects(:rabbitmqctl_list).with(
+      expect(provider_class).to receive(:rabbitmqctl_list).with(
         'bindings', '-p', '/', 'source_name', 'destination_name', 'destination_kind', 'routing_key', 'arguments'
-      ).returns <<~EOT
+      ).and_return(<<~EOT)
         exchange\tdst_queue\tqueue\trouting_one\t[]
         exchange\tdst_queue\tqueue\trouting_two\t[]
       EOT
@@ -79,12 +79,12 @@ describe provider_class do
     end
 
     it 'returns multiple instances (with or without arguments)' do
-      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<~EOT
+      expect(provider_class).to receive(:rabbitmqctl_list).with('vhosts').and_return(<<~EOT)
         /
       EOT
-      provider_class.expects(:rabbitmqctl_list).with(
+      expect(provider_class).to receive(:rabbitmqctl_list).with(
         'bindings', '-p', '/', 'source_name', 'destination_name', 'destination_kind', 'routing_key', 'arguments'
-      ).returns <<~EOT
+      ).and_return(<<~EOT)
         exchange\tdst_queue\tqueue\trouting_one\t[]
         exchange\tdst_queue\tqueue\trouting_two\t[{"header","value"},{"x-match","all"}]
       EOT
@@ -130,12 +130,12 @@ describe provider_class do
     end
 
     it 'exists' do
-      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<~EOT
+      expect(provider_class).to receive(:rabbitmqctl_list).with('vhosts').and_return(<<~EOT)
         /
       EOT
-      provider_class.expects(:rabbitmqctl_list).with(
+      expect(provider_class).to receive(:rabbitmqctl_list).with(
         'bindings', '-p', '/', 'source_name', 'destination_name', 'destination_kind', 'routing_key', 'arguments'
-      ).returns <<~EOT
+      ).and_return(<<~EOT)
         exchange\tdst_queue\tqueue\t*\t[]
       EOT
 
@@ -144,12 +144,12 @@ describe provider_class do
 
     it 'matches' do
       # Test resource to match against
-      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<~EOT
+      expect(provider_class).to receive(:rabbitmqctl_list).with('vhosts').and_return(<<~EOT)
         /
       EOT
-      provider_class.expects(:rabbitmqctl_list).with(
+      expect(provider_class).to receive(:rabbitmqctl_list).with(
         'bindings', '-p', '/', 'source_name', 'destination_name', 'destination_kind', 'routing_key', 'arguments'
-      ).returns <<~EOT
+      ).and_return(<<~EOT)
         exchange\tdst_queue\tqueue\t*\t[]
       EOT
 
@@ -159,7 +159,7 @@ describe provider_class do
 
   describe '#create' do
     it 'calls rabbitmqadmin to create' do
-      provider.expects(:rabbitmqadmin).with(
+      expect(provider).to receive(:rabbitmqadmin).with(
         'declare', 'binding', '--vhost=/', '--user=guest', '--password=guest', '-c', '/etc/rabbitmq/rabbitmqadmin.conf',
         'source=source', 'destination=target', 'arguments={}', 'routing_key=blablub', 'destination_type=queue'
       )
@@ -180,7 +180,7 @@ describe provider_class do
       let(:provider) { provider_class.new(resource) }
 
       it 'calls rabbitmqadmin to create' do
-        provider.expects(:rabbitmqadmin).with(
+        expect(provider).to receive(:rabbitmqadmin).with(
           'declare', 'binding', '--vhost=/', '--user=colin', '--password=secret', '-c', '/etc/rabbitmq/rabbitmqadmin.conf',
           'source=source', 'destination=test2', 'arguments={}', 'routing_key=blablubd', 'destination_type=queue'
         )
@@ -202,7 +202,7 @@ describe provider_class do
       let(:provider) { provider_class.new(resource) }
 
       it 'calls rabbitmqadmin to create' do
-        provider.expects(:rabbitmqadmin).with(
+        expect(provider).to receive(:rabbitmqadmin).with(
           'declare', 'binding', '--vhost=/', '--user=guest', '--password=guest', '-c', '/etc/rabbitmq/rabbitmqadmin.conf',
           'source=exchange1', 'destination=destqueue', 'arguments={}', 'routing_key=blablubd', 'destination_type=queue'
         )
@@ -213,7 +213,7 @@ describe provider_class do
 
   describe '#destroy' do
     it 'calls rabbitmqadmin to destroy' do
-      provider.expects(:rabbitmqadmin).with(
+      expect(provider).to receive(:rabbitmqadmin).with(
         'delete', 'binding', '--vhost=/', '--user=guest', '--password=guest', '-c', '/etc/rabbitmq/rabbitmqadmin.conf',
         'source=source', 'destination_type=queue', 'destination=target', 'properties_key=blablub'
       )

@@ -26,10 +26,10 @@ describe provider_class do
     end
 
     it 'matches' do
-      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<~EOT
+      expect(provider_class).to receive(:rabbitmqctl_list).with('vhosts').and_return(<<~EOT)
         /
       EOT
-      provider_class.expects(:rabbitmqctl_list).with('parameters', '-p', '/').returns <<~EOT
+      expect(provider_class).to receive(:rabbitmqctl_list).with('parameters', '-p', '/').and_return(<<~EOT)
         federation  documentumFederation  {"uri":"amqp://","expires":360000}
       EOT
       provider_class.prefetch('documentumFederation@/' => resource)
@@ -42,18 +42,18 @@ describe provider_class do
     end
 
     it 'fail with invalid output from list' do
-      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<~EOT
+      expect(provider_class).to receive(:rabbitmqctl_list).with('vhosts').and_return(<<~EOT)
         /
       EOT
-      provider.class.expects(:rabbitmqctl_list).with('parameters', '-p', '/').returns 'foobar'
+      expect(provider.class).to receive(:rabbitmqctl_list).with('parameters', '-p', '/').and_return('foobar')
       expect { provider_class.instances }.to raise_error Puppet::Error, %r{cannot parse line from list_parameter}
     end
 
     it 'return no instance' do
-      provider_class.expects(:rabbitmqctl_list).with('vhosts').returns <<~EOT
+      expect(provider_class).to receive(:rabbitmqctl_list).with('vhosts').and_return(<<~EOT)
         /
       EOT
-      provider_class.expects(:rabbitmqctl_list).with('parameters', '-p', '/').returns ''
+      expect(provider_class).to receive(:rabbitmqctl_list).with('parameters', '-p', '/').and_return('')
       instances = provider_class.instances
       expect(instances.size).to eq(0)
     end
@@ -61,15 +61,15 @@ describe provider_class do
 
   describe '#create' do
     it 'create parameter' do
-      provider.expects(:rabbitmqctl).with('set_parameter', '-p', '/', 'federation', 'documentumFederation',
-                                          '{"uri":"amqp://","expires":360000}')
+      expect(provider).to receive(:rabbitmqctl).with('set_parameter', '-p', '/', 'federation', 'documentumFederation',
+                                                     '{"uri":"amqp://","expires":360000}')
       provider.create
     end
   end
 
   describe '#destroy' do
     it 'destroy parameter' do
-      provider.expects(:rabbitmqctl).with('clear_parameter', '-p', '/', 'federation', 'documentumFederation')
+      expect(provider).to receive(:rabbitmqctl).with('clear_parameter', '-p', '/', 'federation', 'documentumFederation')
       provider.destroy
     end
   end
