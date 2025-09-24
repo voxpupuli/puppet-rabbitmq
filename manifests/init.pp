@@ -640,11 +640,11 @@ class rabbitmq (
 
   if $config_cluster and $cluster['name'] and $cluster['init_node'] {
     create_resources('rabbitmq_cluster', {
-        $cluster['name'] => {
-          'init_node'      => $cluster['init_node'],
-          'node_disc_type' => $cluster_node_type,
-          'local_node'     => $cluster['local_node'],
-        }
+      $cluster['name'] => {
+        'init_node'      => $cluster['init_node'],
+        'node_disc_type' => $cluster_node_type,
+        'local_node'     => $cluster['local_node'],
+      }
     })
   }
 
