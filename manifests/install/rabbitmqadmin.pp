@@ -49,7 +49,7 @@ class rabbitmq::install::rabbitmqadmin {
       $rabbitmqadmin_archive_require = [
         Class['rabbitmq::service'],
         Rabbitmq_plugin['rabbitmq_management'],
-        Exec['remove_old_rabbitmqadmin_on_upgrade']
+        Exec['remove_old_rabbitmqadmin_on_upgrade'],
       ]
     } else {
       $rabbitmqadmin_archive_require = [

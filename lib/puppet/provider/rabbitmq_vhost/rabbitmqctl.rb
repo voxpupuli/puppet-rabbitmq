@@ -8,6 +8,11 @@ Puppet::Type.type(:rabbitmq_vhost).provide(
   desc 'Rabbitmqctl provider for rabbitmq vhost'
   confine feature: :posix
 
+  def initialize(value = {})
+    super(value)
+    @property_flush = {}
+  end
+
   def self.prefetch(resources)
     instances.each do |prov|
       if (resource = resources[prov.name])
@@ -61,6 +66,7 @@ Puppet::Type.type(:rabbitmq_vhost).provide(
 
   def create
     rabbitmqctl('add_vhost', *params)
+    @property_hash[:ensure] = :present
   end
 
   def params
@@ -86,32 +92,34 @@ Puppet::Type.type(:rabbitmq_vhost).provide(
   end
 
   def tags=(tags)
-    @property_hash[:tags] = tags
+    @property_flush[:tags] = tags
   end
 
   def description=(value)
-    @property_hash[:description] = value
+    @property_flush[:description] = value
   end
 
   def default_queue_type=(value)
-    @property_hash[:default_queue_type] = value
+    @property_flush[:default_queue_type] = value
   end
 
   def flush
-    return if @property_hash.empty? || !supports_metadata? || !exists?
+    return if @property_flush.empty? || !supports_metadata?
 
     params = [resource[:name]]
-    params << ['--description', @property_hash[:description]] if @property_hash[:description]
-    params << ['--default-queue-type', @property_hash[:default_queue_type]] if @property_hash[:default_queue_type]
-    params << ['--tags', @property_hash[:tags].join(',')] if @property_hash[:tags]
+    params << ['--description', @property_flush[:description]] if @property_flush[:description]
+    params << ['--default-queue-type', @property_flush[:default_queue_type]] if @property_flush[:default_queue_type]
+    params << ['--tags', @property_flush[:tags].join(',')] if @property_flush[:tags]
     rabbitmqctl('update_vhost_metadata', *params)
+    @property_flush.clear
   end
 
   def destroy
     rabbitmqctl('delete_vhost', resource[:name])
+    @property_hash[:ensure] = :absent
   end
 
   def exists?
-    run_with_retries { rabbitmqctl_list('vhosts') }.split(%r{\n}).include? resource[:name]
+    @property_hash[:ensure] == :present
   end
 end
