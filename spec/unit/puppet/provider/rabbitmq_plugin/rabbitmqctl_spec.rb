@@ -62,14 +62,24 @@ describe provider_class do
   end
 
   describe '#exists?' do
-    it 'matches existing plugins' do
-      expect(provider_class).to receive(:plugin_list).and_return(%w[foo])
-      expect(provider.exists?).to eq(true)
+    context 'when plugin exists' do
+      it 'returns true' do
+        allow(provider_class).to receive(:plugin_list).and_return(['foo'])
+
+        provider_class.prefetch('foo' => resource)
+
+        expect(resource.provider.exists?).to eq(true)
+      end
     end
 
-    it 'returns false for missing plugins' do
-      expect(provider_class).to receive(:plugin_list).and_return(%w[bar])
-      expect(provider.exists?).to eq(false)
+    context 'when plugin does not exist' do
+      it 'returns false' do
+        allow(provider_class).to receive(:plugin_list).and_return([])
+
+        provider_class.prefetch('foo' => resource)
+
+        expect(resource.provider.exists?).to eq(false)
+      end
     end
   end
 
