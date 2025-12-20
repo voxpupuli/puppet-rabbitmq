@@ -34,11 +34,19 @@ Puppet::Type.type(:rabbitmq_plugin).provide(:rabbitmqplugins, parent: Puppet::Pr
     lines.grep(%r{^(\S+)$})
   end
 
+  def self.prefetch(resources)
+    instances.each do |prov|
+      if (resource = resources[prov.name])
+        resource.provider = prov
+      end
+    end
+  end
+
   def self.instances
     plugin_list.map do |line|
       raise Puppet::Error, "Cannot parse invalid plugins line: #{line}" unless line =~ %r{^(\S+)$}
 
-      new(name: Regexp.last_match(1))
+      new(name: Regexp.last_match(1), ensure: :present)
     end
   end
 
@@ -52,13 +60,15 @@ Puppet::Type.type(:rabbitmq_plugin).provide(:rabbitmqplugins, parent: Puppet::Pr
     else
       Puppet::Util.withumask(resource[:umask]) { rabbitmqplugins(*cmd) }
     end
+    @property_hash[:ensure] = :present
   end
 
   def destroy
     rabbitmqplugins('disable', resource[:name])
+    @property_hash[:ensure] = :absent
   end
 
   def exists?
-    self.class.plugin_list.include? resource[:name]
+    @property_hash[:ensure] == :present
   end
 end
