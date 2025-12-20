@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v15.0.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v15.0.0) (2025-12-20)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v14.4.1...v15.0.0)
+
+**Breaking changes:**
+
+- Use namespace function from stdlib [\#1063](https://github.com/voxpupuli/puppet-rabbitmq/pull/1063) ([kajinamit](https://github.com/kajinamit))
+- Drop puppet, update openvox minimum version to 8.19 [\#1059](https://github.com/voxpupuli/puppet-rabbitmq/pull/1059) ([TheMeier](https://github.com/TheMeier))
+
+**Implemented enhancements:**
+
+- Use prefetch for plugins provider [\#1072](https://github.com/voxpupuli/puppet-rabbitmq/pull/1072) ([marek130](https://github.com/marek130))
+- Optimize vhost provider by prefetch [\#1070](https://github.com/voxpupuli/puppet-rabbitmq/pull/1070) ([marek130](https://github.com/marek130))
+- puppet/systemd: allow 9.x [\#1065](https://github.com/voxpupuli/puppet-rabbitmq/pull/1065) ([kajinamit](https://github.com/kajinamit))
+- Add support for Debian 12 [\#1062](https://github.com/voxpupuli/puppet-rabbitmq/pull/1062) ([smortex](https://github.com/smortex))
+- puppet/archive Allow 8.x [\#1058](https://github.com/voxpupuli/puppet-rabbitmq/pull/1058) ([TheMeier](https://github.com/TheMeier))
+
+**Merged pull requests:**
+
+- refactor: change from mocha to rspec-mocks \#514 [\#1064](https://github.com/voxpupuli/puppet-rabbitmq/pull/1064) ([TheMeier](https://github.com/TheMeier))
+
 ## [v14.4.1](https://github.com/voxpupuli/puppet-rabbitmq/tree/v14.4.1) (2025-06-20)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v14.4.0...v14.4.1)
