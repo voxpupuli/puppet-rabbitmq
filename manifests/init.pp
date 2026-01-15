@@ -121,6 +121,70 @@
 #     wipe_db_on_cookie_change => true,
 #   }
 #
+# @param enable_centos_release
+#   Enable CentOS Messaging SIG repository on compatible systems. Defaults to true on CentOS Stream.
+#
+# @param enable_rabbitmq_repository
+#   Enable official RabbitMQ repositories.
+#
+# @param rpm_repo_primary_gpg_key
+#   Primary GPG key for the RPM repository.
+#
+# @param rpm_repo_erlang_gpg_key
+#   GPG key for the RPM Erlang repository.
+#
+# @param rpm_repo_server_gpg_key
+#   GPG key for RPM RabbitMQ repository.
+#
+# @param deb_repo_gpg_key
+#   GPG key for the DEB RabbitMQ repository.
+#
+# @param deb_repo_gpg_key_source
+#   GPG key source for the DEB RabbitMQ repository.
+#
+# @param package_apt_pin
+#   Pin package version in APT.
+#
+# @param package_ensure
+#   Determines the ensure state of the package.  Set to installed by default, but could be changed to latest.
+#
+# @param package_name
+#   Name(s) of the package(s) to install
+#
+# @param package_source
+#
+#
+# @param package_provider
+#
+#
+# @param manage_python
+#   If enabled, on platforms that don't provide a Python 2 package by default, ensure that the python package is
+#   installed (for rabbitmqadmin). This will only apply if `admin_enable` and `service_manage` are set.
+#
+# @param python_package
+#   Name of the package required by rabbitmqadmin.
+#
+# @param service_ensure
+#   The state of the service.
+#
+# @param service_manage
+#   Determines if the service is managed.
+#
+# @param service_name
+#   The name of the service to manage.
+#
+# @param service_restart
+#   Default defined in param.pp. Whether to restart the service on config change.
+#
+# @param rabbitmq_user
+#   OS dependent The system user the rabbitmq daemon runs as.
+#
+# @param rabbitmq_group
+#   OS dependent The system group the rabbitmq daemon runs as.
+#
+# @param rabbitmq_home
+#   OS dependent The home directory of the rabbitmq deamon.
+#
 # @param admin_enable
 #   If enabled sets up the management interface/plugin for RabbitMQ.
 #   This will also install the rabbitmqadmin command line tool.
@@ -175,9 +239,7 @@
 #   Password to set for the `default_user` in rabbitmq.config.
 # @param delete_guest_user
 #   Controls whether default guest user is deleted.
-# @param enable_centos_release
-#   Enable the `centos-release-rabbitmq-38` if set to `true` and if the OS is in the
-#   RedHat family and `repos_ensure` is `false`. Defaults to true on CentOS.
+#
 # @param env_config
 #   The template file to use for rabbitmq_env.config.
 # @param env_config_path
@@ -206,9 +268,6 @@
 # @param interface
 #   Interface to bind to (sets tcp_listeners parameter). By default, bind to all interfaces
 #   to `0` will disable heartbeats.
-# @param key_content
-#   Uses content method for Debian OS family. Should be a template for apt::source class. Overrides `package_gpg_key`
-#   behavior, if enabled. Undefined by default.
 # @param ldap_auth
 #   Set to true to enable LDAP auth.
 # @param ldap_server
@@ -225,9 +284,6 @@
 #   Numeric port for LDAP server.
 # @param ldap_log
 #   Set to true to log LDAP auth.
-# @param manage_python
-#   If enabled, on platforms that don't provide a Python 2 package by default, ensure that the python package is
-#   installed (for rabbitmqadmin). This will only apply if `admin_enable` and `service_manage` are set.
 # @param management_hostname
 #   The hostname for the RabbitMQ management interface.
 # @param management_port
@@ -240,26 +296,8 @@
 # @param node_ip_address
 #   Allows you to set the IP for RabbitMQ service to bind to. Set to 127.0.0.1 to bind to localhost only, or 0.0.0.0
 #   to bind to all interfaces.
-# @param package_apt_pin
-#   Whether to pin the package to a particular source
-# @param package_ensure
-#   Determines the ensure state of the package.  Set to installed by default, but could be changed to latest.
-# @param package_gpg_key
-#   RPM package GPG key to import. Uses source method. Should be a URL for Debian/RedHat OS family, or a file name for
-#   RedHat OS family. Set to https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc
-#   for Debian/RedHat OS Family by default.
-# @param package_source
-# @param package_provider
-# @param repo_gpg_key
-#   RPM package GPG key to import. Uses source method. Should be a URL for Debian/RedHat OS family, or a file name for
-#   RedHat OS family. Set to https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey for Debian/RedHat OS Family by
-#   default. Note, that `key_content`, if specified, would override this parameter for Debian OS family.
-# @param package_name
-#   Name(s) of the package(s) to install
 # @param port
 #   The RabbitMQ port.
-# @param python_package
-#   Name of the package required by rabbitmqadmin.
 # @param quorum_cluster_size
 #   Sets the default quorum queue cluster size.
 #   More info can be found here: https://www.rabbitmq.com/docs/quorum-queues
@@ -282,19 +320,7 @@
 # @param quorum_membership_reconciliation_target_group_size
 #   Controls the target group size for a quorum queue
 #   Important Note: This only takes affect if quorum_membership_reconciliation_enabled is set to true.
-# @param repos_ensure
-#   Ensure that a repo with the official (and newer) RabbitMQ package is configured, along with its signing key.
-#   Defaults to false (use system packages). This does not ensure that soft dependencies are present.
-#   It also does not solve the erlang dependency. See https://www.rabbitmq.com/which-erlang.html for a good breakdown of the
-#   different ways of handling the erlang deps. See also https://github.com/voxpupuli/puppet-rabbitmq/issues/788
-# @param service_ensure
-#   The state of the service.
-# @param service_manage
-#   Determines if the service is managed.
-# @param service_name
-#   The name of the service to manage.
-# @param service_restart
-#   Default defined in param.pp. Whether to restart the service on config change.
+#
 # @param ssl
 #   Configures the service for using SSL.
 # @param ssl_cacert
@@ -379,12 +405,6 @@
 #   Integer, corresponds to sndbuf in RabbitMQ `tcp_listen_options`
 # @param wipe_db_on_cookie_change
 #   Boolean to determine if we should DESTROY AND DELETE the RabbitMQ database.
-# @param rabbitmq_user
-#   OS dependent The system user the rabbitmq daemon runs as.
-# @param rabbitmq_group
-#   OS dependent The system group the rabbitmq daemon runs as.
-# @param rabbitmq_home
-#   OS dependent The home directory of the rabbitmq deamon.
 # @param rabbitmqadmin_package
 #   OS dependent If undef: install rabbitmqadmin via archive, otherwise via package
 # @param archive_options
@@ -393,6 +413,29 @@
 #   This option configures a list of users to allow access via the loopback interfaces
 #
 class rabbitmq (
+  # ---------------------------------- INSTALL --------------------------------- #
+  Boolean $enable_centos_release                                                                   = false,
+  Boolean $enable_rabbitmq_repository                                                              = true,
+  Optional[String[1]] $rpm_repo_primary_gpg_key                                                    = undef,
+  Optional[String[1]] $rpm_repo_erlang_gpg_key                                                     = undef,
+  Optional[String[1]] $rpm_repo_server_gpg_key                                                     = undef,
+  Optional[String[1]] $deb_repo_gpg_key                                                            = undef,
+  Optional[String[1]] $deb_repo_gpg_key_source                                                     = undef,
+  Optional[Variant[Numeric, String[1]]] $package_apt_pin                                           = undef,
+  String[1] $package_ensure                                                                        = 'installed',
+  Variant[String[1], Array[String[1]]] $package_name                                               = 'rabbitmq',
+  Optional[String[1]] $package_source                                                              = undef,
+  Optional[String[1]] $package_provider                                                            = undef,
+  Boolean $manage_python                                                                           = true,
+  String[1] $python_package                                                                        = 'python',
+  Enum['running', 'stopped'] $service_ensure                                                       = 'running',
+  Boolean $service_manage                                                                          = true,
+  String[1] $service_name                                                                          = 'rabbitmq',
+  Boolean $service_restart                                                                         = true,
+  String[1] $rabbitmq_user                                                                         = 'rabbitmq',
+  String[1] $rabbitmq_group                                                                        = 'rabbitmq',
+  Stdlib::Absolutepath $rabbitmq_home                                                              = '/var/lib/rabbitmq',
+  # ---------------------------------- CONFIG ---------------------------------- #
   Boolean $admin_enable                                                                            = true,
   Boolean $management_enable                                                                       = false,
   Boolean $use_config_file_for_plugins                                                             = false,
@@ -400,7 +443,7 @@ class rabbitmq (
   Hash $cluster                                                                                    = $rabbitmq::cluster,
   Enum['ram', 'disc'] $cluster_node_type                                                           = 'disc',
   Array $cluster_nodes                                                                             = [],
-  String $config                                                                                   = 'rabbitmq/rabbitmq.config.epp',
+  String[1] $config                                                                                = 'rabbitmq/rabbitmq.config.epp',
   Hash $config_cowboy_opts                                                                         = {},
   Boolean $config_cluster                                                                          = false,
   Stdlib::Absolutepath $config_path                                                                = '/etc/rabbitmq/rabbitmq.config',
@@ -408,56 +451,39 @@ class rabbitmq (
   Boolean $config_stomp                                                                            = false,
   Boolean $config_shovel                                                                           = false,
   Hash $config_shovel_statics                                                                      = {},
-  String $default_user                                                                             = 'guest',
-  String $default_pass                                                                             = 'guest',
+  String[1] $default_user                                                                          = 'guest',
+  String[1] $default_pass                                                                          = 'guest',
   Boolean $delete_guest_user                                                                       = false,
-  Boolean $enable_centos_release                                                                   = false,
-  String $env_config                                                                               = 'rabbitmq/rabbitmq-env.conf.epp',
+  String[1] $env_config                                                                            = 'rabbitmq/rabbitmq-env.conf.epp',
   Stdlib::Absolutepath $env_config_path                                                            = '/etc/rabbitmq/rabbitmq-env.conf',
-  Optional[String] $erlang_cookie                                                                  = undef,
-  Optional[String] $interface                                                                      = undef,
-  Optional[String] $management_ip_address                                                          = undef,
+  Optional[String[1]] $erlang_cookie                                                               = undef,
+  Optional[String[1]] $interface                                                                   = undef,
+  Optional[String[1]] $management_ip_address                                                       = undef,
   Integer[1, 65535] $management_port                                                               = 15672,
   Boolean $management_ssl                                                                          = true,
-  Optional[String] $management_hostname                                                            = undef,
-  Optional[String] $node_ip_address                                                                = undef,
-  Optional[Variant[Numeric, String[1]]] $package_apt_pin                                           = undef,
-  String $package_ensure                                                                           = 'installed',
-  Optional[String] $package_gpg_key                                                                = undef,
+  Optional[String[1]] $management_hostname                                                         = undef,
+  Optional[String[1]] $node_ip_address                                                             = undef,
   Optional[Integer] $quorum_cluster_size                                                           = undef,
   Optional[Boolean] $quorum_membership_reconciliation_enabled                                      = undef,
   Optional[Boolean] $quorum_membership_reconciliation_auto_remove                                  = undef,
   Optional[Integer] $quorum_membership_reconciliation_interval                                     = undef,
   Optional[Integer] $quorum_membership_reconciliation_trigger_interval                             = undef,
   Optional[Integer] $quorum_membership_reconciliation_target_group_size                            = undef,
-  Optional[String] $repo_gpg_key                                                                   = undef,
-  Variant[String, Array] $package_name                                                             = 'rabbitmq',
-  Optional[String] $package_source                                                                 = undef,
-  Optional[String] $package_provider                                                               = undef,
-  Boolean $repos_ensure                                                                            = false,
-  Boolean $manage_python                                                                           = true,
-  String $python_package                                                                           = 'python',
-  String $rabbitmq_user                                                                            = 'rabbitmq',
-  String $rabbitmq_group                                                                           = 'rabbitmq',
-  Stdlib::Absolutepath $rabbitmq_home                                                              = '/var/lib/rabbitmq',
   Integer $port                                                                                    = 5672,
   Boolean $tcp_keepalive                                                                           = false,
   Integer $tcp_backlog                                                                             = 128,
   Optional[Integer] $tcp_sndbuf                                                                    = undef,
   Optional[Integer] $tcp_recbuf                                                                    = undef,
   Optional[Integer] $heartbeat                                                                     = undef,
-  Enum['running', 'stopped'] $service_ensure                                                       = 'running',
-  Boolean $service_manage                                                                          = true,
-  String $service_name                                                                             = 'rabbitmq',
   Boolean $ssl                                                                                     = false,
   Boolean $ssl_only                                                                                = false,
   Optional[Stdlib::Absolutepath] $ssl_cacert                                                       = undef,
   Optional[Stdlib::Absolutepath] $ssl_cert                                                         = undef,
   Optional[Stdlib::Absolutepath] $ssl_key                                                          = undef,
   Optional[Integer] $ssl_depth                                                                     = undef,
-  Optional[String] $ssl_cert_password                                                              = undef,
+  Optional[String[1]] $ssl_cert_password                                                           = undef,
   Integer[1, 65535] $ssl_port                                                                      = 5671,
-  Optional[String] $ssl_interface                                                                  = undef,
+  Optional[String[1]] $ssl_interface                                                               = undef,
   Integer[1, 65535] $ssl_management_port                                                           = 15671,
   Optional[Stdlib::Absolutepath] $ssl_management_cacert                                            = $ssl_cacert,
   Optional[Stdlib::Absolutepath] $ssl_management_cert                                              = $ssl_cert,
@@ -480,8 +506,8 @@ class rabbitmq (
   Boolean $stomp_ensure                                                                            = false,
   Boolean $ldap_auth                                                                               = false,
   Variant[String[1],Array[String[1]]] $ldap_server                                                 = 'ldap',
-  Optional[String] $ldap_user_dn_pattern                                                           = undef,
-  String $ldap_other_bind                                                                          = 'anon',
+  Optional[String[1]] $ldap_user_dn_pattern                                                        = undef,
+  String[1] $ldap_other_bind                                                                       = 'anon',
   Boolean $ldap_use_ssl                                                                            = false,
   Integer[1, 65535] $ldap_port                                                                     = 389,
   Boolean $ldap_log                                                                                = false,
@@ -489,7 +515,7 @@ class rabbitmq (
   Integer[1, 65535] $stomp_port                                                                    = 6163,
   Boolean $stomp_ssl_only                                                                          = false,
   Boolean $wipe_db_on_cookie_change                                                                = false,
-  String $cluster_partition_handling                                                               = 'ignore',
+  String[1] $cluster_partition_handling                                                               = 'ignore',
   Variant[Integer[-1],Enum['unlimited'],Pattern[/^(infinity|\d+(:(infinity|\d+))?)$/]] $file_limit = 16384,
   Hash $systemd_additional_service_parameters                                                      = {},
   Integer[-1000, 1000] $oom_score_adj                                                              = 0,
@@ -499,16 +525,14 @@ class rabbitmq (
   Hash $config_management_variables                                                                = {},
   Hash $config_additional_variables                                                                = {},
   Optional[Array] $auth_backends                                                                   = undef,
-  Optional[String] $key_content                                                                    = undef,
   Optional[Integer] $collect_statistics_interval                                                   = undef,
   Boolean $ipv6                                                                                    = false,
-  String $inetrc_config                                                                            = 'rabbitmq/inetrc.erb',
+  String[1] $inetrc_config                                                                         = 'rabbitmq/inetrc.erb',
   Stdlib::Absolutepath $inetrc_config_path                                                         = '/etc/rabbitmq/inetrc',
   Boolean $ssl_erl_dist                                                                            = false,
-  Optional[String] $rabbitmqadmin_package                                                          = undef,
+  Optional[String[1]] $rabbitmqadmin_package                                                       = undef,
   Array $archive_options                                                                           = [],
   Array $loopback_users                                                                            = ['guest'],
-  Boolean $service_restart                                                                         = true,
 ) {
   if $ssl_only and ! $ssl {
     fail('$ssl_only => true requires that $ssl => true')
@@ -549,15 +573,14 @@ class rabbitmq (
   }
 
   # when repos_ensure is true, we configure externel repos
-  # CentOS 7 doesn't contain rabbitmq. It's only in EPEL.
-  if $repos_ensure {
+  if $enable_rabbitmq_repository {
     case $facts['os']['family'] {
       'RedHat': {
-        contain rabbitmq::repo::rhel
+        require rabbitmq::repo::rhel
         Class['rabbitmq::repo::rhel'] -> Class['rabbitmq::install']
       }
       'Debian': {
-        contain rabbitmq::repo::apt
+        require rabbitmq::repo::apt
         Class['rabbitmq::repo::apt'] -> Class['rabbitmq::install']
       }
       default: {
@@ -567,6 +590,8 @@ class rabbitmq (
     package { 'centos-release-rabbitmq-38':
       ensure => 'present',
     }
+  } elsif $facts['os']['family'] == 'RedHat' and $enable_centos_release and $enable_rabbitmq_repository {
+    fail('Both $enable_centos_release and $enable_rabbitmq_repository are true')
   }
 
   contain rabbitmq::install

@@ -1,1 +1,2 @@
 rabbitmq::enable_centos_release: true
+rabbitmq::enable_rabbitmq_repository: false
