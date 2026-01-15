@@ -28,9 +28,8 @@ This module manages RabbitMQ (www.rabbitmq.com)
 The rabbitmq module sets up rabbitmq and has a number of providers to manage
 everything from vhosts to exchanges after setup.
 
-This module has been tested against 3.5.x and 3.6.x (as well as earlier
-versions) and is known to not support all features against versions
-prior to 2.7.1.
+This module is tested against the latest RabbitMQ version with Community Support
+and the latest version provided by CentOS Stream Messaging SIG.
 
 ## Setup
 
@@ -48,10 +47,6 @@ on the main rabbitmq class.
 These are now documented via [Puppet Strings](https://github.com/puppetlabs/puppet-strings)
 
 You can view example usage in [REFERENCE](REFERENCE.md).
-
-**[puppet/epel](https://forge.puppet.com/modules/puppet/epel) is a soft dependency. If you're on CentOS 7 and don't want to require it, set `$require_epel` to `false`**
-
-Version v13.2.0 and older also added an erlang repository on CentOS 7. That isn't used and can be safely removed.
 
 ## Reference
 

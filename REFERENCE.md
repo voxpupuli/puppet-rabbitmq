@@ -17,7 +17,7 @@
 * `rabbitmq::install::rabbitmqadmin`: Install rabbitmq admin
 * `rabbitmq::management`: Manage presence / absence of user resource for guest management user.
 * `rabbitmq::repo::apt`: requires   puppetlabs-apt   puppetlabs-stdlib
-* `rabbitmq::repo::rhel`: Makes sure that the Packagecloud repo is installed
+* `rabbitmq::repo::rhel`: Makes sure that the RabbitMQ repo is installed https://www.rabbitmq.com/docs/install-rpm
 * `rabbitmq::service`: This class manages the rabbitmq server service itself.
 
 ### Resource types
@@ -215,6 +215,27 @@ class { 'rabbitmq':
 
 The following parameters are available in the `rabbitmq` class:
 
+* [`enable_centos_release`](#-rabbitmq--enable_centos_release)
+* [`enable_rabbitmq_repository`](#-rabbitmq--enable_rabbitmq_repository)
+* [`rpm_repo_primary_gpg_key`](#-rabbitmq--rpm_repo_primary_gpg_key)
+* [`rpm_repo_erlang_gpg_key`](#-rabbitmq--rpm_repo_erlang_gpg_key)
+* [`rpm_repo_server_gpg_key`](#-rabbitmq--rpm_repo_server_gpg_key)
+* [`deb_repo_gpg_key`](#-rabbitmq--deb_repo_gpg_key)
+* [`deb_repo_gpg_key_source`](#-rabbitmq--deb_repo_gpg_key_source)
+* [`package_apt_pin`](#-rabbitmq--package_apt_pin)
+* [`package_ensure`](#-rabbitmq--package_ensure)
+* [`package_name`](#-rabbitmq--package_name)
+* [`package_source`](#-rabbitmq--package_source)
+* [`package_provider`](#-rabbitmq--package_provider)
+* [`manage_python`](#-rabbitmq--manage_python)
+* [`python_package`](#-rabbitmq--python_package)
+* [`service_ensure`](#-rabbitmq--service_ensure)
+* [`service_manage`](#-rabbitmq--service_manage)
+* [`service_name`](#-rabbitmq--service_name)
+* [`service_restart`](#-rabbitmq--service_restart)
+* [`rabbitmq_user`](#-rabbitmq--rabbitmq_user)
+* [`rabbitmq_group`](#-rabbitmq--rabbitmq_group)
+* [`rabbitmq_home`](#-rabbitmq--rabbitmq_home)
 * [`admin_enable`](#-rabbitmq--admin_enable)
 * [`management_enable`](#-rabbitmq--management_enable)
 * [`use_config_file_for_plugins`](#-rabbitmq--use_config_file_for_plugins)
@@ -240,7 +261,6 @@ The following parameters are available in the `rabbitmq` class:
 * [`default_user`](#-rabbitmq--default_user)
 * [`default_pass`](#-rabbitmq--default_pass)
 * [`delete_guest_user`](#-rabbitmq--delete_guest_user)
-* [`enable_centos_release`](#-rabbitmq--enable_centos_release)
 * [`env_config`](#-rabbitmq--env_config)
 * [`env_config_path`](#-rabbitmq--env_config_path)
 * [`environment_variables`](#-rabbitmq--environment_variables)
@@ -253,7 +273,6 @@ The following parameters are available in the `rabbitmq` class:
 * [`inetrc_config_path`](#-rabbitmq--inetrc_config_path)
 * [`ipv6`](#-rabbitmq--ipv6)
 * [`interface`](#-rabbitmq--interface)
-* [`key_content`](#-rabbitmq--key_content)
 * [`ldap_auth`](#-rabbitmq--ldap_auth)
 * [`ldap_server`](#-rabbitmq--ldap_server)
 * [`ldap_user_dn_pattern`](#-rabbitmq--ldap_user_dn_pattern)
@@ -262,32 +281,18 @@ The following parameters are available in the `rabbitmq` class:
 * [`ldap_use_ssl`](#-rabbitmq--ldap_use_ssl)
 * [`ldap_port`](#-rabbitmq--ldap_port)
 * [`ldap_log`](#-rabbitmq--ldap_log)
-* [`manage_python`](#-rabbitmq--manage_python)
 * [`management_hostname`](#-rabbitmq--management_hostname)
 * [`management_port`](#-rabbitmq--management_port)
 * [`management_ip_address`](#-rabbitmq--management_ip_address)
 * [`management_ssl`](#-rabbitmq--management_ssl)
 * [`node_ip_address`](#-rabbitmq--node_ip_address)
-* [`package_apt_pin`](#-rabbitmq--package_apt_pin)
-* [`package_ensure`](#-rabbitmq--package_ensure)
-* [`package_gpg_key`](#-rabbitmq--package_gpg_key)
-* [`package_source`](#-rabbitmq--package_source)
-* [`package_provider`](#-rabbitmq--package_provider)
-* [`repo_gpg_key`](#-rabbitmq--repo_gpg_key)
-* [`package_name`](#-rabbitmq--package_name)
 * [`port`](#-rabbitmq--port)
-* [`python_package`](#-rabbitmq--python_package)
 * [`quorum_cluster_size`](#-rabbitmq--quorum_cluster_size)
 * [`quorum_membership_reconciliation_enabled`](#-rabbitmq--quorum_membership_reconciliation_enabled)
 * [`quorum_membership_reconciliation_auto_remove`](#-rabbitmq--quorum_membership_reconciliation_auto_remove)
 * [`quorum_membership_reconciliation_interval`](#-rabbitmq--quorum_membership_reconciliation_interval)
 * [`quorum_membership_reconciliation_trigger_interval`](#-rabbitmq--quorum_membership_reconciliation_trigger_interval)
 * [`quorum_membership_reconciliation_target_group_size`](#-rabbitmq--quorum_membership_reconciliation_target_group_size)
-* [`repos_ensure`](#-rabbitmq--repos_ensure)
-* [`service_ensure`](#-rabbitmq--service_ensure)
-* [`service_manage`](#-rabbitmq--service_manage)
-* [`service_name`](#-rabbitmq--service_name)
-* [`service_restart`](#-rabbitmq--service_restart)
 * [`ssl`](#-rabbitmq--ssl)
 * [`ssl_cacert`](#-rabbitmq--ssl_cacert)
 * [`ssl_cert`](#-rabbitmq--ssl_cert)
@@ -325,12 +330,178 @@ The following parameters are available in the `rabbitmq` class:
 * [`tcp_recbuf`](#-rabbitmq--tcp_recbuf)
 * [`tcp_sndbuf`](#-rabbitmq--tcp_sndbuf)
 * [`wipe_db_on_cookie_change`](#-rabbitmq--wipe_db_on_cookie_change)
-* [`rabbitmq_user`](#-rabbitmq--rabbitmq_user)
-* [`rabbitmq_group`](#-rabbitmq--rabbitmq_group)
-* [`rabbitmq_home`](#-rabbitmq--rabbitmq_home)
 * [`rabbitmqadmin_package`](#-rabbitmq--rabbitmqadmin_package)
 * [`archive_options`](#-rabbitmq--archive_options)
 * [`loopback_users`](#-rabbitmq--loopback_users)
+
+##### <a name="-rabbitmq--enable_centos_release"></a>`enable_centos_release`
+
+Data type: `Boolean`
+
+Enable CentOS Messaging SIG repository on compatible systems. Defaults to true on CentOS Stream.
+
+Default value: `false`
+
+##### <a name="-rabbitmq--enable_rabbitmq_repository"></a>`enable_rabbitmq_repository`
+
+Data type: `Boolean`
+
+Enable official RabbitMQ repositories.
+
+Default value: `true`
+
+##### <a name="-rabbitmq--rpm_repo_primary_gpg_key"></a>`rpm_repo_primary_gpg_key`
+
+Data type: `Optional[String[1]]`
+
+Primary GPG key for the RPM repository.
+
+Default value: `undef`
+
+##### <a name="-rabbitmq--rpm_repo_erlang_gpg_key"></a>`rpm_repo_erlang_gpg_key`
+
+Data type: `Optional[String[1]]`
+
+GPG key for the RPM Erlang repository.
+
+Default value: `undef`
+
+##### <a name="-rabbitmq--rpm_repo_server_gpg_key"></a>`rpm_repo_server_gpg_key`
+
+Data type: `Optional[String[1]]`
+
+GPG key for RPM RabbitMQ repository.
+
+Default value: `undef`
+
+##### <a name="-rabbitmq--deb_repo_gpg_key"></a>`deb_repo_gpg_key`
+
+Data type: `Optional[String[1]]`
+
+GPG key for the DEB RabbitMQ repository.
+
+Default value: `undef`
+
+##### <a name="-rabbitmq--deb_repo_gpg_key_source"></a>`deb_repo_gpg_key_source`
+
+Data type: `Optional[String[1]]`
+
+GPG key source for the DEB RabbitMQ repository.
+
+Default value: `undef`
+
+##### <a name="-rabbitmq--package_apt_pin"></a>`package_apt_pin`
+
+Data type: `Optional[Variant[Numeric, String[1]]]`
+
+Pin package version in APT.
+
+Default value: `undef`
+
+##### <a name="-rabbitmq--package_ensure"></a>`package_ensure`
+
+Data type: `String[1]`
+
+Determines the ensure state of the package.  Set to installed by default, but could be changed to latest.
+
+Default value: `'installed'`
+
+##### <a name="-rabbitmq--package_name"></a>`package_name`
+
+Data type: `Variant[String[1], Array[String[1]]]`
+
+Name(s) of the package(s) to install
+
+Default value: `'rabbitmq'`
+
+##### <a name="-rabbitmq--package_source"></a>`package_source`
+
+Data type: `Optional[String[1]]`
+
+
+
+Default value: `undef`
+
+##### <a name="-rabbitmq--package_provider"></a>`package_provider`
+
+Data type: `Optional[String[1]]`
+
+
+
+Default value: `undef`
+
+##### <a name="-rabbitmq--manage_python"></a>`manage_python`
+
+Data type: `Boolean`
+
+If enabled, on platforms that don't provide a Python 2 package by default, ensure that the python package is
+installed (for rabbitmqadmin). This will only apply if `admin_enable` and `service_manage` are set.
+
+Default value: `true`
+
+##### <a name="-rabbitmq--python_package"></a>`python_package`
+
+Data type: `String[1]`
+
+Name of the package required by rabbitmqadmin.
+
+Default value: `'python'`
+
+##### <a name="-rabbitmq--service_ensure"></a>`service_ensure`
+
+Data type: `Enum['running', 'stopped']`
+
+The state of the service.
+
+Default value: `'running'`
+
+##### <a name="-rabbitmq--service_manage"></a>`service_manage`
+
+Data type: `Boolean`
+
+Determines if the service is managed.
+
+Default value: `true`
+
+##### <a name="-rabbitmq--service_name"></a>`service_name`
+
+Data type: `String[1]`
+
+The name of the service to manage.
+
+Default value: `'rabbitmq'`
+
+##### <a name="-rabbitmq--service_restart"></a>`service_restart`
+
+Data type: `Boolean`
+
+Default defined in param.pp. Whether to restart the service on config change.
+
+Default value: `true`
+
+##### <a name="-rabbitmq--rabbitmq_user"></a>`rabbitmq_user`
+
+Data type: `String[1]`
+
+OS dependent The system user the rabbitmq daemon runs as.
+
+Default value: `'rabbitmq'`
+
+##### <a name="-rabbitmq--rabbitmq_group"></a>`rabbitmq_group`
+
+Data type: `String[1]`
+
+OS dependent The system group the rabbitmq daemon runs as.
+
+Default value: `'rabbitmq'`
+
+##### <a name="-rabbitmq--rabbitmq_home"></a>`rabbitmq_home`
+
+Data type: `Stdlib::Absolutepath`
+
+OS dependent The home directory of the rabbitmq deamon.
+
+Default value: `'/var/lib/rabbitmq'`
 
 ##### <a name="-rabbitmq--admin_enable"></a>`admin_enable`
 
@@ -403,7 +574,7 @@ Default value: `[]`
 
 ##### <a name="-rabbitmq--cluster_partition_handling"></a>`cluster_partition_handling`
 
-Data type: `String`
+Data type: `String[1]`
 
 Value to set for `cluster_partition_handling` RabbitMQ configuration variable.
 
@@ -419,7 +590,7 @@ Default value: `undef`
 
 ##### <a name="-rabbitmq--config"></a>`config`
 
-Data type: `String`
+Data type: `String[1]`
 
 The file to use as the rabbitmq.config template.
 
@@ -515,7 +686,7 @@ Default value: `{}`
 
 ##### <a name="-rabbitmq--default_user"></a>`default_user`
 
-Data type: `String`
+Data type: `String[1]`
 
 Username to set for the `default_user` in rabbitmq.config.
 
@@ -523,7 +694,7 @@ Default value: `'guest'`
 
 ##### <a name="-rabbitmq--default_pass"></a>`default_pass`
 
-Data type: `String`
+Data type: `String[1]`
 
 Password to set for the `default_user` in rabbitmq.config.
 
@@ -537,18 +708,9 @@ Controls whether default guest user is deleted.
 
 Default value: `false`
 
-##### <a name="-rabbitmq--enable_centos_release"></a>`enable_centos_release`
-
-Data type: `Boolean`
-
-Enable the `centos-release-rabbitmq-38` if set to `true` and if the OS is in the
-RedHat family and `repos_ensure` is `false`. Defaults to true on CentOS.
-
-Default value: `false`
-
 ##### <a name="-rabbitmq--env_config"></a>`env_config`
 
-Data type: `String`
+Data type: `String[1]`
 
 The template file to use for rabbitmq_env.config.
 
@@ -572,7 +734,7 @@ Default value: `{ 'LC_ALL' => 'en_US.UTF-8' }`
 
 ##### <a name="-rabbitmq--erlang_cookie"></a>`erlang_cookie`
 
-Data type: `Optional[String]`
+Data type: `Optional[String[1]]`
 
 The erlang cookie to use for clustering - must be the same between all nodes. This value has no default and must be
 set explicitly if using clustering. If you run Pacemaker and you don't want to use RabbitMQ buildin cluster, you can set config_cluster
@@ -615,7 +777,7 @@ Default value: `undef`
 
 ##### <a name="-rabbitmq--inetrc_config"></a>`inetrc_config`
 
-Data type: `String`
+Data type: `String[1]`
 
 Template to use for the inetrc config
 
@@ -639,19 +801,10 @@ Default value: `false`
 
 ##### <a name="-rabbitmq--interface"></a>`interface`
 
-Data type: `Optional[String]`
+Data type: `Optional[String[1]]`
 
 Interface to bind to (sets tcp_listeners parameter). By default, bind to all interfaces
 to `0` will disable heartbeats.
-
-Default value: `undef`
-
-##### <a name="-rabbitmq--key_content"></a>`key_content`
-
-Data type: `Optional[String]`
-
-Uses content method for Debian OS family. Should be a template for apt::source class. Overrides `package_gpg_key`
-behavior, if enabled. Undefined by default.
 
 Default value: `undef`
 
@@ -673,7 +826,7 @@ Default value: `'ldap'`
 
 ##### <a name="-rabbitmq--ldap_user_dn_pattern"></a>`ldap_user_dn_pattern`
 
-Data type: `Optional[String]`
+Data type: `Optional[String[1]]`
 
 User DN pattern for LDAP auth.
 
@@ -681,7 +834,7 @@ Default value: `undef`
 
 ##### <a name="-rabbitmq--ldap_other_bind"></a>`ldap_other_bind`
 
-Data type: `String`
+Data type: `String[1]`
 
 How to bind to the LDAP server. Defaults to 'anon'.
 
@@ -719,18 +872,9 @@ Set to true to log LDAP auth.
 
 Default value: `false`
 
-##### <a name="-rabbitmq--manage_python"></a>`manage_python`
-
-Data type: `Boolean`
-
-If enabled, on platforms that don't provide a Python 2 package by default, ensure that the python package is
-installed (for rabbitmqadmin). This will only apply if `admin_enable` and `service_manage` are set.
-
-Default value: `true`
-
 ##### <a name="-rabbitmq--management_hostname"></a>`management_hostname`
 
-Data type: `Optional[String]`
+Data type: `Optional[String[1]]`
 
 The hostname for the RabbitMQ management interface.
 
@@ -746,7 +890,7 @@ Default value: `15672`
 
 ##### <a name="-rabbitmq--management_ip_address"></a>`management_ip_address`
 
-Data type: `Optional[String]`
+Data type: `Optional[String[1]]`
 
 Allows you to set the IP for management interface to bind to separately. Set to 127.0.0.1 to bind to
 localhost only, or 0.0.0.0 to bind to all interfaces.
@@ -763,72 +907,12 @@ Default value: `true`
 
 ##### <a name="-rabbitmq--node_ip_address"></a>`node_ip_address`
 
-Data type: `Optional[String]`
+Data type: `Optional[String[1]]`
 
 Allows you to set the IP for RabbitMQ service to bind to. Set to 127.0.0.1 to bind to localhost only, or 0.0.0.0
 to bind to all interfaces.
 
 Default value: `undef`
-
-##### <a name="-rabbitmq--package_apt_pin"></a>`package_apt_pin`
-
-Data type: `Optional[Variant[Numeric, String[1]]]`
-
-Whether to pin the package to a particular source
-
-Default value: `undef`
-
-##### <a name="-rabbitmq--package_ensure"></a>`package_ensure`
-
-Data type: `String`
-
-Determines the ensure state of the package.  Set to installed by default, but could be changed to latest.
-
-Default value: `'installed'`
-
-##### <a name="-rabbitmq--package_gpg_key"></a>`package_gpg_key`
-
-Data type: `Optional[String]`
-
-RPM package GPG key to import. Uses source method. Should be a URL for Debian/RedHat OS family, or a file name for
-RedHat OS family. Set to https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc
-for Debian/RedHat OS Family by default.
-
-Default value: `undef`
-
-##### <a name="-rabbitmq--package_source"></a>`package_source`
-
-Data type: `Optional[String]`
-
-
-
-Default value: `undef`
-
-##### <a name="-rabbitmq--package_provider"></a>`package_provider`
-
-Data type: `Optional[String]`
-
-
-
-Default value: `undef`
-
-##### <a name="-rabbitmq--repo_gpg_key"></a>`repo_gpg_key`
-
-Data type: `Optional[String]`
-
-RPM package GPG key to import. Uses source method. Should be a URL for Debian/RedHat OS family, or a file name for
-RedHat OS family. Set to https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey for Debian/RedHat OS Family by
-default. Note, that `key_content`, if specified, would override this parameter for Debian OS family.
-
-Default value: `undef`
-
-##### <a name="-rabbitmq--package_name"></a>`package_name`
-
-Data type: `Variant[String, Array]`
-
-Name(s) of the package(s) to install
-
-Default value: `'rabbitmq'`
 
 ##### <a name="-rabbitmq--port"></a>`port`
 
@@ -837,14 +921,6 @@ Data type: `Integer`
 The RabbitMQ port.
 
 Default value: `5672`
-
-##### <a name="-rabbitmq--python_package"></a>`python_package`
-
-Data type: `String`
-
-Name of the package required by rabbitmqadmin.
-
-Default value: `'python'`
 
 ##### <a name="-rabbitmq--quorum_cluster_size"></a>`quorum_cluster_size`
 
@@ -904,49 +980,6 @@ Important Note: This only takes affect if quorum_membership_reconciliation_enabl
 
 Default value: `undef`
 
-##### <a name="-rabbitmq--repos_ensure"></a>`repos_ensure`
-
-Data type: `Boolean`
-
-Ensure that a repo with the official (and newer) RabbitMQ package is configured, along with its signing key.
-Defaults to false (use system packages). This does not ensure that soft dependencies are present.
-It also does not solve the erlang dependency. See https://www.rabbitmq.com/which-erlang.html for a good breakdown of the
-different ways of handling the erlang deps. See also https://github.com/voxpupuli/puppet-rabbitmq/issues/788
-
-Default value: `false`
-
-##### <a name="-rabbitmq--service_ensure"></a>`service_ensure`
-
-Data type: `Enum['running', 'stopped']`
-
-The state of the service.
-
-Default value: `'running'`
-
-##### <a name="-rabbitmq--service_manage"></a>`service_manage`
-
-Data type: `Boolean`
-
-Determines if the service is managed.
-
-Default value: `true`
-
-##### <a name="-rabbitmq--service_name"></a>`service_name`
-
-Data type: `String`
-
-The name of the service to manage.
-
-Default value: `'rabbitmq'`
-
-##### <a name="-rabbitmq--service_restart"></a>`service_restart`
-
-Data type: `Boolean`
-
-Default defined in param.pp. Whether to restart the service on config change.
-
-Default value: `true`
-
 ##### <a name="-rabbitmq--ssl"></a>`ssl`
 
 Data type: `Boolean`
@@ -973,7 +1006,7 @@ Default value: `undef`
 
 ##### <a name="-rabbitmq--ssl_cert_password"></a>`ssl_cert_password`
 
-Data type: `Optional[String]`
+Data type: `Optional[String[1]]`
 
 Password used when generating CSR.
 
@@ -1021,7 +1054,7 @@ Default value: `true`
 
 ##### <a name="-rabbitmq--ssl_interface"></a>`ssl_interface`
 
-Data type: `Optional[String]`
+Data type: `Optional[String[1]]`
 
 Interface for SSL listener to bind to
 
@@ -1254,33 +1287,9 @@ Boolean to determine if we should DESTROY AND DELETE the RabbitMQ database.
 
 Default value: `false`
 
-##### <a name="-rabbitmq--rabbitmq_user"></a>`rabbitmq_user`
-
-Data type: `String`
-
-OS dependent The system user the rabbitmq daemon runs as.
-
-Default value: `'rabbitmq'`
-
-##### <a name="-rabbitmq--rabbitmq_group"></a>`rabbitmq_group`
-
-Data type: `String`
-
-OS dependent The system group the rabbitmq daemon runs as.
-
-Default value: `'rabbitmq'`
-
-##### <a name="-rabbitmq--rabbitmq_home"></a>`rabbitmq_home`
-
-Data type: `Stdlib::Absolutepath`
-
-OS dependent The home directory of the rabbitmq deamon.
-
-Default value: `'/var/lib/rabbitmq'`
-
 ##### <a name="-rabbitmq--rabbitmqadmin_package"></a>`rabbitmqadmin_package`
 
-Data type: `Optional[String]`
+Data type: `Optional[String[1]]`
 
 OS dependent If undef: install rabbitmqadmin via archive, otherwise via package
 

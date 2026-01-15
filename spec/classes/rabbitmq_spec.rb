@@ -36,8 +36,8 @@ describe 'rabbitmq' do
       context 'with default params' do
         it { is_expected.not_to contain_class('rabbitmq::repo::apt') }
         it { is_expected.not_to contain_apt__source('rabbitmq') }
-        it { is_expected.not_to contain_class('rabbitmq::repo::rhel') }
-        it { is_expected.not_to contain_yumrepo('rabbitmq') }
+        it { is_expected.to contain_class('rabbitmq::repo::rhel') }
+        it { is_expected.to contain_yumrepo('rabbitmq') }
 
         it { is_expected.to contain_package('centos-release-rabbitmq-38') } if os_facts['os']['name'] == 'CentOS'
         it { is_expected.not_to contain_package('centos-release-rabbitmq-38') } if os_facts['os']['name'] == 'RedHat'
@@ -55,22 +55,21 @@ describe 'rabbitmq' do
         it { is_expected.not_to contain_package('centos-release-rabbitmq-38') } if os_facts['os']['family'] == 'RedHat'
       end
 
-      context 'with repos_ensure => true' do
-        let(:params) { { repos_ensure: true } }
+      context 'with enable_rabbitmq_repository => true' do
+        let(:params) { { enable_rabbitmq_repository: true } }
 
         if os_facts['os']['family'] == 'Debian'
           it 'includes rabbitmq::repo::apt' do
             is_expected.to contain_class('rabbitmq::repo::apt').
-              with_key_source('https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey').
+              with_key_source('https://keys.openpgp.org/vks/v1/by-fingerprint/0A9AF2115F4687BD29803A206B73A36E6026DFCA').
               with_key_content(nil)
           end
 
           it 'adds a repo with default values' do
             is_expected.to contain_apt__source('rabbitmq').
               with_ensure('present').
-              with_location("https://packagecloud.io/rabbitmq/rabbitmq-server/#{os_facts['os']['name'].downcase}").
-              with_release(nil).
-              with_repos('main')
+              with_location(["https://deb1.rabbitmq.com/rabbitmq-erlang/#{os_facts['os']['family'].downcase}/#{os_facts['os']['name'].downcase}", "https://deb2.rabbitmq.com/rabbitmq-erlang/#{os_facts['os']['family'].downcase}/#{os_facts['os']['name'].downcase}"])
+            with_repos('main')
           end
         else
           it { is_expected.not_to contain_class('rabbitmq::repo::apt') }
@@ -83,19 +82,19 @@ describe 'rabbitmq' do
           it 'the repo should be present, and contain the expected values' do
             is_expected.to contain_yumrepo('rabbitmq').
               with_ensure('present').
-              with_baseurl(%r{https://packagecloud.io/rabbitmq/rabbitmq-server/el/\d+/\$basearch$}).
-              with_gpgkey('https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey')
+              with_baseurl(%r{https://yum2.rabbitmq.com/rabbitmq/el/\d+/\$basearch$}).
+              with_gpgkey('https://github.com/rabbitmq/signing-keys/releases/download/3.0/rabbitmq-release-signing-key.asc')
           end
 
           it {
-            is_expected.to contain_exec('rpm --import https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc').with(
+            is_expected.to contain_exec('rpm --import https://github.com/rabbitmq/signing-keys/releases/download/3.0/rabbitmq-release-signing-key.asc').with(
               unless: 'rpm -q gpg-pubkey-6026dfca-573adfde 2>/dev/null'
             )
           }
 
           it {
-            is_expected.to contain_exec('rpm --import https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey').with(
-              unless: 'rpm -q gpg-pubkey-4d206f89-5bbb8d59 2>/dev/null'
+            is_expected.to contain_exec('rpm --import https://github.com/rabbitmq/signing-keys/releases/download/3.0/cloudsmith.rabbitmq-erlang.E495BB49CC4BBE5B.key').with(
+              unless: 'rpm -q gpg-pubkey-cc4bbe5b-60490155 2>/dev/null'
             )
           }
 
@@ -111,9 +110,9 @@ describe 'rabbitmq' do
         describe 'it sets up an apt::source' do
           it {
             is_expected.to contain_apt__source('rabbitmq').with(
-              'location' => "https://packagecloud.io/rabbitmq/rabbitmq-server/#{os_facts['os']['name'].downcase}",
+              'location' => ["https://deb1.rabbitmq.com/rabbitmq-erlang/#{os_facts['os']['family'].downcase}/#{os_facts['os']['name'].downcase}", "https://deb2.rabbitmq.com/rabbitmq-erlang/#{os_facts['os']['family'].downcase}/#{os_facts['os']['name'].downcase}"],
               'repos' => 'main',
-              'key' => '{"id"=>"8C695B0219AFDEB04A058ED8F4E789204D206F89", "source"=>"https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey", "content"=>nil}'
+              'key' => '{"id"=>"0A9AF2115F4687BD29803A206B73A36E6026DFCA", "source"=>"https://keys.openpgp.org/vks/v1/by-fingerprint/0A9AF2115F4687BD29803A206B73A36E6026DFCA", "content"=>nil}'
             )
           }
         end
@@ -125,9 +124,9 @@ describe 'rabbitmq' do
         describe 'it sets up an apt::source and pin' do
           it {
             is_expected.to contain_apt__source('rabbitmq').with(
-              'location' => "https://packagecloud.io/rabbitmq/rabbitmq-server/#{os_facts['os']['name'].downcase}",
+              'location' => ["https://deb1.rabbitmq.com/rabbitmq-erlang/#{os_facts['os']['family'].downcase}/#{os_facts['os']['name'].downcase}", "https://deb2.rabbitmq.com/rabbitmq-erlang/#{os_facts['os']['family'].downcase}/#{os_facts['os']['name'].downcase}"],
               'repos' => 'main',
-              'key' => '{"id"=>"8C695B0219AFDEB04A058ED8F4E789204D206F89", "source"=>"https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey", "content"=>nil}'
+              'key' => '{"id"=>"0A9AF2115F4687BD29803A206B73A36E6026DFCA", "source"=>"https://keys.openpgp.org/vks/v1/by-fingerprint/0A9AF2115F4687BD29803A206B73A36E6026DFCA", "content"=>nil}'
             )
           }
 
