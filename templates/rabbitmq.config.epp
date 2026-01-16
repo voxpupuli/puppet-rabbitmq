@@ -128,6 +128,12 @@
                    <%- if $rabbitmq::config::ssl_crl_cache_http_timeout {-%>
                    ,{crl_cache, {ssl_crl_cache, {internal, [{http, <%= $rabbitmq::config::ssl_crl_cache_http_timeout %>}]}}}
                    <%- } -%>
+                   <%- if $rabbitmq::config::ssl_signature_algorithms and $rabbitmq::config::ssl_signature_algorithms.size > 0 { -%>
+                   ,{signature_algs, [ <%= $rabbitmq::config::ssl_signature_algorithms.map |$alg| { "{${alg.join(', ')}}"}.join(', ') %> ]}
+                   <%- } -%>
+                   <%- if $rabbitmq::config::ssl_eccs and $rabbitmq::config::ssl_eccs.size > 0 { -%>
+                   ,{eccs, [ <%= $rabbitmq::config::ssl_eccs.join(', ') %> ]}
+                   <%- } -%>
                   ]},
 <%- } -%>
 <% if $rabbitmq::config::config_variables {-%>
@@ -182,6 +188,12 @@
                   {reuse_sessions,<%= $rabbitmq::config::ssl_reuse_sessions %>},
                   {honor_cipher_order,<%= $rabbitmq::config::ssl_honor_cipher_order %>},
                   {verify,<%= $rabbitmq::config::ssl_management_verify %>},
+                  <%- if $rabbitmq::config::ssl_signature_algorithms and $rabbitmq::config::ssl_signature_algorithms.size > 0 { -%>
+                  ,{signature_algs, [ <%= $rabbitmq::config::ssl_signature_algorithms.map |$alg| { "{${alg.join(', ')}}"}.join(', ') %> ]}
+                  <%- } -%>
+                  <%- if $rabbitmq::config::ssl_eccs and $rabbitmq::config::ssl_eccs.size > 0 { -%>
+                  ,{eccs, [ <%= $rabbitmq::config::ssl_eccs.join(', ') %> ]}
+                  <%- } -%>
                   {fail_if_no_peer_cert,<%= $rabbitmq::config::ssl_management_fail_if_no_peer_cert %>}
                    <%- if $rabbitmq::config::ssl_versions {-%>
                    ,{versions, ['<%= $rabbitmq::config::ssl_versions.sort.join("', '") %>']}
