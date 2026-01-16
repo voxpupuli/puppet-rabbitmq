@@ -1190,6 +1190,25 @@ Please see the [Erlang SSL](https://erlang.org/doc/man/ssl.html#type-crl_cache_o
 
 Default value: `undef`
 
+##### <a name="-rabbitmq--ssl_signature_algorithms"></a>`ssl_signature_algorithms`
+
+Data type: `Array[Tuple[String, String]]`
+
+List of signature algorithms to use for SSL connections.
+Each entry is a tuple of `{HashAlgorithm, SignatureAlgorithm}`.
+Example: `[['sha256', 'rsa'], ['sha384', 'ecdsa']]`
+
+Default value: `[]`
+
+##### <a name="-rabbitmq--ssl_eccs"></a>`ssl_eccs`
+
+Data type: `Array[String[1]]`
+
+List of ECC curves to use for SSL connections.
+Example: `['secp256r1', 'secp384r1']`
+
+Default value: `[]`
+
 ##### <a name="-rabbitmq--stomp_port"></a>`stomp_port`
 
 Data type: `Integer[1, 65535]`

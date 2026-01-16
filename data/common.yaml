@@ -67,6 +67,8 @@ rabbitmq::ssl_reuse_sessions: true
 rabbitmq::ssl_honor_cipher_order: true
 rabbitmq::ssl_dhfile: ~
 rabbitmq::ssl_ciphers: []
+rabbitmq::ssl_signature_algorithms: []
+rabbitmq::ssl_eccs: []
 rabbitmq::stomp_ensure: false
 rabbitmq::ldap_auth: false
 rabbitmq::ldap_server: 'ldap'
