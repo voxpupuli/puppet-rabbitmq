@@ -317,6 +317,8 @@ The following parameters are available in the `rabbitmq` class:
 * [`ssl_crl_check`](#-rabbitmq--ssl_crl_check)
 * [`ssl_crl_cache_hash_dir`](#-rabbitmq--ssl_crl_cache_hash_dir)
 * [`ssl_crl_cache_http_timeout`](#-rabbitmq--ssl_crl_cache_http_timeout)
+* [`ssl_signature_algorithms`](#-rabbitmq--ssl_signature_algorithms)
+* [`ssl_eccs`](#-rabbitmq--ssl_eccs)
 * [`stomp_port`](#-rabbitmq--stomp_port)
 * [`stomp_ssl_only`](#-rabbitmq--stomp_ssl_only)
 * [`stomp_ensure`](#-rabbitmq--stomp_ensure)
@@ -1195,8 +1197,7 @@ Default value: `undef`
 Data type: `Array[Tuple[String, String]]`
 
 List of signature algorithms to use for SSL connections.
-Each entry is a tuple of `{HashAlgorithm, SignatureAlgorithm}`.
-Example: `[['sha256', 'rsa'], ['sha384', 'ecdsa']]`
+Please see the [Erlang SSL](https://www.erlang.org/doc/apps/ssl/ssl.html#t:signature_algs/0) module documentation for more information.
 
 Default value: `[]`
 
@@ -1205,7 +1206,7 @@ Default value: `[]`
 Data type: `Array[String[1]]`
 
 List of ECC curves to use for SSL connections.
-Example: `['secp256r1', 'secp384r1']`
+Please see the [Erlang SSL](https://www.erlang.org/doc/apps/ssl/ssl.html) module documentation for more information.
 
 Default value: `[]`
 
