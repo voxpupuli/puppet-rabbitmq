@@ -158,8 +158,9 @@
 #
 #
 # @param manage_python
-#   If enabled, on platforms that don't provide a Python 2 package by default, ensure that the python package is
-#   installed (for rabbitmqadmin). This will only apply if `admin_enable` and `service_manage` are set.
+#   If enabled, ensure that the python package (for rabbitmqadmin) is installed
+#   on platforms that don't provide it by default. This will only apply if
+#   `admin_enable` and `service_manage` are set.
 #
 # @param python_package
 #   Name of the package required by rabbitmqadmin.
@@ -440,13 +441,13 @@ class rabbitmq (
   Boolean $management_enable                                                                       = false,
   Boolean $use_config_file_for_plugins                                                             = false,
   Array $plugins                                                                                   = [],
-  Hash $cluster                                                                                    = $rabbitmq::cluster,
+  Hash $cluster                                                                                    = {},
   Enum['ram', 'disc'] $cluster_node_type                                                           = 'disc',
   Array $cluster_nodes                                                                             = [],
-  String[1] $config                                                                                = 'rabbitmq/rabbitmq.config.epp',
+  String[1] $config                                                                                = 'rabbitmq/rabbitmq.conf.epp',
   Hash $config_cowboy_opts                                                                         = {},
   Boolean $config_cluster                                                                          = false,
-  Stdlib::Absolutepath $config_path                                                                = '/etc/rabbitmq/rabbitmq.config',
+  Stdlib::Absolutepath $config_path                                                                = '/etc/rabbitmq/rabbitmq.conf',
   Boolean $config_ranch                                                                            = true,
   Boolean $config_stomp                                                                            = false,
   Boolean $config_shovel                                                                           = false,
@@ -489,9 +490,9 @@ class rabbitmq (
   Optional[Stdlib::Absolutepath] $ssl_management_cert                                              = $ssl_cert,
   Optional[Stdlib::Absolutepath] $ssl_management_key                                               = $ssl_key,
   Integer[1, 65535] $ssl_stomp_port                                                                = 6164,
-  Enum['verify_none','verify_peer'] $ssl_verify                                                    = 'verify_none',
+  Enum['verify_none','verify_peer'] $ssl_verify                                                    = 'verify_peer',
   Boolean $ssl_fail_if_no_peer_cert                                                                = false,
-  Enum['verify_none','verify_peer'] $ssl_management_verify                                         = 'verify_none',
+  Enum['verify_none','verify_peer'] $ssl_management_verify                                         = 'verify_peer',
   Boolean $ssl_management_fail_if_no_peer_cert                                                     = false,
   Optional[Array] $ssl_versions                                                                    = undef,
   Optional[Boolean] $ssl_client_renegotiation                                                      = undef,

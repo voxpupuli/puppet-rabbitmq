@@ -39,7 +39,7 @@ class rabbitmq::repo::rhel (
     mode    => '0644',
     owner   => 'root',
     content => epp('rabbitmq/rabbitmq.repo.epp', {
-        'el_major' => $facts['os']['release']['major'],
-      }),
+      'el_major' => $facts['os']['release']['major'],
+    }),
   }
 }

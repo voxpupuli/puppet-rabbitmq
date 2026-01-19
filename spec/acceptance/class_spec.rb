@@ -109,12 +109,6 @@ describe 'rabbitmq class:' do
     describe port(15_672) do
       it { is_expected.to be_listening.on('0.0.0.0').with('tcp') }
     end
-
-    describe port(25_672) do
-      xit 'Is on 55672 instead on older rmq versions' do
-        is_expected.to be_listening.on('0.0.0.0').with('tcp')
-      end
-    end
   end
 
   context 'binding to localhost only' do
@@ -141,14 +135,6 @@ describe 'rabbitmq class:' do
 
     describe port(15_672) do
       it { is_expected.to be_listening.on('127.0.0.1').with('tcp') }
-    end
-
-    # This listens on all interfaces regardless of these settings
-
-    describe port(25_672) do
-      xit 'Is on 55672 instead on older rmq versions' do
-        is_expected.to be_listening.on('0.0.0.0').with('tcp')
-      end
     end
   end
 
@@ -208,12 +194,6 @@ describe 'rabbitmq class:' do
 
     describe port(15_672) do
       it { is_expected.to be_listening.on('127.0.0.1').with('tcp') }
-    end
-
-    describe port(25_672) do
-      xit 'Is on 55672 instead on older rmq versions' do
-        is_expected.to be_listening.on('0.0.0.0').with('tcp')
-      end
     end
   end
 end

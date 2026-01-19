@@ -554,7 +554,7 @@ Data type: `Hash`
 
 Join cluster and change name of cluster.
 
-Default value: `$rabbitmq::cluster`
+Default value: `{}`
 
 ##### <a name="-rabbitmq--cluster_node_type"></a>`cluster_node_type`
 
@@ -594,7 +594,7 @@ Data type: `String[1]`
 
 The file to use as the rabbitmq.config template.
 
-Default value: `'rabbitmq/rabbitmq.config.epp'`
+Default value: `'rabbitmq/rabbitmq.conf.epp'`
 
 ##### <a name="-rabbitmq--config_additional_variables"></a>`config_additional_variables`
 
@@ -634,7 +634,7 @@ Data type: `Stdlib::Absolutepath`
 
 The path to write the RabbitMQ configuration file to.
 
-Default value: `'/etc/rabbitmq/rabbitmq.config'`
+Default value: `'/etc/rabbitmq/rabbitmq.conf'`
 
 ##### <a name="-rabbitmq--config_ranch"></a>`config_ranch`
 
@@ -1155,7 +1155,7 @@ Data type: `Enum['verify_none','verify_peer']`
 
 rabbitmq.config SSL verify setting.
 
-Default value: `'verify_none'`
+Default value: `'verify_peer'`
 
 ##### <a name="-rabbitmq--ssl_fail_if_no_peer_cert"></a>`ssl_fail_if_no_peer_cert`
 
@@ -1171,7 +1171,7 @@ Data type: `Enum['verify_none','verify_peer']`
 
 rabbitmq.config SSL verify setting for rabbitmq_management.
 
-Default value: `'verify_none'`
+Default value: `'verify_peer'`
 
 ##### <a name="-rabbitmq--ssl_versions"></a>`ssl_versions`
 
