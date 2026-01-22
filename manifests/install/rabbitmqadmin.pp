@@ -1,4 +1,5 @@
-# Install rabbitmq admin
+# @summary Install legacy v1 rabbitmqadmin
+#   See https://www.rabbitmq.com/docs/management-cli#obtain-rabbitmqadmin-v1
 #
 # @api private
 class rabbitmq::install::rabbitmqadmin {
@@ -9,7 +10,6 @@ class rabbitmq::install::rabbitmqadmin {
     }
   } else {
     $python_package = $rabbitmq::python_package
-    # Some systems (e.g., Ubuntu 16.04) don't ship Python 2 by default
     if $rabbitmq::manage_python {
       stdlib::ensure_packages([$python_package])
       $rabbitmqadmin_require = [Archive['rabbitmqadmin'], Package[$python_package]]

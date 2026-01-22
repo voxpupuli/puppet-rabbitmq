@@ -1,5 +1,6 @@
 ---
 rabbitmq::package_name: 'rabbitmq-server'
 rabbitmq::service_name: 'rabbitmq-server'
-rabbitmq::package_gpg_key: 'https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc'
-rabbitmq::repo_gpg_key: 'https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey'
+rabbitmq::rpm_repo_primary_gpg_key: 'https://github.com/rabbitmq/signing-keys/releases/download/3.0/rabbitmq-release-signing-key.asc'
+rabbitmq::rpm_repo_erlang_gpg_key: 'https://github.com/rabbitmq/signing-keys/releases/download/3.0/cloudsmith.rabbitmq-erlang.E495BB49CC4BBE5B.key'
+rabbitmq::rpm_repo_server_gpg_key: 'https://github.com/rabbitmq/signing-keys/releases/download/3.0/cloudsmith.rabbitmq-server.9F4587F226208342.key'

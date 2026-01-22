@@ -4,8 +4,6 @@ require 'voxpupuli/acceptance/spec_helper_acceptance'
 
 configure_beaker do |host|
   case fact_on(host, 'os.family')
-  when 'Debian'
-    install_puppet_module_via_pmt_on(host, 'puppetlabs-apt', '>= 9.0.0 < 10.0.0')
   when 'RedHat'
     if fact_on(host, 'os.selinux.enabled')
       # Make sure selinux is disabled so the tests work.
