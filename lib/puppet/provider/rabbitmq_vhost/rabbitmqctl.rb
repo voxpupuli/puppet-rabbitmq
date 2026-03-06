@@ -3,13 +3,13 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmq_cli'))
 Puppet::Type.type(:rabbitmq_vhost).provide(
   :rabbitmqctl,
-  parent: Puppet::Provider::RabbitmqCli
+  parent: Puppet::Provider::RabbitmqCli,
 ) do
   desc 'Rabbitmqctl provider for rabbitmq vhost'
   confine feature: :posix
 
   def initialize(value = {})
-    super(value)
+    super
     @property_flush = {}
   end
 
@@ -49,7 +49,7 @@ Puppet::Type.type(:rabbitmq_vhost).provide(
   def self.instances
     vhost_list.split(%r{\n}).map do |line|
       if supports_metadata?
-        raise Puppet::Error, "Cannot parse invalid vhost line: #{line}" unless \
+        raise Puppet::Error, "Cannot parse invalid vhost line: #{line}" unless
           (matches = line.match(%r{^(\S+)\t+(.*?)\t+(undefined|quorum|classic|stream)?\t+\[(.*?)\]$}i))
 
         name, description, default_queue_type, tags = matches.captures

@@ -12,7 +12,7 @@ describe provider_class do
       description: 'foo description',
       default_queue_type: 'quorum',
       tags: %w[foo bar],
-      provider: described_class.name
+      provider: described_class.name,
     )
   end
 
@@ -66,7 +66,7 @@ describe provider_class do
         'foo',
         ['--description', 'foo description'],
         ['--default-queue-type', 'quorum'],
-        ['--tags', 'foo,bar']
+        ['--tags', 'foo,bar'],
       )
 
       provider.create
@@ -83,7 +83,7 @@ describe provider_class do
     it 'updates vhost metadata in a single call' do
       provider.set(
         description: 'old description',
-        tags: %w[oldtag1 oldtag2]
+        tags: %w[oldtag1 oldtag2],
       )
       provider.description = 'new description'
       provider.tags = %w[tag1 tag2]
@@ -93,7 +93,7 @@ describe provider_class do
         'update_vhost_metadata',
         'foo',
         ['--description', 'new description'],
-        ['--tags', 'tag1,tag2']
+        ['--tags', 'tag1,tag2'],
       )
       provider.flush
     end

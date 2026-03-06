@@ -42,7 +42,7 @@ Puppet::Type.type(:rabbitmq_queue).provide(:rabbitmqadmin, parent: Puppet::Provi
           auto_delete: auto_delete,
           arguments: JSON.parse(arguments),
           ensure: :present,
-          name: format('%s@%s', name, vhost)
+          name: format('%s@%s', name, vhost),
         }
         resources << new(queue) if queue[:name]
       end

@@ -8,8 +8,8 @@ describe Puppet::Type.type(:rabbitmq_policy).provider(:rabbitmqctl) do
       name: 'ha-all@/',
       pattern: '.*',
       definition: {
-        'ha-mode' => 'all'
-      }
+        'ha-mode' => 'all',
+      },
     )
   end
   let(:provider) { described_class.new(resource) }
@@ -24,9 +24,9 @@ describe Puppet::Type.type(:rabbitmq_policy).provider(:rabbitmqctl) do
         name: 'ha@home@/',
         pattern: '.*',
         definition: {
-          'ha-mode' => 'all'
+          'ha-mode' => 'all',
         },
-        provider: described_class.name
+        provider: described_class.name,
       )
     end
     let(:provider) { described_class.new(resource) }
@@ -58,7 +58,7 @@ describe Puppet::Type.type(:rabbitmq_policy).provider(:rabbitmqctl) do
                                      priority: '0',
                                      definition: {
                                        'ha-mode' => 'all',
-                                       'ha-sync-mode' => 'automatic'
+                                       'ha-sync-mode' => 'automatic',
                                      })
     end
 
@@ -75,7 +75,7 @@ describe Puppet::Type.type(:rabbitmq_policy).provider(:rabbitmqctl) do
                                        'delivery-limit' => 10,
                                        'initial-cluster-size' => 3,
                                        'max-length' => 100_000_000,
-                                       'overflow' => 'reject-publish-dlx'
+                                       'overflow' => 'reject-publish-dlx',
                                      })
     end
   end
@@ -92,7 +92,7 @@ describe Puppet::Type.type(:rabbitmq_policy).provider(:rabbitmqctl) do
                                      priority: '0',
                                      definition: {
                                        'ha-mode' => 'all',
-                                       'ha-sync-mode' => 'automatic'
+                                       'ha-sync-mode' => 'automatic',
                                      })
     end
   end
@@ -109,7 +109,7 @@ describe Puppet::Type.type(:rabbitmq_policy).provider(:rabbitmqctl) do
                                      priority: '0',
                                      definition: {
                                        'ha-mode' => 'all',
-                                       'ha-sync-mode' => 'automatic'
+                                       'ha-sync-mode' => 'automatic',
                                      })
     end
   end

@@ -5,7 +5,7 @@ require 'spec_helper'
 describe 'Puppet::Type.type(:rabbitmq_user_permissions).provider(:rabbitmqctl)' do
   let(:resource) do
     Puppet::Type::Rabbitmq_user_permissions.new(
-      name: 'foo@bar'
+      name: 'foo@bar',
     )
   end
   let(:provider_class) { Puppet::Type.type(:rabbitmq_user_permissions).provider(:rabbitmqctl) }
@@ -73,14 +73,14 @@ describe 'Puppet::Type.type(:rabbitmq_user_permissions).provider(:rabbitmqctl)' 
   end
   { configure_permission: %w[foo 2 3],
     read_permission: %w[1 2 foo],
-    write_permission: %w[1 foo 3] }.each do |perm, columns|
+    write_permission: %w[1 foo 3], }.each do |perm, columns|
     it "is able to sync #{perm}" do
       expect(provider.class).to receive(:rabbitmqctl_list).with('user_permissions', 'foo').and_return(<<~EOT)
         bar 1 2 3
       EOT
       provider.resource[perm] = 'foo'
       expect(provider).to receive(:rabbitmqctl).with('set_permissions', '-p', 'bar', 'foo', *columns)
-      provider.send("#{perm}=".to_sym, 'foo')
+      provider.send(:"#{perm}=", 'foo')
     end
   end
   it 'onlies call set_permissions once' do

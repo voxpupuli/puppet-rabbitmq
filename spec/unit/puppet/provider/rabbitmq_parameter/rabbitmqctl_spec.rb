@@ -12,8 +12,8 @@ describe provider_class do
         'src-uri' => 'amqp://',
         'src-queue' => 'my-queue',
         'dest-uri' => 'amqp://remote-server',
-        'dest-queue' => 'another-queue'
-      }
+        'dest-queue' => 'another-queue',
+      },
     )
   end
   let(:provider) { provider_class.new(resource) }
@@ -73,7 +73,7 @@ describe provider_class do
         {
           name: prov.get(:name),
           component_name: prov.get(:component_name),
-          value: prov.get(:value)
+          value: prov.get(:value),
         }
       end).to eq(
         [
@@ -84,10 +84,10 @@ describe provider_class do
               'src-uri' => 'amqp://',
               'src-queue' => 'my-queue',
               'dest-uri' => 'amqp://remote-server',
-              'dest-queue' => 'another-queue'
-            }
-          }
-        ]
+              'dest-queue' => 'another-queue',
+            },
+          },
+        ],
       )
     end
 
@@ -105,7 +105,7 @@ describe provider_class do
         {
           name: prov.get(:name),
           component_name: prov.get(:component_name),
-          value: prov.get(:value)
+          value: prov.get(:value),
         }
       end).to eq(
         [
@@ -116,8 +116,8 @@ describe provider_class do
               'src-uri' => 'amqp://',
               'src-queue' => 'my-queue',
               'dest-uri' => 'amqp://remote-server',
-              'dest-queue' => 'another-queue'
-            }
+              'dest-queue' => 'another-queue',
+            },
           },
           {
             name: 'documentumShovel2@/',
@@ -126,10 +126,10 @@ describe provider_class do
               'src-uri' => ['amqp://cl1', 'amqp://cl2'],
               'src-queue' => 'my-queue',
               'dest-uri' => 'amqp://remote-server',
-              'dest-queue' => 'another-queue'
-            }
-          }
-        ]
+              'dest-queue' => 'another-queue',
+            },
+          },
+        ],
       )
     end
 
@@ -147,7 +147,7 @@ describe provider_class do
         {
           name: prov.get(:name),
           component_name: prov.get(:component_name),
-          value: prov.get(:value)
+          value: prov.get(:value),
         }
       end).to eq(
         [
@@ -158,18 +158,18 @@ describe provider_class do
               'src-uri' => 'amqp://',
               'src-queue' => 'my-queue',
               'dest-uri' => 'amqp://remote-server',
-              'dest-queue' => 'another-queue'
-            }
+              'dest-queue' => 'another-queue',
+            },
           },
           {
             name: 'documentumFederation2@/',
             component_name: 'federation',
             value: {
               'uri' => 'amqp://',
-              'expires' => '360000'
-            }
-          }
-        ]
+              'expires' => '360000',
+            },
+          },
+        ],
       )
     end
   end

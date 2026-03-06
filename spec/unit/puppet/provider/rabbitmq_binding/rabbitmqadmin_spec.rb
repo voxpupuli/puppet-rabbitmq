@@ -9,7 +9,7 @@ describe provider_class do
       name: 'source@target@/',
       destination_type: :queue,
       routing_key: 'blablub',
-      arguments: {}
+      arguments: {},
     )
   end
   let(:provider) { provider_class.new(resource) }
@@ -31,15 +31,15 @@ describe provider_class do
           source: prov.get(:source),
           destination: prov.get(:destination),
           vhost: prov.get(:vhost),
-          routing_key: prov.get(:routing_key)
+          routing_key: prov.get(:routing_key),
         }
       end).to eq([
                    {
                      source: 'exchange',
                      destination: 'dst_queue',
                      vhost: '/',
-                     routing_key: '*'
-                   }
+                     routing_key: '*',
+                   },
                  ])
     end
 
@@ -60,21 +60,21 @@ describe provider_class do
           source: prov.get(:source),
           destination: prov.get(:destination),
           vhost: prov.get(:vhost),
-          routing_key: prov.get(:routing_key)
+          routing_key: prov.get(:routing_key),
         }
       end).to eq([
                    {
                      source: 'exchange',
                      destination: 'dst_queue',
                      vhost: '/',
-                     routing_key: 'routing_one'
+                     routing_key: 'routing_one',
                    },
                    {
                      source: 'exchange',
                      destination: 'dst_queue',
                      vhost: '/',
-                     routing_key: 'routing_two'
-                   }
+                     routing_key: 'routing_two',
+                   },
                  ])
     end
 
@@ -96,7 +96,7 @@ describe provider_class do
           destination: prov.get(:destination),
           vhost: prov.get(:vhost),
           routing_key: prov.get(:routing_key),
-          arguments: prov.get(:arguments)
+          arguments: prov.get(:arguments),
         }
       end).to eq([
                    {
@@ -104,15 +104,15 @@ describe provider_class do
                      destination: 'dst_queue',
                      vhost: '/',
                      routing_key: 'routing_one',
-                     arguments: {}
+                     arguments: {},
                    },
                    {
                      source: 'exchange',
                      destination: 'dst_queue',
                      vhost: '/',
                      routing_key: 'routing_two',
-                     arguments: { 'header' => 'value', 'x-match' => 'all' }
-                   }
+                     arguments: { 'header' => 'value', 'x-match' => 'all' },
+                   },
                  ])
     end
   end
@@ -125,7 +125,7 @@ describe provider_class do
         destination: 'destqueue',
         destination_type: :queue,
         routing_key: 'blablubd',
-        arguments: {}
+        arguments: {},
       )
     end
 
@@ -174,7 +174,7 @@ describe provider_class do
           routing_key: 'blablubd',
           arguments: {},
           user: 'colin',
-          password: 'secret'
+          password: 'secret',
         )
       end
       let(:provider) { provider_class.new(resource) }
@@ -196,7 +196,7 @@ describe provider_class do
           destination: 'destqueue',
           destination_type: :queue,
           routing_key: 'blablubd',
-          arguments: {}
+          arguments: {},
         )
       end
       let(:provider) { provider_class.new(resource) }

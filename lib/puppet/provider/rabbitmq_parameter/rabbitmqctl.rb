@@ -11,7 +11,7 @@ Puppet::Type.type(:rabbitmq_parameter).provide(:rabbitmqctl, parent: Puppet::Pro
   mk_resource_methods
 
   def initialize(value = {})
-    super(value)
+    super
     @property_flush = {}
   end
 
@@ -33,7 +33,7 @@ Puppet::Type.type(:rabbitmq_parameter).provide(:rabbitmqctl, parent: Puppet::Pro
           ensure: :present,
           component_name: Regexp.last_match(1),
           name: format('%s@%s', Regexp.last_match(2), vhost),
-          value: JSON.parse(Regexp.last_match(3))
+          value: JSON.parse(Regexp.last_match(3)),
         }
         resources << new(parameter)
       end

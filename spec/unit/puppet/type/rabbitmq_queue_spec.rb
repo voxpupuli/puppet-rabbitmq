@@ -8,8 +8,8 @@ describe Puppet::Type.type(:rabbitmq_queue) do
       durable: :true,
       arguments: {
         'x-message-ttl' => 45,
-        'x-dead-letter-exchange' => 'deadexchange'
-      }
+        'x-dead-letter-exchange' => 'deadexchange',
+      },
     )
   end
 
