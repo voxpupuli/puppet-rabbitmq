@@ -9,7 +9,7 @@ describe provider_class do
       name: 'test@/',
       durable: :true,
       auto_delete: :false,
-      arguments: {}
+      arguments: {},
     )
   end
   let(:provider) { provider_class.new(resource) }
@@ -29,14 +29,14 @@ describe provider_class do
                name: prov.get(:name),
                durable: prov.get(:durable),
                auto_delete: prov.get(:auto_delete),
-               arguments: prov.get(:arguments)
+               arguments: prov.get(:arguments),
              }
            end).to eq([
                         {
                           name: 'test@/',
                           durable: 'true',
                           auto_delete: 'false',
-                          arguments: {}
+                          arguments: {},
                         },
                         {
                           name: 'test2@/',
@@ -48,9 +48,9 @@ describe provider_class do
                             'x-max-length' => 2332,
                             'x-max-length-bytes' => 32_563_324_242,
                             'x-dead-letter-exchange' => 'amq.direct',
-                            'x-dead-letter-routing-key' => 'test.routing'
-                          }
-                        }
+                            'x-dead-letter-routing-key' => 'test.routing',
+                          },
+                        },
                       ])
   end
 
@@ -72,7 +72,7 @@ describe provider_class do
         auto_delete: 'false',
         arguments: {},
         user: 'colin',
-        password: 'secret'
+        password: 'secret',
       )
     end
     let(:provider) { provider_class.new(resource) }

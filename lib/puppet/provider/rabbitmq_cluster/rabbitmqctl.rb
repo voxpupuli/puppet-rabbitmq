@@ -3,7 +3,7 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmq_cli'))
 Puppet::Type.type(:rabbitmq_cluster).provide(
   :rabbitmqctl,
-  parent: Puppet::Provider::RabbitmqCli
+  parent: Puppet::Provider::RabbitmqCli,
 ) do
   desc 'Rabbitmqctl provider for rabbitmq cluster'
   confine feature: :posix
@@ -19,7 +19,7 @@ Puppet::Type.type(:rabbitmq_cluster).provide(
     local_node = @resource[:local_node].to_s.gsub(%r{^.*@}, '')
 
     if local_node == init_node || [Facter.value(:networking)['hostname'], Facter.value(:networking)['fqdn']].include?(init_node)
-      return rabbitmqctl('set_cluster_name', @resource[:name]) unless cluster_name == resource[:name].to_s
+      rabbitmqctl('set_cluster_name', @resource[:name]) unless cluster_name == resource[:name].to_s
     else
       rabbitmqctl('stop_app')
       rabbitmqctl('join_cluster', "rabbit@#{init_node}", "--#{storage_type}")

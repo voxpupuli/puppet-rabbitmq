@@ -9,7 +9,7 @@ describe provider_class do
       ensure: :present,
       name: 'rmq_x',
       password: 'secret',
-      provider: described_class.name
+      provider: described_class.name,
     )
   end
   let(:provider) { provider_class.new(resource) }
@@ -17,7 +17,7 @@ describe provider_class do
 
   before do
     allow(provider.class).to receive(:rabbitmqctl_list).with('users').and_return(
-      "rmq_x [disk, storage]\nrmq_y [network, cpu, administrator]\nrmq_z []\n"
+      "rmq_x [disk, storage]\nrmq_y [network, cpu, administrator]\nrmq_z []\n",
     )
   end
 
@@ -49,7 +49,7 @@ describe provider_class do
       let(:resource) do
         Puppet::Type.type(:rabbitmq_user).new(
           ensure: :present,
-          name: 'rmq_x'
+          name: 'rmq_x',
         )
       end
 
@@ -73,7 +73,7 @@ describe provider_class do
       before do
         allow(provider.class).to receive(:rabbitmqctl).with(
           'eval',
-          'rabbit_access_control:check_user_pass_login(list_to_binary("rmq_x"), list_to_binary("secret")).'
+          'rabbit_access_control:check_user_pass_login(list_to_binary("rmq_x"), list_to_binary("secret")).',
         ).and_return(<<~EOT)
           {ok,{user,<<"rmq_x">>,[],rabbit_auth_backend_internal,
                     {internal_user,<<"rmq_x">>,
@@ -92,7 +92,7 @@ describe provider_class do
       before do
         allow(provider.class).to receive(:rabbitmqctl).with(
           'eval',
-          'rabbit_access_control:check_user_pass_login(list_to_binary("rmq_x"), list_to_binary("nottherightone")).'
+          'rabbit_access_control:check_user_pass_login(list_to_binary("rmq_x"), list_to_binary("nottherightone")).',
         ).and_return(<<~EOT)
           {refused,"user '~s' - invalid credentials",[<<"rmq_x">>]}
           ...done.

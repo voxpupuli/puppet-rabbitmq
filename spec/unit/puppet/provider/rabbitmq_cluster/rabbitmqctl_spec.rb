@@ -7,7 +7,7 @@ describe provider_class do
   let(:resource) do
     Puppet::Type::Rabbitmq_cluster.new(
       name: 'test_cluster',
-      init_node: 'host1'
+      init_node: 'host1',
     )
   end
   let(:provider) { provider_class.new(resource) }
@@ -15,7 +15,7 @@ describe provider_class do
   describe '#exists?' do
     it {
       expect(provider).to receive(:rabbitmqctl).with('-q', 'cluster_status').and_return(
-        'Cluster name: test_cluster'
+        'Cluster name: test_cluster',
       )
       expect(provider.exists?).to be true
     }

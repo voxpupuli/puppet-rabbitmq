@@ -12,8 +12,8 @@ describe provider_class do
       durable: :true,
       auto_delete: :false,
       arguments: {
-        'hash-headers' => 'message-distribution-hash'
-      }
+        'hash-headers' => 'message-distribution-hash',
+      },
     )
   end
   let(:provider) { provider_class.new(resource) }
@@ -42,7 +42,7 @@ describe provider_class do
                internal: prov.get(:internal),
                durable: prov.get(:durable),
                auto_delete: prov.get(:auto_delete),
-               arguments: prov.get(:arguments)
+               arguments: prov.get(:arguments),
              }
            end).to eq([
                         {
@@ -51,7 +51,7 @@ describe provider_class do
                           internal: 'false',
                           durable: 'true',
                           auto_delete: 'false',
-                          arguments: {}
+                          arguments: {},
                         },
                         {
                           name: 'amq.direct@/',
@@ -59,7 +59,7 @@ describe provider_class do
                           internal: 'false',
                           durable: 'true',
                           auto_delete: 'false',
-                          arguments: {}
+                          arguments: {},
                         },
                         {
                           name: 'amq.fanout@/',
@@ -67,7 +67,7 @@ describe provider_class do
                           internal: 'false',
                           durable: 'true',
                           auto_delete: 'false',
-                          arguments: {}
+                          arguments: {},
                         },
                         {
                           name: 'amq.headers@/',
@@ -75,7 +75,7 @@ describe provider_class do
                           internal: 'false',
                           durable: 'true',
                           auto_delete: 'false',
-                          arguments: {}
+                          arguments: {},
                         },
                         {
                           name: 'amq.match@/',
@@ -83,7 +83,7 @@ describe provider_class do
                           internal: 'false',
                           durable: 'true',
                           auto_delete: 'false',
-                          arguments: {}
+                          arguments: {},
                         },
                         {
                           name: 'amq.rabbitmq.log@/',
@@ -91,7 +91,7 @@ describe provider_class do
                           internal: 'true',
                           durable: 'true',
                           auto_delete: 'false',
-                          arguments: {}
+                          arguments: {},
                         },
                         {
                           name: 'amq.rabbitmq.trace@/',
@@ -99,7 +99,7 @@ describe provider_class do
                           internal: 'true',
                           durable: 'true',
                           auto_delete: 'false',
-                          arguments: {}
+                          arguments: {},
                         },
                         {
                           name: 'amq.topic@/',
@@ -107,7 +107,7 @@ describe provider_class do
                           internal: 'false',
                           durable: 'true',
                           auto_delete: 'false',
-                          arguments: {}
+                          arguments: {},
                         },
                         {
                           name: 'test.headers@/',
@@ -115,8 +115,8 @@ describe provider_class do
                           internal: 'false',
                           durable: 'true',
                           auto_delete: 'false',
-                          arguments: { 'hash-header' => 'message-distribution-hash' }
-                        }
+                          arguments: { 'hash-header' => 'message-distribution-hash' },
+                        },
                       ])
   end
 
@@ -141,8 +141,8 @@ describe provider_class do
         user: 'colin',
         password: 'secret',
         arguments: {
-          'hash-header' => 'message-distribution-hash'
-        }
+          'hash-header' => 'message-distribution-hash',
+        },
       )
     end
     let(:provider) { provider_class.new(resource) }

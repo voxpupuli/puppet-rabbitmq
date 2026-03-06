@@ -7,8 +7,8 @@ describe Puppet::Type.type(:rabbitmq_policy) do
       name: 'ha-all@/',
       pattern: '.*',
       definition: {
-        'ha-mode' => 'all'
-      }
+        'ha-mode' => 'all',
+      },
     )
   end
 

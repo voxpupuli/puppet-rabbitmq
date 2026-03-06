@@ -6,7 +6,7 @@ provider_class = Puppet::Type.type(:rabbitmq_plugin).provider(:rabbitmqplugins)
 describe provider_class do
   let(:resource) do
     Puppet::Type::Rabbitmq_plugin.new(
-      name: 'foo'
+      name: 'foo',
     )
   end
   let(:provider) { provider_class.new(resource) }
@@ -29,8 +29,8 @@ describe provider_class do
       expect(instances_cmp).to eq(
         [
           { name: 'foo' },
-          { name: 'bar' }
-        ]
+          { name: 'bar' },
+        ],
       )
     end
 

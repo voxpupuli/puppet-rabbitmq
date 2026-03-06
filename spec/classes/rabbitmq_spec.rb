@@ -60,17 +60,17 @@ describe 'rabbitmq' do
 
         if os_facts['os']['family'] == 'Debian'
           it 'includes rabbitmq::repo::apt' do
-            is_expected.to contain_class('rabbitmq::repo::apt').
-              with_key_source('https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey').
-              with_key_content(nil)
+            is_expected.to contain_class('rabbitmq::repo::apt')
+              .with_key_source('https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey')
+              .with_key_content(nil)
           end
 
           it 'adds a repo with default values' do
-            is_expected.to contain_apt__source('rabbitmq').
-              with_ensure('present').
-              with_location("https://packagecloud.io/rabbitmq/rabbitmq-server/#{os_facts['os']['name'].downcase}").
-              with_release(nil).
-              with_repos('main')
+            is_expected.to contain_apt__source('rabbitmq')
+              .with_ensure('present')
+              .with_location("https://packagecloud.io/rabbitmq/rabbitmq-server/#{os_facts['os']['name'].downcase}")
+              .with_release(nil)
+              .with_repos('main')
           end
         else
           it { is_expected.not_to contain_class('rabbitmq::repo::apt') }
@@ -81,21 +81,21 @@ describe 'rabbitmq' do
           it { is_expected.to contain_class('rabbitmq::repo::rhel') }
 
           it 'the repo should be present, and contain the expected values' do
-            is_expected.to contain_yumrepo('rabbitmq').
-              with_ensure('present').
-              with_baseurl(%r{https://packagecloud.io/rabbitmq/rabbitmq-server/el/\d+/\$basearch$}).
-              with_gpgkey('https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey')
+            is_expected.to contain_yumrepo('rabbitmq')
+              .with_ensure('present')
+              .with_baseurl(%r{https://packagecloud.io/rabbitmq/rabbitmq-server/el/\d+/\$basearch$})
+              .with_gpgkey('https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey')
           end
 
           it {
             is_expected.to contain_exec('rpm --import https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc').with(
-              unless: 'rpm -q gpg-pubkey-6026dfca-573adfde 2>/dev/null'
+              unless: 'rpm -q gpg-pubkey-6026dfca-573adfde 2>/dev/null',
             )
           }
 
           it {
             is_expected.to contain_exec('rpm --import https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey').with(
-              unless: 'rpm -q gpg-pubkey-4d206f89-5bbb8d59 2>/dev/null'
+              unless: 'rpm -q gpg-pubkey-4d206f89-5bbb8d59 2>/dev/null',
             )
           }
 
@@ -113,7 +113,7 @@ describe 'rabbitmq' do
             is_expected.to contain_apt__source('rabbitmq').with(
               'location' => "https://packagecloud.io/rabbitmq/rabbitmq-server/#{os_facts['os']['name'].downcase}",
               'repos' => 'main',
-              'key' => '{"id"=>"8C695B0219AFDEB04A058ED8F4E789204D206F89", "source"=>"https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey", "content"=>nil}'
+              'key' => '{"id"=>"8C695B0219AFDEB04A058ED8F4E789204D206F89", "source"=>"https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey", "content"=>nil}',
             )
           }
         end
@@ -127,7 +127,7 @@ describe 'rabbitmq' do
             is_expected.to contain_apt__source('rabbitmq').with(
               'location' => "https://packagecloud.io/rabbitmq/rabbitmq-server/#{os_facts['os']['name'].downcase}",
               'repos' => 'main',
-              'key' => '{"id"=>"8C695B0219AFDEB04A058ED8F4E789204D206F89", "source"=>"https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey", "content"=>nil}'
+              'key' => '{"id"=>"8C695B0219AFDEB04A058ED8F4E789204D206F89", "source"=>"https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey", "content"=>nil}',
             )
           }
 
@@ -135,7 +135,7 @@ describe 'rabbitmq' do
             is_expected.to contain_apt__pin('rabbitmq').with(
               'packages' => '*',
               'priority' => '700',
-              'origin' => 'packagecloud.io'
+              'origin' => 'packagecloud.io',
             )
           }
         end
@@ -148,9 +148,9 @@ describe 'rabbitmq' do
           selinux_ignore_defaults = os_facts['os']['family'] == 'RedHat'
 
           it do
-            is_expected.to contain_systemd__manage_dropin('service-90-limits.conf').
-              with_selinux_ignore_defaults(selinux_ignore_defaults).
-              with_service_entry({ 'LimitNOFILE' => value, 'OOMScoreAdjust' => 0 })
+            is_expected.to contain_systemd__manage_dropin('service-90-limits.conf')
+              .with_selinux_ignore_defaults(selinux_ignore_defaults)
+              .with_service_entry({ 'LimitNOFILE' => value, 'OOMScoreAdjust' => 0 })
           end
         end
       end
@@ -183,7 +183,7 @@ describe 'rabbitmq' do
         end
       end
 
-      { 'TimeoutStartSec' => 1200, 'TimeoutStopSec' => 1200, }.each do |key, value|
+      { 'TimeoutStartSec' => 1200, 'TimeoutStopSec' => 1200 }.each do |key, value|
         context "with systemd_additional_service_parameters => '{ #{key} => #{value}'", if: os_facts['kernel'] == 'Linux' do
           let(:params) { { systemd_additional_service_parameters: { key => value } } }
 
@@ -191,7 +191,7 @@ describe 'rabbitmq' do
         end
       end
 
-      { 'TimeoutStartSec' => 600, 'TimeoutStopSec' => 2400, }.each do |key, value|
+      { 'TimeoutStartSec' => 600, 'TimeoutStopSec' => 2400 }.each do |key, value|
         context "with systemd_additional_service_parameters => '{ #{key} => #{value}'", if: os_facts['kernel'] == 'Linux' do
           let(:params) { { systemd_additional_service_parameters: { key => value } } }
 
@@ -224,12 +224,12 @@ describe 'rabbitmq' do
           it 'we enable the admin interface by default' do
             is_expected.to contain_class('rabbitmq::install::rabbitmqadmin')
             is_expected.to contain_rabbitmq_plugin('rabbitmq_management').with(
-              notify: 'Class[Rabbitmq::Service]'
+              notify: 'Class[Rabbitmq::Service]',
             )
             is_expected.to contain_archive('rabbitmqadmin').with_source('http://1.1.1.1:15672/cli/rabbitmqadmin')
             is_expected.to contain_file('/usr/local/bin/rabbitmqadmin').with(
               owner: 'root',
-              mode: '0755'
+              mode: '0755',
             )
             is_expected.to contain_exec('remove_old_rabbitmqadmin_on_upgrade').with_command("rm #{rabbitmq_home}/rabbitmqadmin")
           end
@@ -255,7 +255,7 @@ describe 'rabbitmq' do
           it 'we enable the admin interface by default' do
             is_expected.to contain_class('rabbitmq::install::rabbitmqadmin')
             is_expected.to contain_rabbitmq_plugin('rabbitmq_management').with(
-              notify: 'Class[Rabbitmq::Service]'
+              notify: 'Class[Rabbitmq::Service]',
             )
             is_expected.to contain_archive('rabbitmqadmin').with_source('http://127.0.0.1:15672/cli/rabbitmqadmin')
           end
@@ -268,7 +268,7 @@ describe 'rabbitmq' do
             is_expected.to contain_archive('rabbitmqadmin').with(
               source: 'http://127.0.0.1:15672/cli/rabbitmqadmin',
               username: 'foobar',
-              password: 'hunter2'
+              password: 'hunter2',
             )
           end
         end
@@ -280,7 +280,7 @@ describe 'rabbitmq' do
             is_expected.to contain_archive('rabbitmqadmin').with(
               source: 'http://1.1.1.1:15672/cli/rabbitmqadmin',
               username: 'foobar',
-              password: 'hunter2'
+              password: 'hunter2',
             )
           end
         end
@@ -290,14 +290,14 @@ describe 'rabbitmq' do
             {
               admin_enable: true,
               management_ip_address: '1.1.1.1',
-              archive_options: %w[fizz pop]
+              archive_options: %w[fizz pop],
             }
           end
 
           it 'we use the correct archive_options to rabbitmqadmin' do
             is_expected.to contain_archive('rabbitmqadmin').with(
               source: 'http://1.1.1.1:15672/cli/rabbitmqadmin',
-              download_options: %w[fizz pop]
+              download_options: %w[fizz pop],
             )
           end
         end
@@ -310,7 +310,7 @@ describe 'rabbitmq' do
             is_expected.to contain_archive('rabbitmqadmin').with(
               source: 'http://1.1.1.1:55672/cli/rabbitmqadmin',
               username: 'guest',
-              password: 'guest'
+              password: 'guest',
             )
           end
         end
@@ -323,7 +323,7 @@ describe 'rabbitmq' do
             is_expected.to contain_archive('rabbitmqadmin').with(
               source: 'http://[::1]:55672/cli/rabbitmqadmin',
               username: 'guest',
-              password: 'guest'
+              password: 'guest',
             )
           end
         end
@@ -344,7 +344,7 @@ describe 'rabbitmq' do
             'ensure' => 'directory',
             'owner' => 'rabbitmq',
             'group' => 'rabbitmq',
-            'mode' => '2755'
+            'mode' => '2755',
           )
         }
       end
@@ -354,7 +354,7 @@ describe 'rabbitmq' do
           is_expected.to contain_file('rabbitmq.config').with(
             'owner' => 'rabbitmq',
             'group' => 'rabbitmq',
-            'mode' => '0640'
+            'mode' => '0640',
           )
         }
       end
@@ -365,17 +365,17 @@ describe 'rabbitmq' do
             'ensure' => 'directory',
             'owner' => 'rabbitmq',
             'group' => 'rabbitmq',
-            'mode' => '2750'
+            'mode' => '2750',
           )
         }
       end
 
       describe 'does not contain pre-ranch settings with default config' do
         it do
-          is_expected.to contain_file('rabbitmq.config'). \
-            without_content(%r{binary,}). \
-            without_content(%r{\{packet,        raw\},}). \
-            without_content(%r{\{reuseaddr,     true\},})
+          is_expected.to contain_file('rabbitmq.config')
+            .without_content(%r{binary,})
+            .without_content(%r{\{packet,        raw\},})
+            .without_content(%r{\{reuseaddr,     true\},})
         end
       end
 
@@ -383,10 +383,10 @@ describe 'rabbitmq' do
         let(:params) { { config_ranch: false } }
 
         it do
-          is_expected.to contain_file('rabbitmq.config'). \
-            with_content(%r{binary,}). \
-            with_content(%r{\{packet,        raw\},}). \
-            with_content(%r{\{reuseaddr,     true\},})
+          is_expected.to contain_file('rabbitmq.config')
+            .with_content(%r{binary,})
+            .with_content(%r{\{packet,        raw\},})
+            .with_content(%r{\{reuseaddr,     true\},})
         end
       end
 
@@ -396,7 +396,7 @@ describe 'rabbitmq' do
             config_cluster: true,
             cluster_nodes: %w[hare-1 hare-2],
             cluster_node_type: 'ram',
-            wipe_db_on_cookie_change: false
+            wipe_db_on_cookie_change: false,
           }
         end
 
@@ -407,7 +407,7 @@ describe 'rabbitmq' do
               cluster_nodes: %w[hare-1 hare-2],
               cluster_node_type: 'ram',
               erlang_cookie: 'TESTCOOKIE',
-              wipe_db_on_cookie_change: true
+              wipe_db_on_cookie_change: true,
             }
           end
 
@@ -420,7 +420,7 @@ describe 'rabbitmq' do
           let(:params) do
             {
               config_cluster: false,
-              erlang_cookie: 'TESTCOOKIE'
+              erlang_cookie: 'TESTCOOKIE',
             }
           end
 
@@ -432,7 +432,7 @@ describe 'rabbitmq' do
         describe 'without erlang_cookie and without config_cluster' do
           let(:params) do
             {
-              config_cluster: false
+              config_cluster: false,
             }
           end
 
@@ -448,7 +448,7 @@ describe 'rabbitmq' do
               cluster_nodes: %w[hare-1 hare-2],
               cluster_node_type: 'ram',
               erlang_cookie: 'ORIGINAL',
-              wipe_db_on_cookie_change: true
+              wipe_db_on_cookie_change: true,
             }
           end
 
@@ -463,7 +463,7 @@ describe 'rabbitmq' do
               config_cluster: true,
               cluster_node_type: 'ram',
               erlang_cookie: 'ORIGINAL',
-              wipe_db_on_cookie_change: true
+              wipe_db_on_cookie_change: true,
             }
           end
 
@@ -485,9 +485,9 @@ describe 'rabbitmq' do
           end
 
           it 'sets expected cowboy config variables' do
-            is_expected.to contain_file('rabbitmq.config'). \
-              with_content(
-                %r{\{cowboy_opts, \[\n\s+\{max_keepalive, 1000\},\n\s+\{max_request_line_length, 16000\}}
+            is_expected.to contain_file('rabbitmq.config')
+              .with_content(
+                %r{\{cowboy_opts, \[\n\s+\{max_keepalive, 1000\},\n\s+\{max_request_line_length, 16000\}},
               )
           end
         end
@@ -509,9 +509,9 @@ describe 'rabbitmq' do
           end
 
           it 'sets expected cowboy config variables' do
-            is_expected.to contain_file('rabbitmq.config'). \
-              with_content(
-                %r{\{cowboy_opts, \[\n\s+\{max_keepalive, 1002\},\n\s+\{max_request_line_length, 16003\}}
+            is_expected.to contain_file('rabbitmq.config')
+              .with_content(
+                %r{\{cowboy_opts, \[\n\s+\{max_keepalive, 1002\},\n\s+\{max_request_line_length, 16003\}},
               )
           end
         end
@@ -521,11 +521,11 @@ describe 'rabbitmq' do
         context 'with default params' do
           it 'sets environment variables' do
             if %w[FreeBSD OpenBSD].include?(os_facts['os']['family'])
-              is_expected.to contain_file('rabbitmq-env.config'). \
-                with_content(%r{ERL_INETRC=/usr/local/etc/rabbitmq/inetrc})
+              is_expected.to contain_file('rabbitmq-env.config')
+                .with_content(%r{ERL_INETRC=/usr/local/etc/rabbitmq/inetrc})
             else
-              is_expected.to contain_file('rabbitmq-env.config'). \
-                with_content(%r{ERL_INETRC=/etc/rabbitmq/inetrc})
+              is_expected.to contain_file('rabbitmq-env.config')
+                .with_content(%r{ERL_INETRC=/etc/rabbitmq/inetrc})
             end
           end
         end
@@ -540,20 +540,20 @@ describe 'rabbitmq' do
               'CONSOLE_LOG' => 'RabbitMQ.debug',
               'CTL_ERL_ARGS' => 'verbose',
               'SERVER_ERL_ARGS' => 'v',
-              'SERVER_START_ARGS' => 'debug'
+              'SERVER_START_ARGS' => 'debug',
             } }
           end
 
           it 'sets environment variables' do
-            is_expected.to contain_file('rabbitmq-env.config'). \
-              with_content(%r{NODE_IP_ADDRESS=1.1.1.1}). \
-              with_content(%r{NODE_PORT=5656}). \
-              with_content(%r{NODENAME=HOSTNAME}). \
-              with_content(%r{SERVICENAME=RabbitMQ}). \
-              with_content(%r{CONSOLE_LOG=RabbitMQ.debug}). \
-              with_content(%r{CTL_ERL_ARGS=verbose}). \
-              with_content(%r{SERVER_ERL_ARGS=v}). \
-              with_content(%r{SERVER_START_ARGS=debug})
+            is_expected.to contain_file('rabbitmq-env.config')
+              .with_content(%r{NODE_IP_ADDRESS=1.1.1.1})
+              .with_content(%r{NODE_PORT=5656})
+              .with_content(%r{NODENAME=HOSTNAME})
+              .with_content(%r{SERVICENAME=RabbitMQ})
+              .with_content(%r{CONSOLE_LOG=RabbitMQ.debug})
+              .with_content(%r{CTL_ERL_ARGS=verbose})
+              .with_content(%r{SERVER_ERL_ARGS=v})
+              .with_content(%r{SERVER_START_ARGS=debug})
           end
         end
       end
@@ -569,7 +569,7 @@ describe 'rabbitmq' do
           it 'removes the user' do
             is_expected.to contain_rabbitmq_user('guest').with(
               'ensure' => 'absent',
-              'provider' => 'rabbitmqctl'
+              'provider' => 'rabbitmqctl',
             )
           end
         end
@@ -580,8 +580,8 @@ describe 'rabbitmq' do
           let(:params) { { node_ip_address: '172.0.0.1' } }
 
           it 'sets NODE_IP_ADDRESS to specified value' do
-            is_expected.to contain_file('rabbitmq-env.config').
-              with_content(%r{NODE_IP_ADDRESS=172\.0\.0\.1})
+            is_expected.to contain_file('rabbitmq-env.config')
+              .with_content(%r{NODE_IP_ADDRESS=172\.0\.0\.1})
           end
         end
 
@@ -626,7 +626,7 @@ describe 'rabbitmq' do
             ldap_use_ssl: false,
             ldap_port: 389,
             ldap_log: true,
-            ldap_config_variables: { 'foo' => 'bar' } }
+            ldap_config_variables: { 'foo' => 'bar' }, }
         end
 
         it { is_expected.to contain_rabbitmq_plugin('rabbitmq_auth_backend_ldap') }
@@ -637,7 +637,7 @@ describe 'rabbitmq' do
                            '  {rabbitmq_auth_backend_ldap, [', '    {other_bind, as_user},',
                            '    {servers, ["ldap.example.com"]},',
                            '    {user_dn_pattern, "ou=users,dc=example,dc=com"},', '    {use_ssl, false},',
-                           '    {port, 389},', '    {foo, bar},', '    {log, true}'])
+                           '    {port, 389},', '    {foo, bar},', '    {log, true}',])
         end
       end
 
@@ -651,7 +651,7 @@ describe 'rabbitmq' do
             ldap_use_ssl: false,
             ldap_port: 389,
             ldap_log: true,
-            ldap_config_variables: { 'foo' => 'bar' } }
+            ldap_config_variables: { 'foo' => 'bar' }, }
         end
 
         it { is_expected.to contain_rabbitmq_plugin('rabbitmq_auth_backend_ldap') }
@@ -662,7 +662,7 @@ describe 'rabbitmq' do
                            '  {rabbitmq_auth_backend_ldap, [', '    {other_bind, as_user},',
                            '    {servers, ["ldap.example.com"]},',
                            '    {user_dn_pattern, "ou=users,dc=example,dc=com"},', '    {use_ssl, false},',
-                           '    {port, 389},', '    {foo, bar},', '    {log, true}'])
+                           '    {port, 389},', '    {foo, bar},', '    {log, true}',])
         end
       end
 
@@ -675,7 +675,7 @@ describe 'rabbitmq' do
             ldap_use_ssl: false,
             ldap_port: 389,
             ldap_log: true,
-            ldap_config_variables: { 'foo' => 'bar' } }
+            ldap_config_variables: { 'foo' => 'bar' }, }
         end
 
         it { is_expected.to contain_rabbitmq_plugin('rabbitmq_auth_backend_ldap') }
@@ -686,7 +686,7 @@ describe 'rabbitmq' do
                            '  {rabbitmq_auth_backend_ldap, [', '    {other_bind, as_user},',
                            '    {servers, ["ldap.example.com"]},',
                            '    {use_ssl, false},',
-                           '    {port, 389},', '    {foo, bar},', '    {log, true}'])
+                           '    {port, 389},', '    {foo, bar},', '    {log, true}',])
           content = catalogue.resource('file', 'rabbitmq.config').send(:parameters)[:content]
           expect(content).not_to include 'user_dn_pattern'
         end
@@ -701,7 +701,7 @@ describe 'rabbitmq' do
             ldap_use_ssl: false,
             ldap_port: 389,
             ldap_log: true,
-            ldap_config_variables: { 'foo' => 'bar' } }
+            ldap_config_variables: { 'foo' => 'bar' }, }
         end
 
         it { is_expected.to contain_rabbitmq_plugin('rabbitmq_auth_backend_ldap') }
@@ -712,7 +712,7 @@ describe 'rabbitmq' do
                            '  {rabbitmq_auth_backend_ldap, [', '    {other_bind, as_user},',
                            '    {servers, ["ldap1.example.com", "ldap2.example.com"]},',
                            '    {use_ssl, false},',
-                           '    {port, 389},', '    {foo, bar},', '    {log, true}'])
+                           '    {port, 389},', '    {foo, bar},', '    {log, true}',])
           content = catalogue.resource('file', 'rabbitmq.config').send(:parameters)[:content]
           expect(content).not_to include 'user_dn_pattern'
         end
@@ -732,7 +732,7 @@ describe 'rabbitmq' do
       describe 'auth_backends overrides ldap_auth' do
         let :params do
           { auth_backends: ['{baz, foo}', 'bar'],
-            ldap_auth: true }
+            ldap_auth: true, }
         end
 
         it 'contains auth_backends' do
@@ -765,7 +765,7 @@ describe 'rabbitmq' do
             {
               use_config_file_for_plugins: true,
               admin_enable: false,
-              plugins: %w[rabbitmq_stomp rabbitmq_shovel rabbitmq_prometheus]
+              plugins: %w[rabbitmq_stomp rabbitmq_shovel rabbitmq_prometheus],
             }
           end
 
@@ -788,7 +788,7 @@ describe 'rabbitmq' do
               management_enable: true,
               stomp_ensure: true,
               ldap_auth: true,
-              config_shovel: true
+              config_shovel: true,
             }
           end
 
@@ -815,7 +815,7 @@ describe 'rabbitmq' do
         let :params do
           {
             admin_enable: true,
-            management_enable: false
+            management_enable: false,
           }
         end
 
@@ -831,7 +831,7 @@ describe 'rabbitmq' do
           let :params do
             {
               admin_enable: false,
-              management_enable: false
+              management_enable: false,
             }
           end
 
@@ -842,7 +842,7 @@ describe 'rabbitmq' do
           let :params do
             {
               admin_enable: false,
-              management_enable: true
+              management_enable: true,
             }
           end
 
@@ -859,7 +859,7 @@ describe 'rabbitmq' do
       describe 'configuring shovel plugin' do
         let :params do
           {
-            config_shovel: true
+            config_shovel: true,
           }
         end
 
@@ -871,7 +871,7 @@ describe 'rabbitmq' do
           let :params do
             {
               config_shovel: true,
-              admin_enable: false
+              admin_enable: false,
             }
           end
 
@@ -888,8 +888,8 @@ describe 'rabbitmq' do
         {queue,<<"source_one">>}',
                 'shovel_second' => '{sources,[{broker,"amqp://"}]},
         {destinations,[{broker,"amqp://site2.example.com"}]},
-        {queue,<<"source_two">>}'
-              }
+        {queue,<<"source_two">>}',
+              },
             }
           end
 
@@ -903,7 +903,7 @@ describe 'rabbitmq' do
                               '      {shovel_second,[{sources,[{broker,"amqp://"}]},',
                               '        {destinations,[{broker,"amqp://site2.example.com"}]},',
                               '        {queue,<<"source_two">>}]}',
-                              '    ]}]}'
+                              '    ]}]}',
                             ])
           end
         end
@@ -912,7 +912,7 @@ describe 'rabbitmq' do
       describe 'configuring shovel plugin' do
         let :params do
           {
-            config_shovel: true
+            config_shovel: true,
           }
         end
 
@@ -924,7 +924,7 @@ describe 'rabbitmq' do
           let :params do
             {
               config_shovel: true,
-              admin_enable: false
+              admin_enable: false,
             }
           end
 
@@ -941,8 +941,8 @@ describe 'rabbitmq' do
         {queue,<<"source_one">>}',
                 'shovel_second' => '{sources,[{broker,"amqp://"}]},
         {destinations,[{broker,"amqp://site2.example.com"}]},
-        {queue,<<"source_two">>}'
-              }
+        {queue,<<"source_two">>}',
+              },
             }
           end
 
@@ -956,7 +956,7 @@ describe 'rabbitmq' do
                               '      {shovel_second,[{sources,[{broker,"amqp://"}]},',
                               '        {destinations,[{broker,"amqp://site2.example.com"}]},',
                               '        {queue,<<"source_two">>}]}',
-                              '    ]}]}'
+                              '    ]}]}',
                             ])
           end
         end
@@ -992,45 +992,45 @@ describe 'rabbitmq' do
             ssl_honor_cipher_order: true,
             ssl_dhfile: :undef,
             management_ssl: false,
-            management_port: 13_142 }
+            management_port: 13_142, }
         end
 
         it 'sets ssl options to specified values' do
           is_expected.to contain_file('rabbitmq.config').with_content(
-            %r{ssl_listeners, \[3141\]}
+            %r{ssl_listeners, \[3141\]},
           )
           is_expected.to contain_file('rabbitmq.config').with_content(
-            %r{ssl_options, \[}
+            %r{ssl_options, \[},
           )
           is_expected.to contain_file('rabbitmq.config').with_content(
-            %r{cacertfile,"/path/to/cacert"}
+            %r{cacertfile,"/path/to/cacert"},
           )
           is_expected.to contain_file('rabbitmq.config').with_content(
-            %r{certfile,"/path/to/cert"}
+            %r{certfile,"/path/to/cert"},
           )
           is_expected.to contain_file('rabbitmq.config').with_content(
-            %r{keyfile,"/path/to/key"}
+            %r{keyfile,"/path/to/key"},
           )
           is_expected.to contain_file('rabbitmq.config').with_content(
-            %r{secure_renegotiate,true}
+            %r{secure_renegotiate,true},
           )
           is_expected.to contain_file('rabbitmq.config').with_content(
-            %r{reuse_sessions,true}
+            %r{reuse_sessions,true},
           )
           is_expected.to contain_file('rabbitmq.config').with_content(
-            %r{honor_cipher_order,true}
+            %r{honor_cipher_order,true},
           )
           is_expected.to contain_file('rabbitmq.config').without_content(
-            %r{dhfile,}
+            %r{dhfile,},
           )
         end
 
         it 'sets non ssl port for management port' do
           is_expected.to contain_file('rabbitmq.config').with_content(
-            %r{port, 13142}
+            %r{port, 13142},
           )
           is_expected.to contain_file('rabbitmqadmin.conf').with_content(
-            %r{port\s=\s13142}
+            %r{port\s=\s13142},
           )
         end
       end
@@ -1048,63 +1048,63 @@ describe 'rabbitmq' do
             ssl_dhfile: :undef,
 
             management_ssl: true,
-            ssl_management_port: 13_141 }
+            ssl_management_port: 13_141, }
         end
 
         it 'sets ssl options to specified values' do
           is_expected.to contain_file('rabbitmq.config').with_content(
-            %r{ssl_listeners, \[3141\]}
+            %r{ssl_listeners, \[3141\]},
           )
           is_expected.to contain_file('rabbitmq.config').with_content(
-            %r{ssl_opts, }
+            %r{ssl_opts, },
           )
           is_expected.to contain_file('rabbitmq.config').with_content(
-            %r{ssl_options, \[}
+            %r{ssl_options, \[},
           )
           is_expected.to contain_file('rabbitmq.config').with_content(
-            %r{cacertfile,"/path/to/cacert"}
+            %r{cacertfile,"/path/to/cacert"},
           )
           is_expected.to contain_file('rabbitmq.config').with_content(
-            %r{certfile,"/path/to/cert"}
+            %r{certfile,"/path/to/cert"},
           )
           is_expected.to contain_file('rabbitmq.config').with_content(
-            %r{keyfile,"/path/to/key"}
+            %r{keyfile,"/path/to/key"},
           )
           is_expected.to contain_file('rabbitmq.config').with_content(
-            %r{secure_renegotiate,true}
+            %r{secure_renegotiate,true},
           )
           is_expected.to contain_file('rabbitmq.config').with_content(
-            %r{reuse_sessions,true}
+            %r{reuse_sessions,true},
           )
           is_expected.to contain_file('rabbitmq.config').with_content(
-            %r{honor_cipher_order,true}
+            %r{honor_cipher_order,true},
           )
           is_expected.to contain_file('rabbitmq.config').without_content(
-            %r{dhfile,}
+            %r{dhfile,},
           )
         end
 
         it 'sets ssl managment port to specified values' do
           is_expected.to contain_file('rabbitmq.config').with_content(
-            %r{port, 13141}
+            %r{port, 13141},
           )
         end
 
         it 'sets ssl options in the rabbitmqadmin.conf' do
           is_expected.to contain_file('rabbitmqadmin.conf').with_content(
-            %r{ssl_ca_cert_file\s=\s/path/to/cacert}
+            %r{ssl_ca_cert_file\s=\s/path/to/cacert},
           )
           is_expected.to contain_file('rabbitmqadmin.conf').with_content(
-            %r{ssl_cert_file\s=\s/path/to/cert}
+            %r{ssl_cert_file\s=\s/path/to/cert},
           )
           is_expected.to contain_file('rabbitmqadmin.conf').with_content(
-            %r{ssl_key_file\s=\s/path/to/key}
+            %r{ssl_key_file\s=\s/path/to/key},
           )
           is_expected.to contain_file('rabbitmqadmin.conf').with_content(
-            %r{hostname\s=\s}
+            %r{hostname\s=\s},
           )
           is_expected.to contain_file('rabbitmqadmin.conf').with_content(
-            %r{port\s=\s13141}
+            %r{port\s=\s13141},
           )
         end
       end
@@ -1119,36 +1119,36 @@ describe 'rabbitmq' do
             ssl_secure_renegotiate: true,
             ssl_reuse_sessions: true,
             ssl_honor_cipher_order: true,
-            ssl_dhfile: :undef }
+            ssl_dhfile: :undef, }
         end
 
         it 'sets ssl options to specified values' do
           is_expected.to contain_file('rabbitmq.config').with_content(
-            %r{ssl_listeners, \[3141\]}
+            %r{ssl_listeners, \[3141\]},
           )
           is_expected.to contain_file('rabbitmq.config').with_content(
-            %r{ssl_options, \[}
+            %r{ssl_options, \[},
           )
           is_expected.to contain_file('rabbitmq.config').with_content(
-            %r{cacertfile,"/path/to/cacert"}
+            %r{cacertfile,"/path/to/cacert"},
           )
           is_expected.to contain_file('rabbitmq.config').with_content(
-            %r{certfile,"/path/to/cert"}
+            %r{certfile,"/path/to/cert"},
           )
           is_expected.to contain_file('rabbitmq.config').with_content(
-            %r{keyfile,"/path/to/key"}
+            %r{keyfile,"/path/to/key"},
           )
           is_expected.to contain_file('rabbitmq.config').with_content(
-            %r{secure_renegotiate,true}
+            %r{secure_renegotiate,true},
           )
           is_expected.to contain_file('rabbitmq.config').with_content(
-            %r{reuse_sessions,true}
+            %r{reuse_sessions,true},
           )
           is_expected.to contain_file('rabbitmq.config').with_content(
-            %r{honor_cipher_order,true}
+            %r{honor_cipher_order,true},
           )
           is_expected.to contain_file('rabbitmq.config').without_content(
-            %r{dhfile,}
+            %r{dhfile,},
           )
         end
       end
@@ -1160,7 +1160,7 @@ describe 'rabbitmq' do
             ssl_interface: '0.0.0.0',
             ssl_cacert: '/path/to/cacert',
             ssl_cert: '/path/to/cert',
-            ssl_key: '/path/to/key' }
+            ssl_key: '/path/to/key', }
         end
 
         it 'sets ssl options to specified values' do
@@ -1178,7 +1178,7 @@ describe 'rabbitmq' do
             ssl_port: 3141,
             ssl_cacert: '/path/to/cacert',
             ssl_cert: '/path/to/cert',
-            ssl_key: '/path/to/key' }
+            ssl_key: '/path/to/key', }
         end
 
         it 'sets ssl options to specified values' do
@@ -1191,9 +1191,9 @@ describe 'rabbitmq' do
         end
 
         it 'does not set TCP listener environment defaults' do
-          is_expected.to contain_file('rabbitmq-env.config'). \
-            without_content(%r{NODE_PORT=}). \
-            without_content(%r{NODE_IP_ADDRESS=})
+          is_expected.to contain_file('rabbitmq-env.config')
+            .without_content(%r{NODE_PORT=})
+            .without_content(%r{NODE_IP_ADDRESS=})
         end
       end
 
@@ -1205,7 +1205,7 @@ describe 'rabbitmq' do
             ssl_interface: '0.0.0.0',
             ssl_cacert: '/path/to/cacert',
             ssl_cert: '/path/to/cert',
-            ssl_key: '/path/to/key' }
+            ssl_key: '/path/to/key', }
         end
 
         it 'sets ssl options to specified values' do
@@ -1224,7 +1224,7 @@ describe 'rabbitmq' do
             ssl_cacert: '/path/to/cacert',
             ssl_cert: '/path/to/cert',
             ssl_key: '/path/to/key',
-            ssl_versions: ['tlsv1.2', 'tlsv1.1'] }
+            ssl_versions: ['tlsv1.2', 'tlsv1.1'], }
         end
 
         it 'sets ssl options to specified values' do
@@ -1246,7 +1246,7 @@ describe 'rabbitmq' do
             ssl_cacert: '/path/to/cacert',
             ssl_cert: '/path/to/cert',
             ssl_key: '/path/to/key',
-            ssl_versions: ['tlsv1.3'] }
+            ssl_versions: ['tlsv1.3'], }
         end
 
         it 'sets ssl options to specified values' do
@@ -1260,9 +1260,9 @@ describe 'rabbitmq' do
         end
 
         it 'does not set ssl negotiation options with tlsv1.3' do
-          is_expected.to contain_file('rabbitmq.config'). \
-            without_content(%r{client_renegotiation}). \
-            without_content(%r{secure_renegotiate})
+          is_expected.to contain_file('rabbitmq.config')
+            .without_content(%r{client_renegotiation})
+            .without_content(%r{secure_renegotiate})
         end
       end
 
@@ -1273,7 +1273,7 @@ describe 'rabbitmq' do
             ssl_cacert: '/path/to/cacert',
             ssl_cert: '/path/to/cert',
             ssl_key: '/path/to/key',
-            ssl_versions: ['tlsv1.2', 'tlsv1.1'] }
+            ssl_versions: ['tlsv1.2', 'tlsv1.1'], }
         end
 
         it 'fails' do
@@ -1288,7 +1288,7 @@ describe 'rabbitmq' do
             ssl_cacert: '/path/to/cacert',
             ssl_cert: '/path/to/cert',
             ssl_key: '/path/to/key',
-            ssl_ciphers: ['ecdhe_rsa,aes_256_cbc,sha', 'dhe_rsa,aes_256_cbc,sha'] }
+            ssl_ciphers: ['ecdhe_rsa,aes_256_cbc,sha', 'dhe_rsa,aes_256_cbc,sha'], }
         end
 
         it 'sets ssl ciphers to specified values' do
@@ -1303,7 +1303,7 @@ describe 'rabbitmq' do
             ssl_cacert: '/path/to/cacert',
             ssl_cert: '/path/to/cert',
             ssl_key: '/path/to/key',
-            ssl_ciphers: %w[ECDHE-RSA-AES256-SHA DHE-RSA-AES256-SHA] }
+            ssl_ciphers: %w[ECDHE-RSA-AES256-SHA DHE-RSA-AES256-SHA], }
         end
 
         it 'sets ssl ciphers to specified values' do
@@ -1318,7 +1318,7 @@ describe 'rabbitmq' do
             ssl_cacert: '/path/to/cacert',
             ssl_cert: '/path/to/cert',
             ssl_key: '/path/to/key',
-            ssl_crl_check: 'true' }
+            ssl_crl_check: 'true', }
         end
 
         it 'sets ssl crl check setting to specified value' do
@@ -1334,7 +1334,7 @@ describe 'rabbitmq' do
             ssl_cert: '/path/to/cert',
             ssl_key: '/path/to/key',
             ssl_crl_check: 'true',
-            ssl_crl_cache_hash_dir: '/path/to/crl_cache/dir' }
+            ssl_crl_cache_hash_dir: '/path/to/crl_cache/dir', }
         end
 
         it 'sets ssl crl check setting to specified value' do
@@ -1351,7 +1351,7 @@ describe 'rabbitmq' do
             ssl_cert: '/path/to/cert',
             ssl_key: '/path/to/key',
             ssl_crl_check: 'true',
-            ssl_crl_cache_http_timeout: 5000 }
+            ssl_crl_cache_http_timeout: 5000, }
         end
 
         it 'sets ssl crl check setting to specified value' do
@@ -1367,7 +1367,7 @@ describe 'rabbitmq' do
             ssl_cacert: '/path/to/cacert',
             ssl_cert: '/path/to/cert',
             ssl_key: '/path/to/key',
-            ssl_crl_check: 'true' }
+            ssl_crl_check: 'true', }
         end
 
         it 'fails' do
@@ -1383,7 +1383,7 @@ describe 'rabbitmq' do
             ssl_cert: '/path/to/cert',
             ssl_key: '/path/to/key',
             ssl_crl_check: 'false',
-            ssl_crl_cache_hash_dir: '/path/to/crl_cache/dir' }
+            ssl_crl_cache_hash_dir: '/path/to/crl_cache/dir', }
         end
 
         it 'fails' do
@@ -1399,7 +1399,7 @@ describe 'rabbitmq' do
             ssl_cert: '/path/to/cert',
             ssl_key: '/path/to/key',
             ssl_crl_check: 'false',
-            ssl_crl_cache_http_timeout: 5000 }
+            ssl_crl_cache_http_timeout: 5000, }
         end
 
         it 'fails' do
@@ -1415,7 +1415,7 @@ describe 'rabbitmq' do
             ssl_cert: '/path/to/cert',
             ssl_key: '/path/to/key',
             ssl_versions: ['tlsv1.2', 'tlsv1.1'],
-            admin_enable: true }
+            admin_enable: true, }
         end
 
         it 'sets admin ssl opts to specified values' do
@@ -1435,7 +1435,7 @@ describe 'rabbitmq' do
         let(:params) do
           { ssl: true,
             ssl_interface: '0.0.0.0',
-            ssl_dhfile: '/etc/pki/tls/dh-params.pem' }
+            ssl_dhfile: '/etc/pki/tls/dh-params.pem', }
         end
 
         it { is_expected.to contain_file('rabbitmq.config').with_content(%r{dhfile, "/etc/pki/tls/dh-params\.pem}) }
@@ -1445,7 +1445,7 @@ describe 'rabbitmq' do
         let(:params) do
           { ssl: true,
             ssl_interface: '0.0.0.0',
-            ssl_dhfile: :undef }
+            ssl_dhfile: :undef, }
         end
 
         it { is_expected.to contain_file('rabbitmq.config').without_content(%r{dhfile,}) }
@@ -1455,7 +1455,7 @@ describe 'rabbitmq' do
         let(:params) do
           { ssl: true,
             ssl_interface: '0.0.0.0',
-            ssl_client_renegotiation: false }
+            ssl_client_renegotiation: false, }
         end
 
         it { is_expected.to contain_file('rabbitmq.config').with_content(%r{client_renegotiation,false}) }
@@ -1465,7 +1465,7 @@ describe 'rabbitmq' do
         let(:params) do
           { ssl: true,
             ssl_interface: '0.0.0.0',
-            ssl_secure_renegotiate: false }
+            ssl_secure_renegotiate: false, }
         end
 
         it { is_expected.to contain_file('rabbitmq.config').with_content(%r{secure_renegotiate,false}) }
@@ -1475,7 +1475,7 @@ describe 'rabbitmq' do
         let(:params) do
           { ssl: true,
             ssl_interface: '0.0.0.0',
-            ssl_reuse_sessions: false }
+            ssl_reuse_sessions: false, }
         end
 
         it { is_expected.to contain_file('rabbitmq.config').with_content(%r{reuse_sessions,false}) }
@@ -1485,7 +1485,7 @@ describe 'rabbitmq' do
         let(:params) do
           { ssl: true,
             ssl_interface: '0.0.0.0',
-            ssl_honor_cipher_order: false }
+            ssl_honor_cipher_order: false, }
         end
 
         it { is_expected.to contain_file('rabbitmq.config').with_content(%r{honor_cipher_order,false}) }
@@ -1500,7 +1500,7 @@ describe 'rabbitmq' do
             ssl_key: '/path/to/key',
             ssl_management_verify: 'verify_peer',
             ssl_management_fail_if_no_peer_cert: true,
-            admin_enable: true }
+            admin_enable: true, }
         end
 
         it 'sets rabbitmq_management ssl options to specified values' do
@@ -1521,7 +1521,7 @@ describe 'rabbitmq' do
         let(:params) do
           { ssl: false,
             management_port: 3141,
-            admin_enable: true }
+            admin_enable: true, }
         end
 
         it 'sets rabbitmq_management options to specified values' do
@@ -1538,7 +1538,7 @@ describe 'rabbitmq' do
             ssl_cacert: '/path/to/cacert',
             ssl_cert: '/path/to/cert',
             ssl_key: '/path/to/key',
-            admin_enable: true }
+            admin_enable: true, }
         end
 
         it 'sets rabbitmq_management ssl options to specified values' do
@@ -1560,7 +1560,7 @@ describe 'rabbitmq' do
             ssl_management_cacert: '/path/to/management_cacert',
             ssl_management_cert: '/path/to/management_cert',
             ssl_management_key: '/path/to/management_key',
-            admin_enable: true }
+            admin_enable: true, }
         end
 
         it 'sets rabbitmq_management ssl options to specified values' do
@@ -1576,13 +1576,13 @@ describe 'rabbitmq' do
 
         it 'sets ssl options in the rabbitmqadmin.conf' do
           is_expected.to contain_file('rabbitmqadmin.conf').with_content(
-            %r{ssl_ca_cert_file\s=\s/path/to/management_cacert}
+            %r{ssl_ca_cert_file\s=\s/path/to/management_cacert},
           )
           is_expected.to contain_file('rabbitmqadmin.conf').with_content(
-            %r{ssl_cert_file\s=\s/path/to/management_cert}
+            %r{ssl_cert_file\s=\s/path/to/management_cert},
           )
           is_expected.to contain_file('rabbitmqadmin.conf').with_content(
-            %r{ssl_key_file\s=\s/path/to/management_key}
+            %r{ssl_key_file\s=\s/path/to/management_key},
           )
         end
       end
@@ -1591,14 +1591,14 @@ describe 'rabbitmq' do
         let(:params) do
           { ssl: false,
             management_port: 3141,
-            admin_enable: true }
+            admin_enable: true, }
         end
 
         it 'sets rabbitmq_management options to specified values' do
-          is_expected.to contain_file('rabbitmq.config'). \
-            with_content(%r{\{rabbitmq_management, \[}). \
-            with_content(%r{\{listener, \[}). \
-            with_content(%r{\{port, 3141\}})
+          is_expected.to contain_file('rabbitmq.config')
+            .with_content(%r{\{rabbitmq_management, \[})
+            .with_content(%r{\{listener, \[})
+            .with_content(%r{\{port, 3141\}})
         end
       end
 
@@ -1611,9 +1611,9 @@ describe 'rabbitmq' do
 
         context 'without other erl args' do
           it 'enables inet6 distribution' do
-            is_expected.to contain_file('rabbitmq-env.config'). \
-              with_content(%r{^RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS="-proto_dist inet6_tcp"$}). \
-              with_content(%r{^RABBITMQ_CTL_ERL_ARGS="-proto_dist inet6_tcp"$})
+            is_expected.to contain_file('rabbitmq-env.config')
+              .with_content(%r{^RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS="-proto_dist inet6_tcp"$})
+              .with_content(%r{^RABBITMQ_CTL_ERL_ARGS="-proto_dist inet6_tcp"$})
           end
         end
 
@@ -1621,13 +1621,13 @@ describe 'rabbitmq' do
           let(:params) do
             { ipv6: true,
               environment_variables: { 'RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS' => '"some quoted args"',
-                                       'RABBITMQ_CTL_ERL_ARGS' => '"other quoted args"' } }
+                                       'RABBITMQ_CTL_ERL_ARGS' => '"other quoted args"', }, }
           end
 
           it 'enables inet6 distribution and quote properly' do
-            is_expected.to contain_file('rabbitmq-env.config'). \
-              with_content(%r{^RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS="some quoted args -proto_dist inet6_tcp"$}). \
-              with_content(%r{^RABBITMQ_CTL_ERL_ARGS="other quoted args -proto_dist inet6_tcp"$})
+            is_expected.to contain_file('rabbitmq-env.config')
+              .with_content(%r{^RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS="some quoted args -proto_dist inet6_tcp"$})
+              .with_content(%r{^RABBITMQ_CTL_ERL_ARGS="other quoted args -proto_dist inet6_tcp"$})
           end
         end
 
@@ -1635,26 +1635,26 @@ describe 'rabbitmq' do
           let(:params) do
             { ipv6: true,
               environment_variables: { 'RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS' => 'foo',
-                                       'RABBITMQ_CTL_ERL_ARGS' => 'bar' } }
+                                       'RABBITMQ_CTL_ERL_ARGS' => 'bar', }, }
           end
 
           it 'enables inet6 distribution and quote properly' do
-            is_expected.to contain_file('rabbitmq-env.config'). \
-              with_content(%r{^RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS="foo -proto_dist inet6_tcp"$}). \
-              with_content(%r{^RABBITMQ_CTL_ERL_ARGS="bar -proto_dist inet6_tcp"$})
+            is_expected.to contain_file('rabbitmq-env.config')
+              .with_content(%r{^RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS="foo -proto_dist inet6_tcp"$})
+              .with_content(%r{^RABBITMQ_CTL_ERL_ARGS="bar -proto_dist inet6_tcp"$})
           end
         end
 
         context 'with SSL and without other erl args' do
           let(:params) do
             { ipv6: true,
-              ssl_erl_dist: true }
+              ssl_erl_dist: true, }
           end
 
           it 'enables inet6 distribution' do
-            is_expected.to contain_file('rabbitmq-env.config'). \
-              with_content(%r{^RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=" -pa /usr/lib64/erlang/lib/ssl-7.3.3.1/ebin -proto_dist inet6_tls"$}). \
-              with_content(%r{^RABBITMQ_CTL_ERL_ARGS=" -pa /usr/lib64/erlang/lib/ssl-7.3.3.1/ebin -proto_dist inet6_tls"$})
+            is_expected.to contain_file('rabbitmq-env.config')
+              .with_content(%r{^RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=" -pa /usr/lib64/erlang/lib/ssl-7.3.3.1/ebin -proto_dist inet6_tls"$})
+              .with_content(%r{^RABBITMQ_CTL_ERL_ARGS=" -pa /usr/lib64/erlang/lib/ssl-7.3.3.1/ebin -proto_dist inet6_tls"$})
           end
         end
 
@@ -1663,13 +1663,13 @@ describe 'rabbitmq' do
             { ipv6: true,
               ssl_erl_dist: true,
               environment_variables: { 'RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS' => '"some quoted args"',
-                                       'RABBITMQ_CTL_ERL_ARGS' => '"other quoted args"' } }
+                                       'RABBITMQ_CTL_ERL_ARGS' => '"other quoted args"', }, }
           end
 
           it 'enables inet6 distribution and quote properly' do
-            is_expected.to contain_file('rabbitmq-env.config'). \
-              with_content(%r{^RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS="some quoted args -pa /usr/lib64/erlang/lib/ssl-7.3.3.1/ebin  -proto_dist inet6_tls"$}). \
-              with_content(%r{^RABBITMQ_CTL_ERL_ARGS="other quoted args -pa /usr/lib64/erlang/lib/ssl-7.3.3.1/ebin  -proto_dist inet6_tls"$})
+            is_expected.to contain_file('rabbitmq-env.config')
+              .with_content(%r{^RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS="some quoted args -pa /usr/lib64/erlang/lib/ssl-7.3.3.1/ebin  -proto_dist inet6_tls"$})
+              .with_content(%r{^RABBITMQ_CTL_ERL_ARGS="other quoted args -pa /usr/lib64/erlang/lib/ssl-7.3.3.1/ebin  -proto_dist inet6_tls"$})
           end
         end
 
@@ -1678,13 +1678,13 @@ describe 'rabbitmq' do
             { ipv6: true,
               ssl_erl_dist: true,
               environment_variables: { 'RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS' => 'foo',
-                                       'RABBITMQ_CTL_ERL_ARGS' => 'bar' } }
+                                       'RABBITMQ_CTL_ERL_ARGS' => 'bar', }, }
           end
 
           it 'enables inet6 distribution and quote properly' do
-            is_expected.to contain_file('rabbitmq-env.config'). \
-              with_content(%r{^RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS="foo -pa /usr/lib64/erlang/lib/ssl-7.3.3.1/ebin  -proto_dist inet6_tls"$}). \
-              with_content(%r{^RABBITMQ_CTL_ERL_ARGS="bar -pa /usr/lib64/erlang/lib/ssl-7.3.3.1/ebin  -proto_dist inet6_tls"$})
+            is_expected.to contain_file('rabbitmq-env.config')
+              .with_content(%r{^RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS="foo -pa /usr/lib64/erlang/lib/ssl-7.3.3.1/ebin  -proto_dist inet6_tls"$})
+              .with_content(%r{^RABBITMQ_CTL_ERL_ARGS="bar -pa /usr/lib64/erlang/lib/ssl-7.3.3.1/ebin  -proto_dist inet6_tls"$})
           end
         end
       end
@@ -1696,17 +1696,17 @@ describe 'rabbitmq' do
             'vm_memory_high_watermark' => 0.4,
             'frame_max' => 131_072,
             'collect_statistics' => 'none',
-            'auth_mechanisms' => "['PLAIN', 'AMQPLAIN']"
+            'auth_mechanisms' => "['PLAIN', 'AMQPLAIN']",
           } }
         end
 
         it 'sets environment variables' do
-          is_expected.to contain_file('rabbitmq.config'). \
-            with_content(%r{\{hipe_compile, true\}}). \
-            with_content(%r{\{vm_memory_high_watermark, 0.4\}}). \
-            with_content(%r{\{frame_max, 131072\}}). \
-            with_content(%r{\{collect_statistics, none\}}). \
-            with_content(%r{\{auth_mechanisms, \['PLAIN', 'AMQPLAIN'\]\}})
+          is_expected.to contain_file('rabbitmq.config')
+            .with_content(%r{\{hipe_compile, true\}})
+            .with_content(%r{\{vm_memory_high_watermark, 0.4\}})
+            .with_content(%r{\{frame_max, 131072\}})
+            .with_content(%r{\{collect_statistics, none\}})
+            .with_content(%r{\{auth_mechanisms, \['PLAIN', 'AMQPLAIN'\]\}})
         end
       end
 
@@ -1714,27 +1714,27 @@ describe 'rabbitmq' do
         let(:params) do
           { config_kernel_variables: {
             'inet_dist_listen_min' => 9100,
-            'inet_dist_listen_max' => 9105
+            'inet_dist_listen_max' => 9105,
           } }
         end
 
         it 'sets config variables' do
-          is_expected.to contain_file('rabbitmq.config'). \
-            with_content(%r{\{inet_dist_listen_min, 9100\}}). \
-            with_content(%r{\{inet_dist_listen_max, 9105\}})
+          is_expected.to contain_file('rabbitmq.config')
+            .with_content(%r{\{inet_dist_listen_min, 9100\}})
+            .with_content(%r{\{inet_dist_listen_max, 9105\}})
         end
       end
 
       describe 'config_management_variables' do
         let(:params) do
           { config_management_variables: {
-            'rates_mode' => 'none'
+            'rates_mode' => 'none',
           } }
         end
 
         it 'sets config variables' do
-          is_expected.to contain_file('rabbitmq.config'). \
-            with_content(%r{\{rates_mode, none\}})
+          is_expected.to contain_file('rabbitmq.config')
+            .with_content(%r{\{rates_mode, none\}})
         end
       end
 
@@ -1742,22 +1742,22 @@ describe 'rabbitmq' do
         let(:params) { { tcp_keepalive: true } }
 
         it 'sets tcp_listen_options keepalive true' do
-          is_expected.to contain_file('rabbitmq.config'). \
-            with_content(%r{\{keepalive,     true\}})
+          is_expected.to contain_file('rabbitmq.config')
+            .with_content(%r{\{keepalive,     true\}})
         end
       end
 
       describe 'tcp_keepalive disabled (default)' do
         it 'does not set tcp_listen_options' do
-          is_expected.to contain_file('rabbitmq.config'). \
-            without_content(%r{\{keepalive,     true\}})
+          is_expected.to contain_file('rabbitmq.config')
+            .without_content(%r{\{keepalive,     true\}})
         end
       end
 
       describe 'tcp_backlog with default value' do
         it 'sets tcp_listen_options backlog to 128' do
-          is_expected.to contain_file('rabbitmq.config'). \
-            with_content(%r{\{backlog,       128\}})
+          is_expected.to contain_file('rabbitmq.config')
+            .with_content(%r{\{backlog,       128\}})
         end
       end
 
@@ -1767,15 +1767,15 @@ describe 'rabbitmq' do
         end
 
         it 'sets tcp_listen_options backlog to 256' do
-          is_expected.to contain_file('rabbitmq.config'). \
-            with_content(%r{\{backlog,       256\}})
+          is_expected.to contain_file('rabbitmq.config')
+            .with_content(%r{\{backlog,       256\}})
         end
       end
 
       describe 'tcp_sndbuf with default value' do
         it 'does not set tcp_listen_options sndbuf' do
-          is_expected.to contain_file('rabbitmq.config'). \
-            without_content(%r{sndbuf})
+          is_expected.to contain_file('rabbitmq.config')
+            .without_content(%r{sndbuf})
         end
       end
 
@@ -1785,15 +1785,15 @@ describe 'rabbitmq' do
         end
 
         it 'sets tcp_listen_options sndbuf to 128' do
-          is_expected.to contain_file('rabbitmq.config'). \
-            with_content(%r{\{sndbuf,       128\}})
+          is_expected.to contain_file('rabbitmq.config')
+            .with_content(%r{\{sndbuf,       128\}})
         end
       end
 
       describe 'tcp_recbuf with default value' do
         it 'does not set tcp_listen_options recbuf' do
-          is_expected.to contain_file('rabbitmq.config'). \
-            without_content(%r{recbuf})
+          is_expected.to contain_file('rabbitmq.config')
+            .without_content(%r{recbuf})
         end
       end
 
@@ -1803,8 +1803,8 @@ describe 'rabbitmq' do
         end
 
         it 'sets tcp_listen_options recbuf to 128' do
-          is_expected.to contain_file('rabbitmq.config'). \
-            with_content(%r{\{recbuf,       128\}})
+          is_expected.to contain_file('rabbitmq.config')
+            .with_content(%r{\{recbuf,       128\}})
         end
       end
 
@@ -1812,15 +1812,15 @@ describe 'rabbitmq' do
         let(:params) { { heartbeat: 60 } }
 
         it 'sets heartbeat parameter in config file' do
-          is_expected.to contain_file('rabbitmq.config'). \
-            with_content(%r{\{heartbeat, 60\}})
+          is_expected.to contain_file('rabbitmq.config')
+            .with_content(%r{\{heartbeat, 60\}})
         end
       end
 
       describe 'quorum_cluster_size with default value' do
         it 'does not set quorum_cluster_size' do
-          is_expected.to contain_file('rabbitmq.config'). \
-            without_content(%r{quorum_cluster_size, })
+          is_expected.to contain_file('rabbitmq.config')
+            .without_content(%r{quorum_cluster_size, })
         end
       end
 
@@ -1828,8 +1828,8 @@ describe 'rabbitmq' do
         let(:params) { { quorum_cluster_size: 7 } }
 
         it 'does set quorum_cluster_size to 7' do
-          is_expected.to contain_file('rabbitmq.config'). \
-            with_content(%r{quorum_cluster_size, 7})
+          is_expected.to contain_file('rabbitmq.config')
+            .with_content(%r{quorum_cluster_size, 7})
         end
       end
 
@@ -1840,12 +1840,12 @@ describe 'rabbitmq' do
         let(:params) { { quorum_membership_reconciliation_enabled: :undef } }
 
         it 'sets quorum_membership_reconciliation_enabled parameter undef in config file' do
-          is_expected.to contain_file('rabbitmq.config'). \
-            without_content(%r{\{quorum_membership_reconciliation_enabled, }). \
-            without_content(%r{\{quorum_membership_reconciliation_auto_remove, }). \
-            without_content(%r{\{quorum_membership_reconciliation_interval, }). \
-            without_content(%r{\{quorum_membership_reconciliation_trigger_interval, }). \
-            without_content(%r{\{quorum_membership_reconciliation_target_group_size, })
+          is_expected.to contain_file('rabbitmq.config')
+            .without_content(%r{\{quorum_membership_reconciliation_enabled, })
+            .without_content(%r{\{quorum_membership_reconciliation_auto_remove, })
+            .without_content(%r{\{quorum_membership_reconciliation_interval, })
+            .without_content(%r{\{quorum_membership_reconciliation_trigger_interval, })
+            .without_content(%r{\{quorum_membership_reconciliation_target_group_size, })
         end
       end
 
@@ -1856,12 +1856,12 @@ describe 'rabbitmq' do
         let(:params) { { quorum_membership_reconciliation_enabled: false } }
 
         it 'sets quorum_membership_reconciliation_enabled parameter false in config file' do
-          is_expected.to contain_file('rabbitmq.config'). \
-            without_content(%r{\{quorum_membership_reconciliation_enabled, }). \
-            without_content(%r{\{quorum_membership_reconciliation_auto_remove, }). \
-            without_content(%r{\{quorum_membership_reconciliation_interval, }). \
-            without_content(%r{\{quorum_membership_reconciliation_trigger_interval, }). \
-            without_content(%r{\{quorum_membership_reconciliation_target_group_size, })
+          is_expected.to contain_file('rabbitmq.config')
+            .without_content(%r{\{quorum_membership_reconciliation_enabled, })
+            .without_content(%r{\{quorum_membership_reconciliation_auto_remove, })
+            .without_content(%r{\{quorum_membership_reconciliation_interval, })
+            .without_content(%r{\{quorum_membership_reconciliation_trigger_interval, })
+            .without_content(%r{\{quorum_membership_reconciliation_target_group_size, })
         end
       end
 
@@ -1872,12 +1872,12 @@ describe 'rabbitmq' do
         let(:params) { { quorum_membership_reconciliation_enabled: true } }
 
         it 'sets quorum_membership_reconciliation_enabled parameter true in config file' do
-          is_expected.to contain_file('rabbitmq.config'). \
-            with_content(%r{\{quorum_membership_reconciliation_enabled, true\}}). \
-            without_content(%r{\{quorum_membership_reconciliation_auto_remove, }). \
-            without_content(%r{\{quorum_membership_reconciliation_interval, }). \
-            without_content(%r{\{quorum_membership_reconciliation_trigger_interval, }). \
-            without_content(%r{\{quorum_membership_reconciliation_target_group_size, })
+          is_expected.to contain_file('rabbitmq.config')
+            .with_content(%r{\{quorum_membership_reconciliation_enabled, true\}})
+            .without_content(%r{\{quorum_membership_reconciliation_auto_remove, })
+            .without_content(%r{\{quorum_membership_reconciliation_interval, })
+            .without_content(%r{\{quorum_membership_reconciliation_trigger_interval, })
+            .without_content(%r{\{quorum_membership_reconciliation_target_group_size, })
         end
       end
 
@@ -1890,17 +1890,17 @@ describe 'rabbitmq' do
             quorum_membership_reconciliation_auto_remove: true,
             quorum_membership_reconciliation_interval: 36_000,
             quorum_membership_reconciliation_trigger_interval: 3_600,
-            quorum_membership_reconciliation_target_group_size: 2
+            quorum_membership_reconciliation_target_group_size: 2,
           }
         end
 
         it 'sets quorum_membership_reconciliation_enabled parameter true in config file' do
-          is_expected.to contain_file('rabbitmq.config'). \
-            with_content(%r{\{quorum_membership_reconciliation_enabled, true\}}). \
-            with_content(%r{\{quorum_membership_reconciliation_auto_remove, true\}}). \
-            with_content(%r{\{quorum_membership_reconciliation_interval, 36000\}}). \
-            with_content(%r{\{quorum_membership_reconciliation_trigger_interval, 3600\}}). \
-            with_content(%r{\{quorum_membership_reconciliation_target_group_size, 2\}})
+          is_expected.to contain_file('rabbitmq.config')
+            .with_content(%r{\{quorum_membership_reconciliation_enabled, true\}})
+            .with_content(%r{\{quorum_membership_reconciliation_auto_remove, true\}})
+            .with_content(%r{\{quorum_membership_reconciliation_interval, 36000\}})
+            .with_content(%r{\{quorum_membership_reconciliation_trigger_interval, 3600\}})
+            .with_content(%r{\{quorum_membership_reconciliation_target_group_size, 2\}})
         end
       end
 
@@ -1915,7 +1915,7 @@ describe 'rabbitmq' do
           it 'removes the user' do
             is_expected.to contain_rabbitmq_user('guest').with(
               'ensure' => 'absent',
-              'provider' => 'rabbitmqctl'
+              'provider' => 'rabbitmqctl',
             )
           end
         end
@@ -1923,8 +1923,8 @@ describe 'rabbitmq' do
 
       describe 'rabbitmq-loopback_users by default' do
         it 'sets the loopback_users parameter in the config file' do
-          is_expected.to contain_file('rabbitmq.config'). \
-            with_content(%r{\{loopback_users, \[<<"guest">>\]\}})
+          is_expected.to contain_file('rabbitmq.config')
+            .with_content(%r{\{loopback_users, \[<<"guest">>\]\}})
         end
       end
 
@@ -1932,8 +1932,8 @@ describe 'rabbitmq' do
         let(:params) { { loopback_users: [] } }
 
         it 'sets the loopback_users parameter in the config file' do
-          is_expected.to contain_file('rabbitmq.config'). \
-            with_content(%r{\{loopback_users, \[\]\}})
+          is_expected.to contain_file('rabbitmq.config')
+            .with_content(%r{\{loopback_users, \[\]\}})
         end
       end
 
@@ -1941,8 +1941,8 @@ describe 'rabbitmq' do
         let(:params) { { loopback_users: %w[user1 user2] } }
 
         it 'sets the loopback_users parameter in the config file' do
-          is_expected.to contain_file('rabbitmq.config'). \
-            with_content(%r{\{loopback_users, \[<<"user1">>, <<"user2">>\]\}})
+          is_expected.to contain_file('rabbitmq.config')
+            .with_content(%r{\{loopback_users, \[<<"user1">>, <<"user2">>\]\}})
         end
       end
 
@@ -1956,7 +1956,7 @@ describe 'rabbitmq' do
             'enable' => 'true',
             'hasstatus' => 'true',
             'hasrestart' => 'true',
-            'name' => name
+            'name' => name,
           )
         }
       end
@@ -1969,7 +1969,7 @@ describe 'rabbitmq' do
         it {
           is_expected.to contain_service('rabbitmq-server').with(
             'ensure' => 'stopped',
-            'enable' => false
+            'enable' => false,
           )
         }
       end

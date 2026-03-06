@@ -58,8 +58,8 @@ Puppet::Type.newtype(:rabbitmq_binding) do
       [
         %r{(^([^@]*)$)}m,
         [
-          [:name]
-        ]
+          [:name],
+        ],
       ],
       [
         %r{^((\S+)@(\S+)@(\S+))$}m,
@@ -67,9 +67,9 @@ Puppet::Type.newtype(:rabbitmq_binding) do
           [:name],
           [:source],
           [:destination],
-          [:vhost]
-        ]
-      ]
+          [:vhost],
+        ],
+      ],
     ]
   end
 
@@ -153,7 +153,7 @@ Puppet::Type.newtype(:rabbitmq_binding) do
   autorequire(:rabbitmq_user_permissions) do
     [
       "#{self[:user]}@#{self[:source]}",
-      "#{self[:user]}@#{self[:destination]}"
+      "#{self[:user]}@#{self[:destination]}",
     ]
   end
 

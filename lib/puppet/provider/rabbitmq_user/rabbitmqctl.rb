@@ -3,13 +3,13 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmq_cli'))
 Puppet::Type.type(:rabbitmq_user).provide(
   :rabbitmqctl,
-  parent: Puppet::Provider::RabbitmqCli
+  parent: Puppet::Provider::RabbitmqCli,
 ) do
   desc 'Rabbitmqctl provider for rabbitmq user'
   confine feature: :posix
 
   def initialize(value = {})
-    super(value)
+    super
     @property_flush = {}
   end
 
@@ -26,7 +26,7 @@ Puppet::Type.type(:rabbitmq_user).provide(
       new(
         ensure: :present,
         name: user,
-        tags: tags
+        tags: tags,
       )
     end
   end
@@ -73,7 +73,7 @@ Puppet::Type.type(:rabbitmq_user).provide(
     check_access_control = [
       'rabbit_access_control:check_user_pass_login(',
       %[list_to_binary("#{@resource[:name]}"), ],
-      %[list_to_binary("#{password.to_s.gsub('"', '\\"')}")).]
+      %[list_to_binary("#{password.to_s.gsub('"', '\\"')}")).],
     ]
 
     response = rabbitmqctl('eval', check_access_control.join)

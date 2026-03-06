@@ -46,7 +46,7 @@ Puppet::Type.type(:rabbitmq_policy).provide(:rabbitmqctl, parent: Puppet::Provid
           applyto: applyto,
           pattern: pattern,
           definition: definition,
-          priority: priority
+          priority: priority,
         }
       end
     end

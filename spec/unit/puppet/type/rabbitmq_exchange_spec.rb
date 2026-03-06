@@ -8,7 +8,7 @@ describe Puppet::Type.type(:rabbitmq_exchange) do
       type: :topic,
       internal: false,
       auto_delete: false,
-      durable: true
+      durable: true,
     )
   end
 

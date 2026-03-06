@@ -54,7 +54,7 @@ Puppet::Type.type(:rabbitmq_binding).provide(:rabbitmqadmin, parent: Puppet::Pro
           routing_key: routing_key,
           arguments: JSON.parse(arguments),
           ensure: :present,
-          name: hashed_name
+          name: hashed_name,
         }
         resources << new(binding) if binding[:name]
       end

@@ -10,8 +10,8 @@ describe Puppet::Type.type(:rabbitmq_parameter) do
         'src-uri' => 'amqp://myremote-server',
         'src-queue' => 'queue.docs.outgoing',
         'dest-uri' => 'amqp://',
-        'dest-queue' => 'queue.docs.incoming'
-      }
+        'dest-queue' => 'queue.docs.incoming',
+      },
     )
   end
 
@@ -90,7 +90,7 @@ describe Puppet::Type.type(:rabbitmq_parameter) do
         name: 'documentumShovel@/',
         component_name: 'shovel',
         autoconvert: false,
-        value: { 'myparameter' => '1800000' }
+        value: { 'myparameter' => '1800000' },
       )
     end
 

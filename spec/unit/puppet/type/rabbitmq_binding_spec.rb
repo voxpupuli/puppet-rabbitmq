@@ -5,7 +5,7 @@ describe Puppet::Type.type(:rabbitmq_binding) do
   let(:binding) do
     Puppet::Type.type(:rabbitmq_binding).new(
       name: 'foo@blub@bar',
-      destination_type: :queue
+      destination_type: :queue,
     )
   end
 
@@ -24,7 +24,7 @@ describe Puppet::Type.type(:rabbitmq_binding) do
     expect do
       Puppet::Type.type(:rabbitmq_binding).new(
         name: 'test binding',
-        destination: 'foobar'
+        destination: 'foobar',
       )
     end.to raise_error(Puppet::Error, %r{`source` must be defined})
   end
@@ -33,7 +33,7 @@ describe Puppet::Type.type(:rabbitmq_binding) do
     expect do
       Puppet::Type.type(:rabbitmq_binding).new(
         name: 'test binding',
-        source: 'foobar'
+        source: 'foobar',
       )
     end.to raise_error(Puppet::Error, %r{`destination` must be defined})
   end

@@ -49,7 +49,7 @@ Puppet::Type.type(:rabbitmq_exchange).provide(:rabbitmqadmin, parent: Puppet::Pr
           durable: durable,
           auto_delete: auto_delete,
           name: format('%s@%s', name, vhost),
-          arguments: JSON.parse(arguments)
+          arguments: JSON.parse(arguments),
         }
         resources << new(exchange) if exchange[:type]
       end

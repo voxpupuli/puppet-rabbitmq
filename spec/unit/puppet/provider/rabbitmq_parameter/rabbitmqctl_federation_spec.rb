@@ -10,8 +10,8 @@ describe provider_class do
       component_name: 'federation',
       value: {
         'uri' => 'amqp://',
-        'expires' => '360000'
-      }
+        'expires' => '360000',
+      },
     )
   end
   let(:provider) { provider_class.new(resource) }
