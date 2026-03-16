@@ -72,6 +72,8 @@ class rabbitmq::config {
   $ssl_crl_check                                      = $rabbitmq::ssl_crl_check
   $ssl_crl_cache_hash_dir                             = $rabbitmq::ssl_crl_cache_hash_dir
   $ssl_crl_cache_http_timeout                         = $rabbitmq::ssl_crl_cache_http_timeout
+  $ssl_signature_algorithms                           = $rabbitmq::ssl_signature_algorithms
+  $ssl_eccs                                           = $rabbitmq::ssl_eccs
   $stomp_port                                         = $rabbitmq::stomp_port
   $stomp_ssl_only                                     = $rabbitmq::stomp_ssl_only
   $ldap_auth                                          = $rabbitmq::ldap_auth
