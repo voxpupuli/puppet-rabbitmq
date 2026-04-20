@@ -363,6 +363,12 @@
 # @param ssl_crl_cache_http_timeout
 #   This setting enables use of internal CRLs cache and sets HTTP timeout interval on fetching CRLs from distributino URLs defined inside certificate.
 #   Please see the [Erlang SSL](https://erlang.org/doc/man/ssl.html#type-crl_cache_opts) module documentation for more information.
+# @param ssl_signature_algorithms
+#   List of signature algorithms to use for SSL connections.
+#   Please see the [Erlang SSL](https://www.erlang.org/doc/apps/ssl/ssl.html#t:signature_algs/0) module documentation for more information.
+# @param ssl_eccs
+#   List of ECC curves to use for SSL connections.
+#   Please see the [Erlang SSL](https://www.erlang.org/doc/apps/ssl/ssl.html) module documentation for more information.
 # @param stomp_port
 #   The port to use for Stomp.
 # @param stomp_ssl_only
@@ -477,6 +483,8 @@ class rabbitmq (
   Enum['true','false','peer','best_effort'] $ssl_crl_check                                         = 'false',
   Optional[Stdlib::Absolutepath] $ssl_crl_cache_hash_dir                                           = undef,
   Optional[Integer] $ssl_crl_cache_http_timeout                                                    = undef,
+  Array[Tuple[String, String]] $ssl_signature_algorithms                                           = [],
+  Array[String[1]] $ssl_eccs                                                                       = [],
   Boolean $stomp_ensure                                                                            = false,
   Boolean $ldap_auth                                                                               = false,
   Variant[String[1],Array[String[1]]] $ldap_server                                                 = 'ldap',
