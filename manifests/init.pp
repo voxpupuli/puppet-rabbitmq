@@ -146,17 +146,25 @@
 # @param collect_statistics_interval
 #   Set the collect_statistics_interval in rabbitmq.config
 # @param config
-#   The file to use as the rabbitmq.config template.
+#   The file to use as the rabbitmq.conf template.
+# @param advanced_config
+#   The file to use as the advanced.config template.
 # @param config_additional_variables
-#   Additional config variables in rabbitmq.config
+#   Additional config variables in advanced.config
 # @param config_cluster
 #   Enable or disable clustering support.
 # @param config_cowboy_opts
-#   Hash of additional configs (key / value) for `cowboy_opts` in rabbitmq.config.
+#   Hash of additional configs (key / value) for `cowboy_opts` in advanced.config.
 # @param config_kernel_variables
 #   Hash of Erlang kernel configuration variables to set (see [Variables Configurable in rabbitmq.config](#variables-configurable-in-rabbitmq.config)).
 # @param config_path
-#   The path to write the RabbitMQ configuration file to.
+#   The path to write the RabbitMQ configuration (in sysctl format) file to.
+# @param advanced_config_path
+#   The path to write the RabbitMQ advanced configuration (in Erlang format) file to.
+# @param purge_legacy_config_files
+#   Purge old config file (Erlang format).
+# @param legacy_config_path
+#   Path of the legacy config file.
 # @param config_ranch
 #   When true, suppress config directives needed for older (<3.6) RabbitMQ versions.
 # @param config_management_variables
@@ -397,13 +405,17 @@ class rabbitmq (
   Boolean $management_enable                                                                       = false,
   Boolean $use_config_file_for_plugins                                                             = false,
   Array $plugins                                                                                   = [],
-  Hash $cluster                                                                                    = $rabbitmq::cluster,
+  Hash $cluster                                                                                    = {},
   Enum['ram', 'disc'] $cluster_node_type                                                           = 'disc',
   Array $cluster_nodes                                                                             = [],
-  String $config                                                                                   = 'rabbitmq/rabbitmq.config.epp',
+  String $config                                                                                   = 'rabbitmq/rabbitmq_3.conf.epp',
+  String $advanced_config                                                                          = 'rabbitmq/advanced_3.config.epp',
   Hash $config_cowboy_opts                                                                         = {},
   Boolean $config_cluster                                                                          = false,
-  Stdlib::Absolutepath $config_path                                                                = '/etc/rabbitmq/rabbitmq.config',
+  Stdlib::Absolutepath $config_path                                                                = '/etc/rabbitmq/rabbitmq.conf',
+  Stdlib::Absolutepath $advanced_config_path                                                       = '/etc/rabbitmq/advanced.config',
+  Boolean $purge_legacy_config_files                                                               = false,
+  Stdlib::Absolutepath $legacy_config_path                                                         = '/etc/rabbitmq/rabbitmq.config',
   Boolean $config_ranch                                                                            = true,
   Boolean $config_stomp                                                                            = false,
   Boolean $config_shovel                                                                           = false,
@@ -474,12 +486,12 @@ class rabbitmq (
   Boolean $ssl_honor_cipher_order                                                                  = true,
   Optional[Stdlib::Absolutepath] $ssl_dhfile                                                       = undef,
   Array $ssl_ciphers                                                                               = [],
-  Enum['true','false','peer','best_effort'] $ssl_crl_check                                         = 'false',
+  Variant[Boolean, Enum['peer','best_effort']] $ssl_crl_check                                      = false,
   Optional[Stdlib::Absolutepath] $ssl_crl_cache_hash_dir                                           = undef,
   Optional[Integer] $ssl_crl_cache_http_timeout                                                    = undef,
   Boolean $stomp_ensure                                                                            = false,
   Boolean $ldap_auth                                                                               = false,
-  Variant[String[1],Array[String[1]]] $ldap_server                                                 = 'ldap',
+  Array[String[1]] $ldap_server                                                                    = ['ldap'],
   Optional[String] $ldap_user_dn_pattern                                                           = undef,
   String $ldap_other_bind                                                                          = 'anon',
   Boolean $ldap_use_ssl                                                                            = false,
@@ -524,7 +536,7 @@ class rabbitmq (
     }
   }
 
-  if $ssl_crl_check != 'false' {
+  if $ssl_crl_check != false {
     unless $ssl {
       fail('$ssl_crl_check requires that $ssl => true')
     }
@@ -534,7 +546,7 @@ class rabbitmq (
     unless $ssl {
       fail('$ssl_crl_cache_hash_dir requires that $ssl => true')
     }
-    if $ssl_crl_check == 'false' {
+    if $ssl_crl_check == false {
       fail('$ssl_crl_cache_http_timeout requires that $ssl_crl_check => true|peer|best_effort')
     }
   }
@@ -543,7 +555,7 @@ class rabbitmq (
     unless $ssl {
       fail('$ssl_crl_cache_http_timeout requires that $ssl => true')
     }
-    if $ssl_crl_check == 'false' {
+    if $ssl_crl_check == false {
       fail('$ssl_crl_cache_http_timeout requires that $ssl_crl_check => true|peer|best_effort')
     }
   }

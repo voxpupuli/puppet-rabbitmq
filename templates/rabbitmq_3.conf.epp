@@ -1,0 +1,237 @@
+# THIS FILE IS MANAGED BY PUPPET
+# DO NOT EDIT MANUALLY!
+# See
+# https://www.rabbitmq.com/docs/configure
+# Options are sorted as in
+# https://github.com/rabbitmq/rabbitmq-server/blob/v3.13.x/deps/rabbit/docs/rabbitmq.conf.example
+# https://github.com/rabbitmq/rabbitmq-server/blob/v3.8.x/deps/rabbit/docs/rabbitmq.conf.example
+
+#
+# Core Broker
+#
+
+##
+## Networking
+##
+## Relevant doc guide: https://www.rabbitmq.com/docs/3.13/networking.
+##
+<%- if $rabbitmq::config::ssl_only {-%>
+listeners.tcp = none
+<%- } elsif $rabbitmq::config::interface {-%>
+listeners.tcp.default = <%= $rabbitmq::config::interface%>:<%= $rabbitmq::config::port %>
+<%- } elsif $rabbitmq::config::node_ip_address {-%>
+listeners.tcp.default = <%= $rabbitmq::config::node_ip_address%>:<%= $rabbitmq::config::port %>
+<%- } else {-%>
+listeners.tcp.default = <%= $rabbitmq::config::port %>
+<%- } -%>
+
+##
+## Security, Access Control
+##
+## Relevant doc guide: https://www.rabbitmq.com/docs/3.13/access-control.
+##
+<%- if $rabbitmq::config::loopback_users.size > 0 {-%>
+  <%- $rabbitmq::config::loopback_users.sort.each |$user| { -%>
+loopback_users.<%=$user%> = true
+  <%- } -%>
+<%- } -%>
+
+###
+### TLS Configuration
+###
+### Relevant doc guide: https://www.rabbitmq.com/docs/3.13/ssl.
+###
+<%- if $rabbitmq::config::ssl { -%>
+  <%- if $rabbitmq::config::ssl_interface {-%>
+listeners.ssl.1 = <%= $rabbitmq::config::ssl_interface%>:<%= $rabbitmq::config::ssl_port %>
+  <%- } else {-%>
+listeners.ssl.1 = <%= $rabbitmq::config::ssl_port %>
+  <%- } -%>
+ssl_options.verify = <%= $rabbitmq::config::ssl_verify %>
+  <%- if $rabbitmq::config::ssl_depth {-%>
+ssl_options.depth = <%= $rabbitmq::config::ssl_depth %>
+  <%- } -%>
+ssl_options.reuse_sessions = <%= $rabbitmq::config::ssl_reuse_sessions %>
+ssl_options.fail_if_no_peer_cert = <%= $rabbitmq::config::ssl_fail_if_no_peer_cert %>
+  <%- if $rabbitmq::config::ssl_cacert {-%>
+ssl_options.cacertfile = <%= $rabbitmq::config::ssl_cacert %>
+  <%- } -%>
+ssl_options.certfile = <%= $rabbitmq::config::ssl_cert %>
+ssl_options.keyfile = <%= $rabbitmq::config::ssl_key %>
+  <%- if $rabbitmq::config::ssl_cert_password {-%>
+ssl_options.password = <%= $rabbitmq::config::ssl_cert_password %>
+  <%- } -%>
+  <%- if $rabbitmq::config::ssl_dhfile {-%>
+ssl_options.dhfile = <%= $rabbitmq::config::ssl_dhfile %>
+  <%- } -%>
+<%-   if $rabbitmq::config::ssl_crl_check {-%>
+ssl_options.crl_check = <%= $rabbitmq::config::ssl_crl_check %>
+  <%- } -%>
+ssl_options.honor_cipher_order = <%= $rabbitmq::config::ssl_honor_cipher_order %>
+  <%- if !$rabbitmq::config::ssl_versions or !('tlsv1.3' in $rabbitmq::config::ssl_versions) {-%>
+## These are highly recommended for TLSv1.2 but cannot be used
+## with TLSv1.3. If TLSv1.3 is enabled, these lines MUST be removed.
+  <%- if $rabbitmq::config::ssl_client_renegotiation != undef {-%>
+ssl_options.client_renegotiation = <%= $rabbitmq::config::ssl_client_renegotiation %>
+  <%- } -%>
+ssl_options.secure_renegotiate = <%= $rabbitmq::config::ssl_secure_renegotiate %>
+##
+  <%- } -%>
+  <%- if $rabbitmq::config::ssl_versions { -%>
+    <%- $rabbitmq::config::ssl_versions.each |$index, $ssl_version| { -%>
+ssl_options.versions.<%=$index + 1%> = <%=$ssl_version%>
+    <%- } -%>
+  <%- } -%>
+  <%- if $rabbitmq::config::ssl_ciphers { -%>
+    <%- $rabbitmq::config::ssl_ciphers.each |$index, $ssl_cipher| { -%>
+ssl_options.ciphers.<%=$index + 1%> = <%=$ssl_cipher%>
+    <%- } -%>
+  <%- } -%>
+<%- } -%>
+
+### Authentication/authorisation backends
+###
+### Relevant doc guides:
+###
+###  * https://www.rabbitmq.com/docs/3.13/plugins
+###  * https://www.rabbitmq.com/docs/3.13/access-control
+###
+<%- if $rabbitmq::config::auth_backends {-%>
+<%- $rabbitmq::config::auth_backends.each |$index, $auth_backend| { -%>
+auth_backends.<%=$index + 1%> = <%=$auth_backend%>
+<%- } -%>
+<%- } elsif $rabbitmq::config::ldap_auth {-%>
+auth_backends.1.authn = rabbit_auth_backend_ldap
+auth_backends.2.authz = rabbit_auth_backend_internal
+<%- } -%>
+
+### Default user/vhost
+###
+default_user = <%= $rabbitmq::config::default_user %>
+default_pass = <%= $rabbitmq::config::default_pass %>
+
+##
+## Clustering
+##
+## Relevant doc guide: https://www.rabbitmq.com/docs/3.13/clustering.
+##
+<%- if $rabbitmq::config::config_cluster {-%>
+cluster_partition_handling = <%= $rabbitmq::config::cluster_partition_handling %>
+<%- if $rabbitmq::config::cluster_nodes.empty() {-%>
+cluster_formation.peer_discovery_backend = classic_config
+cluster_nodes = []
+<%- } else {-%>
+  <%- $rabbitmq::config::cluster_nodes.each |$index, $cluster_node| { -%>
+cluster_formation.peer_discovery_backend = classic_config
+cluster_formation.classic_config.nodes.<%=$index + 1%> = rabbit@<%=$cluster_node%>
+  <%- } -%>
+<%- } -%>
+cluster_formation.node_type = <%=$rabbitmq::config::cluster_node_type%>
+<%- } -%>
+
+##
+## Additional network and protocol related configuration
+##
+<%- if $rabbitmq::config::heartbeat {-%>
+heartbeat = <%=$rabbitmq::config::heartbeat%>
+<% } -%>
+
+<%- if $rabbitmq::config::tcp_backlog {-%>
+tcp_listen_options.backlog = <%= $rabbitmq::config::tcp_backlog %>
+<%- } -%>
+<%- if $rabbitmq::config::tcp_keepalive {-%>
+tcp_listen_options.keepalive = true
+<%- } -%>
+<%- if $rabbitmq::config::tcp_sndbuf {-%>
+tcp_listen_options.sndbuf = <%= $rabbitmq::config::tcp_sndbuf %>
+<%- } -%>
+<%- if $rabbitmq::config::tcp_recbuf {-%>
+tcp_listen_options.recbuf = <%= $rabbitmq::config::tcp_recbuf %>
+<%- } -%>
+
+##
+## Statistics Collection
+##
+<%- if $rabbitmq::config::collect_statistics_interval {-%>
+collect_statistics_interval = <%= $rabbitmq::config::collect_statistics_interval %>
+<%- } -%>
+
+#
+# RabbitMQ LDAP Plugin
+#
+# Relevant doc guide: https://www.rabbitmq.com/docs/3.13/ldap
+#
+<%- if $rabbitmq::config::ldap_auth {-%>
+  <%- $rabbitmq::config::ldap_server.each |$index, $server| { -%>
+auth_ldap.servers.<%=$index + 1%> = <%=$server%>
+  <%- } -%>
+  <%- if $rabbitmq::config::ldap_user_dn_pattern { -%>
+auth_ldap.user_dn_pattern = <%= $rabbitmq::config::ldap_user_dn_pattern %>
+  <%- } -%>
+auth_ldap.use_ssl = <%= $rabbitmq::config::ldap_use_ssl %>
+auth_ldap.port = <%= $rabbitmq::config::ldap_port %>
+auth_ldap.log = <%= $rabbitmq::config::ldap_log %>
+<%- } -%>
+
+#
+# RabbitMQ Management Plugin
+#
+# Relevant doc guide: https://www.rabbitmq.com/docs/3.13/management
+#
+<%- if $rabbitmq::config::admin_enable or $rabbitmq::config::management_enable {-%>
+  <%- if $rabbitmq::config::ssl and $rabbitmq::config::management_ssl {-%>
+    <%- if $rabbitmq::config::management_ip_address {-%>
+management.tcp.ip = <%= $rabbitmq::config::management_ip_address %>
+    <%- } -%>
+management.ssl.port = <%= $rabbitmq::config::ssl_management_port %>
+management.ssl.verify = <%= $rabbitmq::config::ssl_management_verify %>
+management.ssl.reuse_sessions = <%= $rabbitmq::config::ssl_reuse_sessions %>
+management.ssl.fail_if_no_peer_cert = <%= $rabbitmq::config::ssl_management_fail_if_no_peer_cert %>
+    <%- if $rabbitmq::config::ssl_management_cacert {-%>
+management.ssl.cacertfile = <%= $rabbitmq::config::ssl_management_cacert %>
+    <%- } -%>
+management.ssl.certfile = <%= $rabbitmq::config::ssl_management_cert %>
+management.ssl.keyfile = <%= $rabbitmq::config::ssl_management_key %>
+management.ssl.honor_cipher_order = <%= $rabbitmq::config::ssl_honor_cipher_order %>
+    <%- if $rabbitmq::config::ssl_versions { -%>
+      <%- $rabbitmq::config::ssl_versions.each |$index, $ssl_version| { -%>
+management.ssl.versions.<%=$index + 1%> = <%=$ssl_version%>
+      <%- } -%>
+    <%- } -%>
+    <%- if $rabbitmq::config::ssl_ciphers { -%>
+      <%- $rabbitmq::config::ssl_ciphers.each |$index, $ssl_cipher| { -%>
+management.ssl.ciphers.<%=$index + 1%> = <%=$ssl_cipher%>
+      <%- } -%>
+    <%- } -%>
+    <%- if !$rabbitmq::config::ssl_versions or !('tlsv1.3' in $rabbitmq::config::ssl_versions) {-%>
+## These are highly recommended for TLSv1.2 but cannot be used
+## with TLSv1.3. If TLSv1.3 is enabled, these lines MUST be removed.
+    <%- if $rabbitmq::config::ssl_client_renegotiation != undef {-%>
+management.ssl.client_renegotiation = <%= $rabbitmq::config::ssl_client_renegotiation %>
+    <%- }   -%>
+management.ssl.secure_renegotiate = <%= $rabbitmq::config::ssl_secure_renegotiate %>
+##
+  <%- } -%>
+  <%- } else {-%>
+management.tcp.port = <%= $rabbitmq::config::management_port %>
+    <%- if $rabbitmq::config::management_ip_address {-%>
+management.tcp.ip = <%= $rabbitmq::config::management_ip_address %>
+    <%- } -%>
+  <%- } -%>
+<%- } -%>
+
+#
+# RabbitMQ STOMP Plugin
+#
+# Relevant doc guide: https://www.rabbitmq.com/docs/3.13/stomp
+#
+<%- if $rabbitmq::config::config_stomp {-%>
+  <%- if $rabbitmq::config::stomp_ssl_only {-%>
+stomp.listeners.tcp = none
+  <%- } else { -%>
+stomp.listeners.tcp.1 = <%= $rabbitmq::config::stomp_port %>
+  <%- } -%>
+  <%- if $rabbitmq::config::ssl and $rabbitmq::config::ssl_stomp_port { -%>
+stomp.listeners.ssl.default = <%= $rabbitmq::config::ssl_stomp_port %>
+  <%- } -%>
+<%- } -%>

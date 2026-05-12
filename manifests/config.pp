@@ -10,9 +10,13 @@ class rabbitmq::config {
   $cluster_node_type                                  = $rabbitmq::cluster_node_type
   $cluster_nodes                                      = $rabbitmq::cluster_nodes
   $config                                             = $rabbitmq::config
+  $advanced_config                                    = $rabbitmq::advanced_config
   $config_cluster                                     = $rabbitmq::config_cluster
   $config_cowboy_opts                                 = $rabbitmq::config_cowboy_opts
   $config_path                                        = $rabbitmq::config_path
+  $advanced_config_path                               = $rabbitmq::advanced_config_path
+  $purge_legacy_config_files                          = $rabbitmq::purge_legacy_config_files
+  $legacy_config_path                                 = $rabbitmq::legacy_config_path
   $config_ranch                                       = $rabbitmq::config_ranch
   $config_stomp                                       = $rabbitmq::config_stomp
   $stomp_ensure                                       = $rabbitmq::stomp_ensure
@@ -171,10 +175,26 @@ class rabbitmq::config {
     mode   => '2750',
   }
 
-  file { 'rabbitmq.config':
+  if $purge_legacy_config_files {
+    file { 'rabbitmq.config':
+      ensure => absent,
+      path   => $legacy_config_path,
+    }
+  }
+
+  file { 'rabbitmq.conf':
     ensure  => file,
     path    => $config_path,
     content => epp($config),
+    owner   => $rabbitmq_user,
+    group   => $rabbitmq_group,
+    mode    => '0640',
+  }
+
+  file { 'advanced.config':
+    ensure  => file,
+    path    => $advanced_config_path,
+    content => epp($advanced_config),
     owner   => $rabbitmq_user,
     group   => $rabbitmq_group,
     mode    => '0640',
@@ -252,7 +272,6 @@ class rabbitmq::config {
       rabbitmq_group => $rabbitmq_group,
       rabbitmq_home  => $rabbitmq_home,
       service_name   => $service_name,
-      before         => File['rabbitmq.config'],
     }
   }
 }

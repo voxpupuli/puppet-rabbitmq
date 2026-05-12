@@ -1,0 +1,134 @@
+%% THIS FILE IS MANAGED BY PUPPET
+%% DO NOT EDIT MANUALLY!
+[
+%% Erlang Kernel Application
+%% See https://www.erlang.org/doc/apps/kernel/kernel_app.html
+%%
+  {kernel, [
+<%- if $rabbitmq::config::config_kernel_variables { -%>
+  <%= $rabbitmq::config::config_kernel_variables
+    .map |$key, $value| { "{${key}, ${value}}" }
+    .sort
+    .join(",\n    ")
+  %>
+<%- } -%>
+  ]},
+
+%% Additional RabbitMQ config variables
+<% if $rabbitmq::config::config_variables {-%>
+  <%= $rabbitmq::config::config_variables
+    .map |$key, $value| { "{${key}, ${value}}" }
+    .sort
+    .join(",\n    ")
+  %>
+<%- } -%>
+
+%% Advanced RabbitMQ SSL Options
+<%- if $rabbitmq::config::ssl {-%>
+  {ssl_options, [
+    <%- if $rabbitmq::config::ssl_crl_check {-%>
+    ,{crl_check,<%= $rabbitmq::config::ssl_crl_check %>}
+    <%- } -%>
+    <%- if $rabbitmq::config::ssl_crl_cache_hash_dir {-%>
+    ,{crl_cache, {ssl_crl_hash_dir, {internal, [{dir, "<%= $rabbitmq::config::ssl_crl_cache_hash_dir %>"}]}}}
+    <%- } -%>
+    <%- if $rabbitmq::config::ssl_crl_cache_http_timeout {-%>
+    ,{crl_cache, {ssl_crl_cache, {internal, [{http, <%= $rabbitmq::config::ssl_crl_cache_http_timeout %>}]}}}
+    <%- } -%>
+  ]},
+<%- } -%>
+
+%% Advanced Erlang Clustering Options
+  { rabbit, [
+<% if $rabbitmq::config::quorum_cluster_size {-%>
+    {quorum_cluster_size, <%= $rabbitmq::config::quorum_cluster_size %>},
+<%- } -%>
+<% if $rabbitmq::config::quorum_membership_reconciliation_enabled {-%>
+    {quorum_membership_reconciliation_enabled, <%= $rabbitmq::config::quorum_membership_reconciliation_enabled %>},
+  <%- unless $rabbitmq::config::quorum_membership_reconciliation_auto_remove =~ Undef {-%>
+    {quorum_membership_reconciliation_auto_remove, <%= $rabbitmq::config::quorum_membership_reconciliation_auto_remove %>},
+  <%- } -%>
+  <%- unless $rabbitmq::config::quorum_membership_reconciliation_interval =~ Undef {-%>
+    {quorum_membership_reconciliation_interval, <%= $rabbitmq::config::quorum_membership_reconciliation_interval %>},
+  <%- } -%>
+  <%- unless $rabbitmq::config::quorum_membership_reconciliation_trigger_interval =~ Undef {-%>
+    {quorum_membership_reconciliation_trigger_interval, <%= $rabbitmq::config::quorum_membership_reconciliation_trigger_interval %>},
+  <%- } -%>
+  <%- unless $rabbitmq::config::quorum_membership_reconciliation_target_group_size =~ Undef {-%>
+    {quorum_membership_reconciliation_target_group_size, <%= $rabbitmq::config::quorum_membership_reconciliation_target_group_size %>},
+  <%- } -%>
+<% } -%>
+  ]},
+
+ %% RabbitMQ LDAP Plugin
+ %%
+ %% See https://www.rabbitmq.com/docs/3.13/ldap
+ %%
+<%- if $rabbitmq::config::ldap_auth {-%>,
+  {rabbitmq_auth_backend_ldap, [
+    <%- if $rabbitmq::config::ldap_config_variables {-%>
+    %% Keeping it here for now as parameters pass it in legacy format
+    {other_bind, <%= $rabbitmq::config::ldap_other_bind %>},
+    <%- } -%>
+<%- if $rabbitmq::config::ldap_config_variables {-%>
+    <%- $rabbitmq::config::ldap_config_variables.keys.sort.each |$key| {-%>
+      {<%= $key %>, <%= $rabbitmq::config::ldap_config_variables[$key] %>},
+    <%- } -%>
+<%- } -%>
+  ]},
+<%- } -%>
+
+ %% RabbitMQ Management Plugin
+ %%
+ %% See https://www.rabbitmq.com/docs/3.13/management
+ %%
+ {rabbitmq_management, [
+    <%- if !$rabbitmq::config::config_management_variables.empty {-%>
+      %% Additional management config
+      <%= $rabbitmq::config::config_management_variables
+        .map |$key, $value| { "{${key}, ${value}}" }
+        .sort
+        .join(",\n    ")
+      %>
+    <%-} -%>
+
+      %% Cowboy config
+      {cowboy_opts, [
+      <%- if !$rabbitmq::config::config_cowboy_opts.empty {-%>
+      <%= $rabbitmq::config::config_cowboy_opts
+        .map |$key, $value| { "{${key}, ${value}}" }
+        .sort
+        .join(",\n    ")
+      %>
+      <%- } -%>
+      ]}
+ ]},
+
+ %% RabbitMQ Shovel Plugin
+ %%
+ %% See https://www.rabbitmq.com/docs/3.13/shovel
+ %%
+  {rabbitmq_shovel,
+    [{shovels,[
+ <%- if $rabbitmq::config::config_shovel and !$rabbitmq::config::config_shovel_statics.empty { -%>
+      <%= $rabbitmq::config::config_shovel_statics
+        .map |$key, $value| { "{${key},[${value}]}" }
+        .sort
+        .join(",\n      ")
+      -%>
+<%- } -%>
+<%# This newline is intentionally here -%>
+
+    ]}
+  ]}
+
+
+  <%- if $rabbitmq::config::config_additional_variables and !$rabbitmq::config::config_additional_variables.empty {-%>,
+    %% Additional config
+    <%= $rabbitmq::config::config_additional_variables
+      .map |$key, $value| { "{${key}, ${value}}" }
+      .sort
+      .join(",\n    ")
+    %>
+  <%- } -%>
+].
