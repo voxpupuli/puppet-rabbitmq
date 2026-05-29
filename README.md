@@ -28,10 +28,6 @@ This module manages RabbitMQ (www.rabbitmq.com)
 The rabbitmq module sets up rabbitmq and has a number of providers to manage
 everything from vhosts to exchanges after setup.
 
-This module has been tested against 3.5.x and 3.6.x (as well as earlier
-versions) and is known to not support all features against versions
-prior to 2.7.1.
-
 ## Setup
 
 ### What rabbitmq affects
@@ -53,9 +49,28 @@ You can view example usage in [REFERENCE](REFERENCE.md).
 
 Version v13.2.0 and older also added an erlang repository on CentOS 7. That isn't used and can be safely removed.
 
+### Migrating from puppet-rabbitmq <= 15.x
+
+**Module versions greater than 15.x drop support for RabbitMQ < 3.7.0**.
+Please upgrade to a newer RabbitMQ version before upgrading the module.
+
+**Module versions greater than 15.x switch to the new ini-style config file**
+As of RabbitMQ 3.7.0 instead of a Erlang-style `rabbitmq.config` file, there are two configuration files, `rabbitmq.conf` (sysctl style) and `advanced.config`.
+`puppet-rabbitmq` >= 16.x uses these two files - using the same parameters _should_ have the same result, but **users are strongly advised to test upgrade in a dev environment**.
+
+If the new files contain all the desired settings, use the `purge_legacy_config_files` parameter to ensure legacy-format configuration files are removed.
+
 ## Reference
 
 See [REFERENCE](REFERENCE.md).
+
+## Limitations
+
+Supported OSes and dependencies are given into metadata.json file.
+
+This module is tested with the last RabbitMQ 3.x release (3.13) and 3.x release from CentOS Messaging SIG (3.8).
+It may work with other releases >= 3.7.0 but it is not tested against them.
+It definitely **does not support anymore RabbitMQ < 3.7.0** because of the new INI-style/sysctl configuration file.
 
 ## Development
 

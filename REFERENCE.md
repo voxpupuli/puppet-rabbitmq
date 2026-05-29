@@ -226,11 +226,15 @@ The following parameters are available in the `rabbitmq` class:
 * [`cluster_partition_handling`](#-rabbitmq--cluster_partition_handling)
 * [`collect_statistics_interval`](#-rabbitmq--collect_statistics_interval)
 * [`config`](#-rabbitmq--config)
+* [`advanced_config`](#-rabbitmq--advanced_config)
 * [`config_additional_variables`](#-rabbitmq--config_additional_variables)
 * [`config_cluster`](#-rabbitmq--config_cluster)
 * [`config_cowboy_opts`](#-rabbitmq--config_cowboy_opts)
 * [`config_kernel_variables`](#-rabbitmq--config_kernel_variables)
 * [`config_path`](#-rabbitmq--config_path)
+* [`advanced_config_path`](#-rabbitmq--advanced_config_path)
+* [`purge_legacy_config_files`](#-rabbitmq--purge_legacy_config_files)
+* [`legacy_config_path`](#-rabbitmq--legacy_config_path)
 * [`config_ranch`](#-rabbitmq--config_ranch)
 * [`config_management_variables`](#-rabbitmq--config_management_variables)
 * [`config_stomp`](#-rabbitmq--config_stomp)
@@ -383,7 +387,7 @@ Data type: `Hash`
 
 Join cluster and change name of cluster.
 
-Default value: `$rabbitmq::cluster`
+Default value: `{}`
 
 ##### <a name="-rabbitmq--cluster_node_type"></a>`cluster_node_type`
 
@@ -421,15 +425,23 @@ Default value: `undef`
 
 Data type: `String`
 
-The file to use as the rabbitmq.config template.
+The file to use as the rabbitmq.conf template.
 
-Default value: `'rabbitmq/rabbitmq.config.epp'`
+Default value: `'rabbitmq/rabbitmq_3.conf.epp'`
+
+##### <a name="-rabbitmq--advanced_config"></a>`advanced_config`
+
+Data type: `String`
+
+The file to use as the advanced.config template.
+
+Default value: `'rabbitmq/advanced_3.config.epp'`
 
 ##### <a name="-rabbitmq--config_additional_variables"></a>`config_additional_variables`
 
 Data type: `Hash`
 
-Additional config variables in rabbitmq.config
+Additional config variables in advanced.config
 
 Default value: `{}`
 
@@ -445,7 +457,7 @@ Default value: `false`
 
 Data type: `Hash`
 
-Hash of additional configs (key / value) for `cowboy_opts` in rabbitmq.config.
+Hash of additional configs (key / value) for `cowboy_opts` in advanced.config.
 
 Default value: `{}`
 
@@ -461,7 +473,31 @@ Default value: `{}`
 
 Data type: `Stdlib::Absolutepath`
 
-The path to write the RabbitMQ configuration file to.
+The path to write the RabbitMQ configuration (in sysctl format) file to.
+
+Default value: `'/etc/rabbitmq/rabbitmq.conf'`
+
+##### <a name="-rabbitmq--advanced_config_path"></a>`advanced_config_path`
+
+Data type: `Stdlib::Absolutepath`
+
+The path to write the RabbitMQ advanced configuration (in Erlang format) file to.
+
+Default value: `'/etc/rabbitmq/advanced.config'`
+
+##### <a name="-rabbitmq--purge_legacy_config_files"></a>`purge_legacy_config_files`
+
+Data type: `Boolean`
+
+Purge old config file (Erlang format).
+
+Default value: `false`
+
+##### <a name="-rabbitmq--legacy_config_path"></a>`legacy_config_path`
+
+Data type: `Stdlib::Absolutepath`
+
+Path of the legacy config file.
 
 Default value: `'/etc/rabbitmq/rabbitmq.config'`
 
@@ -665,11 +701,11 @@ Default value: `false`
 
 ##### <a name="-rabbitmq--ldap_server"></a>`ldap_server`
 
-Data type: `Variant[String[1],Array[String[1]]]`
+Data type: `Array[String[1]]`
 
 LDAP server or servers to use for auth.
 
-Default value: `'ldap'`
+Default value: `['ldap']`
 
 ##### <a name="-rabbitmq--ldap_user_dn_pattern"></a>`ldap_user_dn_pattern`
 
@@ -1165,12 +1201,12 @@ Default value: `[]`
 
 ##### <a name="-rabbitmq--ssl_crl_check"></a>`ssl_crl_check`
 
-Data type: `Enum['true','false','peer','best_effort']`
+Data type: `Variant[Boolean, Enum['peer','best_effort']]`
 
 Perform CRL (Certificate Revocation List) verification
 Please see the [Erlang SSL](https://erlang.org/doc/man/ssl.html#type-crl_check) module documentation for more information.
 
-Default value: `'false'`
+Default value: `false`
 
 ##### <a name="-rabbitmq--ssl_crl_cache_hash_dir"></a>`ssl_crl_cache_hash_dir`
 

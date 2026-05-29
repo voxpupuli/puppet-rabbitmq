@@ -40,9 +40,10 @@ describe 'rabbitmq clustering' do
       apply_manifest(pp, catch_failures: true)
     end
 
-    describe file('/etc/rabbitmq/rabbitmq.config') do
+    describe file('/etc/rabbitmq/rabbitmq.conf') do
       it { is_expected.to be_file }
-      it { is_expected.to contain 'cluster_nodes' }
+      it { is_expected.to contain 'cluster_formation.peer_discovery_backend = classic_config' }
+      it { is_expected.to contain 'cluster_formation.classic_config.nodes' }
       it { is_expected.to contain 'rabbit@rabbit1' }
       it { is_expected.to contain 'rabbit@rabbit2' }
       it { is_expected.to contain 'ram' }
