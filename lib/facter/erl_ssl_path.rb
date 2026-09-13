@@ -7,7 +7,7 @@
 
 Facter.add(:erl_ssl_path) do
   setcode do
-    if Facter::Util::Resolution.which('erl')
+    if Facter::Core::Execution.which('erl')
       data = Facter::Core::Execution.execute("erl -eval 'io:format(\"~p\", [code:lib_dir(ssl, ebin)]),halt().' -noshell")
       # erl returns the string with quotes, strip them off
       data.gsub!(%r{\A"|"\Z}, '')
