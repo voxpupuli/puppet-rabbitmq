@@ -10,7 +10,7 @@ describe Facter::Util::Fact do
   describe 'rabbitmq_plugins_dirs' do
     context 'with multiple plugins dirs' do
       it do
-        expect(Facter::Util::Resolution).to receive(:which).with('rabbitmqctl').and_return(true)
+        expect(Facter::Core::Execution).to receive(:which).with('rabbitmqctl').and_return(true)
         expect(Facter::Core::Execution).to receive(:execute).with("rabbitmqctl eval 'application:get_env(rabbit, plugins_dir).'").and_return('{ok,"/usr/lib/rabbitmq/plugins:/usr/lib/rabbitmq/lib/rabbitmq_server-3.7.10/plugins"}')
         expect(Facter.fact(:rabbitmq_plugins_dirs).value).to contain_exactly('/usr/lib/rabbitmq/plugins', '/usr/lib/rabbitmq/lib/rabbitmq_server-3.7.10/plugins')
       end
@@ -18,7 +18,7 @@ describe Facter::Util::Fact do
 
     context 'with only 1 plugins dir' do
       it do
-        expect(Facter::Util::Resolution).to receive(:which).with('rabbitmqctl').and_return(true)
+        expect(Facter::Core::Execution).to receive(:which).with('rabbitmqctl').and_return(true)
         expect(Facter::Core::Execution).to receive(:execute).with("rabbitmqctl eval 'application:get_env(rabbit, plugins_dir).'").and_return('{ok,"/usr/lib/rabbitmq/lib/rabbitmq_server-0.0.0/plugins"}')
         expect(Facter.fact(:rabbitmq_plugins_dirs).value).to contain_exactly('/usr/lib/rabbitmq/lib/rabbitmq_server-0.0.0/plugins')
       end
@@ -26,7 +26,7 @@ describe Facter::Util::Fact do
 
     context 'rabbitmqctl is not in path' do
       it do
-        expect(Facter::Util::Resolution).to receive(:which).with('rabbitmqctl').and_return(false)
+        expect(Facter::Core::Execution).to receive(:which).with('rabbitmqctl').and_return(false)
         expect(Facter.fact(:rabbitmq_plugins_dirs).value).to be_nil
       end
     end

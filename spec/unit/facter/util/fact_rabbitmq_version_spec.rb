@@ -10,7 +10,7 @@ describe Facter::Util::Fact do
   describe 'rabbitmq_version' do
     context 'with value' do
       it do
-        expect(Facter::Util::Resolution).to receive(:which).with('rabbitmqadmin').and_return(true)
+        expect(Facter::Core::Execution).to receive(:which).with('rabbitmqadmin').and_return(true)
         expect(Facter::Core::Execution).to receive(:execute).with('rabbitmqadmin --version 2>&1').and_return('rabbitmqadmin 3.6.0')
         expect(Facter.fact(:rabbitmq_version).value).to eq('3.6.0')
       end
@@ -18,7 +18,7 @@ describe Facter::Util::Fact do
 
     context 'with invalid value' do
       it do
-        expect(Facter::Util::Resolution).to receive(:which).with('rabbitmqadmin').and_return(true)
+        expect(Facter::Core::Execution).to receive(:which).with('rabbitmqadmin').and_return(true)
         expect(Facter::Core::Execution).to receive(:execute).with('rabbitmqadmin --version 2>&1').and_return('rabbitmqadmin %%VSN%%')
         expect(Facter.fact(:rabbitmq_version).value).to be_nil
       end
@@ -26,7 +26,7 @@ describe Facter::Util::Fact do
 
     context 'rabbitmqadmin is not in path' do
       it do
-        expect(Facter::Util::Resolution).to receive(:which).with('rabbitmqadmin').and_return(false)
+        expect(Facter::Core::Execution).to receive(:which).with('rabbitmqadmin').and_return(false)
         expect(Facter.fact(:rabbitmq_version).value).to be_nil
       end
     end

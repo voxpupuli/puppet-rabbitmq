@@ -10,7 +10,7 @@ describe Facter::Util::Fact do
   describe 'rabbitmq_nodename' do
     context 'with value' do
       it do
-        expect(Facter::Util::Resolution).to receive(:which).with('rabbitmqctl').and_return(true)
+        expect(Facter::Core::Execution).to receive(:which).with('rabbitmqctl').and_return(true)
         expect(Facter::Core::Execution).to receive(:execute).with('rabbitmqctl status 2>&1').and_return('Status of node monty@rabbit1 ...')
         expect(Facter.fact(:rabbitmq_nodename).value).to eq('monty@rabbit1')
       end
@@ -18,7 +18,7 @@ describe Facter::Util::Fact do
 
     context 'with dashes in hostname' do
       it do
-        expect(Facter::Util::Resolution).to receive(:which).with('rabbitmqctl').and_return(true)
+        expect(Facter::Core::Execution).to receive(:which).with('rabbitmqctl').and_return(true)
         expect(Facter::Core::Execution).to receive(:execute).with('rabbitmqctl status 2>&1').and_return('Status of node monty@rabbit-1 ...')
         expect(Facter.fact(:rabbitmq_nodename).value).to eq('monty@rabbit-1')
       end
@@ -26,7 +26,7 @@ describe Facter::Util::Fact do
 
     context 'with dashes in nodename/hostname' do
       it do
-        expect(Facter::Util::Resolution).to receive(:which).with('rabbitmqctl').and_return(true)
+        expect(Facter::Core::Execution).to receive(:which).with('rabbitmqctl').and_return(true)
         expect(Facter::Core::Execution).to receive(:execute).with('rabbitmqctl status 2>&1').and_return('Status of node monty-python@rabbit-1 ...')
         expect(Facter.fact(:rabbitmq_nodename).value).to eq('monty-python@rabbit-1')
       end
@@ -34,7 +34,7 @@ describe Facter::Util::Fact do
 
     context 'with quotes around node name' do
       it do
-        expect(Facter::Util::Resolution).to receive(:which).with('rabbitmqctl').and_return(true)
+        expect(Facter::Core::Execution).to receive(:which).with('rabbitmqctl').and_return(true)
         expect(Facter::Core::Execution).to receive(:execute).with('rabbitmqctl status 2>&1').and_return('Status of node \'monty@rabbit-1\' ...')
         expect(Facter.fact(:rabbitmq_nodename).value).to eq('monty@rabbit-1')
       end
@@ -42,7 +42,7 @@ describe Facter::Util::Fact do
 
     context 'without trailing points' do
       it do
-        expect(Facter::Util::Resolution).to receive(:which).with('rabbitmqctl').and_return(true)
+        expect(Facter::Core::Execution).to receive(:which).with('rabbitmqctl').and_return(true)
         expect(Facter::Core::Execution).to receive(:execute).with('rabbitmqctl status 2>&1').and_return('Status of node monty@rabbit-1')
         expect(Facter.fact(:rabbitmq_nodename).value).to eq('monty@rabbit-1')
       end
@@ -71,7 +71,7 @@ describe Facter::Util::Fact do
           - cookie hash: 6WdP0nl6d3HYqA5vTKMkIg==
 
         EOS
-        expect(Facter::Util::Resolution).to receive(:which).with('rabbitmqctl').and_return(true)
+        expect(Facter::Core::Execution).to receive(:which).with('rabbitmqctl').and_return(true)
         expect(Facter::Core::Execution).to receive(:execute).with('rabbitmqctl status 2>&1').and_return(error_string)
         expect(Facter.fact(:rabbitmq_nodename).value).to eq('monty@rabbit-1')
       end
@@ -79,7 +79,7 @@ describe Facter::Util::Fact do
 
     context 'rabbitmqctl is not in path' do
       it do
-        expect(Facter::Util::Resolution).to receive(:which).with('rabbitmqctl').and_return(false)
+        expect(Facter::Core::Execution).to receive(:which).with('rabbitmqctl').and_return(false)
         expect(Facter.fact(:rabbitmq_nodename).value).to be_nil
       end
     end
