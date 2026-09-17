@@ -16,8 +16,10 @@
 * `rabbitmq::install`: Ensures that rabbitmq-server exists
 * `rabbitmq::install::rabbitmqadmin`: Install rabbitmq admin
 * `rabbitmq::management`: Manage presence / absence of user resource for guest management user.
-* `rabbitmq::repo::apt`: requires   puppetlabs-apt   puppetlabs-stdlib
-* `rabbitmq::repo::rhel`: Makes sure that the Packagecloud repo is installed
+* `rabbitmq::repo::apt`: Configure upstream RabbitMQ APT repositories in DEB-822 format and pin
+packages if necessary.
+* `rabbitmq::repo::rhel`: Configure upstream RabbitMQ RPM repositories and locks packages versions if
+necessary.
 * `rabbitmq::service`: This class manages the rabbitmq server service itself.
 
 ### Resource types
@@ -273,7 +275,9 @@ The following parameters are available in the `rabbitmq` class:
 * [`management_ssl`](#-rabbitmq--management_ssl)
 * [`node_ip_address`](#-rabbitmq--node_ip_address)
 * [`package_apt_pin`](#-rabbitmq--package_apt_pin)
+* [`package_yum_versionlock`](#-rabbitmq--package_yum_versionlock)
 * [`package_ensure`](#-rabbitmq--package_ensure)
+* [`rabbitmq_version`](#-rabbitmq--rabbitmq_version)
 * [`package_gpg_key`](#-rabbitmq--package_gpg_key)
 * [`package_source`](#-rabbitmq--package_source)
 * [`package_provider`](#-rabbitmq--package_provider)
@@ -810,7 +814,15 @@ Default value: `undef`
 
 Data type: `Optional[Variant[Numeric, String[1]]]`
 
-Whether to pin the package to a particular source
+Whether to pin the package to a particular major.minor version
+
+Default value: `undef`
+
+##### <a name="-rabbitmq--package_yum_versionlock"></a>`package_yum_versionlock`
+
+Data type: `Optional[Boolean]`
+
+Whether to yum-versionlock the package to a particular major.minor version
 
 Default value: `undef`
 
@@ -819,8 +831,17 @@ Default value: `undef`
 Data type: `String`
 
 Determines the ensure state of the package.  Set to installed by default, but could be changed to latest.
+Use rabbitmq_version parameter to handle correctly installed version and dependencies.
 
 Default value: `'installed'`
+
+##### <a name="-rabbitmq--rabbitmq_version"></a>`rabbitmq_version`
+
+Data type: `String`
+
+Version of RabbitMQ to install in major.minor format (3.13, 3.8, etc.) or 'latest'.
+
+Default value: `'latest'`
 
 ##### <a name="-rabbitmq--package_gpg_key"></a>`package_gpg_key`
 
@@ -944,12 +965,9 @@ Default value: `undef`
 
 Data type: `Boolean`
 
-Ensure that a repo with the official (and newer) RabbitMQ package is configured, along with its signing key.
-Defaults to false (use system packages). This does not ensure that soft dependencies are present.
-It also does not solve the erlang dependency. See https://www.rabbitmq.com/which-erlang.html for a good breakdown of the
-different ways of handling the erlang deps. See also https://github.com/voxpupuli/puppet-rabbitmq/issues/788
+Ensure that upstream repositories for RabbitMQ and Erlang are enabled.
 
-Default value: `false`
+Default value: `true`
 
 ##### <a name="-rabbitmq--service_ensure"></a>`service_ensure`
 

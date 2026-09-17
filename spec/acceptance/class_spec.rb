@@ -3,6 +3,8 @@
 require 'spec_helper_acceptance'
 
 describe 'rabbitmq class:' do
+  rabbitmq_version = ENV.fetch('BEAKER_FACTER_rabbitmq_version', '3.13')
+
   case fact('os.family')
   when 'RedHat', 'SUSE', 'Debian'
     package_name = 'rabbitmq-server'
@@ -12,10 +14,12 @@ describe 'rabbitmq class:' do
     service_name = 'rabbitmq'
   end
 
-  context 'default class inclusion' do
+  context "default class inclusion with RabbitMQ #{rabbitmq_version}" do
     let(:pp) do
       <<-EOS
-      include rabbitmq
+      class { 'rabbitmq':
+        rabbitmq_version => '#{rabbitmq_version}',
+      }
       EOS
     end
 
@@ -69,8 +73,9 @@ describe 'rabbitmq class:' do
 
       pp = <<-EOS
         class { 'rabbitmq':
-          service_manage => false,
-          service_ensure  => 'stopped',
+          rabbitmq_version => '#{rabbitmq_version}',
+          service_manage   => false,
+          service_ensure   => 'stopped',
         }
       EOS
 
@@ -88,6 +93,7 @@ describe 'rabbitmq class:' do
     let(:pp) do
       <<-EOS
       class { 'rabbitmq':
+        rabbitmq_version  => '#{rabbitmq_version}',
         service_manage    => true,
         port              => 5672,
         admin_enable      => true,
@@ -119,6 +125,7 @@ describe 'rabbitmq class:' do
     let(:pp) do
       <<-EOS
         class { 'rabbitmq':
+          rabbitmq_version  => '#{rabbitmq_version}',
           service_manage    => true,
           port              => 5672,
           admin_enable      => true,
@@ -152,6 +159,7 @@ describe 'rabbitmq class:' do
     let(:pp) do
       <<-EOS
         class { 'rabbitmq':
+          rabbitmq_version => '#{rabbitmq_version}',
           service_manage  => true,
           admin_enable    => true,
           node_ip_address => '0.0.0.0',
@@ -183,6 +191,7 @@ describe 'rabbitmq class:' do
     let(:pp) do
       <<-EOS
         class { 'rabbitmq':
+          rabbitmq_version => '#{rabbitmq_version}',
           service_manage        => true,
           port                  => 5672,
           admin_enable          => true,

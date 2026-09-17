@@ -1,47 +1,99 @@
-# requires
-#   puppetlabs-apt
-#   puppetlabs-stdlib
-#
 # @api private
 #
+# @summary
+#   Configure upstream RabbitMQ APT repositories in DEB-822 format and pin
+#   packages if necessary.
+#
+# @param key_id
+#   ID of the key used to sign packages.
+# @param key_server
+#   Server used to retrieve the key used to sign packages.
 # @param location
+#   Array of URLs that host the packages.
 # @param repos
-# @param include_src
-# @param key
-# @param key_source
-# @param key_content
-# @param architecture
+#   Repositories components to enable.
 #
 class rabbitmq::repo::apt (
-  String[1] $location            = 'https://packagecloud.io/rabbitmq/rabbitmq-server',
-  String[1] $repos               = 'main',
-  Boolean $include_src           = false,
-  String[1] $key                 = '8C695B0219AFDEB04A058ED8F4E789204D206F89',
-  String[1] $key_source          = $rabbitmq::package_gpg_key,
-  Optional[String[1]] $key_content  = $rabbitmq::key_content,
-  Optional[String[1]] $architecture = undef,
+  String[1]        $key_id     = '0A9AF2115F4687BD29803A206B73A36E6026DFCA',
+  String[1]        $key_server = 'keys.openpgp.org',
+  Array[String[1]] $location   = ['localhost'], # OS dependent, it's in Hiera
+  Array[String[1]] $repos      = ['main'],
 ) {
-  $osname = downcase($facts['os']['name'])
-  $pin    = $rabbitmq::package_apt_pin
+  # https://github.com/puppetlabs/puppetlabs-apt/issues/1184
+  include apt
 
-  apt::source { 'rabbitmq':
-    ensure       => present,
-    location     => "${location}/${osname}",
-    repos        => $repos,
-    include      => { 'src' => $include_src },
-    key          => {
-      'id'      => $key,
-      'source'  => $key_source,
-      'content' => $key_content,
-    },
-    architecture => $architecture,
+  # Uses legacy trusted.gpg, because apt::keyring does not de-armor the key
+  apt::key { 'com.rabbitmq.team.gpg':
+    id     => $key_id,
+    server => $key_server,
   }
 
+  apt::source { 'rabbitmq':
+    source_format => 'sources',
+    location      => $location,
+    repos         => $repos,
+    release       => [$facts['os']['distro']['codename']],
+    types         => ['deb'],
+    keyring       => '/etc/apt/trusted.gpg',
+    comment       => 'Modern Erlang/OTP and RabbitMQ releases',
+  }
+
+  $pin    = $rabbitmq::package_apt_pin
   if $pin {
-    apt::pin { 'rabbitmq':
-      packages => '*',
-      priority => $pin,
-      origin   => inline_template('<%= require \'uri\'; URI(@location).host %>'),
+    # Determine the Erlang compatible with RabbitMQ one, otherwise dependencies
+    # install fails
+    # https://www.rabbitmq.com/docs/which-erlang
+    case $rabbitmq::rabbitmq_version {
+      '3.13': {
+        $erlang_pin_version = '1:26.*'
+        $rabbitmq_pin_version = '3.13.*'
+      }
+      '3.12': {
+        $erlang_pin_version = '1:26.*'
+        $rabbitmq_pin_version = '3.12.*'
+      }
+      '3.11': {
+        $erlang_pin_version = '1:25.*'
+        $rabbitmq_pin_version = '3.11.*'
+      }
+      '3.10': {
+        $erlang_pin_version = '1:25.*'
+        $rabbitmq_pin_version = '3.10.*'
+      }
+      '3.9': {
+        $erlang_pin_version = '1:25.*'
+        $rabbitmq_pin_version = '3.9.*'
+      }
+      '3.8': {
+        $erlang_pin_version = '1:24.*'
+        $rabbitmq_pin_version = '3.8.*'
+      }
+      '3.7': {
+        $erlang_pin_version = '1:22.*'
+        $rabbitmq_pin_version = '3.7.*'
+      }
+      default: {
+        $erlang_pin_version = false
+        $rabbitmq_pin_version = false
+      }
+    }
+
+    if $rabbitmq_pin_version {
+      apt::pin { 'rabbitmq':
+        packages    => 'rabbitmq*',
+        explanation => "Pin RabbitMQ packages to ${rabbitmq::rabbitmq_version}",
+        priority    => $pin,
+        version     => $rabbitmq_pin_version,
+      }
+    }
+
+    if $erlang_pin_version {
+      apt::pin { 'erlang':
+        packages    => 'erlang*',
+        explanation => "Pin Erlang packages to versions compatible with RabbitMQ ${rabbitmq::rabbitmq_version}",
+        priority    => $pin,
+        version     => $erlang_pin_version,
+      }
     }
   }
 }

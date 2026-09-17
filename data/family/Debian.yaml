@@ -2,4 +2,4 @@
 rabbitmq::python_package: 'python3'
 rabbitmq::package_name: 'rabbitmq-server'
 rabbitmq::service_name: 'rabbitmq-server'
-rabbitmq::package_gpg_key: 'https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey'
+rabbitmq::package_apt_pin: 1001

@@ -1,40 +1,57 @@
-# Makes sure that the Packagecloud repo is installed
-#
 # @api private
 #
-# @param location
-# @param repo_key_source
-# @param package_key_source
+# @summary 
+#   Configure upstream RabbitMQ RPM repositories and locks packages versions if
+#   necessary.
+#
+# @param rpm_repositories
+#   Hash of RPM repositories to add to the system.
 #
 class rabbitmq::repo::rhel (
-  String[1] $location                  = "https://packagecloud.io/rabbitmq/rabbitmq-server/el/${facts['os'][release][major]}/\$basearch",
-  String[1] $repo_key_source    = $rabbitmq::repo_gpg_key,
-  String[1] $package_key_source = $rabbitmq::package_gpg_key,
+  Optional[Hash] $rpm_repositories = undef, # See Hiera
 ) {
-  # Import package key from rabbitmq to be able to
-  # sign the package and the repo.
-  # rabbitmq key is gpg-pubkey-6026dfca-573adfde
-  exec { "rpm --import ${package_key_source}":
-    path   => ['/bin','/usr/bin','/sbin','/usr/sbin'],
-    unless => 'rpm -q gpg-pubkey-6026dfca-573adfde 2>/dev/null',
-    before => YumRepo['rabbitmq'],
+  $rpm_repositories.each |String $repository, Hash $params| {
+    yumrepo { $repository:
+      name      => $params['name'],
+      baseurl   => $params['baseurl'],
+      gpgkey    => $params['gpgkey'],
+      gpgcheck  => $params['gpgcheck'],
+      sslcacert => $params['sslcacert'],
+      sslverify => $params['sslverify'],
+    }
   }
 
-  yumrepo { 'rabbitmq':
-    ensure        => present,
-    name          => 'rabbitmq_rabbitmq-server',
-    baseurl       => $location,
-    gpgkey        => $repo_key_source,
-    enabled       => 1,
-    gpgcheck      => 1,
-    repo_gpgcheck => 1,
+  case $rabbitmq::rabbitmq_version {
+    '3.13': {
+      $rabbitmq_pin_version = '3.13.*'
+    }
+    '3.12': {
+      $rabbitmq_pin_version = '3.12.*'
+    }
+    '3.11': {
+      $rabbitmq_pin_version = '3.11.*'
+    }
+    '3.10': {
+      $rabbitmq_pin_version = '3.10.*'
+    }
+    '3.9': {
+      $rabbitmq_pin_version = '3.9.*'
+    }
+    '3.8': {
+      $rabbitmq_pin_version = '3.8.*'
+    }
+    '3.7': {
+      $rabbitmq_pin_version = '3.7.*'
+    }
+    default: {
+      $rabbitmq_pin_version = false
+    }
   }
 
-  # This may still be needed to prevent warnings
-  # packagecloud key is gpg-pubkey-4d206f89-5bbb8d59
-  exec { "rpm --import ${repo_key_source}":
-    path    => ['/bin','/usr/bin','/sbin','/usr/sbin'],
-    unless  => 'rpm -q gpg-pubkey-4d206f89-5bbb8d59 2>/dev/null',
-    require => YumRepo['rabbitmq'],
+  $lock = $rabbitmq::package_yum_versionlock
+  if $lock and $rabbitmq_pin_version {
+    yum::versionlock { 'rabbitmq-server':
+      version => $rabbitmq_pin_version,
+    }
   }
 }

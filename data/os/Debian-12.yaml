@@ -1,0 +1,6 @@
+---
+rabbitmq::repo::apt::location:
+  - https://deb1.rabbitmq.com/rabbitmq-erlang/debian/bookworm
+  - https://deb2.rabbitmq.com/rabbitmq-erlang/debian/bookworm
+  - https://deb1.rabbitmq.com/rabbitmq-server/debian/bookworm
+  - https://deb2.rabbitmq.com/rabbitmq-server/debian/bookworm

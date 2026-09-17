@@ -249,9 +249,14 @@
 #   Allows you to set the IP for RabbitMQ service to bind to. Set to 127.0.0.1 to bind to localhost only, or 0.0.0.0
 #   to bind to all interfaces.
 # @param package_apt_pin
-#   Whether to pin the package to a particular source
+#   Whether to pin the package to a particular major.minor version
+# @param package_yum_versionlock
+#   Whether to yum-versionlock the package to a particular major.minor version
 # @param package_ensure
 #   Determines the ensure state of the package.  Set to installed by default, but could be changed to latest.
+#   Use rabbitmq_version parameter to handle correctly installed version and dependencies.
+# @param rabbitmq_version
+#   Version of RabbitMQ to install in major.minor format (3.13, 3.8, etc.) or 'latest'.
 # @param package_gpg_key
 #   RPM package GPG key to import. Uses source method. Should be a URL for Debian/RedHat OS family, or a file name for
 #   RedHat OS family. Set to https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc
@@ -291,10 +296,7 @@
 #   Controls the target group size for a quorum queue
 #   Important Note: This only takes affect if quorum_membership_reconciliation_enabled is set to true.
 # @param repos_ensure
-#   Ensure that a repo with the official (and newer) RabbitMQ package is configured, along with its signing key.
-#   Defaults to false (use system packages). This does not ensure that soft dependencies are present.
-#   It also does not solve the erlang dependency. See https://www.rabbitmq.com/which-erlang.html for a good breakdown of the
-#   different ways of handling the erlang deps. See also https://github.com/voxpupuli/puppet-rabbitmq/issues/788
+#   Ensure that upstream repositories for RabbitMQ and Erlang are enabled.
 # @param service_ensure
 #   The state of the service.
 # @param service_manage
@@ -434,7 +436,9 @@ class rabbitmq (
   Optional[String] $management_hostname                                                            = undef,
   Optional[String] $node_ip_address                                                                = undef,
   Optional[Variant[Numeric, String[1]]] $package_apt_pin                                           = undef,
+  Optional[Boolean] $package_yum_versionlock                                                       = undef,
   String $package_ensure                                                                           = 'installed',
+  String $rabbitmq_version                                                                         = 'latest',
   Optional[String] $package_gpg_key                                                                = undef,
   Optional[Integer] $quorum_cluster_size                                                           = undef,
   Optional[Boolean] $quorum_membership_reconciliation_enabled                                      = undef,
@@ -446,7 +450,7 @@ class rabbitmq (
   Variant[String, Array] $package_name                                                             = 'rabbitmq',
   Optional[String] $package_source                                                                 = undef,
   Optional[String] $package_provider                                                               = undef,
-  Boolean $repos_ensure                                                                            = false,
+  Boolean $repos_ensure                                                                            = true,
   Boolean $manage_python                                                                           = true,
   String $python_package                                                                           = 'python',
   String $rabbitmq_user                                                                            = 'rabbitmq',

@@ -1,0 +1,6 @@
+---
+rabbitmq::repo::apt::location:
+  - https://deb1.rabbitmq.com/rabbitmq-erlang/ubuntu/jammy
+  - https://deb2.rabbitmq.com/rabbitmq-erlang/ubuntu/jammy
+  - https://deb1.rabbitmq.com/rabbitmq-server/ubuntu/jammy
+  - https://deb2.rabbitmq.com/rabbitmq-server/ubuntu/jammy

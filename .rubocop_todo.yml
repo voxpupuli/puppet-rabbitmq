@@ -18,6 +18,7 @@ RSpec/BeEq:
 # Offense count: 13
 RSpec/LeakyLocalVariable:
   Exclude:
+    - 'spec/acceptance/class_spec.rb'
     - 'spec/classes/rabbitmq_spec.rb'
     - 'spec/unit/puppet/provider/rabbitmq_binding/rabbitmqadmin_spec.rb'
     - 'spec/unit/puppet/provider/rabbitmq_cli_spec.rb'
