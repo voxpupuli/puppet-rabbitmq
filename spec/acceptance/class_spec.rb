@@ -52,6 +52,7 @@ describe 'rabbitmq class:' do
     let(:pp) do
       <<-EOS
         class { 'rabbitmq':
+          rabbitmq_version => '#{rabbitmq_version}',
           service_ensure => 'stopped',
         }
       EOS

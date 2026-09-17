@@ -6,21 +6,9 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 14
+# Offense count: 22
 RSpec/LeakyLocalVariable:
-  Exclude:
-    - 'spec/acceptance/class_spec.rb'
-    - 'spec/classes/rabbitmq_spec.rb'
-    - 'spec/unit/puppet/provider/rabbitmq_binding/rabbitmqadmin_spec.rb'
-    - 'spec/unit/puppet/provider/rabbitmq_cli_spec.rb'
-    - 'spec/unit/puppet/provider/rabbitmq_cluster/rabbitmqctl_spec.rb'
-    - 'spec/unit/puppet/provider/rabbitmq_exchange/rabbitmqadmin_spec.rb'
-    - 'spec/unit/puppet/provider/rabbitmq_parameter/rabbitmqctl_federation_spec.rb'
-    - 'spec/unit/puppet/provider/rabbitmq_parameter/rabbitmqctl_spec.rb'
-    - 'spec/unit/puppet/provider/rabbitmq_plugin/rabbitmqctl_spec.rb'
-    - 'spec/unit/puppet/provider/rabbitmq_queue/rabbitmqadmin_spec.rb'
-    - 'spec/unit/puppet/provider/rabbitmq_user/rabbitmqctl_spec.rb'
-    - 'spec/unit/puppet/provider/rabbitmq_vhost/rabbitmqctl_spec.rb'
+  Enabled: false
 
 # Offense count: 172
 # Configuration parameters: .

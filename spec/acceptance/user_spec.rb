@@ -3,10 +3,13 @@
 require 'spec_helper_acceptance'
 
 describe 'rabbitmq user:' do
+  rabbitmq_version = ENV.fetch('BEAKER_FACTER_rabbitmq_version', '3.13')
+
   context 'create user resource' do
     it 'runs successfully' do
       pp = <<-EOS
       class { 'rabbitmq':
+        rabbitmq_version  => '#{rabbitmq_version}',
         service_manage    => true,
         port              => 5672,
         delete_guest_user => true,
