@@ -98,7 +98,7 @@ Puppet::Type.newtype(:rabbitmq_parameter) do
   def validate_value(value)
     raise ArgumentError, 'Invalid value' unless [Hash].include?(value.class)
 
-    value.each do |_k, v|
+    value.each_value do |v|
       raise ArgumentError, 'Invalid value' unless [String, TrueClass, FalseClass, Array].include?(v.class)
     end
   end

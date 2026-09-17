@@ -25,7 +25,7 @@ describe Puppet::Type.type(:rabbitmq_user_permissions) do
 
   %i[configure_permission read_permission write_permission].each do |param|
     it 'does not default to anything' do
-      expect(perms[param]).to eq(nil)
+      expect(perms[param]).to be_nil
     end
 
     it "accepts a valid regex for #{param}" do
