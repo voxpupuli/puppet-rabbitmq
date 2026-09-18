@@ -9,6 +9,12 @@
   "issues_url": "https://github.com/voxpupuli/puppet-rabbitmq/issues",
   "operatingsystem_support": [
     {
+      "operatingsystem": "AlmaLinux",
+      "operatingsystemrelease": [
+        "9"
+      ]
+    },
+    {
       "operatingsystem": "CentOS",
       "operatingsystemrelease": [
         "9"
@@ -33,7 +39,19 @@
       "operatingsystem": "OpenBSD"
     },
     {
+      "operatingsystem": "OracleLinux",
+      "operatingsystemrelease": [
+        "9"
+      ]
+    },
+    {
       "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "9"
+      ]
+    },
+    {
+      "operatingsystem": "Rocky",
       "operatingsystemrelease": [
         "9"
       ]
