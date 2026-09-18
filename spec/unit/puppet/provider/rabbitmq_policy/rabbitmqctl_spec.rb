@@ -117,7 +117,7 @@ describe Puppet::Type.type(:rabbitmq_policy).provider(:rabbitmqctl) do
   it 'does not match an empty list' do
     expect(provider.class).to receive(:rabbitmqctl_list).with('policies', '-p', '/').and_return('')
     expect(provider.class).to receive(:rabbitmq_version).and_return('3.1.5')
-    expect(provider.exists?).to eq(nil)
+    expect(provider.exists?).to be_nil
   end
 
   it 'destroys policy' do

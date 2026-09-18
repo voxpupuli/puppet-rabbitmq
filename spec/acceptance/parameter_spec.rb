@@ -3,10 +3,13 @@
 require 'spec_helper_acceptance'
 
 describe 'rabbitmq parameter on a vhost:' do
+  rabbitmq_version = ENV.fetch('BEAKER_FACTER_rabbitmq_version', '3.13')
+
   context 'create parameter resource' do
     it 'runs successfully' do
       pp = <<-EOS
       class { 'rabbitmq':
+        rabbitmq_version  => '#{rabbitmq_version}',
         service_manage    => true,
         port              => 5672,
         delete_guest_user => true,

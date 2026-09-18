@@ -3,12 +3,15 @@
 require 'spec_helper_acceptance'
 
 describe 'rabbitmq::install::rabbitmqadmin class' do
+  rabbitmq_version = ENV.fetch('BEAKER_FACTER_rabbitmq_version', '3.13')
+
   context 'downloads the cli tools' do
     it 'runs successfully' do
       pp = <<-EOS
       class { 'rabbitmq':
-        admin_enable   => true,
-        service_manage => true,
+        rabbitmq_version => '#{rabbitmq_version}',
+        admin_enable     => true,
+        service_manage   => true,
       }
       EOS
 
@@ -24,8 +27,9 @@ describe 'rabbitmq::install::rabbitmqadmin class' do
     it 'runs successfully' do
       pp = <<-EOS
       class { 'rabbitmq':
-        admin_enable   => true,
-        service_manage => false,
+        rabbitmq_version => '#{rabbitmq_version}',
+        admin_enable     => true,
+        service_manage   => false,
       }
       EOS
 
@@ -43,18 +47,20 @@ describe 'rabbitmq::install::rabbitmqadmin class' do
       # make sure credential change takes effect before admin_enable
       pp_pre = <<-EOS
       class { 'rabbitmq':
-        service_manage => true,
-        default_user   => 'foobar',
-        default_pass   => 'bazblam',
+        rabbitmq_version => '#{rabbitmq_version}',
+        service_manage   => true,
+        default_user     => 'foobar',
+        default_pass     => 'bazblam',
       }
       EOS
 
       pp = <<-EOS
       class { 'rabbitmq':
-        admin_enable   => true,
-        service_manage => true,
-        default_user   => 'foobar',
-        default_pass   => 'bazblam',
+        rabbitmq_version => '#{rabbitmq_version}',
+        admin_enable     => true,
+        service_manage   => true,
+        default_user     => 'foobar',
+        default_pass     => 'bazblam',
       }
       EOS
 

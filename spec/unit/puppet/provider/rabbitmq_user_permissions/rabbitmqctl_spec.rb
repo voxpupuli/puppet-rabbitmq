@@ -38,7 +38,7 @@ describe 'Puppet::Type.type(:rabbitmq_user_permissions).provider(:rabbitmqctl)' 
 
   it 'does not match an empty list' do
     expect(provider.class).to receive(:rabbitmqctl_list).with('user_permissions', 'foo').and_return('')
-    expect(provider.exists?).to eq(nil)
+    expect(provider.exists?).to be_nil
   end
 
   it 'creates default permissions' do

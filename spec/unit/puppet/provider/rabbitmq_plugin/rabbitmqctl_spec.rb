@@ -68,7 +68,7 @@ describe provider_class do
 
         provider_class.prefetch('foo' => resource)
 
-        expect(resource.provider.exists?).to eq(true)
+        expect(resource.provider.exists?).to be(true)
       end
     end
 
@@ -78,7 +78,7 @@ describe provider_class do
 
         provider_class.prefetch('foo' => resource)
 
-        expect(resource.provider.exists?).to eq(false)
+        expect(resource.provider.exists?).to be(false)
       end
     end
   end

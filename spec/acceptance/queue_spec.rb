@@ -3,10 +3,13 @@
 require 'spec_helper_acceptance'
 
 describe 'rabbitmq binding:' do
+  rabbitmq_version = ENV.fetch('BEAKER_FACTER_rabbitmq_version', '3.13')
+
   context 'create binding and queue resources when using default management port' do
     it 'runs successfully' do
       pp = <<-EOS
       class { 'rabbitmq':
+        rabbitmq_version  => '#{rabbitmq_version}',
         service_manage    => true,
         port              => 5672,
         delete_guest_user => true,
@@ -77,6 +80,7 @@ describe 'rabbitmq binding:' do
     it 'runs successfully' do
       pp = <<-EOS
       class { 'rabbitmq':
+        rabbitmq_version  => '#{rabbitmq_version}',
         service_manage    => true,
         port              => 5672,
         delete_guest_user => true,
@@ -161,6 +165,7 @@ describe 'rabbitmq binding:' do
     it 'runs successfully' do
       pp = <<-EOS
       class { 'rabbitmq':
+        rabbitmq_version  => '#{rabbitmq_version}',
         service_manage    => true,
         port              => 5672,
         management_port   => 11111,
