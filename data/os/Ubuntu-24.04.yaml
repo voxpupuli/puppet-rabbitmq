@@ -1,0 +1,6 @@
+---
+rabbitmq::repo::apt::location:
+  - https://deb1.rabbitmq.com/rabbitmq-erlang/ubuntu/noble
+  - https://deb2.rabbitmq.com/rabbitmq-erlang/ubuntu/noble
+  - https://deb1.rabbitmq.com/rabbitmq-server/ubuntu/noble
+  - https://deb2.rabbitmq.com/rabbitmq-server/ubuntu/noble
