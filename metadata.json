@@ -9,7 +9,7 @@
   "issues_url": "https://github.com/voxpupuli/puppet-rabbitmq/issues",
   "operatingsystem_support": [
     {
-      "operatingsystem": "RedHat",
+      "operatingsystem": "AlmaLinux",
       "operatingsystemrelease": [
         "9"
       ]
@@ -28,18 +28,6 @@
       ]
     },
     {
-      "operatingsystem": "Ubuntu",
-      "operatingsystemrelease": [
-        "22.04"
-      ]
-    },
-    {
-      "operatingsystem": "SLES",
-      "operatingsystemrelease": [
-        "11"
-      ]
-    },
-    {
       "operatingsystem": "FreeBSD",
       "operatingsystemrelease": [
         "13",
@@ -49,6 +37,36 @@
     },
     {
       "operatingsystem": "OpenBSD"
+    },
+    {
+      "operatingsystem": "OracleLinux",
+      "operatingsystemrelease": [
+        "9"
+      ]
+    },
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "9"
+      ]
+    },
+    {
+      "operatingsystem": "Rocky",
+      "operatingsystemrelease": [
+        "9"
+      ]
+    },
+    {
+      "operatingsystem": "SLES",
+      "operatingsystemrelease": [
+        "11"
+      ]
+    },
+    {
+      "operatingsystem": "Ubuntu",
+      "operatingsystemrelease": [
+        "22.04"
+      ]
     }
   ],
   "requirements": [
@@ -58,10 +76,6 @@
     }
   ],
   "dependencies": [
-    {
-      "name": "puppetlabs/stdlib",
-      "version_requirement": ">= 9.0.0 < 10.0.0"
-    },
     {
       "name": "puppet/archive",
       "version_requirement": ">= 2.0.0 < 9.0.0"
@@ -75,12 +89,16 @@
       "version_requirement": ">= 10.0.0 < 12.0.0"
     },
     {
-      "name": "puppetlabs/yumrepo_core",
-      "version_requirement": ">= 2.0.0 < 4.0.0"
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">= 9.0.0 < 10.0.0"
     },
     {
       "name": "puppet/yum",
       "version_requirement": ">= 6.1.0 < 9.0.0"
+    },   
+    {
+      "name": "puppetlabs/yumrepo_core",
+      "version_requirement": ">= 2.0.0 < 4.0.0"
     }
   ],
   "tags": [
