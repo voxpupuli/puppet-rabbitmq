@@ -2,6 +2,8 @@
 
 require 'voxpupuli/acceptance/spec_helper_acceptance'
 
+Dir['./spec/support/acceptance/**/*.rb'].sort.each { |f| require f }
+
 configure_beaker do |host|
   case fact_on(host, 'os.family')
   when 'RedHat'

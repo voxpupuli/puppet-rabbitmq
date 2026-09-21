@@ -2,42 +2,43 @@
 
 require 'spec_helper_acceptance'
 
-describe 'rabbitmq policy on a vhost:' do
-  rabbitmq_version = ENV.fetch('BEAKER_FACTER_rabbitmq_version', '3.13')
+rabbitmq_version = ENV.fetch('BEAKER_FACTER_rabbitmq_version', '3.13')
 
+describe 'rabbitmq policy on a vhost:', if: run_test?(rabbitmq_version, fact('os.name')) do
   context 'create policy resource' do
     it 'runs successfully' do
       pp = <<-EOS
-      class { 'rabbitmq':
-        rabbitmq_version  => '#{rabbitmq_version}',
-        service_manage    => true,
-        port              => 5672,
-        delete_guest_user => true,
-        admin_enable      => true,
-      } ->
+        class { 'rabbitmq':
+          rabbitmq_version      => '#{rabbitmq_version}',
+          service_manage        => true,
+          port                  => 5672,
+          delete_guest_user     => true,
+          admin_enable          => true,
+          #{class_repo_params(rabbitmq_version, fact('os.name'))}
+        } ->
 
-      rabbitmq_vhost { 'myhost':
-        ensure => present,
-      } ->
+        rabbitmq_vhost { 'myhost':
+          ensure => present,
+        } ->
 
-      rabbitmq_policy { 'ha-all@myhost':
-        pattern    => '.*',
-        priority   => 0,
-        applyto    => 'all',
-        definition => {
-          'ha-mode'      => 'all',
-          'ha-sync-mode' => 'automatic',
-        },
-      }
+        rabbitmq_policy { 'ha-all@myhost':
+          pattern    => '.*',
+          priority   => 0,
+          applyto    => 'all',
+          definition => {
+            'ha-mode'      => 'all',
+            'ha-sync-mode' => 'automatic',
+          },
+        }
 
-      rabbitmq_policy { 'eu-federation@myhost':
-        pattern    => '^eu\\.',
-        priority   => 0,
-        applyto    => 'all',
-        definition => {
-          'federation-upstream-set' => 'all',
-        },
-      }
+        rabbitmq_policy { 'eu-federation@myhost':
+          pattern    => '^eu\\.',
+          priority   => 0,
+          applyto    => 'all',
+          definition => {
+            'federation-upstream-set' => 'all',
+          },
+        }
       EOS
 
       apply_manifest(pp, catch_failures: true)

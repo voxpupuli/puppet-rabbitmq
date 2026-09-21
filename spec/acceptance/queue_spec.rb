@@ -2,59 +2,59 @@
 
 require 'spec_helper_acceptance'
 
-describe 'rabbitmq binding:' do
-  rabbitmq_version = ENV.fetch('BEAKER_FACTER_rabbitmq_version', '3.13')
+rabbitmq_version = ENV.fetch('BEAKER_FACTER_rabbitmq_version', '3.13')
 
+describe 'rabbitmq binding:', if: run_test?(rabbitmq_version, fact('os.name')) do
   context 'create binding and queue resources when using default management port' do
     it 'runs successfully' do
       pp = <<-EOS
-      class { 'rabbitmq':
-        rabbitmq_version  => '#{rabbitmq_version}',
-        service_manage    => true,
-        port              => 5672,
-        delete_guest_user => true,
-        admin_enable      => true,
-      } ->
+        class { 'rabbitmq':
+          rabbitmq_version      => '#{rabbitmq_version}',
+          service_manage        => true,
+          port                  => 5672,
+          delete_guest_user     => true,
+          admin_enable          => true,
+          #{class_repo_params(rabbitmq_version, fact('os.name'))}
+        } ->
 
-      rabbitmq_user { 'dan':
-        admin    => true,
-        password => 'bar',
-        tags     => ['monitoring', 'tag1'],
-      } ->
+        rabbitmq_user { 'dan':
+          admin    => true,
+          password => 'bar',
+          tags     => ['monitoring', 'tag1'],
+        } ->
 
-      rabbitmq_user_permissions { 'dan@host1':
-        configure_permission => '.*',
-        read_permission      => '.*',
-        write_permission     => '.*',
-      }
+        rabbitmq_user_permissions { 'dan@host1':
+          configure_permission => '.*',
+          read_permission      => '.*',
+          write_permission     => '.*',
+        }
 
-      rabbitmq_vhost { 'host1':
-        ensure => present,
-      } ->
+        rabbitmq_vhost { 'host1':
+          ensure => present,
+        } ->
 
-      rabbitmq_exchange { 'exchange1@host1':
-        user     => 'dan',
-        password => 'bar',
-        type     => 'topic',
-        ensure   => present,
-      } ->
+        rabbitmq_exchange { 'exchange1@host1':
+          user     => 'dan',
+          password => 'bar',
+          type     => 'topic',
+          ensure   => present,
+        } ->
 
-      rabbitmq_queue { 'queue1@host1':
-        user        => 'dan',
-        password    => 'bar',
-        durable     => true,
-        auto_delete => false,
-        ensure      => present,
-      } ->
+        rabbitmq_queue { 'queue1@host1':
+          user        => 'dan',
+          password    => 'bar',
+          durable     => true,
+          auto_delete => false,
+          ensure      => present,
+        } ->
 
-      rabbitmq_binding { 'exchange1@queue1@host1':
-        user             => 'dan',
-        password         => 'bar',
-        destination_type => 'queue',
-        routing_key      => '#',
-        ensure           => present,
-      }
-
+        rabbitmq_binding { 'exchange1@queue1@host1':
+          user             => 'dan',
+          password         => 'bar',
+          destination_type => 'queue',
+          routing_key      => '#',
+          ensure           => present,
+        }
       EOS
 
       apply_manifest(pp, catch_failures: true)
@@ -79,67 +79,67 @@ describe 'rabbitmq binding:' do
   context 'create multiple bindings when same source / destination / vhost but different routing keys' do
     it 'runs successfully' do
       pp = <<-EOS
-      class { 'rabbitmq':
-        rabbitmq_version  => '#{rabbitmq_version}',
-        service_manage    => true,
-        port              => 5672,
-        delete_guest_user => true,
-        admin_enable      => true,
-      } ->
+        class { 'rabbitmq':
+          rabbitmq_version      => '#{rabbitmq_version}',
+          service_manage        => true,
+          port                  => 5672,
+          delete_guest_user     => true,
+          admin_enable          => true,
+          #{class_repo_params(rabbitmq_version, fact('os.name'))}
+        } ->
 
-      rabbitmq_user { 'dan':
-        admin    => true,
-        password => 'bar',
-        tags     => ['monitoring', 'tag1'],
-      } ->
+        rabbitmq_user { 'dan':
+          admin    => true,
+          password => 'bar',
+          tags     => ['monitoring', 'tag1'],
+        } ->
 
-      rabbitmq_user_permissions { 'dan@host1':
-        configure_permission => '.*',
-        read_permission      => '.*',
-        write_permission     => '.*',
-      }
+        rabbitmq_user_permissions { 'dan@host1':
+          configure_permission => '.*',
+          read_permission      => '.*',
+          write_permission     => '.*',
+        }
 
-      rabbitmq_vhost { 'host1':
-        ensure => present,
-      } ->
+        rabbitmq_vhost { 'host1':
+          ensure => present,
+        } ->
 
-      rabbitmq_exchange { 'exchange1@host1':
-        user     => 'dan',
-        password => 'bar',
-        type     => 'topic',
-        ensure   => present,
-      } ->
+        rabbitmq_exchange { 'exchange1@host1':
+          user     => 'dan',
+          password => 'bar',
+          type     => 'topic',
+          ensure   => present,
+        } ->
 
-      rabbitmq_queue { 'queue1@host1':
-        user        => 'dan',
-        password    => 'bar',
-        durable     => true,
-        auto_delete => false,
-        ensure      => present,
-      } ->
+        rabbitmq_queue { 'queue1@host1':
+          user        => 'dan',
+          password    => 'bar',
+          durable     => true,
+          auto_delete => false,
+          ensure      => present,
+        } ->
 
-      rabbitmq_binding { 'binding 1':
-        source           => 'exchange1',
-        destination      => 'queue1',
-        user             => 'dan',
-        vhost            => 'host1',
-        password         => 'bar',
-        destination_type => 'queue',
-        routing_key      => 'test1',
-        ensure           => present,
-      } ->
+        rabbitmq_binding { 'binding 1':
+          source           => 'exchange1',
+          destination      => 'queue1',
+          user             => 'dan',
+          vhost            => 'host1',
+          password         => 'bar',
+          destination_type => 'queue',
+          routing_key      => 'test1',
+          ensure           => present,
+        } ->
 
-      rabbitmq_binding { 'binding 2':
-        source           => 'exchange1',
-        destination      => 'queue1',
-        user             => 'dan',
-        vhost            => 'host1',
-        password         => 'bar',
-        destination_type => 'queue',
-        routing_key      => 'test2',
-        ensure           => present,
-      }
-
+        rabbitmq_binding { 'binding 2':
+          source           => 'exchange1',
+          destination      => 'queue1',
+          user             => 'dan',
+          vhost            => 'host1',
+          password         => 'bar',
+          destination_type => 'queue',
+          routing_key      => 'test2',
+          ensure           => present,
+        }
       EOS
 
       apply_manifest(pp, catch_failures: true)
@@ -164,54 +164,54 @@ describe 'rabbitmq binding:' do
   context 'create binding and queue resources when using a non-default management port' do
     it 'runs successfully' do
       pp = <<-EOS
-      class { 'rabbitmq':
-        rabbitmq_version  => '#{rabbitmq_version}',
-        service_manage    => true,
-        port              => 5672,
-        management_port   => 11111,
-        delete_guest_user => true,
-        admin_enable      => true,
-      } ->
+        class { 'rabbitmq':
+          rabbitmq_version      => '#{rabbitmq_version}',
+          service_manage        => true,
+          port                  => 5672,
+          management_port       => 11111,
+          delete_guest_user     => true,
+          admin_enable          => true,
+          #{class_repo_params(rabbitmq_version, fact('os.name'))}
+        } ->
 
-      rabbitmq_user { 'dan':
-        admin    => true,
-        password => 'bar',
-        tags     => ['monitoring', 'tag1'],
-      } ->
+        rabbitmq_user { 'dan':
+          admin    => true,
+          password => 'bar',
+          tags     => ['monitoring', 'tag1'],
+        } ->
 
-      rabbitmq_user_permissions { 'dan@host2':
-        configure_permission => '.*',
-        read_permission      => '.*',
-        write_permission     => '.*',
-      }
+        rabbitmq_user_permissions { 'dan@host2':
+          configure_permission => '.*',
+          read_permission      => '.*',
+          write_permission     => '.*',
+        }
 
-      rabbitmq_vhost { 'host2':
-        ensure => present,
-      } ->
+        rabbitmq_vhost { 'host2':
+          ensure => present,
+        } ->
 
-      rabbitmq_exchange { 'exchange2@host2':
-        user     => 'dan',
-        password => 'bar',
-        type     => 'topic',
-        ensure   => present,
-      } ->
+        rabbitmq_exchange { 'exchange2@host2':
+          user     => 'dan',
+          password => 'bar',
+          type     => 'topic',
+          ensure   => present,
+        } ->
 
-      rabbitmq_queue { 'queue2@host2':
-        user        => 'dan',
-        password    => 'bar',
-        durable     => true,
-        auto_delete => false,
-        ensure      => present,
-      } ->
+        rabbitmq_queue { 'queue2@host2':
+          user        => 'dan',
+          password    => 'bar',
+          durable     => true,
+          auto_delete => false,
+          ensure      => present,
+        } ->
 
-      rabbitmq_binding { 'exchange2@queue2@host2':
-        user             => 'dan',
-        password         => 'bar',
-        destination_type => 'queue',
-        routing_key      => '#',
-        ensure           => present,
-      }
-
+        rabbitmq_binding { 'exchange2@queue2@host2':
+          user             => 'dan',
+          password         => 'bar',
+          destination_type => 'queue',
+          routing_key      => '#',
+          ensure           => present,
+        }
       EOS
 
       apply_manifest(pp, catch_failures: true)

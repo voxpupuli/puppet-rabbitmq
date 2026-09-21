@@ -2,24 +2,29 @@
 
 require 'spec_helper_acceptance'
 
-describe 'rabbitmq user:' do
-  rabbitmq_version = ENV.fetch('BEAKER_FACTER_rabbitmq_version', '3.13')
+rabbitmq_version = ENV.fetch('BEAKER_FACTER_rabbitmq_version', '3.13')
+
+describe 'rabbitmq user:', if: run_test?(rabbitmq_version, fact('os.name')) do
+  let(:use_messaging_sig_pkgs) do
+    use_messaging_sig_pkgs?(rabbitmq_version, fact('os.name'))
+  end
 
   context 'create user resource' do
     it 'runs successfully' do
       pp = <<-EOS
-      class { 'rabbitmq':
-        rabbitmq_version  => '#{rabbitmq_version}',
-        service_manage    => true,
-        port              => 5672,
-        delete_guest_user => true,
-        admin_enable      => true,
-      } ->
+        class { 'rabbitmq':
+          rabbitmq_version      => '#{rabbitmq_version}',
+          service_manage        => true,
+          port                  => 5672,
+          delete_guest_user     => true,
+          admin_enable          => true,
+          #{class_repo_params(rabbitmq_version, fact('os.name'))}
+        } ->
 
-      rabbitmq_user { 'dan':
-        admin    => true,
-        password => 'bar',
-      }
+        rabbitmq_user { 'dan':
+          admin    => true,
+          password => 'bar',
+        }
       EOS
 
       apply_manifest(pp, catch_failures: true)

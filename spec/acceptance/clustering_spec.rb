@@ -2,21 +2,22 @@
 
 require 'spec_helper_acceptance'
 
-describe 'rabbitmq clustering' do
-  rabbitmq_version = ENV.fetch('BEAKER_FACTER_rabbitmq_version', '3.13')
+rabbitmq_version = ENV.fetch('BEAKER_FACTER_rabbitmq_version', '3.13')
 
+describe 'rabbitmq clustering', if: run_test?(rabbitmq_version, fact('os.name')) do
   context 'rabbitmq::wipe_db_on_cookie_change => false' do
     it 'runs successfully' do
       pp = <<-EOS
-      class { 'rabbitmq':
-        rabbitmq_version         => '#{rabbitmq_version}',
-        cluster                  => { 'name' => 'rabbit_cluster', 'init_node' => $facts['networking']['fqdn'] },
-        config_cluster           => true,
-        cluster_nodes            => ['rabbit1', 'rabbit2'],
-        cluster_node_type        => 'ram',
-        erlang_cookie            => 'TESTCOOKIE',
-        wipe_db_on_cookie_change => false,
-      }
+        class { 'rabbitmq':
+          rabbitmq_version         => '#{rabbitmq_version}',
+          cluster                  => { 'name' => 'rabbit_cluster', 'init_node' => $facts['networking']['fqdn'] },
+          config_cluster           => true,
+          cluster_nodes            => ['rabbit1', 'rabbit2'],
+          cluster_node_type        => 'ram',
+          erlang_cookie            => 'TESTCOOKIE',
+          wipe_db_on_cookie_change => false,
+          #{class_repo_params(rabbitmq_version, fact('os.name'))}
+        }
       EOS
 
       apply_manifest(pp, expect_failures: true)
@@ -30,15 +31,16 @@ describe 'rabbitmq clustering' do
   context 'rabbitmq::wipe_db_on_cookie_change => true' do
     it 'runs successfully' do
       pp = <<-EOS
-      class { 'rabbitmq':
-        rabbitmq_version         => '#{rabbitmq_version}',
-        cluster                  => { 'name' => 'rabbit_cluster', 'init_node' => $facts['networking']['fqdn'] },
-        config_cluster           => true,
-        cluster_nodes            => ['rabbit1', 'rabbit2'],
-        cluster_node_type        => 'ram',
-        erlang_cookie            => 'TESTCOOKIE',
-        wipe_db_on_cookie_change => true,
-      }
+        class { 'rabbitmq':
+          rabbitmq_version         => '#{rabbitmq_version}',
+          cluster                  => { 'name' => 'rabbit_cluster', 'init_node' => $facts['networking']['fqdn'] },
+          config_cluster           => true,
+          cluster_nodes            => ['rabbit1', 'rabbit2'],
+          cluster_node_type        => 'ram',
+          erlang_cookie            => 'TESTCOOKIE',
+          wipe_db_on_cookie_change => true,
+          #{class_repo_params(rabbitmq_version, fact('os.name'))}
+        }
       EOS
 
       apply_manifest(pp, catch_failures: true)
@@ -73,19 +75,20 @@ describe 'rabbitmq clustering' do
   context 'rabbitmq::cluster[:local_node] = foobar' do
     it 'runs successfully' do
       pp = <<-EOS
-      # Needed to avoid nxdomain error
-      host { 'foobar':
-        ip => '127.0.0.1',
-      }
-      class { 'rabbitmq':
-        rabbitmq_version         => '#{rabbitmq_version}',
-        cluster                  => { 'name' => 'rabbit_cluster', 'init_node' => 'foobar', 'local_node' => 'foobar' },
-        config_cluster           => true,
-        cluster_nodes            => ['foobar', 'rabbit2'],
-        cluster_node_type        => 'ram',
-        environment_variables    => { 'NODENAME' => 'rabbit@foobar' },
-        erlang_cookie            => 'TESTCOOKIE',
-      }
+        # Needed to avoid nxdomain error
+        host { 'foobar':
+          ip => '127.0.0.1',
+        }
+        class { 'rabbitmq':
+          rabbitmq_version         => '#{rabbitmq_version}',
+          cluster                  => { 'name' => 'rabbit_cluster', 'init_node' => 'foobar', 'local_node' => 'foobar' },
+          config_cluster           => true,
+          cluster_nodes            => ['foobar', 'rabbit2'],
+          cluster_node_type        => 'ram',
+          environment_variables    => { 'NODENAME' => 'rabbit@foobar' },
+          erlang_cookie            => 'TESTCOOKIE',
+          #{class_repo_params(rabbitmq_version, fact('os.name'))}
+        }
       EOS
 
       apply_manifest(pp, catch_failures: true)
