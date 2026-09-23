@@ -7,7 +7,7 @@ describe Facter::Util::Fact do
     Facter.clear
   end
 
-  describe 'rabbitmq_clusternam' do
+  describe 'rabbitmq_clustername' do
     context 'with value' do
       it do
         expect(Facter::Core::Execution).to receive(:which).with('rabbitmqctl').and_return(true)
