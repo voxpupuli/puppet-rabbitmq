@@ -68,7 +68,10 @@ See [REFERENCE](REFERENCE.md).
 
 Supported OSes and dependencies are given into metadata.json file.
 
-This module is tested with the last RabbitMQ 3.x release (3.13) and 3.x release from CentOS Messaging SIG (3.8).
+This module is tested:
+* with the last RabbitMQ 3.x release (3.13.x) using upstream packages on supported OSes
+* with 3.x release from CentOS Messaging SIG (3.9.x) on the EL systems that provide these packages
+
 It may work with other releases >= 3.7.0 but it is not tested against them.
 It definitely **does not support anymore RabbitMQ < 3.7.0** because of the new INI-style/sysctl configuration file.
 

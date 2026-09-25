@@ -2,9 +2,9 @@
 
 require 'spec_helper_acceptance'
 
-describe 'rabbitmq class:' do
-  rabbitmq_version = ENV.fetch('BEAKER_FACTER_rabbitmq_version', '3.13')
+rabbitmq_version = ENV.fetch('BEAKER_FACTER_rabbitmq_version', '3.13')
 
+describe 'rabbitmq class:', if: run_test?(rabbitmq_version, fact('os.name')) do
   case fact('os.family')
   when 'RedHat', 'SUSE', 'Debian'
     package_name = 'rabbitmq-server'
@@ -19,6 +19,7 @@ describe 'rabbitmq class:' do
       <<-EOS
       class { 'rabbitmq':
         rabbitmq_version => '#{rabbitmq_version}',
+        #{class_repo_params(rabbitmq_version, fact('os.name'))}#{' '}
       }
       EOS
     end
@@ -54,6 +55,7 @@ describe 'rabbitmq class:' do
         class { 'rabbitmq':
           rabbitmq_version => '#{rabbitmq_version}',
           service_ensure => 'stopped',
+          #{class_repo_params(rabbitmq_version, fact('os.name'))}
         }
       EOS
     end
@@ -69,14 +71,18 @@ describe 'rabbitmq class:' do
   context 'service is unmanaged' do
     it 'runs successfully' do
       pp_pre = <<-EOS
-        include rabbitmq
+        class { 'rabbitmq':
+          rabbitmq_version      => '#{rabbitmq_version}',
+          #{class_repo_params(rabbitmq_version, fact('os.name'))}
+        }
       EOS
 
       pp = <<-EOS
         class { 'rabbitmq':
-          rabbitmq_version => '#{rabbitmq_version}',
-          service_manage   => false,
-          service_ensure   => 'stopped',
+          rabbitmq_version      => '#{rabbitmq_version}',
+          service_manage        => false,
+          service_ensure        => 'stopped',
+          #{class_repo_params(rabbitmq_version, fact('os.name'))}
         }
       EOS
 
@@ -93,12 +99,13 @@ describe 'rabbitmq class:' do
   context 'binding on all interfaces' do
     let(:pp) do
       <<-EOS
-      class { 'rabbitmq':
-        rabbitmq_version  => '#{rabbitmq_version}',
-        service_manage    => true,
-        port              => 5672,
-        admin_enable      => true,
-        node_ip_address   => '0.0.0.0'
+        class { 'rabbitmq':
+        rabbitmq_version      => '#{rabbitmq_version}',
+        service_manage        => true,
+        port                  => 5672,
+        admin_enable          => true,
+        node_ip_address       => '0.0.0.0',
+        #{class_repo_params(rabbitmq_version, fact('os.name'))}
       }
       EOS
     end
@@ -126,11 +133,12 @@ describe 'rabbitmq class:' do
     let(:pp) do
       <<-EOS
         class { 'rabbitmq':
-          rabbitmq_version  => '#{rabbitmq_version}',
-          service_manage    => true,
-          port              => 5672,
-          admin_enable      => true,
-          node_ip_address   => '127.0.0.1'
+          rabbitmq_version      => '#{rabbitmq_version}',
+          service_manage        => true,
+          port                  => 5672,
+          admin_enable          => true,
+          node_ip_address       => '127.0.0.1',
+          #{class_repo_params(rabbitmq_version, fact('os.name'))}
         }
       EOS
     end
@@ -160,15 +168,16 @@ describe 'rabbitmq class:' do
     let(:pp) do
       <<-EOS
         class { 'rabbitmq':
-          rabbitmq_version => '#{rabbitmq_version}',
-          service_manage  => true,
-          admin_enable    => true,
-          node_ip_address => '0.0.0.0',
-          ssl_interface   => '0.0.0.0',
-          ssl             => true,
-          ssl_cacert      => '/tmp/cacert.crt',
-          ssl_cert        => '/tmp/rabbitmq.crt',
-          ssl_key         => '/tmp/rabbitmq.key',
+          rabbitmq_version      => '#{rabbitmq_version}',
+          service_manage        => true,
+          admin_enable          => true,
+          node_ip_address       => '0.0.0.0',
+          ssl_interface         => '0.0.0.0',
+          ssl                   => true,
+          ssl_cacert            => '/tmp/cacert.crt',
+          ssl_cert              => '/tmp/rabbitmq.crt',
+          ssl_key               => '/tmp/rabbitmq.key',
+          #{class_repo_params(rabbitmq_version, fact('os.name'))}
         }
       EOS
     end
@@ -197,7 +206,8 @@ describe 'rabbitmq class:' do
           port                  => 5672,
           admin_enable          => true,
           node_ip_address       => '0.0.0.0',
-          management_ip_address => '127.0.0.1'
+          management_ip_address => '127.0.0.1',
+          #{class_repo_params(rabbitmq_version, fact('os.name'))}
         }
       EOS
     end

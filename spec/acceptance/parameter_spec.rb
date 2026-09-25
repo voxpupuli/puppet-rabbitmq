@@ -2,35 +2,36 @@
 
 require 'spec_helper_acceptance'
 
-describe 'rabbitmq parameter on a vhost:' do
-  rabbitmq_version = ENV.fetch('BEAKER_FACTER_rabbitmq_version', '3.13')
+rabbitmq_version = ENV.fetch('BEAKER_FACTER_rabbitmq_version', '3.13')
 
+describe 'rabbitmq parameter on a vhost:', if: run_test?(rabbitmq_version, fact('os.name')) do
   context 'create parameter resource' do
     it 'runs successfully' do
       pp = <<-EOS
-      class { 'rabbitmq':
-        rabbitmq_version  => '#{rabbitmq_version}',
-        service_manage    => true,
-        port              => 5672,
-        delete_guest_user => true,
-        admin_enable      => true,
-      }
+        class { 'rabbitmq':
+          rabbitmq_version      => '#{rabbitmq_version}',
+          service_manage        => true,
+          port                  => 5672,
+          delete_guest_user     => true,
+          admin_enable          => true,
+          #{class_repo_params(rabbitmq_version, fact('os.name'))}
+        }
 
-      rabbitmq_plugin { [ 'rabbitmq_federation_management', 'rabbitmq_federation' ]:
-        ensure => present
-      } ~> Service['rabbitmq-server']
+        rabbitmq_plugin { [ 'rabbitmq_federation_management', 'rabbitmq_federation' ]:
+          ensure => present
+        } ~> Service['rabbitmq-server']
 
-      rabbitmq_vhost { 'fedhost':
-        ensure => present,
-      } ->
+        rabbitmq_vhost { 'fedhost':
+          ensure => present,
+        } ->
 
-      rabbitmq_parameter { 'documentumFed@fedhost':
-        component_name => 'federation-upstream',
-        value          => {
-          'uri'    => 'amqp://server',
-          'expires' => '3600000',
-        },
-      }
+        rabbitmq_parameter { 'documentumFed@fedhost':
+          component_name => 'federation-upstream',
+          value          => {
+            'uri'    => 'amqp://server',
+            'expires' => '3600000',
+          },
+        }
       EOS
 
       apply_manifest(pp, catch_failures: true)
