@@ -10,23 +10,23 @@ describe Facter::Util::Fact do
   describe 'rabbitmq_version' do
     context 'with value' do
       it do
-        expect(Facter::Core::Execution).to receive(:which).with('rabbitmqadmin').and_return(true)
-        expect(Facter::Core::Execution).to receive(:execute).with('rabbitmqadmin --version 2>&1').and_return('rabbitmqadmin 3.6.0')
-        expect(Facter.fact(:rabbitmq_version).value).to eq('3.6.0')
+        expect(Facter::Core::Execution).to receive(:which).with('rabbitmq-diagnostics').and_return(true)
+        expect(Facter::Core::Execution).to receive(:execute).with('rabbitmq-diagnostics version 2>&1').and_return('3.13.7')
+        expect(Facter.fact(:rabbitmq_version).value).to eq('3.13.7')
       end
     end
 
     context 'with invalid value' do
       it do
-        expect(Facter::Core::Execution).to receive(:which).with('rabbitmqadmin').and_return(true)
-        expect(Facter::Core::Execution).to receive(:execute).with('rabbitmqadmin --version 2>&1').and_return('rabbitmqadmin %%VSN%%')
+        expect(Facter::Core::Execution).to receive(:which).with('rabbitmq-diagnostics').and_return(true)
+        expect(Facter::Core::Execution).to receive(:execute).with('rabbitmq-diagnostics version 2>&1').and_return('%%VSN%%')
         expect(Facter.fact(:rabbitmq_version).value).to be_nil
       end
     end
 
-    context 'rabbitmqadmin is not in path' do
+    context 'rabbitmq-diagnostics is not in path' do
       it do
-        expect(Facter::Core::Execution).to receive(:which).with('rabbitmqadmin').and_return(false)
+        expect(Facter::Core::Execution).to receive(:which).with('rabbitmq-diagnostics').and_return(false)
         expect(Facter.fact(:rabbitmq_version).value).to be_nil
       end
     end
