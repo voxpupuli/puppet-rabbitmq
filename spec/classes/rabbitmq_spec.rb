@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe 'rabbitmq' do
+  rabbitmq_version = ENV.fetch('BEAKER_FACTER_rabbitmq_version', '3.13')
+
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let :facts do
@@ -196,27 +198,31 @@ describe 'rabbitmq' do
         let(:params) { { admin_enable: true, management_ip_address: '1.1.1.1' } }
 
         context 'with service_manage set to true' do
-          let(:params) { { admin_enable: true, management_ip_address: '1.1.1.1', service_manage: true } }
+          let(:params) { { rabbitmq_version: rabbitmq_version, admin_enable: true, management_ip_address: '1.1.1.1', service_manage: true } }
 
           context 'with rabbitmqadmin_package set to blub' do
-            let(:params) { { rabbitmqadmin_package: 'blub' } }
+            let(:params) { { rabbitmq_version: rabbitmq_version, rabbitmqadmin_package: 'blub' } }
 
-            it 'installs a package called blub' do
-              is_expected.to contain_package('rabbitmqadmin').with_name('blub')
+            if Gem::Version.new(rabbitmq_version) < Gem::Version.new('4.0')
+              it 'installs a package called blub' do
+                is_expected.to contain_package('rabbitmqadmin').with_name('blub')
+              end
             end
           end
 
           it 'we enable the admin interface by default' do
-            is_expected.to contain_class('rabbitmq::install::rabbitmqadmin')
             is_expected.to contain_rabbitmq_plugin('rabbitmq_management').with(
               notify: 'Class[Rabbitmq::Service]',
             )
-            is_expected.to contain_archive('rabbitmqadmin').with_source('http://1.1.1.1:15672/cli/rabbitmqadmin')
-            is_expected.to contain_file('/usr/local/bin/rabbitmqadmin').with(
-              owner: 'root',
-              mode: '0755',
-            )
-            is_expected.to contain_exec('remove_old_rabbitmqadmin_on_upgrade').with_command("rm #{rabbitmq_home}/rabbitmqadmin")
+            if Gem::Version.new(rabbitmq_version) < Gem::Version.new('4.0')
+              is_expected.to contain_class('rabbitmq::install::rabbitmqadmin')
+              is_expected.to contain_archive('rabbitmqadmin').with_source('http://1.1.1.1:15672/cli/rabbitmqadmin')
+              is_expected.to contain_file('/usr/local/bin/rabbitmqadmin').with(
+                owner: 'root',
+                mode: '0755',
+              )
+              is_expected.to contain_exec('remove_old_rabbitmqadmin_on_upgrade').with_command("rm #{rabbitmq_home}/rabbitmqadmin")
+            end
           end
 
           it { is_expected.to contain_package('python') } if %w[RedHat SUSE Archlinux].include?(os_facts['os']['family'])
@@ -225,91 +231,104 @@ describe 'rabbitmq' do
         end
 
         context 'with manage_python false' do
-          let(:params) { { manage_python: false } }
+          let(:params) { { rabbitmq_version: rabbitmq_version, manage_python: false } }
 
           it do
-            is_expected.to contain_class('rabbitmq::install::rabbitmqadmin')
+            is_expected.to contain_class('rabbitmq::install::rabbitmqadmin') if Gem::Version.new(rabbitmq_version) < Gem::Version.new('4.0')
             is_expected.not_to contain_package('python')
             is_expected.not_to contain_package('python2')
           end
         end
 
         context 'with $management_ip_address undef and service_manage set to true', unless: os_facts['os']['family'] == 'Archlinux' do
-          let(:params) { { admin_enable: true, management_ip_address: :undef } }
+          let(:params) { { rabbitmq_version: rabbitmq_version, admin_enable: true, management_ip_address: :undef } }
 
           it 'we enable the admin interface by default' do
-            is_expected.to contain_class('rabbitmq::install::rabbitmqadmin')
+            if Gem::Version.new(rabbitmq_version) < Gem::Version.new('4.0')
+              is_expected.to contain_class('rabbitmq::install::rabbitmqadmin')
+              is_expected.to contain_archive('rabbitmqadmin').with_source('http://127.0.0.1:15672/cli/rabbitmqadmin')
+            end
             is_expected.to contain_rabbitmq_plugin('rabbitmq_management').with(
               notify: 'Class[Rabbitmq::Service]',
             )
-            is_expected.to contain_archive('rabbitmqadmin').with_source('http://127.0.0.1:15672/cli/rabbitmqadmin')
           end
         end
 
         context 'with service_manage set to true, node_ip_address = undef, and default user/pass specified', unless: os_facts['os']['family'] == 'Archlinux' do
-          let(:params) { { admin_enable: true, default_user: 'foobar', default_pass: 'hunter2', node_ip_address: :undef } }
+          let(:params) { { rabbitmq_version: rabbitmq_version, admin_enable: true, default_user: 'foobar', default_pass: 'hunter2', node_ip_address: :undef } }
 
-          it 'we use the correct URL to rabbitmqadmin' do
-            is_expected.to contain_archive('rabbitmqadmin').with(
-              source: 'http://127.0.0.1:15672/cli/rabbitmqadmin',
-              username: 'foobar',
-              password: 'hunter2',
-            )
+          if Gem::Version.new(rabbitmq_version) < Gem::Version.new('4.0')
+            it 'we use the correct URL to rabbitmqadmin' do
+              is_expected.to contain_archive('rabbitmqadmin').with(
+                source: 'http://127.0.0.1:15672/cli/rabbitmqadmin',
+                username: 'foobar',
+                password: 'hunter2',
+              )
+            end
           end
         end
 
         context 'with service_manage set to true and default user/pass specified', unless: os_facts['os']['family'] == 'Archlinux' do
-          let(:params) { { admin_enable: true, default_user: 'foobar', default_pass: 'hunter2', management_ip_address: '1.1.1.1' } }
+          let(:params) { { rabbitmq_version: rabbitmq_version, admin_enable: true, default_user: 'foobar', default_pass: 'hunter2', management_ip_address: '1.1.1.1' } }
 
-          it 'we use the correct URL to rabbitmqadmin' do
-            is_expected.to contain_archive('rabbitmqadmin').with(
-              source: 'http://1.1.1.1:15672/cli/rabbitmqadmin',
-              username: 'foobar',
-              password: 'hunter2',
-            )
+          if Gem::Version.new(rabbitmq_version) < Gem::Version.new('4.0')
+            it 'we use the correct URL to rabbitmqadmin' do
+              is_expected.to contain_archive('rabbitmqadmin').with(
+                source: 'http://1.1.1.1:15672/cli/rabbitmqadmin',
+                username: 'foobar',
+                password: 'hunter2',
+              )
+            end
           end
         end
 
         context 'with service_manage set to true and archive_options set', unless: os_facts['os']['family'] == 'Archlinux' do
           let(:params) do
             {
+              rabbitmq_version: rabbitmq_version,
               admin_enable: true,
               management_ip_address: '1.1.1.1',
               archive_options: %w[fizz pop],
             }
           end
 
-          it 'we use the correct archive_options to rabbitmqadmin' do
-            is_expected.to contain_archive('rabbitmqadmin').with(
-              source: 'http://1.1.1.1:15672/cli/rabbitmqadmin',
-              download_options: %w[fizz pop],
-            )
+          if Gem::Version.new(rabbitmq_version) < Gem::Version.new('4.0')
+            it 'we use the correct archive_options to rabbitmqadmin' do
+              is_expected.to contain_archive('rabbitmqadmin').with(
+                source: 'http://1.1.1.1:15672/cli/rabbitmqadmin',
+                download_options: %w[fizz pop],
+              )
+            end
           end
         end
 
         context 'with service_manage set to true and management port specified', unless: os_facts['os']['family'] == 'Archlinux' do
           # NOTE: that the 2.x management port is 55672 not 15672
-          let(:params) { { admin_enable: true, management_port: 55_672, management_ip_address: '1.1.1.1' } }
+          let(:params) { { rabbitmq_version: rabbitmq_version, admin_enable: true, management_port: 55_672, management_ip_address: '1.1.1.1' } }
 
-          it 'we use the correct URL to rabbitmqadmin' do
-            is_expected.to contain_archive('rabbitmqadmin').with(
-              source: 'http://1.1.1.1:55672/cli/rabbitmqadmin',
-              username: 'guest',
-              password: 'guest',
-            )
+          if Gem::Version.new(rabbitmq_version) < Gem::Version.new('4.0')
+            it 'we use the correct URL to rabbitmqadmin' do
+              is_expected.to contain_archive('rabbitmqadmin').with(
+                source: 'http://1.1.1.1:55672/cli/rabbitmqadmin',
+                username: 'guest',
+                password: 'guest',
+              )
+            end
           end
         end
 
         context 'with ipv6, service_manage set to true and management port specified', unless: os_facts['os']['family'] == 'Archlinux' do
           # NOTE: that the 2.x management port is 55672 not 15672
-          let(:params) { { admin_enable: true, management_port: 55_672, management_ip_address: '::1' } }
+          let(:params) { { rabbitmq_version: rabbitmq_version, admin_enable: true, management_port: 55_672, management_ip_address: '::1' } }
 
-          it 'we use the correct URL to rabbitmqadmin' do
-            is_expected.to contain_archive('rabbitmqadmin').with(
-              source: 'http://[::1]:55672/cli/rabbitmqadmin',
-              username: 'guest',
-              password: 'guest',
-            )
+          if Gem::Version.new(rabbitmq_version) < Gem::Version.new('4.0')
+            it 'we use the correct URL to rabbitmqadmin' do
+              is_expected.to contain_archive('rabbitmqadmin').with(
+                source: 'http://[::1]:55672/cli/rabbitmqadmin',
+                username: 'guest',
+                password: 'guest',
+              )
+            end
           end
         end
 
@@ -384,86 +403,94 @@ describe 'rabbitmq' do
         end
       end
 
-      context 'configures config_cluster' do
-        let(:params) do
-          {
-            config_cluster: true,
-            cluster_nodes: %w[hare-1 hare-2],
-            cluster_node_type: 'ram',
-            wipe_db_on_cookie_change: false,
-          }
-        end
-
-        describe 'with erlang_cookie set' do
+      if Gem::Version.new(rabbitmq_version) < Gem::Version.new('4.0')
+        context 'configures config_cluster' do
           let(:params) do
             {
+              rabbitmq_version: rabbitmq_version,
               config_cluster: true,
               cluster_nodes: %w[hare-1 hare-2],
               cluster_node_type: 'ram',
-              erlang_cookie: 'TESTCOOKIE',
-              wipe_db_on_cookie_change: true,
+              wipe_db_on_cookie_change: false,
             }
           end
 
-          it 'contains the rabbitmq_erlang_cookie' do
-            is_expected.to contain_rabbitmq_erlang_cookie("#{rabbitmq_home}/.erlang.cookie")
-          end
-        end
+          describe 'with erlang_cookie set' do
+            let(:params) do
+              {
+                rabbitmq_version: rabbitmq_version,
+                config_cluster: true,
+                cluster_nodes: %w[hare-1 hare-2],
+                cluster_node_type: 'ram',
+                erlang_cookie: 'TESTCOOKIE',
+                wipe_db_on_cookie_change: true,
+              }
+            end
 
-        describe 'with erlang_cookie set but without config_cluster' do
-          let(:params) do
-            {
-              config_cluster: false,
-              erlang_cookie: 'TESTCOOKIE',
-            }
-          end
-
-          it 'contains the rabbitmq_erlang_cookie' do
-            is_expected.to contain_rabbitmq_erlang_cookie("#{rabbitmq_home}/.erlang.cookie")
-          end
-        end
-
-        describe 'without erlang_cookie and without config_cluster' do
-          let(:params) do
-            {
-              config_cluster: false,
-            }
+            it 'contains the rabbitmq_erlang_cookie' do
+              is_expected.to contain_rabbitmq_erlang_cookie("#{rabbitmq_home}/.erlang.cookie")
+            end
           end
 
-          it 'does not contains the rabbitmq_erlang_cookie' do
-            is_expected.not_to contain_rabbitmq_erlang_cookie("#{rabbitmq_home}/.erlang.cookie")
-          end
-        end
+          describe 'with erlang_cookie set but without config_cluster' do
+            let(:params) do
+              {
+                rabbitmq_version: rabbitmq_version,
+                config_cluster: false,
+                erlang_cookie: 'TESTCOOKIE',
+              }
+            end
 
-        describe 'and sets appropriate configuration' do
-          let(:params) do
-            {
-              config_cluster: true,
-              cluster_nodes: %w[hare-1 hare-2],
-              cluster_node_type: 'ram',
-              erlang_cookie: 'ORIGINAL',
-              wipe_db_on_cookie_change: true,
-            }
+            it 'contains the rabbitmq_erlang_cookie' do
+              is_expected.to contain_rabbitmq_erlang_cookie("#{rabbitmq_home}/.erlang.cookie")
+            end
           end
 
-          it 'for cluster_nodes' do
-            is_expected.to contain_file('rabbitmq.conf').with('content' => %r{cluster_formation.classic_config.nodes.1 = rabbit@hare-1})
-            is_expected.to contain_file('rabbitmq.conf').with('content' => %r{cluster_formation.classic_config.nodes.2 = rabbit@hare-2})
-          end
-        end
+          describe 'without erlang_cookie and without config_cluster' do
+            let(:params) do
+              {
+                rabbitmq_version: rabbitmq_version,
+                config_cluster: false,
+              }
+            end
 
-        describe 'without cluster_nodes and sets appropriate configuration' do
-          let(:params) do
-            {
-              config_cluster: true,
-              cluster_node_type: 'ram',
-              erlang_cookie: 'ORIGINAL',
-              wipe_db_on_cookie_change: true,
-            }
+            it 'does not contains the rabbitmq_erlang_cookie' do
+              is_expected.not_to contain_rabbitmq_erlang_cookie("#{rabbitmq_home}/.erlang.cookie")
+            end
           end
 
-          it 'for cluster_nodes' do
-            is_expected.to contain_file('rabbitmq.conf').with('content' => %r{cluster_nodes = \[\]})
+          describe 'and sets appropriate configuration' do
+            let(:params) do
+              {
+                rabbitmq_version: rabbitmq_version,
+                config_cluster: true,
+                cluster_nodes: %w[hare-1 hare-2],
+                cluster_node_type: 'ram',
+                erlang_cookie: 'ORIGINAL',
+                wipe_db_on_cookie_change: true,
+              }
+            end
+
+            it 'for cluster_nodes' do
+              is_expected.to contain_file('rabbitmq.conf').with('content' => %r{cluster_formation.classic_config.nodes.1 = rabbit@hare-1})
+              is_expected.to contain_file('rabbitmq.conf').with('content' => %r{cluster_formation.classic_config.nodes.2 = rabbit@hare-2})
+            end
+          end
+
+          describe 'without cluster_nodes and sets appropriate configuration' do
+            let(:params) do
+              {
+                rabbitmq_version: rabbitmq_version,
+                config_cluster: true,
+                cluster_node_type: 'ram',
+                erlang_cookie: 'ORIGINAL',
+                wipe_db_on_cookie_change: true,
+              }
+            end
+
+            it 'for cluster_nodes' do
+              is_expected.to contain_file('rabbitmq.conf').with('content' => %r{cluster_nodes = \[\]})
+            end
           end
         end
       end
@@ -1786,83 +1813,86 @@ describe 'rabbitmq' do
         end
       end
 
-      describe 'quorum_cluster_size with non-default value' do
-        let(:params) { { quorum_cluster_size: 7 } }
+      if Gem::Version.new(rabbitmq_version) < Gem::Version.new('4.0')
+        describe 'quorum_cluster_size with non-default value' do
+          let(:params) { { rabbitmq_version: rabbitmq_version, quorum_cluster_size: 7 } }
 
-        it 'does set quorum_cluster_size to 7' do
-          is_expected.to contain_file('advanced.config')
-            .with_content(%r{quorum_cluster_size, 7})
-        end
-      end
-
-      # Ensure that whenever Param quorum_membership_reconciliation_enabled is unset - none of the
-      # other quorum_membership_reconciliation paramaters are set at all
-      # This ensures full backward compatibility with PRE RabbitMQ 3.13
-      describe 'rabbitmq-quorum_membership_reconciliation_enabled undef options' do
-        let(:params) { { quorum_membership_reconciliation_enabled: :undef } }
-
-        it 'sets quorum_membership_reconciliation_enabled parameter undef in config file' do
-          is_expected.to contain_file('advanced.config')
-            .without_content(%r{\{quorum_membership_reconciliation_enabled, })
-            .without_content(%r{\{quorum_membership_reconciliation_auto_remove, })
-            .without_content(%r{\{quorum_membership_reconciliation_interval, })
-            .without_content(%r{\{quorum_membership_reconciliation_trigger_interval, })
-            .without_content(%r{\{quorum_membership_reconciliation_target_group_size, })
-        end
-      end
-
-      # Ensure that whenever Param quorum_membership_reconciliation_enabled is false - none of the
-      # other quorum_membership_reconciliation paramaters are set at all
-      # This ensures full backward compatibility with PRE RabbitMQ 3.13
-      describe 'rabbitmq-quorum_membership_reconciliation_enabled false options' do
-        let(:params) { { quorum_membership_reconciliation_enabled: false } }
-
-        it 'sets quorum_membership_reconciliation_enabled parameter false in config file' do
-          is_expected.to contain_file('advanced.config')
-            .without_content(%r{\{quorum_membership_reconciliation_enabled, })
-            .without_content(%r{\{quorum_membership_reconciliation_auto_remove, })
-            .without_content(%r{\{quorum_membership_reconciliation_interval, })
-            .without_content(%r{\{quorum_membership_reconciliation_trigger_interval, })
-            .without_content(%r{\{quorum_membership_reconciliation_target_group_size, })
-        end
-      end
-
-      # Ensure that whenever Param quorum_membership_reconciliation_enabled is true - the defaults
-      # of all other quorum_membership_reconciliation parameters ensure they are UNSET until
-      # explicitly set.
-      describe 'rabbitmq-quorum_membership_reconciliation_enabled true options' do
-        let(:params) { { quorum_membership_reconciliation_enabled: true } }
-
-        it 'sets quorum_membership_reconciliation_enabled parameter true in config file' do
-          is_expected.to contain_file('advanced.config')
-            .with_content(%r{\{quorum_membership_reconciliation_enabled, true\}})
-            .without_content(%r{\{quorum_membership_reconciliation_auto_remove, })
-            .without_content(%r{\{quorum_membership_reconciliation_interval, })
-            .without_content(%r{\{quorum_membership_reconciliation_trigger_interval, })
-            .without_content(%r{\{quorum_membership_reconciliation_target_group_size, })
-        end
-      end
-
-      # Ensure that whenever Param quorum_membership_reconciliation_enabled is true
-      # and the other parameters are set - they pass as expected.
-      describe 'rabbitmq-quorum_membership_reconciliation_enabled true options' do
-        let(:params) do
-          {
-            quorum_membership_reconciliation_enabled: true,
-            quorum_membership_reconciliation_auto_remove: true,
-            quorum_membership_reconciliation_interval: 36_000,
-            quorum_membership_reconciliation_trigger_interval: 3_600,
-            quorum_membership_reconciliation_target_group_size: 2,
-          }
+          it 'does set quorum_cluster_size to 7' do
+            is_expected.to contain_file('advanced.config')
+              .with_content(%r{quorum_cluster_size, 7})
+          end
         end
 
-        it 'sets quorum_membership_reconciliation_enabled parameter true in config file' do
-          is_expected.to contain_file('advanced.config')
-            .with_content(%r{\{quorum_membership_reconciliation_enabled, true\}})
-            .with_content(%r{\{quorum_membership_reconciliation_auto_remove, true\}})
-            .with_content(%r{\{quorum_membership_reconciliation_interval, 36000\}})
-            .with_content(%r{\{quorum_membership_reconciliation_trigger_interval, 3600\}})
-            .with_content(%r{\{quorum_membership_reconciliation_target_group_size, 2\}})
+        # Ensure that whenever Param quorum_membership_reconciliation_enabled is unset - none of the
+        # other quorum_membership_reconciliation paramaters are set at all
+        # This ensures full backward compatibility with PRE RabbitMQ 3.13
+        describe 'rabbitmq-quorum_membership_reconciliation_enabled undef options' do
+          let(:params) { { rabbitmq_version: rabbitmq_version, quorum_membership_reconciliation_enabled: :undef } }
+
+          it 'sets quorum_membership_reconciliation_enabled parameter undef in config file' do
+            is_expected.to contain_file('advanced.config')
+              .without_content(%r{\{quorum_membership_reconciliation_enabled, })
+              .without_content(%r{\{quorum_membership_reconciliation_auto_remove, })
+              .without_content(%r{\{quorum_membership_reconciliation_interval, })
+              .without_content(%r{\{quorum_membership_reconciliation_trigger_interval, })
+              .without_content(%r{\{quorum_membership_reconciliation_target_group_size, })
+          end
+        end
+
+        # Ensure that whenever Param quorum_membership_reconciliation_enabled is false - none of the
+        # other quorum_membership_reconciliation paramaters are set at all
+        # This ensures full backward compatibility with PRE RabbitMQ 3.13
+        describe 'rabbitmq-quorum_membership_reconciliation_enabled false options' do
+          let(:params) { { rabbitmq_version: rabbitmq_version, quorum_membership_reconciliation_enabled: false } }
+
+          it 'sets quorum_membership_reconciliation_enabled parameter false in config file' do
+            is_expected.to contain_file('advanced.config')
+              .without_content(%r{\{quorum_membership_reconciliation_enabled, })
+              .without_content(%r{\{quorum_membership_reconciliation_auto_remove, })
+              .without_content(%r{\{quorum_membership_reconciliation_interval, })
+              .without_content(%r{\{quorum_membership_reconciliation_trigger_interval, })
+              .without_content(%r{\{quorum_membership_reconciliation_target_group_size, })
+          end
+        end
+
+        # Ensure that whenever Param quorum_membership_reconciliation_enabled is true - the defaults
+        # of all other quorum_membership_reconciliation parameters ensure they are UNSET until
+        # explicitly set.
+        describe 'rabbitmq-quorum_membership_reconciliation_enabled true options' do
+          let(:params) { { rabbitmq_version: rabbitmq_version, quorum_membership_reconciliation_enabled: true } }
+
+          it 'sets quorum_membership_reconciliation_enabled parameter true in config file' do
+            is_expected.to contain_file('advanced.config')
+              .with_content(%r{\{quorum_membership_reconciliation_enabled, true\}})
+              .without_content(%r{\{quorum_membership_reconciliation_auto_remove, })
+              .without_content(%r{\{quorum_membership_reconciliation_interval, })
+              .without_content(%r{\{quorum_membership_reconciliation_trigger_interval, })
+              .without_content(%r{\{quorum_membership_reconciliation_target_group_size, })
+          end
+        end
+
+        # Ensure that whenever Param quorum_membership_reconciliation_enabled is true
+        # and the other parameters are set - they pass as expected.
+        describe 'rabbitmq-quorum_membership_reconciliation_enabled true options' do
+          let(:params) do
+            {
+              rabbitmq_version: rabbitmq_version,
+              quorum_membership_reconciliation_enabled: true,
+              quorum_membership_reconciliation_auto_remove: true,
+              quorum_membership_reconciliation_interval: 36_000,
+              quorum_membership_reconciliation_trigger_interval: 3_600,
+              quorum_membership_reconciliation_target_group_size: 2,
+            }
+          end
+
+          it 'sets quorum_membership_reconciliation_enabled parameter true in config file' do
+            is_expected.to contain_file('advanced.config')
+              .with_content(%r{\{quorum_membership_reconciliation_enabled, true\}})
+              .with_content(%r{\{quorum_membership_reconciliation_auto_remove, true\}})
+              .with_content(%r{\{quorum_membership_reconciliation_interval, 36000\}})
+              .with_content(%r{\{quorum_membership_reconciliation_trigger_interval, 3600\}})
+              .with_content(%r{\{quorum_membership_reconciliation_target_group_size, 2\}})
+          end
         end
       end
 

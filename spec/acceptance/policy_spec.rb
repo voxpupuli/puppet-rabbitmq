@@ -4,7 +4,7 @@ require 'spec_helper_acceptance'
 
 rabbitmq_version = ENV.fetch('BEAKER_FACTER_rabbitmq_version', '3.13')
 
-describe 'rabbitmq policy on a vhost:', if: run_test?(rabbitmq_version, fact('os.name')) do
+describe 'rabbitmq policy on a vhost:', if: (run_test?(rabbitmq_version, fact('os.name')) and Gem::Version.new(rabbitmq_version) <= Gem::Version.new('3.13')) do
   context 'create policy resource' do
     it 'runs successfully' do
       pp = <<-EOS

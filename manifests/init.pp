@@ -410,8 +410,8 @@ class rabbitmq (
   Hash $cluster                                                                                    = {},
   Enum['ram', 'disc'] $cluster_node_type                                                           = 'disc',
   Array $cluster_nodes                                                                             = [],
-  String $config                                                                                   = 'rabbitmq/rabbitmq_3.conf.epp',
-  String $advanced_config                                                                          = 'rabbitmq/advanced_3.config.epp',
+  Optional[String] $config                                                                         = undef,
+  Optional[String] $advanced_config                                                                = undef,
   Hash $config_cowboy_opts                                                                         = {},
   Boolean $config_cluster                                                                          = false,
   Stdlib::Absolutepath $config_path                                                                = '/etc/rabbitmq/rabbitmq.conf',
@@ -526,6 +526,29 @@ class rabbitmq (
   Array $loopback_users                                                                            = ['guest'],
   Boolean $service_restart                                                                         = true,
 ) {
+  # Use different templates for RabbitMQ 4.x
+  # Use construct to avoid reassigning a variable
+  # Do not remove >= 0, otherwise comparison results always true
+  if $config == undef {
+    $config_template = if versioncmp($rabbitmq_version, '4.0') >= 0 {
+      'rabbitmq/rabbitmq_4.conf.epp'
+    } else {
+      'rabbitmq/rabbitmq_3.conf.epp'
+    }
+  } else {
+    $config_template = $config
+  }
+
+  if $advanced_config == undef {
+    $advanced_config_template = if versioncmp($rabbitmq_version, '4.0') >= 0 {
+      'rabbitmq/advanced_4.config.epp'
+    } else {
+      'rabbitmq/advanced_3.config.epp'
+    }
+  } else {
+    $advanced_config_template = $advanced_config
+  }
+
   if $ssl_only and ! $ssl {
     fail('$ssl_only => true requires that $ssl => true')
   }
@@ -644,24 +667,27 @@ class rabbitmq (
     }
   }
 
-  if $admin_enable and $service_manage {
-    include 'rabbitmq::install::rabbitmqadmin'
+  # rabbitmqadmin and clustering only for <= 3.13
+  unless versioncmp($rabbitmq_version, '4.0') >= 0 {
+    if $admin_enable and $service_manage {
+      include 'rabbitmq::install::rabbitmqadmin'
 
-    # Trigger upgrade of rabbitmqadmin on package upgrade (Issue #804)
-    Class['rabbitmq::install'] ~> Class['rabbitmq::install::rabbitmqadmin']
+      # Trigger upgrade of rabbitmqadmin on package upgrade (Issue #804)
+      Class['rabbitmq::install'] ~> Class['rabbitmq::install::rabbitmqadmin']
 
-    Class['rabbitmq::service'] -> Class['rabbitmq::install::rabbitmqadmin']
-    Class['rabbitmq::install::rabbitmqadmin'] -> Rabbitmq_exchange<| |>
-  }
+      Class['rabbitmq::service'] -> Class['rabbitmq::install::rabbitmqadmin']
+      Class['rabbitmq::install::rabbitmqadmin'] -> Rabbitmq_exchange<| |>
+    }
 
-  if $config_cluster and $cluster['name'] and $cluster['init_node'] {
-    create_resources('rabbitmq_cluster', {
-      $cluster['name'] => {
-        'init_node'      => $cluster['init_node'],
-        'node_disc_type' => $cluster_node_type,
-        'local_node'     => $cluster['local_node'],
-      }
-    })
+    if $config_cluster and $cluster['name'] and $cluster['init_node'] {
+      create_resources('rabbitmq_cluster', {
+        $cluster['name'] => {
+          'init_node'      => $cluster['init_node'],
+          'node_disc_type' => $cluster_node_type,
+          'local_node'     => $cluster['local_node'],
+        }
+      })
+    }
   }
 
   if ($service_restart) {
