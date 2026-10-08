@@ -6,3 +6,6 @@ spec/spec_helper.rb:
   enabled_lint_checks:
     - parameter_documentation
     - parameter_types
+.github/workflows/ci.yml:
+  with:
+    beaker_facter: 'rabbitmq_version:RabbitMQ:3.9,3.13,4.3'

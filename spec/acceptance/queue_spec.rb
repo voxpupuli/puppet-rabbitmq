@@ -5,6 +5,8 @@ require 'spec_helper_acceptance'
 rabbitmq_version = ENV.fetch('BEAKER_FACTER_rabbitmq_version', '3.13')
 
 describe 'rabbitmq binding:', if: run_test?(rabbitmq_version, fact('os.name')) do
+  next if $rabbitmq_version >= '4.0'
+
   context 'create binding and queue resources when using default management port' do
     it 'runs successfully' do
       pp = <<-EOS

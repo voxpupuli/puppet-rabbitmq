@@ -3,6 +3,7 @@
 #
 # @api private
 class rabbitmq::config {
+  $rabbitmq_version                                   = $rabbitmq::rabbitmq_version
   $admin_enable                                       = $rabbitmq::admin_enable
   $management_enable                                  = $rabbitmq::management_enable
   $use_config_file_for_plugins                        = $rabbitmq::use_config_file_for_plugins
@@ -102,6 +103,12 @@ class rabbitmq::config {
   $inetrc_config_path                                 = $rabbitmq::inetrc_config_path
   $ssl_erl_dist                                       = $rabbitmq::ssl_erl_dist
   $loopback_users                                     = $rabbitmq::loopback_users
+
+  # Use different templates for RabbitMQ 4.x
+  if versioncmp($rabbitmq_version, '4.0') {
+    $config           = 'rabbitmq/rabbitmq_4.conf.epp'
+    $advanced_config  = 'rabbitmq/advanced_4.config.epp'
+  }
 
   if $ssl_only {
     $default_ssl_env_variables = {}

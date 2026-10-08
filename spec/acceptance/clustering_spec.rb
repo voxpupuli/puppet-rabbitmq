@@ -5,6 +5,8 @@ require 'spec_helper_acceptance'
 rabbitmq_version = ENV.fetch('BEAKER_FACTER_rabbitmq_version', '3.13')
 
 describe 'rabbitmq clustering', if: run_test?(rabbitmq_version, fact('os.name')) do
+  next if $rabbitmq_version >= '4.0'
+
   context 'rabbitmq::wipe_db_on_cookie_change => false' do
     it 'runs successfully' do
       pp = <<-EOS

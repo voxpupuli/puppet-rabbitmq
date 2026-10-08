@@ -12,7 +12,7 @@
 ##
 ## Networking
 ##
-## Relevant doc guide: https://www.rabbitmq.com/docs/3.13/networking.
+## Relevant doc guide: https://www.rabbitmq.com/docs/networking.
 ##
 <%- if $rabbitmq::config::ssl_only {-%>
 listeners.tcp = none
@@ -27,7 +27,7 @@ listeners.tcp.default = <%= $rabbitmq::config::port %>
 ##
 ## Security, Access Control
 ##
-## Relevant doc guide: https://www.rabbitmq.com/docs/3.13/access-control.
+## Relevant doc guide: https://www.rabbitmq.com/docs/access-control.
 ##
 <%- if $rabbitmq::config::loopback_users.size > 0 {-%>
   <%- $rabbitmq::config::loopback_users.sort.each |$user| { -%>
@@ -38,7 +38,7 @@ loopback_users.<%=$user%> = true
 ###
 ### TLS Configuration
 ###
-### Relevant doc guide: https://www.rabbitmq.com/docs/3.13/ssl.
+### Relevant doc guide: https://www.rabbitmq.com/docs/ssl.
 ###
 <%- if $rabbitmq::config::ssl { -%>
   <%- if $rabbitmq::config::ssl_interface {-%>
@@ -92,8 +92,8 @@ ssl_options.ciphers.<%=$index + 1%> = <%=$ssl_cipher%>
 ###
 ### Relevant doc guides:
 ###
-###  * https://www.rabbitmq.com/docs/3.13/plugins
-###  * https://www.rabbitmq.com/docs/3.13/access-control
+###  * https://www.rabbitmq.com/docs/plugins
+###  * https://www.rabbitmq.com/docs/access-control
 ###
 <%- if $rabbitmq::config::auth_backends {-%>
 <%- $rabbitmq::config::auth_backends.each |$index, $auth_backend| { -%>
@@ -108,25 +108,6 @@ auth_backends.2.authz = rabbit_auth_backend_internal
 ###
 default_user = <%= $rabbitmq::config::default_user %>
 default_pass = <%= $rabbitmq::config::default_pass %>
-
-##
-## Clustering
-##
-## Relevant doc guide: https://www.rabbitmq.com/docs/3.13/clustering.
-##
-<%- if $rabbitmq::config::config_cluster {-%>
-cluster_partition_handling = <%= $rabbitmq::config::cluster_partition_handling %>
-<%- if $rabbitmq::config::cluster_nodes.empty() {-%>
-cluster_formation.peer_discovery_backend = classic_config
-cluster_nodes = []
-<%- } else {-%>
-  <%- $rabbitmq::config::cluster_nodes.each |$index, $cluster_node| { -%>
-cluster_formation.peer_discovery_backend = classic_config
-cluster_formation.classic_config.nodes.<%=$index + 1%> = rabbit@<%=$cluster_node%>
-  <%- } -%>
-<%- } -%>
-cluster_formation.node_type = <%=$rabbitmq::config::cluster_node_type%>
-<%- } -%>
 
 ##
 ## Additional network and protocol related configuration
@@ -158,7 +139,7 @@ collect_statistics_interval = <%= $rabbitmq::config::collect_statistics_interval
 #
 # RabbitMQ LDAP Plugin
 #
-# Relevant doc guide: https://www.rabbitmq.com/docs/3.13/ldap
+# Relevant doc guide: https://www.rabbitmq.com/docs/ldap
 #
 <%- if $rabbitmq::config::ldap_auth {-%>
   <%- $rabbitmq::config::ldap_server.each |$index, $server| { -%>
@@ -175,7 +156,7 @@ auth_ldap.log = <%= $rabbitmq::config::ldap_log %>
 #
 # RabbitMQ Management Plugin
 #
-# Relevant doc guide: https://www.rabbitmq.com/docs/3.13/management
+# Relevant doc guide: https://www.rabbitmq.com/docs/management
 #
 <%- if $rabbitmq::config::admin_enable or $rabbitmq::config::management_enable {-%>
   <%- if $rabbitmq::config::ssl and $rabbitmq::config::management_ssl {-%>
@@ -222,7 +203,7 @@ management.tcp.ip = <%= $rabbitmq::config::management_ip_address %>
 #
 # RabbitMQ STOMP Plugin
 #
-# Relevant doc guide: https://www.rabbitmq.com/docs/3.13/stomp
+# Relevant doc guide: https://www.rabbitmq.com/docs/stomp
 #
 <%- if $rabbitmq::config::config_stomp {-%>
   <%- if $rabbitmq::config::stomp_ssl_only {-%>
