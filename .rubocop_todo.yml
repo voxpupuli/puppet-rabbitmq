@@ -43,3 +43,11 @@ RSpec/StubbedMock:
     - 'spec/unit/puppet/provider/rabbitmq_policy/rabbitmqctl_spec.rb'
     - 'spec/unit/puppet/provider/rabbitmq_queue/rabbitmqadmin_spec.rb'
     - 'spec/unit/puppet/provider/rabbitmq_user_permissions/rabbitmqctl_spec.rb'
+
+# Offense count: 3
+# Configuration parameters: AllowedVariables.
+Style/GlobalVars:
+  Exclude:
+    - 'spec/acceptance/clustering_spec.rb'
+    - 'spec/acceptance/queue_spec.rb'
+    - 'spec/acceptance/rabbitmqadmin_spec.rb'

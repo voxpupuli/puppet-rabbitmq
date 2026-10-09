@@ -427,19 +427,19 @@ Default value: `undef`
 
 ##### <a name="-rabbitmq--config"></a>`config`
 
-Data type: `String`
+Data type: `Optional[String]`
 
 The file to use as the rabbitmq.conf template.
 
-Default value: `'rabbitmq/rabbitmq_3.conf.epp'`
+Default value: `undef`
 
 ##### <a name="-rabbitmq--advanced_config"></a>`advanced_config`
 
-Data type: `String`
+Data type: `Optional[String]`
 
 The file to use as the advanced.config template.
 
-Default value: `'rabbitmq/advanced_3.config.epp'`
+Default value: `undef`
 
 ##### <a name="-rabbitmq--config_additional_variables"></a>`config_additional_variables`
 
@@ -2317,4 +2317,3 @@ The name of the vhost to add
 
 The specific backend to use for this `rabbitmq_vhost` resource. You will seldom need to specify this --- Puppet will
 usually discover the appropriate provider for your platform.
-
