@@ -2317,4 +2317,3 @@ The name of the vhost to add
 
 The specific backend to use for this `rabbitmq_vhost` resource. You will seldom need to specify this --- Puppet will
 usually discover the appropriate provider for your platform.
-
