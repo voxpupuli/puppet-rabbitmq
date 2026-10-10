@@ -4,13 +4,13 @@ class Puppet::Provider::RabbitmqCli < Puppet::Provider
   initvars
 
   def self.append_to_path(dir)
-    path = get_env 'PATH'
+    path = ENV.fetch('PATH', nil)
     # Don't append to the PATH if the directory is already in it. Otherwise, if
     # multiple providers run in the same process it may result in the
     # environment being modified multiple times.
     return if path.split(File::PATH_SEPARATOR).include? dir
 
-    set_env 'PATH', [path, dir].join(File::PATH_SEPARATOR)
+    ENV['PATH'] = [path, dir].join(File::PATH_SEPARATOR)
   end
   private_class_method :append_to_path
 
