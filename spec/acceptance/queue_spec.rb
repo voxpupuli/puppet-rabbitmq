@@ -70,7 +70,7 @@ describe 'rabbitmq binding:', if: run_test?(rabbitmq_version, fact('os.name')) d
 
     it 'has the queue' do
       shell('rabbitmqctl list_queues -q -p host1') do |r|
-        expect(r.stdout).to match(%r{queue1})
+        expect(r.stdout).to include('queue1')
         expect(r.exit_code).to be_zero
       end
     end
@@ -227,7 +227,7 @@ describe 'rabbitmq binding:', if: run_test?(rabbitmq_version, fact('os.name')) d
 
     it 'has the queue' do
       shell('rabbitmqctl list_queues -q -p host2') do |r|
-        expect(r.stdout).to match(%r{queue2})
+        expect(r.stdout).to include('queue2')
         expect(r.exit_code).to be_zero
       end
     end

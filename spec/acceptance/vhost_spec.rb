@@ -32,7 +32,7 @@ describe 'rabbitmq vhost:', if: run_test?(rabbitmq_version, fact('os.name')) do
 
     it 'has the vhost' do
       shell('rabbitmqctl list_vhosts') do |r|
-        expect(r.stdout).to match(%r{myhost})
+        expect(r.stdout).to include('myhost')
         expect(r.exit_code).to be_zero
       end
     end
