@@ -6,12 +6,11 @@
 # [1] https://www.rabbitmq.com/clustering-ssl.html
 
 Facter.add(:erl_ssl_path) do
+  confine { Facter::Core::Execution.which('erl') }
   setcode do
-    if Facter::Core::Execution.which('erl')
-      data = Facter::Core::Execution.execute("erl -eval 'io:format(\"~p\", [code:lib_dir(ssl, ebin)]),halt().' -noshell")
-      # erl returns the string with quotes, strip them off
-      data.gsub!(%r{\A"|"\Z}, '')
-    end
+    data = Facter::Core::Execution.execute("erl -eval 'io:format(\"~p\", [code:lib_dir(ssl, ebin)]),halt().' -noshell")
+    # erl returns the string with quotes, strip them off
+    data.gsub!(%r{\A"|"\Z}, '')
   end
 end
 # rubocop:enable Style/FrozenStringLiteralComment
