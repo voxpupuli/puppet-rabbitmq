@@ -44,6 +44,22 @@ class rabbitmq::repo::apt (
     # install fails
     # https://www.rabbitmq.com/docs/which-erlang
     case $rabbitmq::rabbitmq_version {
+      '4.3': {
+        $erlang_pin_version = '1:27.*'
+        $rabbitmq_pin_version = '4.3.*'
+      }
+      '4.2': {
+        $erlang_pin_version = '1:26.*'
+        $rabbitmq_pin_version = '4.2.*'
+      }
+      '4.1': {
+        $erlang_pin_version = '1:26.*'
+        $rabbitmq_pin_version = '4.1.*'
+      }
+      '4.0': {
+        $erlang_pin_version = '1:26.*'
+        $rabbitmq_pin_version = '4.0.*'
+      }
       '3.13': {
         $erlang_pin_version = '1:26.*'
         $rabbitmq_pin_version = '3.13.*'

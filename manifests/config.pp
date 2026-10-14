@@ -9,8 +9,8 @@ class rabbitmq::config {
   $plugins                                            = $rabbitmq::plugins
   $cluster_node_type                                  = $rabbitmq::cluster_node_type
   $cluster_nodes                                      = $rabbitmq::cluster_nodes
-  $config                                             = $rabbitmq::config
-  $advanced_config                                    = $rabbitmq::advanced_config
+  $config                                             = $rabbitmq::config_template
+  $advanced_config                                    = $rabbitmq::advanced_config_template
   $config_cluster                                     = $rabbitmq::config_cluster
   $config_cowboy_opts                                 = $rabbitmq::config_cowboy_opts
   $config_path                                        = $rabbitmq::config_path

@@ -22,6 +22,18 @@ class rabbitmq::repo::rhel (
   }
 
   case $rabbitmq::rabbitmq_version {
+    '4.3': {
+      $rabbitmq_pin_version = '4.3.*'
+    }
+    '4.2': {
+      $rabbitmq_pin_version = '4.2.*'
+    }
+    '4.1': {
+      $rabbitmq_pin_version = '4.1.*'
+    }
+    '4.0': {
+      $rabbitmq_pin_version = '4.0.*'
+    }
     '3.13': {
       $rabbitmq_pin_version = '3.13.*'
     }

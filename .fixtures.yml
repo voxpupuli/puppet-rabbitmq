@@ -3,6 +3,9 @@ fixtures:
   repositories:
     apt: https://github.com/puppetlabs/puppetlabs-apt
     archive: https://github.com/voxpupuli/puppet-archive
+    augeas_core: https://github.com/puppetlabs/puppetlabs-augeas_core
+    concat: https://github.com/puppetlabs/puppetlabs-concat
     stdlib: https://github.com/puppetlabs/puppetlabs-stdlib
     systemd: https://github.com/voxpupuli/puppet-systemd
+    yum: https://github.com/voxpupuli/puppet-yum
     yumrepo_core: https://github.com/puppetlabs/puppetlabs-yumrepo_core
