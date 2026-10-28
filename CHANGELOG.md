@@ -4,6 +4,39 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v15.1.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v15.1.0) (2026-10-28)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v15.0.0...v15.1.0)
+
+**Breaking changes:**
+
+- feat: use current upstream repositories [\#1083](https://github.com/voxpupuli/puppet-rabbitmq/pull/1083) ([d1nuc0m](https://github.com/d1nuc0m))
+- Switch to INI-style config; require rabbitmq 3.7+ [\#1081](https://github.com/voxpupuli/puppet-rabbitmq/pull/1081) ([d1nuc0m](https://github.com/d1nuc0m))
+
+**Implemented enhancements:**
+
+- Fetch signing keys from GitHub or Bintray [\#781](https://github.com/voxpupuli/puppet-rabbitmq/issues/781)
+- feat: partial RabbitMQ 4 support [\#1095](https://github.com/voxpupuli/puppet-rabbitmq/pull/1095) ([d1nuc0m](https://github.com/d1nuc0m))
+- refactor: rabbitmq\_version with rabbitmq-diagnostics [\#1093](https://github.com/voxpupuli/puppet-rabbitmq/pull/1093) ([d1nuc0m](https://github.com/d1nuc0m))
+- Update requirements to allow OpenVox 9 [\#1092](https://github.com/voxpupuli/puppet-rabbitmq/pull/1092) ([sebastianrakel](https://github.com/sebastianrakel))
+- use confine for facts [\#1090](https://github.com/voxpupuli/puppet-rabbitmq/pull/1090) ([trefzer](https://github.com/trefzer))
+- test: check CentOS Messaging SIG pkgs [\#1089](https://github.com/voxpupuli/puppet-rabbitmq/pull/1089) ([d1nuc0m](https://github.com/d1nuc0m))
+- chore: support puppet/systemd 10.x [\#1088](https://github.com/voxpupuli/puppet-rabbitmq/pull/1088) ([d1nuc0m](https://github.com/d1nuc0m))
+- feat: add Ubuntu 24.04 support [\#1087](https://github.com/voxpupuli/puppet-rabbitmq/pull/1087) ([d1nuc0m](https://github.com/d1nuc0m))
+- test: check all EL9 distros [\#1086](https://github.com/voxpupuli/puppet-rabbitmq/pull/1086) ([d1nuc0m](https://github.com/d1nuc0m))
+- replace deprecated calls with Facter::Core::Execution [\#1084](https://github.com/voxpupuli/puppet-rabbitmq/pull/1084) ([corporate-gadfly](https://github.com/corporate-gadfly))
+- Add support for FreeBSD 15 [\#1074](https://github.com/voxpupuli/puppet-rabbitmq/pull/1074) ([smortex](https://github.com/smortex))
+
+**Closed issues:**
+
+- Add 'mnesia\_table\_loading\_retry\_timeout' and 'mnesia\_table\_loading\_retry\_limit' parameter\(s\) support [\#1038](https://github.com/voxpupuli/puppet-rabbitmq/issues/1038)
+- PackageCloud repos are no longer available \(see RabbitMQ issue\) [\#935](https://github.com/voxpupuli/puppet-rabbitmq/issues/935)
+- Autoload error that sometimes occurs on Puppet Enterprise 2017.2.2 [\#605](https://github.com/voxpupuli/puppet-rabbitmq/issues/605)
+
+**Merged pull requests:**
+
+- fix deprecation warning on openvox 9 server, reference and rubocop [\#1096](https://github.com/voxpupuli/puppet-rabbitmq/pull/1096) ([trefzer](https://github.com/trefzer))
+
 ## [v15.0.0](https://github.com/voxpupuli/puppet-rabbitmq/tree/v15.0.0) (2025-12-20)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-rabbitmq/compare/v14.4.1...v15.0.0)
@@ -503,7 +536,6 @@ Debian 8 is EOL since some months now. Release 10.2.0 will be the last one with 
 **Merged pull requests:**
 
 - docs: Updates autocluster plugin link [\#809](https://github.com/voxpupuli/puppet-rabbitmq/pull/809) ([wyardley](https://github.com/wyardley))
-- Update link to rabbitmq-autocluster [\#808](https://github.com/voxpupuli/puppet-rabbitmq/pull/808) ([ghost](https://github.com/ghost))
 - Allow `puppetlabs/stdlib` 6.x and `puppet/archive` 4.x [\#803](https://github.com/voxpupuli/puppet-rabbitmq/pull/803) ([alexjfisher](https://github.com/alexjfisher))
 - Remove unused curl\_prefix variable [\#800](https://github.com/voxpupuli/puppet-rabbitmq/pull/800) ([mbaldessari](https://github.com/mbaldessari))
 - Use data-in-modules instead of params.pp [\#797](https://github.com/voxpupuli/puppet-rabbitmq/pull/797) ([dhoppe](https://github.com/dhoppe))
