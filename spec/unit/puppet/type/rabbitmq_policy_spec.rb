@@ -234,6 +234,19 @@ describe Puppet::Type.type(:rabbitmq_policy) do
     end.to raise_error(Puppet::Error, %r{Invalid queue-version value.*oogabooga})
   end
 
+  it 'accepts and converts the stream-max-segment-size-bytes value' do
+    definition = { 'stream-max-segment-size-bytes' => '5000000' }
+    policy[:definition] = definition
+    expect(policy[:definition]['stream-max-segment-size-bytes']).to eq(5_000_000)
+  end
+
+  it 'does not accept non-numeric stream-max-segment-size-bytes value' do
+    definition = { 'stream-max-segment-size-bytes' => 'bogus' }
+    expect do
+      policy[:definition] = definition
+    end.to raise_error(Puppet::Error, %r{Invalid stream-max-segment-size-bytes value.*bogus})
+  end
+
   it 'accepts and converts the target-group-size value' do
     definition = { 'target-group-size' => '7' }
     policy[:definition] = definition
