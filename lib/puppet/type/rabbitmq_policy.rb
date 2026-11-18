@@ -13,6 +13,7 @@ CONVERT_TO_INT_VARS = %w[
   message-ttl
   queue-version
   shards-per-node
+  stream-max-segment-size-bytes
   target-group-size
 ].freeze
 
