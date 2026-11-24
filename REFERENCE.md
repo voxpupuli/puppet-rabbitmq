@@ -15,6 +15,7 @@
 * `rabbitmq::config`: Sets all the configuration values for RabbitMQ and creates the directories for config and ssl.
 * `rabbitmq::install`: Ensures that rabbitmq-server exists
 * `rabbitmq::install::rabbitmqadmin`: Install rabbitmq admin
+* `rabbitmq::install::rabbitmqadmin_ng`: Install rabbitmqadmin-ng
 * `rabbitmq::management`: Manage presence / absence of user resource for guest management user.
 * `rabbitmq::repo::apt`: Configure upstream RabbitMQ APT repositories in DEB-822 format and pin
 packages if necessary.
@@ -337,6 +338,7 @@ The following parameters are available in the `rabbitmq` class:
 * [`rabbitmq_group`](#-rabbitmq--rabbitmq_group)
 * [`rabbitmq_home`](#-rabbitmq--rabbitmq_home)
 * [`rabbitmqadmin_package`](#-rabbitmq--rabbitmqadmin_package)
+* [`rabbitmqadmin_ng_version`](#-rabbitmq--rabbitmqadmin_ng_version)
 * [`archive_options`](#-rabbitmq--archive_options)
 * [`loopback_users`](#-rabbitmq--loopback_users)
 
@@ -1339,6 +1341,14 @@ Data type: `Optional[String]`
 OS dependent If undef: install rabbitmqadmin via archive, otherwise via package
 
 Default value: `undef`
+
+##### <a name="-rabbitmq--rabbitmqadmin_ng_version"></a>`rabbitmqadmin_ng_version`
+
+Data type: `String`
+
+For RabbitMQ >= 4.0, version of rabbitmqadmin-ng to install
+
+Default value: `'2.35.0'`
 
 ##### <a name="-rabbitmq--archive_options"></a>`archive_options`
 

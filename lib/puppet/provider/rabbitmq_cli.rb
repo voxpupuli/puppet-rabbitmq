@@ -35,6 +35,7 @@ class Puppet::Provider::RabbitmqCli < Puppet::Provider
   home_tmp_command :rabbitmqplugins, 'rabbitmq-plugins'
 
   home_tmp_command :rabbitmqadmin, '/usr/local/bin/rabbitmqadmin'
+  home_tmp_command :rabbitmqadmin_ng, '/usr/bin/rabbitmqadmin'
 
   def self.rabbitmq_version
     return @rabbitmq_version if defined? @rabbitmq_version

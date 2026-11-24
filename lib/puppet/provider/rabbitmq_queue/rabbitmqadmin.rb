@@ -7,6 +7,7 @@ require File.expand_path(File.join(File.dirname(__FILE__), '..', 'rabbitmq_cli')
 Puppet::Type.type(:rabbitmq_queue).provide(:rabbitmqadmin, parent: Puppet::Provider::RabbitmqCli) do
   desc 'Rabbitmqadmin provider for rabbitmq queue'
   confine feature: :posix
+  confine true: Gem::Version.new(Facter.value(:rabbitmq_version)) < Gem::Version.new('4.0')
 
   def should_vhost
     @should_vhost || @should_vhost = resource[:name].rpartition('@').last

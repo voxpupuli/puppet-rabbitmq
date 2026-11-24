@@ -397,6 +397,8 @@
 #   OS dependent The home directory of the rabbitmq deamon.
 # @param rabbitmqadmin_package
 #   OS dependent If undef: install rabbitmqadmin via archive, otherwise via package
+# @param rabbitmqadmin_ng_version
+#   For RabbitMQ >= 4.0, version of rabbitmqadmin-ng to install
 # @param archive_options
 #   Extra options to Archive resource to download rabbitmqadmin file
 # @param loopback_users
@@ -522,6 +524,7 @@ class rabbitmq (
   Stdlib::Absolutepath $inetrc_config_path                                                         = '/etc/rabbitmq/inetrc',
   Boolean $ssl_erl_dist                                                                            = false,
   Optional[String] $rabbitmqadmin_package                                                          = undef,
+  String $rabbitmqadmin_ng_version                                                                 = '2.35.0',
   Array $archive_options                                                                           = [],
   Array $loopback_users                                                                            = ['guest'],
   Boolean $service_restart                                                                         = true,
@@ -667,8 +670,8 @@ class rabbitmq (
     }
   }
 
-  # rabbitmqadmin and clustering only for <= 3.13
-  unless versioncmp($rabbitmq_version, '4.0') >= 0 {
+  # legacy rabbitmqadmin and clustering only for <= 3.13
+  if versioncmp($rabbitmq_version, '4.0') < 0 {
     if $admin_enable and $service_manage {
       include 'rabbitmq::install::rabbitmqadmin'
 
@@ -687,6 +690,13 @@ class rabbitmq (
           'local_node'     => $cluster['local_node'],
         }
       })
+    }
+  } else {
+    if $admin_enable and $service_manage {
+      include 'rabbitmq::install::rabbitmqadmin_ng'
+      Class['rabbitmq::install'] ~> Class['rabbitmq::install::rabbitmqadmin_ng']
+      Class['rabbitmq::service'] -> Class['rabbitmq::install::rabbitmqadmin_ng']
+      Class['rabbitmq::install::rabbitmqadmin_ng'] -> Rabbitmq_exchange<| |>
     }
   }
 
