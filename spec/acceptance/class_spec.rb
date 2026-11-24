@@ -192,8 +192,9 @@ describe 'rabbitmq class:', if: run_test?(rabbitmq_version, fact('os.name')) do
       it { is_expected.to be_listening.on('0.0.0.0').with('tcp') }
     end
 
+    # Default behaviors of management differs between RabbitMQ versions
     describe port(15_671) do
-      it { is_expected.to be_listening.on('0.0.0.0').with('tcp') }
+      it { is_expected.to be_listening.with('tcp').or be_listening.with('tcp6') }
     end
   end
 
