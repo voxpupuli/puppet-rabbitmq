@@ -79,11 +79,11 @@
   "dependencies": [
     {
       "name": "puppet/archive",
-      "version_requirement": ">= 2.0.0 < 9.0.0"
+      "version_requirement": ">= 2.0.0 < 10.0.0"
     },
     {
       "name": "puppet/systemd",
-      "version_requirement": ">= 6.0.0 < 11.0.0"
+      "version_requirement": ">= 6.0.0 < 12.0.0"
     },
     {
       "name": "puppet/yum",
